@@ -1,8 +1,8 @@
-# React + Vite
+# Frontend code for the Form about User Requirements to the Prestech in-house ERP
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Authorship**:
+Nova Prestech Dev team
+suporte@prestech.com.br
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Frontend code for the buildup of the form used to gather data about _user requirements_ regarding in-house routine work.
+The data will later be used for the development of our _ERP_ and _CRM_ projects.
