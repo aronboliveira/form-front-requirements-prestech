@@ -1,0 +1,86 @@
+@use "abstracts/variables" as *;
+@use "abstracts/mixins" as *;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: $font-stack;
+  background-color: $color-secondary;
+  color: $color-primary;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @include shadow-weak;
+  margin-bottom: $spacing-md;
+}
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: $spacing-base;
+}
+.fieldset-form {
+  @include box-rounded-squary(6px);
+  @include shadow-weak;
+  border: 1px solid $color-gray;
+  margin-bottom: $spacing-md;
+  padding: $spacing-base;
+}
+label {
+  display: block;
+  margin-bottom: $spacing-sm;
+  font-weight: 600;
+}
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+textarea,
+select {
+  @include box-rounded-squary(6px);
+  @include transition-default();
+  width: 100%;
+  padding: $spacing-sm;
+  margin-bottom: $spacing-sm;
+  border: 1px solid $color-gray;
+  &:focus {
+    font-weight: bold;
+    background-color: lighten($color-highlight, 40%);
+    outline: none;
+  }
+}
+input[type="range"] {
+  width: 100%;
+}
+input[type="radio"],
+input[type="checkbox"] {
+  margin-right: 8px;
+  cursor: pointer;
+  @include transition-default();
+  &:hover {
+    transform: scale(1.05);
+  }
+  &:active {
+    transform: scale(0.95);
+  }
+}
+button {
+  @include box-rounded-squary(6px);
+  @include shadow-weak;
+  @include transition-default();
+  background-color: $color-primary;
+  color: $color-secondary;
+  padding: $spacing-sm $spacing-md;
+  border: none;
+  cursor: pointer;
+  &:hover {
+    background-color: darken($color-primary, 10%);
+  }
+  &:active {
+    background-color: lighten($color-primary, 5%);
+  }
+}
