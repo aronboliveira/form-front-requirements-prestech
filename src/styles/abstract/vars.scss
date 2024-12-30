@@ -1,10 +1,20 @@
-$color-primary: #001f3f;
-$color-secondary: #ffffff;
-$color-tertiary: #4a148c;
-$color-gray: #808080;
-$color-highlight: #00ffe4;
-$font-stack: "Arial", sans-serif;
-$spacing-base: 16px;
-$spacing-sm: 8px;
-$spacing-md: 24px;
-$spacing-lg: 32px;
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --color-primary: #001f3f;
+  --color-secondary: #ffffff;
+  --color-tertiary: #4a148c;
+  --color-gray: #808080;
+  --color-highlight: #00ffe4;
+  --font-stack: "Arial", sans-serif;
+  --spacing-base: 16px;
+  --spacing-sm: 8px;
+  --spacing-md: 24px;
+  --spacing-lg: 32px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}

@@ -29,3 +29,15 @@ export type CSSDisplay =
   | "initial"
   | "inherit"
   | "unset";
+export type DDDPattern = `${number}${number}`;
+export type ValidPhonePattern =
+  | `${number}${number}${number}${number}${number}${"-"}?${number}${number}${number}${number}`
+  | `${DDDPattern}${" " | ""}${number}${number}${number}${number}${
+      | number
+      | ""}${"-"}?${number}${number}${number}${number}`
+  | `${"+" | ""}${number}${number | ""}${number | ""}${" " | ""}${DDDPattern}${
+      | " "
+      | ""}${number}${number}${number}${number}${
+      | number
+      | ""}${"-"}?${number}${number}${number}${number}`;
+export type TelType = "local" | "national" | "complete";

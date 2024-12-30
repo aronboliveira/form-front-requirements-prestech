@@ -11,4 +11,18 @@ export default class StyleHandler {
       element.style.display = "block";
     condition ? (element.style.display = visibleAs) : "none";
   }
+  static blurOnChange(el: nlHtEl, curr: number = 0.8, prev: number = 1) {
+    if (!(el instanceof HTMLElement)) return;
+    const cps = getComputedStyle(el);
+    if (cps.transition === "") el.style.transition = "opacity 0.5s ease-in-out";
+    else el.style.transition += ", opacity 0.5s ease-in-out";
+    setTimeout(() => {
+      if (!(el instanceof HTMLElement)) return;
+      el.style.opacity = curr.toString();
+    }, 50);
+    setTimeout(() => {
+      if (!(el instanceof HTMLElement)) return;
+      el.style.opacity = prev.toString();
+    }, 50);
+  }
 }

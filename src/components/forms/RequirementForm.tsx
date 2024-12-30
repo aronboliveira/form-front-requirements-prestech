@@ -1,10 +1,10 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import styles from "./Form.module.scss";
+import React, { useEffect } from "react";
 import FirstName from "@/components/inputs/FirstName";
 import LastName from "@/components/inputs/LastName";
 import { IOModel } from "@/lib/client/models/IOModel";
 import Email from "../inputs/Email";
+import LocalizedTelFs from "../bloc/fieldsets/LocalizedTelFs";
 export default function RequirementForm() {
   useEffect(() => {
     IOModel.setConstraintPatterns();
@@ -20,6 +20,7 @@ export default function RequirementForm() {
           <FirstName />
           <LastName />
           <Email required={true} />
+          <LocalizedTelFs required={true} />
         </section>
       </fieldset>
     </form>

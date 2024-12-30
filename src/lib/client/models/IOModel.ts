@@ -1,4 +1,4 @@
-import { limits, patterns } from "../vars";
+import { limits } from "../vars";
 export class IOModel {
   logEvent(message: string, payload: unknown): void {
     console.log(`[IOModel] ${message}`, payload);
@@ -18,12 +18,7 @@ export class IOModel {
           return;
         if (inp.required && inp.minLength < 1) inp.minLength = 1;
         if (inp instanceof HTMLInputElement) {
-          if (inp.type === "email" || inp.classList.contains("email")) {
-            inp.pattern = patterns.email;
-            inp.minLength = 8;
-            inp.maxLength = limits.small.MAX_UTF_16_SIGNED_SURROGATE;
-            inp.pattern = "/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/";
-          } else if (inp.type === "tel" || inp.classList.contains(".tel")) {
+          if (inp.type === "tel" || inp.classList.contains(".tel")) {
             inp.minLength = 8;
             if (inp.classList.contains("localTel")) {
               inp.maxLength = 11;
