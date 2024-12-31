@@ -17,6 +17,7 @@ export default function LastName() {
       <input
         ref={r}
         value={v}
+        name='last_name'
         required
         autoComplete='family-name'
         className={`${classes.inpClasses} name`}

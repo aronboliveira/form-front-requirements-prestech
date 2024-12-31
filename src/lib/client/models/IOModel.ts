@@ -1,3 +1,4 @@
+import { FormControl, nlFm } from "@/lib/definitions/helpers";
 import { limits } from "@/lib/vars";
 export class IOModel {
   logEvent(message: string, payload: unknown): void {
@@ -77,5 +78,69 @@ export class IOModel {
         }
       });
     }
+  }
+  static setFormDataLength(form: nlFm): void {
+    try {
+      if (!(form instanceof HTMLFormElement))
+        throw new TypeError("Could not validated form instance");
+      const controls = form.elements;
+      form.dataset.elements = controls.length.toString();
+      form.dataset.namedElements = [...controls]
+        .filter(
+          el =>
+            !(el instanceof HTMLLabelElement || el instanceof HTMLLegendElement)
+        )
+        .length.toString();
+      form.dataset.listElements = [...controls]
+        .filter(
+          el =>
+            !(
+              el instanceof HTMLOptionElement ||
+              el instanceof HTMLOptGroupElement ||
+              el instanceof HTMLDataListElement
+            )
+        )
+        .length.toString();
+      form.dataset.inputElements = [...controls]
+        .filter(
+          el =>
+            el instanceof HTMLInputElement ||
+            el instanceof HTMLSelectElement ||
+            el instanceof HTMLTextAreaElement
+        )
+        .length.toString();
+    } catch (e) {
+      console.error(
+        `An error has occured setting the dataset length for the form — ${
+          (e as Error).name
+        }: ${(e as Error).message}`
+      );
+    }
+  }
+  static setFormControlNameSufix(el: FormControl | null): void {
+    if (!el || !("name" in el)) return;
+    const hasFormProp =
+        el instanceof HTMLInputElement ||
+        el instanceof HTMLSelectElement ||
+        el instanceof HTMLTextAreaElement ||
+        el instanceof HTMLButtonElement ||
+        el instanceof HTMLOutputElement ||
+        el instanceof HTMLFieldSetElement ||
+        el instanceof HTMLObjectElement,
+      isListControl =
+        el instanceof HTMLOptionElement ||
+        el instanceof HTMLOptGroupElement ||
+        el instanceof HTMLDataListElement;
+    if (
+      !(hasFormProp || isListControl) ||
+      (hasFormProp && !el.form) ||
+      (isListControl && el instanceof HTMLElement && !el.closest("form"))
+    )
+      return;
+    const fmName = hasFormProp
+      ? el.form?.name ?? ""
+      : (el as FormControl).closest("form")?.name ?? "";
+    if (fmName === "") return;
+    el.name += `__${fmName}`;
   }
 }

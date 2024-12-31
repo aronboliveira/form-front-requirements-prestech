@@ -16,6 +16,7 @@ export default function FirstName() {
       <input
         ref={r}
         value={v}
+        name='first_name'
         required
         autoComplete='given-name'
         autoFocus

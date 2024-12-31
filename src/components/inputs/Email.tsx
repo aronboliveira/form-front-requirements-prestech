@@ -24,6 +24,7 @@ export default function Email({
       <input
         value={v}
         ref={r}
+        name='email'
         type='email'
         autoComplete='email'
         minLength={8}

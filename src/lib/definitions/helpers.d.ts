@@ -1,6 +1,20 @@
+//Elements
 export type nlEl = Element | null;
 export type nlHtEl = HTMLElement | null;
 export type nlInp = HTMLInputElement | null;
+export type nlFm = HTMLFormElement | null;
+export type FormControl =
+  | HTMLInputElement
+  | HTMLSelectElement
+  | HTMLTextAreaElement
+  | HTMLButtonElement
+  | HTMLOutputElement
+  | HTMLFieldSetElement
+  | HTMLObjectElement
+  | HTMLOptionElement
+  | HTMLOptGroupElement
+  | HTMLDataListElement;
+//Values
 export type CSSDisplay =
   | "none"
   | "block"
@@ -29,6 +43,8 @@ export type CSSDisplay =
   | "initial"
   | "inherit"
   | "unset";
+export type TelType = "local" | "national" | "complete";
+//Patterns
 export type DDDPattern = `${number}${number}`;
 export type ValidPhonePattern =
   | `${number}${number}${number}${number}${number}${"-"}?${number}${number}${number}${number}`
@@ -40,4 +56,3 @@ export type ValidPhonePattern =
       | ""}${number}${number}${number}${number}${
       | number
       | ""}${"-"}?${number}${number}${number}${number}`;
-export type TelType = "local" | "national" | "complete";

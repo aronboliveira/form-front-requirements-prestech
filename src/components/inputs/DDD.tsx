@@ -11,6 +11,7 @@ export default function DDD({ required }: OptInput) {
       <label className='form-label'>DDD</label>
       <input
         value={v}
+        name='ddd'
         type='number'
         className='form-control'
         autoComplete='tel-area-code'

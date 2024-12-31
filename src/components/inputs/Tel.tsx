@@ -28,6 +28,7 @@ export default function Tel({
         value={v}
         ref={r}
         type='tel'
+        name='tel'
         autoComplete={(() => {
           switch (type) {
             case "national":
