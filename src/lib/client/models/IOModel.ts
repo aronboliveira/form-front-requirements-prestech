@@ -17,7 +17,7 @@ export class IOModel {
         )
           return;
         if (inp.required && inp.minLength < 1) inp.minLength = 1;
-        const isMaxDefined =
+        const isMaxUndefined =
           inp.maxLength === 0 ||
           inp.maxLength === -1 ||
           inp.maxLength === Infinity;
@@ -26,16 +26,16 @@ export class IOModel {
             const isAutoCompleteDefined = inp.autocomplete !== "",
               isPatternDefined = inp.pattern !== "";
             if (inp.classList.contains("localTel")) {
-              if (!isMaxDefined) inp.maxLength = 11;
+              if (isMaxUndefined) inp.maxLength = 11;
               if (!isAutoCompleteDefined) inp.autocomplete = "tel-local";
               if (!isPatternDefined) inp.pattern = "/^\\d{4,5}-?\\d{4}$/";
             } else if (inp.classList.contains("nationalTel")) {
-              if (isMaxDefined) inp.maxLength = 15;
+              if (isMaxUndefined) inp.maxLength = 15;
               if (!isAutoCompleteDefined) inp.autocomplete = "tel-national";
               if (!isPatternDefined)
                 inp.pattern = "/^\\d{2}\\s?\\d{4,5}-?\\d{4}$/";
             } else {
-              if (isMaxDefined) inp.maxLength = 20;
+              if (isMaxUndefined) inp.maxLength = 20;
               if (!isAutoCompleteDefined) inp.autocomplete = "tel";
               if (!isPatternDefined)
                 inp.pattern = "/^\\+?\\d{1,3}\\s?\\d{2}\\s?\\d{4,5}-?\\d{4}$/";
@@ -43,7 +43,7 @@ export class IOModel {
           } else if (inp.classList.contains("name")) {
             const isMinDefined = inp.minLength !== 0;
             if (!isMinDefined) inp.minLength = 3;
-            if (!isMaxDefined) {
+            if (isMaxUndefined) {
               if (
                 inp.classList.contains("firstName") ||
                 inp.autocomplete === "given-name"
@@ -68,11 +68,11 @@ export class IOModel {
               inp.dataset.patternon = "true";
             }
           } else {
-            if (!isMaxDefined)
+            if (isMaxUndefined)
               inp.maxLength = limits.small.MAX_UTF_16_SIGNED_SURROGATE;
           }
         } else {
-          if (!isMaxDefined)
+          if (isMaxUndefined)
             inp.maxLength = limits.medium.MAX_UTF_16_SIGNED_SURROGATE;
         }
       });
