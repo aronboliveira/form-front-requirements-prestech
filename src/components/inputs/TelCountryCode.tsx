@@ -21,6 +21,7 @@ export default function TelCountryCode({ required }: OptInput) {
         autoComplete: "tel-country-code",
         minLength: 1,
         maxLength: 5,
+        pattern: "*\\+[0-9]{2,4}s?",
       }}
       autocompleteSearch={true}
       autoFormat={false}

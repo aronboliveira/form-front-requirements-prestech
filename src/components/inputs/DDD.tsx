@@ -14,7 +14,7 @@ export default function DDD({ required }: OptInput) {
         type='number'
         className='form-control'
         autoComplete='tel-area-code'
-        pattern='^[0-9]*$'
+        pattern='^[0-9]{2,}$'
         required={required}
         min={11}
         max={99}
