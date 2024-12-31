@@ -1,7 +1,8 @@
 import { nlInp } from "@/lib/definitions/helpers";
 import { IEmailInput } from "@/lib/definitions/client/interfaces/components";
 import IOHandler from "@/lib/client/handlers/IOHandler";
-import { classes, limits, patterns } from "@/lib/client/vars";
+import { classes } from "@/lib/client/vars";
+import { limits, patterns } from "@/lib/vars";
 import { useState, useEffect, useRef } from "react";
 import StyleHandler from "@/lib/client/handlers/StyleHandler";
 export default function Email({ required = false }: IEmailInput) {

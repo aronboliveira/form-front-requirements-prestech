@@ -113,33 +113,68 @@ def create_form_descriptor() -> None:
     ]
   for r in tech_data: ws1.append(r)
   ws2 = wb.create_sheet('Geral')
-  ws2.append(['Nome do Dado', 'Tipo do Dado', 'Filtros do Dado'])
+  ws2.append(['Nome do Dado', 'Tipo do Dado', 'Obrigatório', 'Filtros do Dado'])
   general_data = [
     [
       'Nome',
       'Texto',
-      'Obrigatório\nNão aceita números ou caracteres especiais'
+      'Sim',
+      'Não aceita números ou caracteres especiais'
     ],
     [
-      'Nome',
+      'Sobrenome',
       'Texto',
-      'Obrigatório\nNão aceita números ou caracteres especiais'
+      'Sim',
+      'Não aceita números ou caracteres especiais'
     ],
     [
       'Idade',
       'Número',
+      'Sim',
       'Máximo 127\nSomente dígitos numéricos',  
+    ],
+    [
+      'Gênero',
+      'Texto',
+      'Sim',
+      'Masculino | Feminino | Não-binário | Outros'
+    ],
+    [
+      'E-mail Primário',
+      'Texto',
+      'Sim',
+      'Mínimo 8 caracteres\nMáximo 16383 caracteres\nDeve incluir @ e .'
+    ],
+    [
+      'E-mail Secundário',
+      'Texto',
+      'Não',
+      'Mínimo 8 caracteres\nMáximo 16383 caracteres\nDeve incluir @ e .'
     ],
     [
       'Telefone',
       'Inteiro',
-      'Obrigatório\nSó aceita números, hífens e +'
+      'Sim',
+      'Só aceita números, hífens e +'
     ],
     [
       'Telefone Secundário',
       'Inteiro',
-      'Obrigatório\nSó aceita números, hífens e +'
+      'Não',
+      'Só aceita números, hífens e +'
     ],
+    [
+      "Cargo",
+      "Texto",
+      'Sim',
+      "Executivo/Administrativo | Gerência/Direção | Supervisão | Financeiro | Compras | Suporte | Operações | Desenvolvimento"
+    ],
+    [
+      "Tempo na Empresa (em meses)"
+      "Número",
+      'Sim'
+      "Somente números"
+    ]
   ]
   return None
 
