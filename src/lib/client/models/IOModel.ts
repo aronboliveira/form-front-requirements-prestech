@@ -1,4 +1,4 @@
-import { limits } from "../vars";
+import { limits } from "@/lib/vars";
 export class IOModel {
   logEvent(message: string, payload: unknown): void {
     console.log(`[IOModel] ${message}`, payload);
