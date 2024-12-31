@@ -1,4 +1,4 @@
-import { FormControl, nlFm } from "@/lib/definitions/helpers";
+import { FormControl, nlEl, nlFm } from "@/lib/definitions/helpers";
 import { limits } from "@/lib/vars";
 export class IOModel {
   logEvent(message: string, payload: unknown): void {
@@ -142,5 +142,37 @@ export class IOModel {
       : (el as FormControl).closest("form")?.name ?? "";
     if (fmName === "") return;
     el.name += `__${fmName}`;
+  }
+  static setIds(el: nlEl): void {
+    if (!(el instanceof Element)) return;
+    const a = Array.from(el.querySelectorAll("*"));
+    for (let i = 0; i < a.length; i++) {
+      const c = a[i];
+      let startedEmpty = false;
+      if (c.id === "") {
+        startedEmpty = true;
+        c.id = `${c.tagName.toLowerCase()}__${c.className.replace(
+          /\s+/g,
+          "__"
+        )}`;
+      }
+      let idAcc = 0,
+        nameAcc = 0;
+      for (let j = 0; j < a.length; j++) {
+        if (a[j] === a[i]) continue;
+        if (a[j].id === a[i].id) {
+          idAcc += 1;
+          continue;
+        }
+        if (
+          a[j].hasAttribute("name") &&
+          a[i].hasAttribute("name") &&
+          (a[j] as any).name === (a[i] as any).name
+        )
+          nameAcc += 1;
+      }
+      if (idAcc > 0 || startedEmpty) c.id += `__${idAcc}`;
+      else if (nameAcc > 0) c.id += `__${nameAcc}`;
+    }
   }
 }

@@ -7,8 +7,11 @@ import Email from "../inputs/Email";
 import LocalizedTelFs from "../bloc/fieldsets/LocalizedTelFs";
 import withTelContext from "../highOrder/withTelContext";
 import { FormControl, nlFm } from "@/lib/definitions/helpers";
+import MathHandler from "@/lib/client/handlers/MathHandler";
 export default function RequirementForm() {
-  const r = useRef<nlFm>(null);
+  const r = useRef<nlFm>(null),
+    namesSet = useRef<boolean>(false),
+    idsSet = useRef<boolean>(false);
   useEffect(() => {
     IOModel.setConstraintPatterns();
     if (!(r.current instanceof HTMLFormElement)) return;
@@ -22,11 +25,20 @@ export default function RequirementForm() {
           )
       )
       .forEach(ctrl => IOModel.setFormControlNameSufix(ctrl as FormControl));
-    r.current.key = crypto.randomUUID();
+    namesSet.current = true;
   }, [r]);
+  useEffect(() => {
+    if (!(r.current instanceof HTMLFormElement)) return;
+    IOModel.setIds(r.current);
+  }, [r, namesSet]);
+  useEffect(() => {
+    if (!(r.current instanceof HTMLFormElement)) return;
+    r.current.key = MathHandler.generateRandomKey(r.current.key, 255);
+  }, [r, idsSet]);
   const mainFsClasses = `border p-3 mb-3 formMainFs`,
     mainFsLegClasses = `legMainFs bold`,
-    mainFsSect = `sectMainFs`,
+    mainFsSect = `mainFsSect`,
+    sectSubDiv_1 = `sectSubDiv`,
     EnhancedTelFs = withTelContext(LocalizedTelFs);
   return (
     <form
@@ -44,13 +56,19 @@ export default function RequirementForm() {
         <legend className={mainFsLegClasses} id='idfLeg'>
           Dados Básicos
         </legend>
-        <section className={mainFsSect} id='idfSection'>
-          <FirstName />
-          <LastName />
-          <Email required={true} label='E-mail Primário' />
-          <Email required={false} label='E-mail Secundário' />
-          <EnhancedTelFs required={true} label='Telefone Principal' />
-          <EnhancedTelFs required={false} label='Telefone Secundário' />
+        <section className={mainFsSect} id='sectIdf'>
+          <div className={sectSubDiv_1} id='divPersonal'>
+            <FirstName />
+            <LastName />
+            {/* age */}
+            {/* gender */}
+          </div>
+          <div className={sectSubDiv_1} id='divContact'>
+            <Email required={true} label='E-mail Primário' />
+            <Email required={false} label='E-mail Secundário' />
+            <EnhancedTelFs required={true} label='Telefone Principal' />
+            <EnhancedTelFs required={false} label='Telefone Secundário' />
+          </div>
         </section>
       </fieldset>
     </form>

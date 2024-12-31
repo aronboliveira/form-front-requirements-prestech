@@ -41,4 +41,14 @@ export default class MathHandler {
       return returnVal || 0;
     }
   }
+  static generateRandomKey(previous: string, limit: number = 255): string {
+    let newKey = crypto.randomUUID(),
+      acc = 0;
+    while (newKey === previous) {
+      if (acc >= limit) break;
+      newKey = crypto.randomUUID();
+      acc += 1;
+    }
+    return newKey;
+  }
 }
