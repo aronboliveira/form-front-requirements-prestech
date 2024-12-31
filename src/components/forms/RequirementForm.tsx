@@ -21,7 +21,8 @@ export default function RequirementForm() {
         <section className={mainFsSect}>
           <FirstName />
           <LastName />
-          <Email required={true} />
+          <Email required={true} label='E-mail Primário' />
+          <Email required={false} label='E-mail Secundário' />
           <EnhancedTelFs required={true} label='Telefone Principal' />
           <EnhancedTelFs required={false} label='Telefone Secundário' />
         </section>

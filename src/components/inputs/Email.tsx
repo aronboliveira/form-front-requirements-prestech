@@ -5,7 +5,10 @@ import { classes } from "@/lib/client/vars";
 import { limits, patterns } from "@/lib/vars";
 import { useState, useEffect, useRef } from "react";
 import StyleHandler from "@/lib/client/handlers/StyleHandler";
-export default function Email({ required = false }: IEmailInput) {
+export default function Email({
+  required = false,
+  label = "E-mail",
+}: IEmailInput) {
   const [v, setV] = useState<string>("");
   const r = useRef<nlInp>(null);
   useEffect(() => {
@@ -17,7 +20,7 @@ export default function Email({ required = false }: IEmailInput) {
   }, [r, v]);
   return (
     <div className={classes.inpDivClasses}>
-      <label className={classes.inpLabClasses}>E-mail</label>
+      <label className={classes.inpLabClasses}>{label}</label>
       <input
         value={v}
         ref={r}
