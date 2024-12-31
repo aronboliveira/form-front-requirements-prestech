@@ -1,4 +1,3 @@
-import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
@@ -186,7 +185,7 @@ def create_form_descriptor() -> None:
       "Executivo/Administrativo | Gerência/Direção | Supervisão | Financeiro | Compras | Suporte | Operações | Desenvolvimento"
     ],
     [
-      "Tempo na Empresa (em meses)"
+      "Tempo na Empresa (em meses)",
       "Número",
       'Sim',
       "Somente números"
@@ -206,6 +205,7 @@ def create_form_descriptor() -> None:
       print(Fore.ORANGE + f'Error accessing sheet header. Aborting proccess.')
       return
     thin_border = Border(left=Side(style='thin', color='DDDDDD'), right=Side(style='thin', color='DDDDDD'))
+    thin_border_last = Border(left=Side(style='thin', color='DDDDDD'), right=Side(style='thin', color='DDDDDD'), bottom=Side(style='medium', color='EEEEEE'))
     for c in header_row:
       c.fill = header_fill
       c.font = Font(bold=True)
@@ -222,11 +222,13 @@ def create_form_descriptor() -> None:
           if curr_cell.value:
             max_length = max(max_length, len(str(curr_cell.value)))
             max_width = max_length * 1.25
-          if ci > 1 and ci < sheet.max_row: 
+          if ri < sheet.max_row: 
             curr_cell.border = thin_border
+          else:
+            curr_cell.border = thin_border_last
           col_desc = sheet.column_dimensions[get_column_letter(ci)]
           col_desc.wrap_text = False
-          col_desc.width = max(max_width, col_desc.width)
+          col_desc.width = max(max_width, col_desc.width, 18)
     except IndexError:
       print(Fore.ORANGE + f'There was an error with index processing for the {sheet.title}')
     except Exception as e:
