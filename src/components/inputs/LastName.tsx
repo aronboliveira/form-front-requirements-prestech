@@ -21,12 +21,7 @@ export default function LastName() {
         autoComplete='family-name'
         className={`${classes.inpClasses} name`}
         onChange={ev =>
-          IOHandler.applyUpperCase(
-            ev.currentTarget.value,
-            setV,
-            [ev.currentTarget.value.toUpperCase()],
-            1
-          )
+          IOHandler.applyUpperCase(ev.currentTarget.value, setV, 1)
         }
       />
     </div>

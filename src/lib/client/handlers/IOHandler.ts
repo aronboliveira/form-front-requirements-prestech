@@ -1,13 +1,8 @@
 import { DDDPattern, TelType } from "@/lib/definitions/helpers";
 import MathHandler from "./MathHandler";
 export default class IOHandler {
-  static applyUpperCase(
-    v: string,
-    f: Function,
-    args: any[],
-    limit?: number
-  ): void {
-    limit ? v.length === limit && f(...args) : f(...args);
+  static applyUpperCase(v: string, f: Function, limit?: number): void {
+    limit ? v.length === limit && f(v.toUpperCase()) : f(v.toUpperCase());
   }
   static applyEmailExtension(emailValue: string): string {
     emailValue = emailValue.trim();

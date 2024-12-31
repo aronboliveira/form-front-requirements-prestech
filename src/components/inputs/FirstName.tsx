@@ -21,12 +21,7 @@ export default function FirstName() {
         autoFocus
         className={`${classes.inpClasses} name firstName`}
         onChange={ev =>
-          IOHandler.applyUpperCase(
-            ev.currentTarget.value,
-            setV,
-            [ev.currentTarget.value.toUpperCase()],
-            1
-          )
+          IOHandler.applyUpperCase(ev.currentTarget.value, setV, 1)
         }
       />
     </div>
