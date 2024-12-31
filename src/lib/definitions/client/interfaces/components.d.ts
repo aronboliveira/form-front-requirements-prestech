@@ -5,4 +5,5 @@ export interface OptInput {
 export interface IEmailInput extends OptInput {}
 export interface ITelInput extends OptInput {
   type: TelType;
+  label: string;
 }

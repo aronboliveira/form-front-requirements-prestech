@@ -1,3 +1,4 @@
-export interface ILocalizedTelCtx {
+export interface ITelCtx {
   required: boolean;
+  label: string;
 }

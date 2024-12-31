@@ -80,4 +80,10 @@ export default class IOHandler {
     else if (ddd.startsWith("9") && ddd.endsWith("0")) ddd = "91";
     return ddd as DDDPattern;
   }
+  static adjustTelCountryCode(code: string): string {
+    code = code.trim().replace(/^[0-9\+]/g, "");
+    if (!code.startsWith("+")) code = `+${code}`;
+    if (code.length > 4) code = code.slice(0, 4);
+    return code;
+  }
 }

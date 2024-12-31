@@ -7,6 +7,7 @@ import { useEffect, useState, useRef } from "react";
 export default function Tel({
   required = false,
   type = "complete",
+  label = "Telefone",
 }: ITelInput) {
   const [v, setV] = useState<ValidPhonePattern | "">(""),
     r = useRef<nlInp>(null);
@@ -22,7 +23,7 @@ export default function Tel({
   }, [v, r]);
   return (
     <div className={classes.inpDivClasses}>
-      <label className={classes.inpLabClasses}>E-mail</label>
+      <label className={classes.inpLabClasses}>{label}</label>
       <input
         value={v}
         ref={r}
