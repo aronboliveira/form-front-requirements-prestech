@@ -24,9 +24,12 @@ export default function DDD({ required }: OptInput) {
         onChange={ev => {
           const i = ev.currentTarget;
           setV(prev => {
-            const curr = IOHandler.adjustTelDDD(i.value),
-              prevNum = MathHandler.parseNotNaN(prev, 21, "int"),
-              currNum = MathHandler.parseNotNaN(curr, 21, "int");
+            const prevNum = MathHandler.parseNotNaN(prev, 11, "int"),
+              curr = IOHandler.adjustTelDDD(
+                i.value,
+                MathHandler.parseNotNaN(i.value, 11, "int") > prevNum
+              ),
+              currNum = MathHandler.parseNotNaN(curr, 11, "int");
             if (
               Math.abs(currNum - prevNum) >
               (MathHandler.parseNotNaN(i.step, 1, "int") || 1)

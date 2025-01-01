@@ -159,9 +159,8 @@ export class IOModel {
       let idAcc = 0,
         nameAcc = 0;
       for (let j = 0; j < a.length; j++) {
-        if (a[j] === a[i]) continue;
         if (a[j].id === a[i].id) {
-          idAcc += 1;
+          idAcc = ++idAcc;
           continue;
         }
         if (
@@ -169,10 +168,10 @@ export class IOModel {
           a[i].hasAttribute("name") &&
           (a[j] as any).name === (a[i] as any).name
         )
-          nameAcc += 1;
+          nameAcc = ++nameAcc;
+        if (idAcc > 0 || startedEmpty) c.id += `__${idAcc}`;
+        else if (nameAcc > 0) c.id += `__${nameAcc}`;
       }
-      if (idAcc > 0 || startedEmpty) c.id += `__${idAcc}`;
-      else if (nameAcc > 0) c.id += `__${nameAcc}`;
     }
   }
 }

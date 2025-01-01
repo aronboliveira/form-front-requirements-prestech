@@ -1,7 +1,10 @@
+//primitives
+export type nlStr = string | null;
 //Elements
 export type nlEl = Element | null;
 export type nlHtEl = HTMLElement | null;
 export type nlInp = HTMLInputElement | null;
+export type nlTxtEl = nlInp | HTMLTextAreaElement;
 export type nlFm = HTMLFormElement | null;
 export type FormControl =
   | HTMLInputElement
