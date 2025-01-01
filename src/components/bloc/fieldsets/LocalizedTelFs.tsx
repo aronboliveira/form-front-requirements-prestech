@@ -7,7 +7,7 @@ export default function LocalizedTelFs({
   label = "Telefone",
 }: Omit<ITelInput, "type">) {
   return (
-    <fieldset className='localTelBlock'>
+    <fieldset className='telBlock'>
       <TelCountryCode required={required} />
       <DDD required={required} />
       <Tel required={required} type='local' label={label} />

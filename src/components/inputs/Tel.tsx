@@ -18,7 +18,6 @@ export default function Tel({
     if (val.endsWith("-") || val.endsWith(" ")) {
       StyleHandler.blurOnChange(i);
       i.style;
-      i.setSelectionRange(val.length, val.length);
     }
   }, [v, r]);
   return (

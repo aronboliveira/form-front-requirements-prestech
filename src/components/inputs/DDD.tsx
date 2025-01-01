@@ -7,7 +7,7 @@ import { OptInput } from "@/lib/definitions/client/interfaces/components";
 export default function DDD({ required }: OptInput) {
   const [v, setV] = useState<DDDPattern>("21");
   return (
-    <div>
+    <div className='dddBlock'>
       <label className='form-label'>DDD</label>
       <input
         value={v}
@@ -21,10 +21,10 @@ export default function DDD({ required }: OptInput) {
         max={99}
         minLength={2}
         maxLength={3}
-        onChange={ev =>
+        onChange={ev => {
+          const i = ev.currentTarget;
           setV(prev => {
-            const i = ev.currentTarget,
-              curr = IOHandler.adjustTelDDD(i.value),
+            const curr = IOHandler.adjustTelDDD(i.value),
               prevNum = MathHandler.parseNotNaN(prev, 21, "int"),
               currNum = MathHandler.parseNotNaN(curr, 21, "int");
             if (
@@ -33,8 +33,8 @@ export default function DDD({ required }: OptInput) {
             )
               StyleHandler.blurOnChange(i);
             return curr;
-          })
-        }
+          });
+        }}
       />
     </div>
   );

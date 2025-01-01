@@ -13,10 +13,7 @@ export default function Email({
   const r = useRef<nlInp>(null);
   useEffect(() => {
     if (!(r.current instanceof HTMLInputElement)) return;
-    if (r.current.value.startsWith("@")) {
-      StyleHandler.blurOnChange(r.current);
-      r.current.setSelectionRange(0, 0);
-    }
+    if (r.current.value.startsWith("@")) StyleHandler.blurOnChange(r.current);
   }, [r, v]);
   return (
     <div className={classes.inpDivClasses}>

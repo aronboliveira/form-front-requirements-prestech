@@ -65,10 +65,15 @@ export default class IOHandler {
     telValue = telValue.trim().replaceAll(/[^0-9\-\+]/g, "");
     if (type === "local") {
       if (
-        (telValue.startsWith("9") && telValue.length === 5) ||
-        telValue.length === 4
+        ((telValue.startsWith("9") && telValue.length === 5) ||
+          (!telValue.startsWith("9") && telValue.length === 4)) &&
+        !/\-/.test(telValue)
       )
         telValue += "-";
+      if (telValue.startsWith("9") && telValue.length > 10)
+        telValue = telValue.slice(0, 10);
+      else if (!telValue.startsWith("9") && telValue.length > 9)
+        telValue = telValue.slice(0, 9);
     } else if (type === "national") {
       if (telValue.length === 2) telValue += " ";
       if (
@@ -76,6 +81,10 @@ export default class IOHandler {
         (!/\s9/g.test(telValue.slice(0, 5)) && telValue.length === 8)
       )
         telValue += "-";
+      if (/\s9/g.test(telValue.slice(0, 5)) && telValue.length > 13)
+        telValue = telValue.slice(0, 13);
+      else if (!/\s9/g.test(telValue.slice(0, 5)) && telValue.length > 12)
+        telValue = telValue.slice(0, 12);
     } else if (type === "complete") {
       const countryCodeMatch = telValue.match(/^\+(\d{1,3})/);
       if (countryCodeMatch) {
@@ -97,8 +106,8 @@ export default class IOHandler {
     }
     return telValue;
   }
-  static applyUpperCase(v: string, f: Function, limit?: number): void {
-    limit ? v.length === limit && f(v.toUpperCase()) : f(v.toUpperCase());
+  static applyUpperCase(v: string, limit?: number): string {
+    return limit ? (v.length === limit ? v.toUpperCase() : v) : v.toUpperCase();
   }
   static formatCPF(cpf: string): string {
     // if (CPFInp instanceof HTMLInputElement || CPFInp instanceof HTMLTextAreaElement) {
