@@ -169,8 +169,8 @@ export class IOModel {
           (a[j] as any).name === (a[i] as any).name
         )
           nameAcc = ++nameAcc;
-        if (idAcc > 0 || startedEmpty) c.id += `__${idAcc}`;
-        else if (nameAcc > 0) c.id += `__${nameAcc}`;
+        if (idAcc > 0 || startedEmpty) c.id = `${c.id}__${idAcc}`;
+        else if (nameAcc > 0) c.id = `${c.id}__${nameAcc}`;
       }
     }
   }

@@ -4,16 +4,17 @@ import { DDDPattern } from "@/lib/definitions/helpers";
 import MathHandler from "@/lib/client/handlers/MathHandler";
 import StyleHandler from "@/lib/client/handlers/StyleHandler";
 import { OptInput } from "@/lib/definitions/client/interfaces/components";
+import { classes } from "@/lib/client/vars";
 export default function DDD({ required }: OptInput) {
   const [v, setV] = useState<DDDPattern>("21");
   return (
     <div className='dddBlock'>
-      <label className='form-label'>DDD</label>
+      <label className={classes.inpLabClasses}>DDD</label>
       <input
         value={v}
         name='ddd'
         type='number'
-        className='form-control'
+        className={classes.inpClasses}
         autoComplete='tel-area-code'
         pattern='^[0-9]{2,}$'
         required={required}

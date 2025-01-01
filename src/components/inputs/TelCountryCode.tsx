@@ -2,13 +2,14 @@ import { useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import { OptInput } from "@/lib/definitions/client/interfaces/components";
+import { classes } from "@/lib/client/vars";
 export default function TelCountryCode({ required }: OptInput) {
   const [v, setV] = useState<string>("");
   return (
     <PhoneInput
       value={v}
       country='br'
-      inputClass='form-control'
+      inputClass={classes.inpClasses}
       buttonClass='button-secondary'
       searchClass='search'
       searchPlaceholder='Pesquisa aqui'

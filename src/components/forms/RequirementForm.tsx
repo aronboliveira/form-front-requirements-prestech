@@ -8,6 +8,11 @@ import LocalizedTelFs from "../bloc/fieldsets/LocalizedTelFs";
 import withTelContext from "../highOrder/withTelContext";
 import { FormControl, nlFm } from "@/lib/definitions/helpers";
 import MathHandler from "@/lib/client/handlers/MathHandler";
+import ButtonsBlock from "../bloc/fieldsets/ButtonsBlock";
+import Age from "../inputs/Age";
+import Gender from "../inputs/Gender";
+import Role from "../inputs/Role";
+import Worktime from "../inputs/Worktime";
 export default function RequirementForm() {
   const r = useRef<nlFm>(null),
     namesSet = useRef<boolean>(false),
@@ -60,15 +65,23 @@ export default function RequirementForm() {
           <div className={sectSubDiv_1} id='divPersonal'>
             <FirstName />
             <LastName />
-            {/* age */}
-            {/* gender */}
+            <Age />
+            <Gender />
           </div>
+          <hr />
           <div className={sectSubDiv_1} id='divContact'>
             <Email required={true} label='E-mail Primário' />
             <Email required={false} label='E-mail Secundário' />
             <EnhancedTelFs required={true} label='Telefone Principal' />
             <EnhancedTelFs required={false} label='Telefone Secundário' />
           </div>
+          <hr />
+          <div className={sectSubDiv_1} id='divWorkplace'>
+            <Role />
+            <Worktime />
+          </div>
+          <hr />
+          <ButtonsBlock />
         </section>
       </fieldset>
     </form>

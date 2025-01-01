@@ -122,6 +122,11 @@ button {
     }
   }
 }
+#ctaBtnsBlock {
+  display: flex;
+  column-gap: 2rem;
+  margin-top: 2rem;
+}
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
