@@ -145,33 +145,35 @@ export class IOModel {
   }
   static setIds(el: nlEl): void {
     if (!(el instanceof Element)) return;
-    const a = Array.from(el.querySelectorAll("*"));
+    const a = Array.from(el.querySelectorAll("*")),
+      idMap = new Map<string, number>(),
+      nameMap = new Map<string, number>();
     for (let i = 0; i < a.length; i++) {
       const c = a[i];
-      let startedEmpty = false;
-      if (c.id === "") {
-        startedEmpty = true;
+      if (!c.id)
         c.id = `${c.tagName.toLowerCase()}__${c.className.replace(
           /\s+/g,
           "__"
         )}`;
-      }
-      let idAcc = 0,
+      const baseId = c.id;
+      let idAcc = idMap.get(c.id) || 0,
         nameAcc = 0;
+      if (a[i].hasAttribute("name"))
+        nameAcc = nameMap.get((c as any).name) || 0;
       for (let j = 0; j < a.length; j++) {
-        if (a[j].id === a[i].id) {
-          idAcc = ++idAcc;
-          continue;
-        }
+        if (i === j) continue;
+        if (a[j].id === c.id) idAcc++;
         if (
           a[j].hasAttribute("name") &&
-          a[i].hasAttribute("name") &&
-          (a[j] as any).name === (a[i] as any).name
+          c.hasAttribute("name") &&
+          (a[j] as any).name === (c as any).name
         )
-          nameAcc = ++nameAcc;
-        if (idAcc > 0 || startedEmpty) c.id = `${c.id}__${idAcc}`;
-        else if (nameAcc > 0) c.id = `${c.id}__${nameAcc}`;
+          nameAcc++;
       }
+      if (nameAcc > 0) c.id = `${baseId}__${idAcc}_${nameAcc}`;
+      else c.id = `${baseId}__${idAcc}`;
+      idMap.set(baseId, idAcc + 1);
+      if (c.hasAttribute("name")) nameMap.set((c as any).name, nameAcc + 1);
     }
   }
 }
