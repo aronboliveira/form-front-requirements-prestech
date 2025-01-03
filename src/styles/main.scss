@@ -102,12 +102,18 @@ button {
   margin: 0 auto;
   padding: var(--spacing-base);
 }
+.countryCodeBlock {
+  margin-bottom: 0.5rem;
+}
 .fieldset-form {
   @include box-rounded-squary(6px);
   @include shadow-weak;
   border: 1px solid var(--color-gray);
   margin-bottom: var(--spacing-md);
   padding: var(--spacing-base);
+}
+.sectSubDiv {
+  margin-bottom: 1.5rem;
 }
 .telBlock {
   display: flex;
@@ -116,14 +122,27 @@ button {
   .dddBlock {
     width: 3.5rem;
   }
-  .mb-3 {
-    margin-bottom: 0 !important;
-  }
   .react-tel-input {
+    font-size: 1rem !important;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+      "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji" !important;
     .form-control {
-      margin-top: 0.5rem;
-      width: 5rem;
+      width: 6rem;
+      height: 2.65rem;
+      border: var(--bs-border-width) solid var(--bs-border-color);
+      font-size: inherit;
+      font-style: inherit;
     }
+    .flag-dropdown {
+      font-size: inherit !important;
+      font-style: inherit !important;
+      &.button-secondary {
+        border: var(--bs-border-width) solid var(--bs-border-color);
+      }
+    }
+  }
+  .telMainBlock {
+    margin-top: 1rem;
   }
 }
 #ctaBtnsBlock {

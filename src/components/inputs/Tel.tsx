@@ -21,7 +21,7 @@ export default function Tel({
     }
   }, [v, r]);
   return (
-    <div className={classes.inpDivClasses}>
+    <div className={`${classes.inpDivClasses} telMainBlock`}>
       <label className={classes.inpLabClasses}>{label}</label>
       <input
         value={v}

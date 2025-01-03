@@ -48,6 +48,7 @@ export type CSSDisplay =
   | "unset";
 export type TelType = "local" | "national" | "complete";
 //Patterns
+export type PseudoNum = `${number}`;
 export type DDDPattern = `${number}${number}`;
 export type ValidPhonePattern =
   | `${number}${number}${number}${number}${number}${"-"}?${number}${number}${number}${number}`
