@@ -4,11 +4,15 @@ import IOHandler from "@/lib/client/handlers/IOHandler";
 import { OptInput } from "@/lib/definitions/client/interfaces/components";
 import { classes } from "@/lib/client/vars";
 import "react-phone-input-2/lib/style.css";
+import StringHelper from "@/lib/helpers/StringHelper";
 export default function TelCountryCode({ required }: OptInput) {
-  const [v, setV] = useState<string>("");
+  const [v, setV] = useState<string>(""),
+    id = "countryCode";
   return (
     <div className='countryCodeBlock'>
-      <label className={classes.inpLabClasses}>Código</label>
+      <label className={classes.inpLabClasses} htmlFor={id}>
+        Código
+      </label>
       <PhoneInput
         value={v}
         country='br'
@@ -20,7 +24,8 @@ export default function TelCountryCode({ required }: OptInput) {
         defaultErrorMessage='Houve algum erro!'
         defaultMask='+.. (Exemplo: +55)'
         inputProps={{
-          name: "country_code",
+          name: StringHelper.camelToSnake(id),
+          id: id,
           required,
           autoComplete: "tel-country-code",
           minLength: 1,

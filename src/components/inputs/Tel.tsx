@@ -10,7 +10,8 @@ export default function Tel({
   label = "Telefone",
 }: ITelInput) {
   const [v, setV] = useState<ValidPhonePattern | "">(""),
-    r = useRef<nlInp>(null);
+    r = useRef<nlInp>(null),
+    id = "tel";
   useEffect(() => {
     const i = r.current;
     if (!(i instanceof HTMLInputElement)) return;
@@ -22,12 +23,15 @@ export default function Tel({
   }, [v, r]);
   return (
     <div className={`${classes.inpDivClasses} telMainBlock`}>
-      <label className={classes.inpLabClasses}>{label}</label>
+      <label className={classes.inpLabClasses} htmlFor={id}>
+        {label}
+      </label>
       <input
         value={v}
         ref={r}
         type='tel'
-        name='tel'
+        name={id}
+        id={id}
         autoComplete={(() => {
           switch (type) {
             case "national":

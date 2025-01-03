@@ -10,18 +10,22 @@ export default function Email({
   label = "E-mail",
 }: IEmailInput) {
   const [v, setV] = useState<string>("");
-  const r = useRef<nlInp>(null);
+  const r = useRef<nlInp>(null),
+    id = "email";
   useEffect(() => {
     if (!(r.current instanceof HTMLInputElement)) return;
     if (r.current.value.startsWith("@")) StyleHandler.blurOnChange(r.current);
   }, [r, v]);
   return (
     <div className={classes.inpDivClasses}>
-      <label className={classes.inpLabClasses}>{label}</label>
+      <label className={classes.inpLabClasses} htmlFor={id}>
+        {label}
+      </label>
       <input
         value={v}
         ref={r}
-        name='email'
+        id={id}
+        name={id}
         type='email'
         autoComplete='email'
         minLength={8}

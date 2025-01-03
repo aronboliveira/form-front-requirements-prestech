@@ -6,13 +6,17 @@ import StyleHandler from "@/lib/client/handlers/StyleHandler";
 import { OptInput } from "@/lib/definitions/client/interfaces/components";
 import { classes } from "@/lib/client/vars";
 export default function DDD({ required }: OptInput) {
-  const [v, setV] = useState<DDDPattern>("21");
+  const [v, setV] = useState<DDDPattern>("21"),
+    id = "ddd";
   return (
     <div className='dddBlock'>
-      <label className={classes.inpLabClasses}>DDD</label>
+      <label className={classes.inpLabClasses} htmlFor={id}>
+        DDD
+      </label>
       <input
         value={v}
-        name='ddd'
+        name={id}
+        id={id}
         type='number'
         className={classes.inpClasses}
         autoComplete='tel-area-code'
