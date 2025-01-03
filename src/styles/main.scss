@@ -80,6 +80,12 @@ input {
       transform: scale(0.95);
     }
   }
+  &[id^="ddd"] {
+    margin-bottom: 0;
+  }
+  &[id^="tel"] {
+    margin-bottom: 1rem;
+  }
 }
 button {
   @include box-rounded-squary(6px);

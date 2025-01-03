@@ -1,6 +1,7 @@
+import { classes } from "@/lib/client/vars";
 export default function Reset() {
   return (
-    <button type='reset' className='btn btn-secondary'>
+    <button type='reset' id='btnReset' className={classes.btnSec}>
       Resetar
     </button>
   );

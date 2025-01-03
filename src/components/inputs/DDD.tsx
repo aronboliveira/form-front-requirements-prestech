@@ -1,24 +1,42 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import IOHandler from "@/lib/client/handlers/IOHandler";
-import { DDDPattern } from "@/lib/definitions/helpers";
+import { DDDPattern, nlEl, nlInp, nlTxtEl } from "@/lib/definitions/helpers";
 import MathHandler from "@/lib/client/handlers/MathHandler";
 import StyleHandler from "@/lib/client/handlers/StyleHandler";
-import { OptInput } from "@/lib/definitions/client/interfaces/components";
+import { TelFragmentOptInput } from "@/lib/definitions/client/interfaces/components";
 import { classes } from "@/lib/client/vars";
-export default function DDD({ required }: OptInput) {
+export default function DDD({ required, id }: TelFragmentOptInput) {
+  id ||= "ddd";
   const [v, setV] = useState<DDDPattern>("21"),
-    id = "ddd";
+    r = useRef<nlInp>(null),
+    linkedTo = useRef<nlEl>(null);
+  useEffect(() => {
+    if (!(r.current instanceof HTMLInputElement)) return;
+    linkedTo.current =
+      r.current.closest("telBlock")?.querySelector(".tel") ??
+      document.getElementById(r.current.id.replace("ddd", "tel"));
+    if (
+      !(
+        linkedTo.current instanceof HTMLInputElement ||
+        linkedTo.current instanceof HTMLTextAreaElement
+      )
+    )
+      return;
+    r.current.dataset.linkedto = linkedTo.current.id;
+    IOHandler.syncLabel(r.current);
+  }, [r, v]);
   return (
-    <div className='dddBlock'>
+    <div className={`${classes.inpDivClasses} dddBlock`}>
       <label className={classes.inpLabClasses} htmlFor={id}>
         DDD
       </label>
       <input
         value={v}
+        ref={r}
         name={id}
         id={id}
         type='number'
-        className={classes.inpClasses}
+        className={classes.dddClasses}
         autoComplete='tel-area-code'
         pattern='^[0-9]{2,}$'
         required={required}
@@ -42,6 +60,13 @@ export default function DDD({ required }: OptInput) {
               StyleHandler.blurOnChange(i);
             return curr;
           });
+        }}
+        onInput={ev => {
+          IOHandler.moveCursorFocus(
+            ev.currentTarget,
+            linkedTo.current as nlTxtEl,
+            2
+          );
         }}
       />
     </div>

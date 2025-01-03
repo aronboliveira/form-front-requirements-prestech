@@ -170,8 +170,16 @@ export class IOModel {
         )
           nameAcc++;
       }
-      if (nameAcc > 0) c.id = `${baseId}__${idAcc}_${nameAcc}`;
-      else c.id = `${baseId}__${idAcc}`;
+      if (nameAcc > 0) {
+        c.id = `${baseId}__${idAcc}_${nameAcc}`;
+        if (c instanceof HTMLElement) {
+          c.dataset.idacc = idAcc.toString();
+          c.dataset.id = nameAcc.toString();
+        }
+      } else if (idAcc > 0) {
+        c.id = `${baseId}__${idAcc}`;
+        if (c instanceof HTMLElement) c.dataset.idacc = idAcc.toString();
+      }
       if (
         (c instanceof HTMLInputElement ||
           c instanceof HTMLSelectElement ||
@@ -185,6 +193,29 @@ export class IOModel {
         }
       idMap.set(baseId, idAcc + 1);
       if (c.hasAttribute("name")) nameMap.set((c as any).name, nameAcc + 1);
+    }
+  }
+  static setLinks(): void {
+    const allEls = Array.from(document.querySelectorAll("*"));
+    for (const linked of allEls.filter(
+      el => el.classList.contains("linked") && el instanceof HTMLElement
+    )) {
+      if (!(linked instanceof HTMLElement)) continue;
+      if (!linked.dataset.linkedto) {
+        if (linked.classList.contains("ddd")) {
+          const mainTel =
+            linked.closest("telBlock")?.querySelector(".tel") ??
+            document.getElementById(linked.id.replace("ddd", "tel"));
+          if (!mainTel) continue;
+          linked.dataset.linkedto = mainTel.id;
+        } else if (linked.classList.contains("cc")) {
+          const ddd =
+            linked.closest("telBlock")?.querySelector(".ddd") ??
+            document.getElementById(linked.id.replace("cc", "ddd"));
+          if (!ddd) continue;
+          linked.dataset.linked = ddd.id;
+        }
+      }
     }
   }
 }

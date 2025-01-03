@@ -14,6 +14,7 @@ export default function LastName() {
     if (!CompabilityValidator.isSafari())
       r.current.autocapitalize = "sentences";
   }, [r]);
+  useEffect(() => IOHandler.syncLabel(r.current), [r, v]);
   return (
     <div className={classes.inpDivClasses}>
       <label className={classes.inpLabClasses} htmlFor={id}>

@@ -1,4 +1,12 @@
+import { nlElRef } from "../foundations";
+
 export interface ITelCtx {
   required: boolean;
-  label: string;
+  label:
+    | "prim"
+    | "sec"
+    | "unique"
+    | "Telefone Primário"
+    | "Telefone Secundário"
+    | "Telefone";
 }

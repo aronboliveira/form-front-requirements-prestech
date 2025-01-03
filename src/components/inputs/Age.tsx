@@ -1,29 +1,39 @@
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import { classes } from "@/lib/client/vars";
-import { PseudoNum } from "@/lib/definitions/helpers";
-import { patterns } from "@/lib/vars";
-import { useState } from "react";
+import { PseudoNum, nlInp } from "@/lib/definitions/helpers";
+import { limits, patterns } from "@/lib/vars";
+import { useState, useEffect, useRef } from "react";
 export default function Age() {
   const [v, setV] = useState<PseudoNum | "">(""),
-    id = "age";
+    r = useRef<nlInp>(null),
+    id = "age",
+    maxLength = 3;
+  useEffect(() => IOHandler.syncLabel(r.current), [r, v]);
   return (
-    <div>
+    <div className={`${classes.inpDivClasses}`}>
       <label className={classes.inpLabClasses} htmlFor={id}>
         Idade
       </label>
       <input
+        ref={r}
         value={v}
         className={classes.inpClasses}
         name={id}
         id={id}
         minLength={1}
-        maxLength={3}
+        maxLength={maxLength}
+        min={0}
+        max={limits.tiny.MAX_UTF_16_SIGNED_NOTSURROGATE}
         pattern={patterns.age}
         required
         type='number'
         onChange={ev =>
           setV(
-            IOHandler.applyAgeContrainst(ev.currentTarget.value) as PseudoNum
+            IOHandler.applyNumRules(
+              ev.currentTarget.value,
+              maxLength,
+              limits.tiny.MAX_UTF_16_SIGNED_NOTSURROGATE
+            ) as PseudoNum
           )
         }
       />

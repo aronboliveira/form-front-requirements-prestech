@@ -5,12 +5,13 @@ import { ITelInput } from "@/lib/definitions/client/interfaces/components";
 export default function LocalizedTelFs({
   required = false,
   label = "Telefone",
+  ctx,
 }: Omit<ITelInput, "type">) {
   return (
     <fieldset className='telBlock'>
-      <TelCountryCode required={required} />
-      <DDD required={required} />
-      <Tel required={required} type='local' label={label} />
+      <TelCountryCode required={required} ctx={ctx} />
+      <DDD required={required} ctx={ctx} />
+      <Tel required={required} type='local' label={label} ctx={ctx} />
     </fieldset>
   );
 }

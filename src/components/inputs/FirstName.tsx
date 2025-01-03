@@ -12,6 +12,7 @@ export default function FirstName() {
     if (!(r.current instanceof HTMLInputElement)) return;
     if (!CompabilityValidator.isSafari()) r.current.autocapitalize = "words";
   }, [r]);
+  useEffect(() => IOHandler.syncLabel(r.current), [r, v]);
   return (
     <div className={classes.inpDivClasses}>
       <label className={classes.inpLabClasses} htmlFor={id}>

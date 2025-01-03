@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import FirstName from "@/components/inputs/FirstName";
 import LastName from "@/components/inputs/LastName";
 import { IOModel } from "@/lib/client/models/IOModel";
@@ -13,10 +13,12 @@ import Age from "../inputs/Age";
 import Gender from "../inputs/Gender";
 import Role from "../inputs/Role";
 import Worktime from "../inputs/Worktime";
+import CacheProvider from "@/lib/client/providers/CacheProvider";
 export default function RequirementForm() {
   const r = useRef<nlFm>(null),
-    namesSet = useRef<boolean>(false),
-    idsSet = useRef<boolean>(false);
+    [namedSettled, setNames] = useState<boolean>(false),
+    [idsSettled, setIds] = useState<boolean>(false),
+    cache = new CacheProvider();
   useEffect(() => {
     IOModel.setConstraintPatterns();
     if (!(r.current instanceof HTMLFormElement)) return;
@@ -30,16 +32,19 @@ export default function RequirementForm() {
           )
       )
       .forEach(ctrl => IOModel.setFormControlNameSufix(ctrl as FormControl));
-    namesSet.current = true;
+    setNames(true);
   }, [r]);
   useEffect(() => {
     if (!(r.current instanceof HTMLFormElement)) return;
     IOModel.setIds(r.current);
-  }, [r, namesSet]);
+    setIds(true);
+  }, [r, namedSettled]);
   useEffect(() => {
     if (!(r.current instanceof HTMLFormElement)) return;
+    IOModel.setLinks();
+    cache.setup();
     r.current.key = MathHandler.generateRandomKey(r.current.key, 255);
-  }, [r, idsSet]);
+  }, [r, idsSettled]);
   const mainFsClasses = `border p-3 mb-3 formMainFs`,
     mainFsLegClasses = `legMainFs bold`,
     mainFsSect = `mainFsSect`,
@@ -70,10 +75,10 @@ export default function RequirementForm() {
           </div>
           <hr />
           <div className={sectSubDiv_1} id='divContact'>
-            <Email required={true} label='E-mail Primário' />
-            <Email required={false} label='E-mail Secundário' />
-            <EnhancedTelFs required={true} label='Telefone Principal' />
-            <EnhancedTelFs required={false} label='Telefone Secundário' />
+            <Email required={true} label='E-mail Primário' id='emailPrim' />
+            <Email required={false} label='E-mail Secundário' id='emailSec' />
+            <EnhancedTelFs required={true} label='prim' />
+            <EnhancedTelFs required={false} label='sec' />
           </div>
           <hr />
           <div className={sectSubDiv_1} id='divWorkplace'>

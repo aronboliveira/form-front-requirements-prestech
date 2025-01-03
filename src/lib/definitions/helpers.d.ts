@@ -3,7 +3,9 @@ export type nlStr = string | null;
 //Elements
 export type nlEl = Element | null;
 export type nlHtEl = HTMLElement | null;
+export type nlDiv = HTMLDivElement | null;
 export type nlInp = HTMLInputElement | null;
+export type nlSel = HTMLSelectElement | null;
 export type nlTxtEl = nlInp | HTMLTextAreaElement;
 export type nlFm = HTMLFormElement | null;
 export type FormControl =

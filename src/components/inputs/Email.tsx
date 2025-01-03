@@ -8,13 +8,15 @@ import StyleHandler from "@/lib/client/handlers/StyleHandler";
 export default function Email({
   required = false,
   label = "E-mail",
+  id,
 }: IEmailInput) {
   const [v, setV] = useState<string>("");
-  const r = useRef<nlInp>(null),
-    id = "email";
+  const r = useRef<nlInp>(null);
+  id ||= "email";
   useEffect(() => {
     if (!(r.current instanceof HTMLInputElement)) return;
     if (r.current.value.startsWith("@")) StyleHandler.blurOnChange(r.current);
+    IOHandler.syncLabel(r.current);
   }, [r, v]);
   return (
     <div className={classes.inpDivClasses}>

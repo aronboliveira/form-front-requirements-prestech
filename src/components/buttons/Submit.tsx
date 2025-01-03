@@ -1,6 +1,7 @@
+import { classes } from "@/lib/client/vars";
 export default function Submit() {
   return (
-    <button type='submit' className='btn btn-primary'>
+    <button type='submit' id='btnSubmit' className={classes.btnPrim}>
       Enviar
     </button>
   );

@@ -8,10 +8,11 @@ export default function Tel({
   required = false,
   type = "complete",
   label = "Telefone",
+  id,
 }: ITelInput) {
   const [v, setV] = useState<ValidPhonePattern | "">(""),
-    r = useRef<nlInp>(null),
-    id = "tel";
+    r = useRef<nlInp>(null);
+  id ||= "tel";
   useEffect(() => {
     const i = r.current;
     if (!(i instanceof HTMLInputElement)) return;
@@ -20,6 +21,7 @@ export default function Tel({
       StyleHandler.blurOnChange(i);
       i.style;
     }
+    IOHandler.syncLabel(r.current);
   }, [v, r]);
   return (
     <div className={`${classes.inpDivClasses} telMainBlock`}>

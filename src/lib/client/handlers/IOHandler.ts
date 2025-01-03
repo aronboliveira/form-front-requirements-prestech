@@ -1,10 +1,8 @@
-import { DDDPattern, TelType } from "@/lib/definitions/helpers";
+import { DDDPattern, TelType, nlTxtEl } from "@/lib/definitions/helpers";
 import MathHandler from "./MathHandler";
 export default class IOHandler {
   static adjustTelCountryCode(code: string): string {
     if (code === "") return code;
-    code = code.trim().replace(/^[0-9\+]/g, "");
-    if (!code.startsWith("+")) code = `+${code}`;
     if (code.length > 4) code = code.slice(0, 4);
     return code;
   }
@@ -12,11 +10,7 @@ export default class IOHandler {
     if (ddd === "") return ddd as DDDPattern;
     ddd = ddd.trim().replace(/[^0-9]/g, "");
     if (ddd.length > 2) ddd = ddd.slice(0, 2);
-    if (
-      (ddd.startsWith("1") && ddd.endsWith("0")) ||
-      MathHandler.parseNotNaN(ddd, 11, "int") < 11
-    )
-      ddd = "11";
+    if (ddd.startsWith("1") && ddd.endsWith("0")) ddd = "11";
     else if (increase) {
       if (ddd.startsWith("2")) {
         if (ddd.endsWith("0")) ddd = "21";
@@ -68,20 +62,22 @@ export default class IOHandler {
     }
     return ddd as DDDPattern;
   }
-  static applyAgeContrainst(age: string): string {
-    if (!age) return age;
-    const iniAge = age;
-    age = age.trim().replace(/[^0-9]*/g, "");
-    if (age.length > 3) age = age.slice(0, 3);
+  static applyNumRules(
+    v: string,
+    maxLength: number,
+    max: number,
+    type: "int" | "float" = "int"
+  ): string {
+    if (!v) return v;
+    const ini = v;
+    v = v.trim().replace(/[^0-9]*/g, "");
+    if (v.length > maxLength) v = v.slice(0, maxLength);
     if (
-      MathHandler.parseNotNaN(
-        age,
-        MathHandler.parseNotNaN(iniAge, 1, "int"),
-        "int"
-      ) > 127
+      MathHandler.parseNotNaN(v, MathHandler.parseNotNaN(ini, 1, type), type) >
+      max
     )
-      age = "127";
-    return age;
+      v = max.toString();
+    return v;
   }
   static applyEmailExtension(emailValue: string): string {
     if (emailValue !== "") {
@@ -138,5 +134,29 @@ export default class IOHandler {
   }
   static applyUpperCase(v: string, limit?: number): string {
     return limit ? (v.length === limit ? v.toUpperCase() : v) : v.toUpperCase();
+  }
+  static syncLabel(inp: nlTxtEl | HTMLSelectElement) {
+    if (!inp?.labels?.length) return;
+    const relLabel =
+      inp.closest(".inpDivClasses")?.querySelector("label") ??
+      inp.closest("label");
+    if (!relLabel) return;
+    relLabel.htmlFor = inp.id;
+    if (inp.dataset.idacc) {
+      const cleaned = relLabel.id.replace(/_?_[0-9](?:_*$|$)/g, "");
+      if (inp.dataset.nameacc)
+        relLabel.id = `${cleaned}__${inp.dataset.idacc}_${inp.dataset.nameacc}`;
+      else relLabel.id = `${cleaned}__${inp.dataset.idacc}`;
+    }
+  }
+  static moveCursorFocus(el: nlTxtEl, relEl: nlTxtEl, limit?: number): void {
+    if (!el || !relEl) return;
+    if (
+      !limit &&
+      (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement)
+    )
+      limit = el.maxLength;
+    if (!limit) return;
+    el.value.length >= limit && relEl.focus();
   }
 }
