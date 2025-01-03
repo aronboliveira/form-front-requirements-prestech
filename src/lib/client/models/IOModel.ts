@@ -172,6 +172,17 @@ export class IOModel {
       }
       if (nameAcc > 0) c.id = `${baseId}__${idAcc}_${nameAcc}`;
       else c.id = `${baseId}__${idAcc}`;
+      if (
+        (c instanceof HTMLInputElement ||
+          c instanceof HTMLSelectElement ||
+          c instanceof HTMLTextAreaElement) &&
+        c.labels
+      )
+        for (let l = 0; l < c.labels.length; l++) {
+          const label = c.labels[l];
+          label.htmlFor = c.id;
+          label.id = `${c.id}__label`;
+        }
       idMap.set(baseId, idAcc + 1);
       if (c.hasAttribute("name")) nameMap.set((c as any).name, nameAcc + 1);
     }
