@@ -7,11 +7,17 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Building
 node_modules
 dist
 dist-ssr
 *.local
 .next
+out/
+dist/
+build/
+cache/
+.cache/
 
 # Editor directories and files
 .vscode/*
@@ -23,3 +29,35 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Tests
+coverage/
+*.lcov
+
+# Security
+
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*
+env/
+*.pem
+*.key
+*.crt
+*.secret
+firebase.json
+firebase-debug.log
+prisma/.env
+prisma/migrations/
+prisma/schema.prisma
+db.sqlite
+db.sqlite-journal
+*.db
+*.db-wal
+*.db-shm
+*.sql
+*.pyc
+__pycache__/
+*.ipynb_checkpoints/
