@@ -43,6 +43,8 @@ coverage/
 .env.production.local
 .env*
 env/
+sensitive/
+**/sensitive/
 *.pem
 *.key
 *.crt
@@ -61,3 +63,11 @@ db.sqlite-journal
 *.pyc
 __pycache__/
 *.ipynb_checkpoints/
+**/*-st.tsx
+**/*-st.jsx
+**/*-st.js
+**/*-st.ts
+**/*-st.cjs
+**/*-st.mjs
+**/*-st.cts
+**/*-st.mts
