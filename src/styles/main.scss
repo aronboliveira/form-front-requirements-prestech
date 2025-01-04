@@ -36,6 +36,9 @@ h6 {
   @include shadow-weak;
   margin-bottom: var(--spacing-md);
 }
+h2 {
+  font-size: 1.2rem;
+}
 hr {
   opacity: 0.1;
   margin-top: 1.5rem;
