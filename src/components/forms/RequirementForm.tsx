@@ -45,7 +45,7 @@ export default function RequirementForm() {
     cache.setup();
     r.current.key = MathHandler.generateRandomKey(r.current.key, 255);
   }, [r, idsSettled]);
-  const mainFsClasses = `border p-3 mb-3 formMainFs`,
+  const mainFsClasses = `border p-4 mb-3 formMainFs`,
     mainFsLegClasses = `legMainFs bold`,
     mainFsSect = `mainFsSect`,
     sectSubDiv_1 = `sectSubDiv`,
@@ -62,33 +62,58 @@ export default function RequirementForm() {
       target='self'
       encType='application/x-www-form-urlencoded'
     >
-      <fieldset className={mainFsClasses} id='idfFs'>
-        <legend className={mainFsLegClasses} id='idfLeg'>
+      <fieldset className={mainFsClasses} id='fsId'>
+        <legend className={mainFsLegClasses} id='legIdf'>
           Dados Básicos
         </legend>
         <section className={mainFsSect} id='sectIdf'>
-          <div className={sectSubDiv_1} id='divPersonal'>
+          <fieldset className={sectSubDiv_1} id='divPersonal'>
             <FirstName />
             <LastName />
             <Age />
             <Gender />
-          </div>
+          </fieldset>
           <hr />
-          <div className={sectSubDiv_1} id='divContact'>
+          <fieldset className={sectSubDiv_1} id='divContact'>
             <Email required={true} label='E-mail Primário' id='emailPrim' />
             <Email required={false} label='E-mail Secundário' id='emailSec' />
             <EnhancedTelFs required={true} label='prim' />
             <EnhancedTelFs required={false} label='sec' />
-          </div>
+          </fieldset>
           <hr />
-          <div className={sectSubDiv_1} id='divWorkplace'>
+          <fieldset className={sectSubDiv_1} id='divWorkplace'>
             <Role />
             <Worktime />
-          </div>
-          <hr />
-          <ButtonsBlock />
+          </fieldset>
         </section>
       </fieldset>
+      <fieldset className={mainFsClasses} id='divTechs'>
+        <legend className={mainFsLegClasses} id='legTechs'>
+          Tecnologias
+        </legend>
+        <section className={mainFsSect} id='sectOffice'>
+          <fieldset className={sectSubDiv_1}>
+            {/* planilhas */}
+            {/* documentos */}
+            {/* forms */}
+            {/* armazenamento */}
+          </fieldset>
+          <fieldset className={sectSubDiv_1} id='sectPlatforms'>
+            {/* CRM */}
+            {/* ERP */}
+            {/* Planning */}
+            {/* BI */}
+          </fieldset>
+        </section>
+        <section className={mainFsSect} id='sectAIs'>
+          {/* LLMs */}
+          {/* Image & Video */}
+          {/* Sound */}
+          {/* Chatbots */}
+        </section>
+      </fieldset>
+      <hr />
+      <ButtonsBlock />
     </form>
   );
 }
