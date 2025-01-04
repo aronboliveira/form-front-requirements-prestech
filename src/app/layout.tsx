@@ -145,3 +145,8 @@ export default function RootLayout({
     </html>
   );
 }
+
+// Array.from(Array.from(document.styleSheets).find(s => /bootstrap@/gi.test(s.href))?.cssRules).findIndex(r => /webkit-slider/.test(r.cssText))
+// Array.from(document.styleSheets).find(s => /bootstrap@/gi.test(s.href)).deleteRule(262);
+// .form-range:focus::-webkit-slider-thumb { box-shadow: rgb(255, 255, 255) 0px 0px 0px 1px, rgba(13, 110, 253, 0.25) 0px 0px 0px 0.25rem; }
+//Array.from(document.styleSheets).find(s => /bootstrap@/gi.test(s.href)).insertRule('.form-range:focus::-webkit-slider-thumb { box-shadow: red 0px 0px 0px 1px, rgba(13, 110, 253, 0.25) 0px 0px 0px 0.25rem; transform: scale(1.2)}');

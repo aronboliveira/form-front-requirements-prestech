@@ -15,6 +15,8 @@ import Role from "../inputs/Role";
 import Worktime from "../inputs/Worktime";
 import CacheProvider from "@/lib/client/providers/CacheProvider";
 import Range from "../inputs/Range";
+import { ErrorBoundary } from "react-error-boundary";
+import GenericErrorComponent from "../bloc/errors/Error";
 export default function RequirementForm() {
   const r = useRef<nlFm>(null),
     [namedSettled, setNames] = useState<boolean>(false),
@@ -52,121 +54,161 @@ export default function RequirementForm() {
     sectSubDiv_1 = `sectSubDiv`,
     EnhancedTelFs = withTelContext(LocalizedTelFs);
   return (
-    <form
-      ref={r}
-      key={crypto.randomUUID()}
-      id='requirementsForm'
-      name='requirements_form'
-      className='form'
-      method='post'
-      action='#'
-      target='self'
-      encType='application/x-www-form-urlencoded'
+    <ErrorBoundary
+      FallbackComponent={() => (
+        <GenericErrorComponent message='Erro ao Carregar Formulário!' />
+      )}
     >
-      <fieldset className={mainFsClasses} id='fsId'>
-        <legend className={mainFsLegClasses} id='legIdf'>
-          Dados Básicos
-        </legend>
-        <section className={mainFsSect} id='sectIdf'>
-          <fieldset className={sectSubDiv_1} id='divPersonal'>
-            <FirstName />
-            <LastName />
-            <Age />
-            <Gender />
-          </fieldset>
-          <hr />
-          <fieldset className={sectSubDiv_1} id='divContact'>
-            <Email required={true} label='E-mail Primário' id='emailPrim' />
-            <Email required={false} label='E-mail Secundário' id='emailSec' />
-            <EnhancedTelFs required={true} label='prim' />
-            <EnhancedTelFs required={false} label='sec' />
-          </fieldset>
-          <hr />
-          <fieldset className={sectSubDiv_1} id='divWorkplace'>
-            <Role />
-            <Worktime />
-          </fieldset>
-        </section>
-      </fieldset>
-      <fieldset className={mainFsClasses} id='divTechs'>
-        <legend className={mainFsLegClasses} id='legTechs'>
-          Tecnologias
-        </legend>
-        <section className={mainFsSect} id='sectOffice'>
-          <h2>Documentação, Gestão e Análise</h2>
-          <fieldset className={sectSubDiv_1} id='fsOfficeApps'>
-            {[
-              {
-                t: "Softwares de Planilhamento (Microsoft Excel, Google Sheets, Libre Office Calc, etc.)",
-                id: "spreadsheets",
-              },
-              {
-                t: "Softwares de Redação (Microsoft Word, Google Docs, Libre Office Writter, etc.)",
-                id: "docs",
-              },
-              {
-                t: "Softwares para Construção de Formulários (Google Forms, Jotform, Typeform, etc.)",
-                id: "formBuilders",
-              },
-              {
-                t: "Plataformas de Armazenamento em Nuvem (Google Drive, Dropbox, Amazon S3, etc.)",
-                id: "cloudStorage",
-              },
-            ].map(({ t, id }) => (
-              <Range label={t} required={true} id={id} />
-            ))}
-          </fieldset>
-          <fieldset className={sectSubDiv_1} id='fsOfficePlatforms'>
-            {[
-              {
-                t: "Plataformas de Gerenciamento de Relação com Clientes e Equipes (Monday.com, ClickUp, Slack, Jira, etc.)",
-                id: "CRMs",
-              },
-              {
-                t: "Plataformas de Planejamento de Recursos de Negócios (SAP, SAT, TOTVS, SalesForce, etc.)",
-                id: "ERPs",
-              },
-              {
-                t: "Plataformas de Gestão de Atividades e Planejamento (Notion, Trello, Microsoft Planner, Google Calendar, etc.)",
-                id: "forms",
-              },
-              {
-                t: "Plataformas para Inteligência de Negócios (PowerBI, Tableau, Qlik Sense, etc.)",
-                id: "businessInteligence",
-              },
-            ].map(({ t, id }) => (
-              <Range label={t} required={true} id={id} />
-            ))}
-          </fieldset>
-        </section>
-        <section className={mainFsSect} id='sectAIs'>
-          <h2>Modelos de Inteligência Artificial</h2>
-          <fieldset className={sectSubDiv_1} id='fsAIs'>
-            {[
-              {
-                t: "Grandes Modelos de Linguagem (ChatGPT, Gemini, LLaMa, GitHub Copilot, etc.)",
-                id: "LLMs",
-              },
-              {
-                t: "Inteligências Artificiais Generativas de Imagem (Dall-E, Midjourney, Stable Diffusion, etc.)",
-                id: "imageAIs",
-              },
-              {
-                t: "Inteligências Artificiais Generativas de Vídeo (Sora, Runway, Fliki, etc.)",
-                id: "videoAIs",
-              },
-              {
-                t: "Inteligências Artificiais Generativas de Áudio (ElevenLabs, PlayHT, ParrotAI, etc.)",
-                id: "audioAIs",
-              },
-            ].map(({ t, id }) => (
-              <Range label={t} required={true} id={id} />
-            ))}
-          </fieldset>
-        </section>
-      </fieldset>
-      <hr />
-      <ButtonsBlock />
-    </form>
+      <form
+        ref={r}
+        key={crypto.randomUUID()}
+        id='requirementsForm'
+        name='requirements_form'
+        className='form'
+        method='post'
+        action='#'
+        target='self'
+        encType='application/x-www-form-urlencoded'
+      >
+        <fieldset className={mainFsClasses} id='fsId'>
+          <legend className={mainFsLegClasses} id='legIdf'>
+            Dados Básicos
+          </legend>
+          <hr style={{ marginBlock: "2rem" }} />
+          <section className={mainFsSect} id='sectIdf'>
+            <fieldset className={sectSubDiv_1} id='divPersonal'>
+              <FirstName />
+              <LastName />
+              <Age />
+              <Gender />
+            </fieldset>
+            <hr />
+            <fieldset className={sectSubDiv_1} id='divContact'>
+              <Email required={true} label='E-mail Primário' id='emailPrim' />
+              <Email required={false} label='E-mail Secundário' id='emailSec' />
+              <EnhancedTelFs required={true} label='prim' />
+              <EnhancedTelFs required={false} label='sec' />
+            </fieldset>
+            <hr />
+            <fieldset className={sectSubDiv_1} id='divWorkplace'>
+              <Role />
+              <Worktime />
+            </fieldset>
+          </section>
+        </fieldset>
+        <fieldset className={mainFsClasses} id='divTechs'>
+          <legend
+            className={mainFsLegClasses}
+            id='legTechs'
+            style={{ paddingBottom: "1rem" }}
+          >
+            Tecnologias
+          </legend>
+          <hr style={{ marginBlock: "2rem" }} />
+          <section className={mainFsSect} id='sectOffice'>
+            <h2 className='sectHeading'>Documentação, Gestão e Análise</h2>
+            <ErrorBoundary
+              FallbackComponent={() => (
+                <GenericErrorComponent message='Erro ao carregar campos sobre Aplicativos' />
+              )}
+            >
+              <fieldset className={sectSubDiv_1} id='fsOfficeApps'>
+                {[
+                  {
+                    t: "Softwares de Planilhamento (Microsoft Excel, Google Sheets, Libre Office Calc, etc.)",
+                    id: "spreadsheets",
+                  },
+                  {
+                    t: "Softwares de Redação (Microsoft Word, Google Docs, Libre Office Writter, etc.)",
+                    id: "docs",
+                  },
+                  {
+                    t: "Softwares para Construção de Formulários (Google Forms, Jotform, Typeform, etc.)",
+                    id: "formBuilders",
+                  },
+                  {
+                    t: "Plataformas de Armazenamento em Nuvem (Google Drive, Dropbox, Amazon S3, etc.)",
+                    id: "cloudStorage",
+                  },
+                ].map(({ t, id }, i) => (
+                  <Range
+                    key={`office_apps__${i}`}
+                    label={t}
+                    required={true}
+                    id={id}
+                  />
+                ))}
+              </fieldset>
+            </ErrorBoundary>
+            <ErrorBoundary
+              FallbackComponent={() => (
+                <GenericErrorComponent message='Erro ao carregar campos sobre Plataformas' />
+              )}
+            >
+              <fieldset className={sectSubDiv_1} id='fsOfficePlatforms'>
+                {[
+                  {
+                    t: "Plataformas de Gerenciamento de Relação com Clientes e Equipes (Monday.com, ClickUp, Slack, Jira, etc.)",
+                    id: "CRMs",
+                  },
+                  {
+                    t: "Plataformas de Planejamento de Recursos de Negócios (SAP, SAT, TOTVS, SalesForce, etc.)",
+                    id: "ERPs",
+                  },
+                  {
+                    t: "Plataformas de Gestão de Atividades e Planejamento (Notion, Trello, Microsoft Planner, Google Calendar, etc.)",
+                    id: "forms",
+                  },
+                  {
+                    t: "Plataformas para Inteligência de Negócios (PowerBI, Tableau, Qlik Sense, etc.)",
+                    id: "businessInteligence",
+                  },
+                ].map(({ t, id }, i) => (
+                  <Range
+                    key={`office_platforms__${i}`}
+                    label={t}
+                    required={true}
+                    id={id}
+                  />
+                ))}
+              </fieldset>
+            </ErrorBoundary>
+          </section>
+          <section className={mainFsSect} id='sectAIs'>
+            <h2 className='sectHeading'>Modelos de Inteligência Artificial</h2>
+            <ErrorBoundary
+              FallbackComponent={() => (
+                <GenericErrorComponent message='Erro ao carregar campos sobre Inteligências Artficiais' />
+              )}
+            >
+              <fieldset className={sectSubDiv_1} id='fsAIs'>
+                {[
+                  {
+                    t: "Grandes Modelos de Linguagem (ChatGPT, Gemini, LLaMa, GitHub Copilot, etc.)",
+                    id: "LLMs",
+                  },
+                  {
+                    t: "Inteligências Artificiais Generativas de Imagem (Dall-E, Midjourney, Stable Diffusion, etc.)",
+                    id: "imageAIs",
+                  },
+                  {
+                    t: "Inteligências Artificiais Generativas de Vídeo (Sora, Runway, Fliki, etc.)",
+                    id: "videoAIs",
+                  },
+                  {
+                    t: "Inteligências Artificiais Generativas de Áudio (ElevenLabs, PlayHT, ParrotAI, etc.)",
+                    id: "audioAIs",
+                  },
+                ].map(({ t, id }, i) => (
+                  <Range key={`ias__${i}`} label={t} required={true} id={id} />
+                ))}
+              </fieldset>
+            </ErrorBoundary>
+          </section>
+        </fieldset>
+        <hr />
+        <ButtonsBlock />
+      </form>
+    </ErrorBoundary>
   );
 }

@@ -25,7 +25,7 @@ export default function FirstName() {
         name={StringHelper.camelToSnake(id)}
         required
         autoComplete='given-name'
-        autoFocus
+        // autoFocus
         className={`${classes.inpClasses} name firstName`}
         onChange={ev =>
           setV(IOHandler.applyUpperCase(ev.currentTarget.value, 1))

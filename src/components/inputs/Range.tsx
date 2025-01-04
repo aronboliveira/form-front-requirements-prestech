@@ -1,9 +1,11 @@
-import MathHandler from "@/lib/client/handlers/MathHandler";
 import { classes } from "@/lib/client/vars";
 import { OptInput } from "@/lib/definitions/client/interfaces/components";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import s from "@/styles/modules/range.module.scss";
+import { nlInp } from "@/lib/definitions/helpers";
+import IOHandler from "@/lib/client/handlers/IOHandler";
 export default function Range(props: OptInput) {
-  const [v, setV] = useState(0),
+  const r = useRef<nlInp>(null),
     [trackColor, setTrackColor] = useState("#8a8888f"),
     handleTrackSlide = useCallback(
       (val: number): void => {
@@ -35,31 +37,43 @@ export default function Range(props: OptInput) {
         }
       },
       [setTrackColor]
+    ),
+    min = 0,
+    max = 100;
+  useEffect(() => {
+    if (
+      !(r.current instanceof HTMLInputElement) ||
+      (r.current instanceof HTMLElement &&
+        r.current.dataset.slideable === "true")
+    )
+      return;
+    r.current.value = "0";
+    r.current.addEventListener(
+      "change",
+      ev =>
+        ev.currentTarget instanceof HTMLInputElement &&
+        IOHandler.handleRangeSlide(ev.currentTarget)
     );
-  useEffect(() => handleTrackSlide(v), [v]);
+    r.current.dataset.slideable = "true";
+  }, [r]);
   return (
-    <div className={`${classes.inpDivClasses} divRange`}>
+    <div className={`${classes.inpDivClasses} ${s.divRange}`}>
       <label className={`${classes.inpLabClasses} labelRange`}>
         {props.label}
       </label>
-      <input
-        value={v}
-        type='range'
-        min='0'
-        max='5'
-        className='form-range'
-        id={props.id}
-        style={{
-          background: `linear-gradient(to right, ${trackColor} ${
-            v * 20
-          }%, #ddd ${v * 20}%)`,
-        }}
-        onChange={ev =>
-          setV(prev =>
-            MathHandler.parseNotNaN(ev.currentTarget.value, prev, "int")
-          )
-        }
-      />
+      <div>
+        <span className={`${s.rangeNumRef} ${s.rangeMin}`}>{min}</span>
+        <input
+          ref={r}
+          type='range'
+          min={min}
+          max={max}
+          data-sliding='false'
+          className={`form-range ${s.range}`}
+          id={props.id}
+        />
+        <span className={`${s.rangeNumRef} ${s.rangeMax}`}>{max * 0.05}</span>
+      </div>
     </div>
   );
 }

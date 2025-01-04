@@ -37,7 +37,12 @@ h6 {
   margin-bottom: var(--spacing-md);
 }
 h2 {
-  font-size: 1.2rem;
+  &.sectHeading {
+    font-size: 1.2rem !important;
+    box-shadow: none;
+    color: rgb(74, 80, 86);
+    margin-bottom: 1rem;
+  }
 }
 hr {
   opacity: 0.1;
@@ -69,7 +74,7 @@ select {
 }
 input {
   &[type="range"] {
-    width: 100%;
+    width: 50%;
   }
   &[type="radio"],
   &[type="checkbox"] {
@@ -101,10 +106,15 @@ button {
   cursor: pointer;
   &:hover {
     background-color: darken(#001f3f, 10%);
+    transform: translateY(-1px);
   }
   &:active {
     background-color: lighten(#001f3f, 5%);
+    transform: translateY(2px);
   }
+}
+.bold {
+  font-weight: bold;
 }
 .container {
   max-width: 800px;
@@ -120,6 +130,19 @@ button {
   border: 1px solid var(--color-gray);
   margin-bottom: var(--spacing-md);
   padding: var(--spacing-base);
+}
+.form-range {
+  transition: background 0.3s ease;
+  &::-webkit-slider-thumb,
+  &::-moz-range-thumb,
+  &::-ms-thumb {
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    background-color: red;
+    color: red;
+    &:focus {
+      transform: scale(1.2) !important;
+    }
+  }
 }
 .sectSubDiv {
   margin-bottom: 1.5rem;

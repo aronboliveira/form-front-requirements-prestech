@@ -1,4 +1,4 @@
-import { DDDPattern, TelType, nlTxtEl } from "@/lib/definitions/helpers";
+import { DDDPattern, TelType, nlInp, nlTxtEl } from "@/lib/definitions/helpers";
 import MathHandler from "./MathHandler";
 export default class IOHandler {
   static adjustTelCountryCode(code: string): string {
@@ -158,5 +158,41 @@ export default class IOHandler {
       limit = el.maxLength;
     if (!limit) return;
     el.value.length >= limit && relEl.focus();
+  }
+  static handleRangeSlide(el: nlInp, modulator: number = 20): void {
+    if (!(el instanceof HTMLInputElement && el.type === "range")) return;
+    if (el.dataset.sliding === "true") return;
+    const id = el.id,
+      interv = setInterval(i => {
+        if (!el || !el.isConnected) el = document.getElementById(id) as nlInp;
+        if (!el) {
+          clearInterval(i);
+          return;
+        }
+        let curr = MathHandler.parseNotNaN(el.value, 0, "int");
+        if (curr % modulator !== 0) {
+          el.dataset.sliding = "true";
+          el.value = (++curr).toString();
+        } else {
+          el.dataset.sliding = "false";
+          clearInterval(i);
+        }
+      }, 10);
+    setTimeout(() => {
+      if (!el || !el.isConnected) el = document.getElementById(id) as nlInp;
+      if (!el) return;
+      clearInterval(interv);
+      const curr = MathHandler.parseNotNaN(el.value, 0, "int");
+      if (curr % modulator !== 0) {
+        const steps = [],
+          diffs = [];
+        for (let i = 0; i <= 100; i += modulator) steps.push(i);
+        for (let s = 0; s < steps.length; s++)
+          diffs.push(Math.abs(steps[s] - curr));
+        el.value = Math.min(...diffs).toString();
+        el.dataset.sliding = "false";
+        clearInterval(interv);
+      }
+    }, 2000);
   }
 }
