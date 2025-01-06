@@ -40,11 +40,13 @@ describe("IOModel", () => {
   describe("setIds", () => {
     it("generates IDs for elements lacking them", () => {
       const div1 = document.createElement("div");
+      div1.classList.add("test");
       const div2 = document.createElement("div");
+      div1.classList.add("test");
       form.append(div1, div2);
       IOModel.setIds(form);
-      expect(div1.id).toMatch(/div__/);
-      expect(div2.id).toMatch(/div__/);
+      expect(div1.id).toMatch(/div__test_1/);
+      expect(div2.id).toMatch(/div__test_2/);
     });
   });
   describe("setLinks", () =>

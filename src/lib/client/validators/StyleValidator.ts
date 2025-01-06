@@ -35,4 +35,16 @@ export default class StyleValidator {
   ): boolean {
     return values.includes(value as CSSDisplay) ? true : false;
   }
+  static scanPseudoSelectorTag(): HTMLElement | null {
+    if (
+      ![...document.querySelectorAll("style")].some(
+        style => style.id === "pseudos"
+      )
+    ) {
+      const e = document.createElement("style");
+      e.id = "pseudos";
+      document.body.append(e);
+    }
+    return document.getElementById("pseudos");
+  }
 }

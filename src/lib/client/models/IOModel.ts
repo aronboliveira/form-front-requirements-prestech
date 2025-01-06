@@ -150,6 +150,7 @@ export class IOModel {
       nameMap = new Map<string, number>();
     for (let i = 0; i < a.length; i++) {
       const c = a[i];
+      if (!c.className && !c.id) continue;
       if (!c.id)
         c.id = `${c.tagName.toLowerCase()}__${c.className.replace(
           /\s+/g,

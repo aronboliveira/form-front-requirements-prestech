@@ -88,4 +88,39 @@ describe("IOHandler", () => {
       expect(relEl.focus).toHaveBeenCalled();
     });
   });
+  describe("handleRangeSlide", () => {
+    beforeAll(jest.useFakeTimers);
+    afterAll(jest.useRealTimers);
+    it("does nothing element is not an input of type range", () => {
+      const input = document.createElement("input");
+      input.type = "text";
+      IOHandler.handleRangeSlide(input);
+      expect(input.dataset.sliding).toBeUndefined();
+    });
+    it("increments the value until it is multiple of 'modulator'", () => {
+      const input = document.createElement("input");
+      input.type = "range";
+      input.id = "rangeTest";
+      input.value = "42";
+      document.body.appendChild(input);
+      IOHandler.handleRangeSlide(input, 10);
+      jest.advanceTimersByTime(100);
+      expect(parseInt(input.value, 10)).toBe(50);
+      expect(input.dataset.sliding).toBe("false");
+      document.body.removeChild(input);
+    });
+    it("after 2 seconds, it snaps the value to the nearest multiple if still not a perfect multiple", () => {
+      const input = document.createElement("input");
+      input.type = "range";
+      input.id = "rangeTest2";
+      input.value = "21";
+      document.body.appendChild(input);
+      IOHandler.handleRangeSlide(input);
+      jest.advanceTimersByTime(50);
+      jest.advanceTimersByTime(2000);
+      expect(parseInt(input.value, 10)).toBe(20);
+      expect(input.dataset.sliding).toBe("false");
+      document.body.removeChild(input);
+    });
+  });
 });
