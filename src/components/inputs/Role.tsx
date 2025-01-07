@@ -1,10 +1,17 @@
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import { classes } from "@/lib/client/vars";
 import { nlSel } from "@/lib/definitions/helpers";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useContext } from "react";
+import { FormCtx } from "../forms/RequirementForm";
+import { IFormCtx } from "@/lib/definitions/client/interfaces/contexts";
+import { roleType } from "@/lib/definitions/client/foundations";
 export default function Role() {
   const id = "role",
+    ctx = useContext<IFormCtx>(FormCtx),
     r = useRef<nlSel>(null);
+  let role = 'undefined',
+  setRole = null;
+  if (ctx) setRole = ctx.setRole;
   useEffect(() => IOHandler.syncLabel(r.current), [r]);
   return (
     <div className={`${classes.inpDivClasses} divRole`}>
@@ -13,11 +20,13 @@ export default function Role() {
       </label>
       {/* //TODO TEM QUE SER MÚLTIPLO */}
       {/* //TODO INCLUIR POWERSHELL E OPERAÇÕES EM CLOUD */}
-      <select className={classes.selectClasses} name={id} id={id} ref={r}>
+      <select className={classes.selectClasses} name={id} id={id} ref={r}
+      value={role} onChange={ev => setRole && setRole(ev.currentTarget.value as roleType)}>
         <optgroup label='Gestão' id='optGrpGestao'>
           {[
             { l: "Executivo | Administrativo" },
-            { l: "Financeiro | Comercial" },
+            { l: "Financeiro" },
+            { l: 'Comercial'},
             { l: "Marketing" },
           ].map(({ l }, i) => (
             <option
@@ -65,6 +74,7 @@ export default function Role() {
             </option>
           ))}
         </optgroup>
+        <option id="undefinedRole" value='undefined'>Outros</option>
       </select>
     </div>
   );
