@@ -82,7 +82,7 @@ export default function Range(props: OptInput) {
               prop: "background-color",
               value: "#ff4d4d",
             });
-      }, 500);
+      }, 200);
       StyleHandler.updatePseudos({
         idf: `.form-range#${ev.currentTarget.id}`,
         pseudo: pseudoElement,

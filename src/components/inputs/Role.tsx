@@ -12,6 +12,7 @@ export default function Role() {
         Cargo na Empresa
       </label>
       {/* //TODO TEM QUE SER MÚLTIPLO */}
+      {/* //TODO INCLUIR POWERSHELL E OPERAÇÕES EM CLOUD */}
       <select className={classes.selectClasses} name={id} id={id} ref={r}>
         <optgroup label='Gestão'>
           <option>Executivo | Administrativo</option>
@@ -19,9 +20,11 @@ export default function Role() {
           <option>Marketing</option>
         </optgroup>
         <optgroup label='Técnico'>
-          <option>Suporte Técnico</option>
+          <option>Suporte Técnico N1</option>
+          <option>Suporte Tećnico N2</option>
           <option>Operatório</option>
           <option>Desenvolvimento</option>
+          <option>DevOps</option>
         </optgroup>
       </select>
     </div>
