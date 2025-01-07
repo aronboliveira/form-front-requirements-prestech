@@ -52,4 +52,93 @@ describe("IOModel", () => {
   describe("setLinks", () =>
     it("does not fail when no linked elements are found", () =>
       expect(() => IOModel.setLinks()).not.toThrow()));
+  describe("setPlaceholders", () => {
+    beforeEach(() => {
+      document.body.innerHTML = `
+      <form id="test-form">
+        <input type="text" id="text-input" />
+        <input type="tel" id="tel-input" />
+        <input type="email" id="email-input" />
+        <input type="url" id="url-input" />
+        <textarea id="textarea-input"></textarea>
+        <input type="password" id="password-input" />
+      </form>
+      `;
+      form = document.getElementById("test-form") as HTMLFormElement;
+    });
+    afterEach(() => (document.body.innerHTML = ""));
+    it("adds placeholders to text inputs", () => {
+      IOModel.setPlaceholders();
+      expect(
+        (document.getElementById("text-input") as HTMLInputElement).placeholder
+      ).toBe("Escreva aqui.");
+    });
+
+    it("adds placeholders to tel inputs", () => {
+      IOModel.setPlaceholders();
+      expect(
+        (document.getElementById("tel-input") as HTMLInputElement).placeholder
+      ).toBe("Escreva aqui um número.");
+    });
+
+    it("adds placeholders to email inputs", () => {
+      IOModel.setPlaceholders();
+      expect(
+        (document.getElementById("email-input") as HTMLInputElement).placeholder
+      ).toBe("Escreva aqui um e-mail.");
+    });
+
+    it("adds placeholders to url inputs", () => {
+      IOModel.setPlaceholders();
+      expect(
+        (document.getElementById("url-input") as HTMLInputElement).placeholder
+      ).toBe("Escreva aqui.");
+    });
+
+    it("adds placeholders to textareas", () => {
+      IOModel.setPlaceholders();
+      expect(
+        (document.getElementById("textarea-input") as HTMLTextAreaElement)
+          .placeholder
+      ).toBe("Escreva aqui.");
+    });
+
+    it("does not modify inputs with existing placeholders", () => {
+      const telInput = document.getElementById("tel-input") as HTMLInputElement;
+      telInput.placeholder = "Preencha o telefone";
+
+      IOModel.setPlaceholders();
+      expect(telInput.placeholder).toBe("Preencha o telefone");
+    });
+
+    it("ignores inputs without type 'text', 'tel', 'email', 'url' or textarea", () => {
+      IOModel.setPlaceholders();
+      expect(
+        (document.getElementById("password-input") as HTMLInputElement)
+          .placeholder
+      ).toBe("");
+    });
+
+    it("handles empty forms without errors", () => {
+      document.body.innerHTML = `<form id="empty-form"></form>`;
+      expect(() => IOModel.setPlaceholders()).not.toThrow();
+    });
+
+    it("handles no forms in the document", () => {
+      document.body.innerHTML = "";
+      expect(() => IOModel.setPlaceholders()).not.toThrow();
+    });
+
+    it("does not set placeholders if no eligible elements are present", () => {
+      document.body.innerHTML = `
+        <form id="no-eligible-inputs">
+          <input type="checkbox" />
+          <input type="radio" />
+        </form>
+      `;
+      IOModel.setPlaceholders();
+      const inputs = document.querySelectorAll("input");
+      inputs.forEach(input => expect(input.placeholder).toBe(""));
+    });
+  });
 });

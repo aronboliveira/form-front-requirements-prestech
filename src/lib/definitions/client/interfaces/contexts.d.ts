@@ -1,5 +1,4 @@
-import { nlElRef } from "../foundations";
-
+import { nlElRef, nlRDispatch, roleType } from "../foundations";
 export interface ITelCtx {
   required: boolean;
   label:
@@ -9,4 +8,8 @@ export interface ITelCtx {
     | "Telefone Primário"
     | "Telefone Secundário"
     | "Telefone";
+}
+export interface IFormCtx {
+  role: roleType;
+  setRole: nlRDispatch<roleType>;
 }

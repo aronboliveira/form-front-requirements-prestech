@@ -219,4 +219,33 @@ export class IOModel {
       }
     }
   }
+  static setPlaceholders(): void {
+    const forms = document.forms;
+    if (!forms.length) return;
+    const inps = [];
+    for (const form of forms)
+      for (let j = 0; j < form.elements.length; j++) {
+        const el = form.elements[j];
+        if (
+          (el instanceof HTMLInputElement &&
+            (el.type === "text" ||
+              el.type === "tel" ||
+              el.type === "email" ||
+              el.type === "url")) ||
+          el instanceof HTMLTextAreaElement
+        )
+          inps.push(el);
+      }
+    if (!inps.length) return;
+    for (const inp of inps) {
+      if (inp.placeholder === "") {
+        if (inp instanceof HTMLInputElement) {
+          if (inp.type === "tel") inp.placeholder = "Escreva aqui um número.";
+          else if (inp.type === "email")
+            inp.placeholder = "Escreva aqui um e-mail.";
+          else inp.placeholder = "Escreva aqui.";
+        } else inp.placeholder = "Escreva aqui.";
+      }
+    }
+  }
 }
