@@ -1,3 +1,4 @@
+"use client"
 import { classes } from "@/lib/client/vars";
 export default function Reset() {
   return (
