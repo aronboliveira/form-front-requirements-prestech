@@ -46,7 +46,8 @@ env/
 sensitive/
 prisma/
 src/
-**/model/*
+server/model/
+server/models/
 *.pem
 *.key
 *.crt
