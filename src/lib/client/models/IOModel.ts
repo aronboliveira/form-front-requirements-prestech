@@ -248,4 +248,7 @@ export class IOModel {
       }
     }
   }
+  static setSpellChecks(): void {
+    document.querySelectorAll('textarea').forEach(ta => ta.spellcheck = true);
+  }
 }

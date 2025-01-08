@@ -25,7 +25,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import GenericErrorComponent from "../bloc/errors/Error";
 import { IFormCtx } from "@/lib/definitions/client/interfaces/contexts";
 import { roleType } from "@/lib/definitions/client/foundations";
-// import ContextualQuestions from "../bloc/fieldsets/professional/LeadQuestions";
+import ContextualQuestions from "../bloc/fieldsets/professional/ContextualQuestions";
 export const FormCtx = createContext<IFormCtx>({
   role: "undefined",
   setRole: null,
@@ -66,8 +66,7 @@ export default function RequirementForm() {
   useEffect(() => {
     if (!(r.current instanceof HTMLFormElement)) return;
     IOModel.setLinks();
-    //TODO DAR PUSH EM SPELL CHECK
-    // IOModel.setSpellChecks();
+    IOModel.setSpellChecks();
     cache.setup();
     r.current.key = MathHandler.generateRandomKey(r.current.key, 255);
     setTimeout(() => {
@@ -245,8 +244,7 @@ export default function RequirementForm() {
             </section>
           </fieldset>
           <hr />
-          {/* //TODO DAR PUSH EM CONTEXTUALQUESTIONS */}
-          {/* <ContextualQuestions /> */}
+          <ContextualQuestions />
           <hr />
           <ButtonsBlock />
         </form>
