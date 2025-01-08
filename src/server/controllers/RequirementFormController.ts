@@ -1,5 +1,5 @@
 import { UserRequirementFormEntity } from "../model/entities/UserRequirementFormEntity";
-import { DataService } from "../model/services/DataService";
+import { DataService } from "../model/services/sensitive/DataService";
 import { IOModel } from "@/lib/client/models/IOModel";
 export class RequirementFormController {
   private entity: UserRequirementFormEntity;

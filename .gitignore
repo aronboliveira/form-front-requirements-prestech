@@ -44,7 +44,9 @@ coverage/
 .env*
 env/
 sensitive/
-**/sensitive/
+prisma/
+src/
+**/model/*
 *.pem
 *.key
 *.crt
