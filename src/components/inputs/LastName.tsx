@@ -2,7 +2,7 @@ import { classes } from "@/lib/client/vars";
 import { useRef, useEffect, useState } from "react";
 import CompabilityValidator from "@/lib/client/validators/CompabilityValidator";
 import IOHandler from "@/lib/client/handlers/IOHandler";
-import { nlInp } from "@/lib/definitions/helpers";
+import { nlInp } from "@/lib/definitions/client/helpers";
 import { autoCapitalizeInputs } from "@/lib/client/handlers/AutoCorrectHandler";
 import StringHelper from "@/lib/helpers/StringHelper";
 export default function LastName() {

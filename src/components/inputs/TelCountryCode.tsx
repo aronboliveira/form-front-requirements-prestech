@@ -5,7 +5,7 @@ import { TelFragmentOptInput } from "@/lib/definitions/client/interfaces/compone
 import { classes } from "@/lib/client/vars";
 import "react-phone-input-2/lib/style.css";
 import StringHelper from "@/lib/helpers/StringHelper";
-import { nlDiv, nlHtEl, nlInp } from "@/lib/definitions/helpers";
+import { nlDiv, nlHtEl, nlInp } from "@/lib/definitions/client/helpers";
 export default function TelCountryCode({ required, id }: TelFragmentOptInput) {
   id ||= "countryCode";
   const [v, setV] = useState<string>(""),

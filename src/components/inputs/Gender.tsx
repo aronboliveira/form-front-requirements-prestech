@@ -1,6 +1,6 @@
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import { classes } from "@/lib/client/vars";
-import { nlSel } from "@/lib/definitions/helpers";
+import { nlSel } from "@/lib/definitions/client/helpers";
 import { useEffect, useRef } from "react";
 export default function Gender() {
   const id = "gender",

@@ -1,4 +1,4 @@
-import { nlElRef, nlRDispatch, roleType } from "../foundations";
+import { nlElRef, nlRDispatch, roleType } from "../../foundations";
 export interface ITelCtx {
   required: boolean;
   label:

@@ -1,10 +1,11 @@
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import { classes } from "@/lib/client/vars";
-import { nlSel } from "@/lib/definitions/helpers";
+import { nlSel } from "@/lib/definitions/client/helpers";
 import { useEffect, useRef, useContext } from "react";
 import { FormCtx } from "../forms/RequirementForm";
 import { IFormCtx } from "@/lib/definitions/client/interfaces/contexts";
-import { nlRDispatch, roleType } from "@/lib/definitions/client/foundations";
+import { roleType } from "@/lib/definitions/foundations";
+import { nlRDispatch } from "@/lib/definitions/client/helpers";
 export default function Role() {
   const id = "role",
     ctx = useContext<IFormCtx>(FormCtx),

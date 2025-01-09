@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import IOHandler from "@/lib/client/handlers/IOHandler";
-import { DDDPattern, nlEl, nlInp, nlTxtEl } from "@/lib/definitions/helpers";
+import { nlEl, nlInp, nlTxtEl } from "@/lib/definitions/client/helpers";
+import { DDDPattern } from "@/lib/definitions/foundations";
 import MathHandler from "@/lib/client/handlers/MathHandler";
 import StyleHandler from "@/lib/client/handlers/StyleHandler";
 import { TelFragmentOptInput } from "@/lib/definitions/client/interfaces/components";

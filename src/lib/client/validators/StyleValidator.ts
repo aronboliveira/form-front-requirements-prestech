@@ -1,4 +1,4 @@
-import { CSSDisplay } from "@/lib/definitions/helpers";
+import { CSSDisplay } from "@/lib/definitions/client/helpers";
 export default class StyleValidator {
   static readonly VALID_DISPLAYS: CSSDisplay[] = [
     "none",

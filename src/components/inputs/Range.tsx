@@ -2,7 +2,7 @@ import { classes } from "@/lib/client/vars";
 import { OptInput } from "@/lib/definitions/client/interfaces/components";
 import { useEffect, useRef } from "react";
 import s from "@/styles/modules/range.module.scss";
-import { nlInp } from "@/lib/definitions/helpers";
+import { nlInp } from "@/lib/definitions/client/helpers";
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import StyleHandler from "@/lib/client/handlers/StyleHandler";
 import MathHandler from "@/lib/client/handlers/MathHandler";

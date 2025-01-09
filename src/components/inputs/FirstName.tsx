@@ -1,4 +1,4 @@
-import { nlInp } from "@/lib/definitions/helpers";
+import { nlInp } from "@/lib/definitions/client/helpers";
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import CompabilityValidator from "@/lib/client/validators/CompabilityValidator";
 import { classes } from "@/lib/client/vars";

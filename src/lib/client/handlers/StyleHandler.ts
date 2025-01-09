@@ -1,4 +1,4 @@
-import { CSSDisplay, nlHtEl, nlStr } from "@/lib/definitions/helpers";
+import { CSSDisplay, nlHtEl, nlStr } from "@/lib/definitions/client/helpers";
 import StyleValidator from "../validators/StyleValidator";
 import CompabilityValidator from "../validators/CompabilityValidator";
 export const pseudos: Map<string, Map<string, Map<string, string>>> = new Map();

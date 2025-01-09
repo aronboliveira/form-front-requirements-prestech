@@ -1,4 +1,5 @@
-import { DDDPattern, TelType, nlInp, nlTxtEl } from "@/lib/definitions/helpers";
+import { nlInp, nlTxtEl } from "@/lib/definitions/client/helpers";
+import { DDDPattern, TelType } from "@/lib/definitions/foundations";
 import MathHandler from "./MathHandler";
 export default class IOHandler {
   static adjustTelCountryCode(code: string): string {

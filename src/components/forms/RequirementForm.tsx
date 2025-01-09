@@ -12,7 +12,7 @@ import { IOModel } from "@/lib/client/models/IOModel";
 import Email from "../inputs/Email";
 import LocalizedTelFs from "../bloc/fieldsets/etc/LocalizedTelFs";
 import withTelContext from "../highOrder/withTelContext";
-import { FormControl, nlFm } from "@/lib/definitions/helpers";
+import { FormControl, nlFm } from "@/lib/definitions/client/helpers";
 import MathHandler from "@/lib/client/handlers/MathHandler";
 import ButtonsBlock from "../bloc/fieldsets/cta/ButtonsBlock";
 import Age from "../inputs/Age";
@@ -24,8 +24,8 @@ import Range from "../inputs/Range";
 import { ErrorBoundary } from "react-error-boundary";
 import GenericErrorComponent from "../bloc/errors/Error";
 import { IFormCtx } from "@/lib/definitions/client/interfaces/contexts";
-import { roleType } from "@/lib/definitions/client/foundations";
-import ContextualQuestions from "../bloc/fieldsets/professional/ContextualQuestions";
+import { roleType } from "@/lib/definitions/foundations";
+// import ContextualQuestions from "../bloc/fieldsets/professional/ContextualQuestions";
 export const FormCtx = createContext<IFormCtx>({
   role: "undefined",
   setRole: null,
@@ -244,7 +244,7 @@ export default function RequirementForm() {
             </section>
           </fieldset>
           <hr />
-          <ContextualQuestions />
+          {/* <ContextualQuestions /> */}
           <hr />
           <ButtonsBlock />
         </form>

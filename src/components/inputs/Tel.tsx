@@ -2,7 +2,8 @@ import IOHandler from "@/lib/client/handlers/IOHandler";
 import StyleHandler from "@/lib/client/handlers/StyleHandler";
 import { classes } from "@/lib/client/vars";
 import { ITelInput } from "@/lib/definitions/client/interfaces/components";
-import { ValidPhonePattern, nlInp } from "@/lib/definitions/helpers";
+import { nlInp } from "@/lib/definitions/client/helpers";
+import { ValidPhonePattern } from "@/lib/definitions/foundations";
 import { useEffect, useState, useRef } from "react";
 export default function Tel({
   required = false,

@@ -1,5 +1,4 @@
-import { nlEl } from "@/lib/definitions/helpers";
-
+import { nlEl } from "@/lib/definitions/client/helpers";
 export default class CacheProvider {
   refCache: {
     links: Map<string, nlEl>;

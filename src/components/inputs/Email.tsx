@@ -1,4 +1,4 @@
-import { nlInp } from "@/lib/definitions/helpers";
+import { nlInp } from "@/lib/definitions/client/helpers";
 import { IEmailInput } from "@/lib/definitions/client/interfaces/components";
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import { classes } from "@/lib/client/vars";

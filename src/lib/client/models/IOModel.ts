@@ -1,4 +1,4 @@
-import { FormControl, nlEl, nlFm } from "@/lib/definitions/helpers";
+import { FormControl, nlEl, nlFm } from "@/lib/definitions/client/helpers";
 import { limits } from "@/lib/vars";
 export class IOModel {
   logEvent(message: string, payload: unknown): void {
@@ -249,6 +249,6 @@ export class IOModel {
     }
   }
   static setSpellChecks(): void {
-    document.querySelectorAll('textarea').forEach(ta => ta.spellcheck = true);
+    document.querySelectorAll("textarea").forEach(ta => (ta.spellcheck = true));
   }
 }

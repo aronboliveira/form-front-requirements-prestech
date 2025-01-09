@@ -1,4 +1,4 @@
-import { nlStr, nlTxtEl } from "@/lib/definitions/helpers";
+import { nlStr, nlTxtEl } from "@/lib/definitions/client/helpers";
 export function correctCursorNextWords(
   isCursorAutoMoved: boolean = false,
   isUndoUppercase: boolean = false,
