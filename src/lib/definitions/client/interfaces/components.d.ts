@@ -14,4 +14,5 @@ export interface ITelInput extends OptInput, Partial<ContextualizedTel> {
 export interface ICtxTxt extends OptInput {
   role: roleType
   topic: 'DailyTasks' | 'MainTaks' | 'MainSw' | 'AddSw' | 'Priority' | 'Optimize' | 'Challenges' | 'Collaboration' | string
+  placeholder?: string;
 }
