@@ -45,7 +45,6 @@ coverage/
 env/
 sensitive/
 prisma/
-src/
 server/model/
 server/models/
 *.pem
