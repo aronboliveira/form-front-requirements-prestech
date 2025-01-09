@@ -20,7 +20,7 @@ export default class StringHelper {
       return !this.isUpperCase(v) ? v : this.camelToSnake(v);
     return `${v.charAt(0).toUpperCase()}${v.slice(1)
     .replace(/([a-z])([A-Z])/g, (_, l, u) =>
-       `${l.toLowerCase()}_${u.toLowerCase()}`)}`
+       `${l.toLowerCase()}_${u.toLowerCase()}`)}` //NOSONAR
   }
   static isUpperCase(c: string): boolean {
     if (!c?.length) return false;
