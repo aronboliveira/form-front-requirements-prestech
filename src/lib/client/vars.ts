@@ -28,7 +28,8 @@ export const CtxLabels: roleQuestionsMap = new Map([
       ['operatorio', ''],
       ['desenvolvimento', ''],
       ['devOps', ''],
-      ['default', ''],
+      ['default',
+        'Quais são suas principais tarefas diárias?'],
     ]),
   ],
   [
@@ -43,7 +44,7 @@ export const CtxLabels: roleQuestionsMap = new Map([
       ['operatorio', ''],
       ['desenvolvimento', ''],
       ['devOps', ''],
-      ['default', ''],
+      ['default', 'Quais são suas principais atividade na empresa que poderiam ser beneficiadas com novas automações e ouros recursos virtuais?'],
     ]),
   ],
   [
@@ -58,7 +59,7 @@ export const CtxLabels: roleQuestionsMap = new Map([
       ['operatorio', ''],
       ['desenvolvimento', ''],
       ['devOps', ''],
-      ['default', ''],
+      ['default', 'Quais ferramentas digitais ou sistemas virtuais você utiliza rotineiramente no trabalho?'],
     ]),
   ],
   [
@@ -73,7 +74,7 @@ export const CtxLabels: roleQuestionsMap = new Map([
       ['operatorio', ''],
       ['desenvolvimento', ''],
       ['devOps', ''],
-      ['default', ''],
+      ['default', 'Caso utilize outros softwares no contexto anterior, mencione aqui:'],
     ]),
   ],
   [
@@ -88,7 +89,7 @@ export const CtxLabels: roleQuestionsMap = new Map([
       ['operatorio', ''],
       ['desenvolvimento', ''],
       ['devOps', ''],
-      ['default', ''],
+      ['default', 'Como você utiliza tecnologias para a organização e planejamento das suas atividades de trabalho?'],
     ]),
   ],
   [
@@ -103,7 +104,7 @@ export const CtxLabels: roleQuestionsMap = new Map([
       ['operatorio', ''],
       ['desenvolvimento', ''],
       ['devOps', ''],
-      ['default', ''],
+      ['default', 'Existem, no seu trabalho, processos manuais ou repetitivos que você acredita que poderiam ser melhorados com tecnologias novas ou mais atualizadas?'],
     ]),
   ],
   [
@@ -118,7 +119,7 @@ export const CtxLabels: roleQuestionsMap = new Map([
       ['operatorio', ''],
       ['desenvolvimento', ''],
       ['devOps', ''],
-      ['default', ''],
+      ['default', 'Quais desafios você encontra ao utilizar as suas atuais tecnologias de trabalho? Comente comparando com outras tecnologias similares, se adequado, ou com maneiras como você gostaria de melhorar.'],
     ]),
   ],
   [
@@ -133,7 +134,7 @@ export const CtxLabels: roleQuestionsMap = new Map([
       ['operatorio', ''],
       ['desenvolvimento', ''],
       ['devOps', ''],
-      ['default', ''],
+      ['default', 'De que forma você utiliza as tecnologias para colaborar e integrar com a sua equipe de trabalho?'],
     ]),
   ],
 ]);
