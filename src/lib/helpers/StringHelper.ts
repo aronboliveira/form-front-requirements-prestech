@@ -1,4 +1,10 @@
 export default class StringHelper {
+  static capitalize(v: string): string {
+    if (!v?.length) return '';
+    return (v.length === 1)
+      ? v.toUpperCase()
+      : `${v.charAt(0).toUpperCase()}${v.slice(1)}`
+  }
   static camelToSnake(v: string): string {
     if (!v || (typeof v === "string" && !/[A-Z]/.test(v))) return v;
     v = this.spaceToUnderscore(v);
@@ -7,13 +13,14 @@ export default class StringHelper {
       (_, l, u) => `${l.toLowerCase()}_${u.toLowerCase()}`
     );
   }
-  static PascalToSnake(v: string): string {
+  static pascalToSnake(v: string): string {
     if (!v?.length) return '';
     v = this.spaceToUnderscore(v);
     if (!this.isUpperCase(v.charAt(0)))
       return !this.isUpperCase(v) ? v : this.camelToSnake(v);
-    return v.slice(1).replace(/([a-z])([A-Z])/g, (_, l, u) => `${l.toLowerCase()}_${u.toLowerCase()}`)
-
+    return `${v.charAt(0).toUpperCase()}${v.slice(1)
+    .replace(/([a-z])([A-Z])/g, (_, l, u) =>
+       `${l.toLowerCase()}_${u.toLowerCase()}`)}`
   }
   static isUpperCase(c: string): boolean {
     if (!c?.length) return false;
