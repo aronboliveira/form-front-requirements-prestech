@@ -1,0 +1,12 @@
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+trim_trailing_whitespace = true
+
+[*.py, Dockerfile, docker-compose.yml]
+indent_size = 4
+
+[*.{yml,yaml}]
+indent_size = 2
