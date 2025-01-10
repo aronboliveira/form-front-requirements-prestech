@@ -17,6 +17,7 @@ export default function Age() {
       </label>
       <input
         ref={r}
+        placeholder='Escreva ou selecione aqui'
         value={v}
         className={classes.inpClasses}
         name={id}

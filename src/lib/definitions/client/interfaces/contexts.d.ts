@@ -1,4 +1,4 @@
-import { nlElRef, nlRDispatch, roleType } from "../../foundations";
+import { mapLabels, nlElRef, nlRDispatch, roleType } from "../../foundations";
 export interface ITelCtx {
   required: boolean;
   label:
@@ -12,4 +12,5 @@ export interface ITelCtx {
 export interface IFormCtx {
   role: roleType;
   setRole: nlRDispatch<roleType>;
+  ctxLabels: Map<mapLabels, Map<any, any>>;
 }

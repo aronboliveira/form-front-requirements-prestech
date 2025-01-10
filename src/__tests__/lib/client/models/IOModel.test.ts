@@ -71,14 +71,14 @@ describe("IOModel", () => {
       IOModel.setPlaceholders();
       expect(
         (document.getElementById("text-input") as HTMLInputElement).placeholder
-      ).toBe("Escreva aqui.");
+      ).toBe("Escreva aqui");
     });
 
     it("adds placeholders to tel inputs", () => {
       IOModel.setPlaceholders();
       expect(
         (document.getElementById("tel-input") as HTMLInputElement).placeholder
-      ).toBe("Escreva aqui um número.");
+      ).toBe("Escreva aqui um número");
     });
 
     it("adds placeholders to email inputs", () => {
@@ -92,7 +92,7 @@ describe("IOModel", () => {
       IOModel.setPlaceholders();
       expect(
         (document.getElementById("url-input") as HTMLInputElement).placeholder
-      ).toBe("Escreva aqui.");
+      ).toBe("Escreva aqui");
     });
 
     it("adds placeholders to textareas", () => {
@@ -100,7 +100,7 @@ describe("IOModel", () => {
       expect(
         (document.getElementById("textarea-input") as HTMLTextAreaElement)
           .placeholder
-      ).toBe("Escreva aqui.");
+      ).toBe("Escreva aqui");
     });
 
     it("does not modify inputs with existing placeholders", () => {

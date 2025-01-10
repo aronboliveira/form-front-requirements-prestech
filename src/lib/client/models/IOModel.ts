@@ -240,11 +240,11 @@ export class IOModel {
     for (const inp of inps) {
       if (inp.placeholder === "") {
         if (inp instanceof HTMLInputElement) {
-          if (inp.type === "tel") inp.placeholder = "Escreva aqui um número.";
+          if (inp.type === "tel") inp.placeholder = "Escreva aqui um número";
           else if (inp.type === "email")
             inp.placeholder = "Escreva aqui um e-mail.";
-          else inp.placeholder = "Escreva aqui.";
-        } else inp.placeholder = "Escreva aqui.";
+          else inp.placeholder = "Escreva aqui";
+        } else inp.placeholder = "Escreva aqui";
       }
     }
   }
