@@ -31,7 +31,9 @@ export const FormCtx = createContext<IFormCtx>({
   setRole: null,
   ctxLabels: new Map(),
 });
-export default function RequirementForm({labels: ctxLabels}: Readonly<{labels: Map<'roleQuestions', any>}>) {
+export default function RequirementForm({
+  labels: ctxLabels,
+}: Readonly<{ labels: Map<"roleQuestions", any> }>) {
   const r = useRef<nlFm>(null),
     [namedSettled, setNames] = useState<boolean>(false), //NOSONAR
     [idsSettled, setIds] = useState<boolean>(false), //NOSONAR
@@ -74,6 +76,7 @@ export default function RequirementForm({labels: ctxLabels}: Readonly<{labels: M
     setTimeout(() => {
       IOModel.setPlaceholders();
     }, 500);
+    console.log(ctxLabels);
   }, [r, idsSettled]);
   const mainFsClasses = `border p-4 mb-3 formMainFs`,
     mainFsLegClasses = `legMainFs bold`,
@@ -82,7 +85,8 @@ export default function RequirementForm({labels: ctxLabels}: Readonly<{labels: M
     EnhancedTelFs = withTelContext(LocalizedTelFs);
   return (
     <ErrorBoundary
-      FallbackComponent={() => ( //NOSONAR
+      FallbackComponent={() => (
+        //NOSONAR
         <GenericErrorComponent message='Erro ao Carregar Formulário!' />
       )}
     >
@@ -140,7 +144,8 @@ export default function RequirementForm({labels: ctxLabels}: Readonly<{labels: M
             <section className={mainFsSect} id='sectOffice'>
               <h2 className='sectHeading'>Documentação, Gestão e Análise</h2>
               <ErrorBoundary
-                FallbackComponent={() => ( //NOSONAR
+                FallbackComponent={() => (
+                  //NOSONAR
                   <GenericErrorComponent message='Erro ao carregar campos sobre Aplicativos' />
                 )}
               >
@@ -173,7 +178,8 @@ export default function RequirementForm({labels: ctxLabels}: Readonly<{labels: M
                 </fieldset>
               </ErrorBoundary>
               <ErrorBoundary
-                FallbackComponent={() => ( //NOSONAR
+                FallbackComponent={() => (
+                  //NOSONAR
                   <GenericErrorComponent message='Erro ao carregar campos sobre Plataformas' />
                 )}
               >
@@ -211,7 +217,8 @@ export default function RequirementForm({labels: ctxLabels}: Readonly<{labels: M
                 Modelos de Inteligência Artificial
               </h2>
               <ErrorBoundary
-                FallbackComponent={() => ( //NOSONAR
+                FallbackComponent={() => (
+                  //NOSONAR
                   <GenericErrorComponent message='Erro ao carregar campos sobre Inteligências Artficiais' />
                 )}
               >

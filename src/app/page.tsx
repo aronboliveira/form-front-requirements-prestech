@@ -1,5 +1,8 @@
 import RequirementForm from "@/components/forms/RequirementForm";
+import MapsProvider from "@/lib/client/providers/MapsProvider";
+import { CtxLabels } from "@/lib/client/vars";
 export default function Home() {
+  const labels = new MapsProvider(CtxLabels).setup().maps;
   return (
     <div>
       <main className={`container`} style={{ marginBlock: "2%" }}>
@@ -15,7 +18,7 @@ export default function Home() {
         >
           Formulário de Levantamento de Requisitos — Nova Prestech
         </h1>
-        <RequirementForm />
+        <RequirementForm labels={labels} />
       </main>
       <footer></footer>
     </div>
