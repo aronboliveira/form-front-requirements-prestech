@@ -24,7 +24,8 @@ export default class TabProvider implements Provider {
     ) as Array<entryElement>;
     for (let i = 0; i < inps.length; i++) {
       const inp = inps[i];
-      inp.tabIndex = this.counter + i;
+      inp.tabIndex = this.counter;
+      inp.dataset.tabindex = this.counter.toString();
       this.counter += 1;
     }
   }

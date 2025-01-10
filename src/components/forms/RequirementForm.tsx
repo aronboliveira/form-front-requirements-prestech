@@ -27,6 +27,7 @@ import { IFormCtx } from "@/lib/definitions/client/interfaces/contexts";
 import { roleType } from "@/lib/definitions/foundations";
 import ContextualQuestions from "../bloc/fieldsets/professional/ContextualQuestions";
 import TabProvider from "@/lib/client/providers/TabProvider";
+import { flags } from "@/lib/client/vars";
 export const FormCtx = createContext<IFormCtx>({
   role: "undefined",
   setRole: null,
@@ -65,10 +66,6 @@ export default function RequirementForm({
   }, [r]);
   useEffect(() => {
     if (!r.current) return;
-    new TabProvider([
-      ...document.querySelectorAll("dialog"),
-      r.current,
-    ]).setup();
   }, [r]);
   useEffect(() => {
     if (!(r.current instanceof HTMLFormElement)) return;
@@ -84,6 +81,13 @@ export default function RequirementForm({
     setTimeout(() => {
       IOModel.setPlaceholders();
     }, 500);
+    if (!flags.indexed) {
+      new TabProvider([
+        ...document.querySelectorAll("dialog"),
+        r.current,
+      ]).setup();
+      flags.indexed = true;
+    }
     console.log(ctxLabels);
   }, [r, idsSettled]);
   const mainFsClasses = `border p-4 mb-3 formMainFs`,
