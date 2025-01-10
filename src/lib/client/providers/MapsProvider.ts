@@ -10,9 +10,8 @@ export default class MapsProvider implements Provider {
       const [k] = map,
         rel = this.#maps.get(k);
       if (!rel) continue;
-      if (k === "roleQuestions") this.#questionsDefaultSetup(rel);
+      this.#questionsDefaultSetup(rel);
     }
-    console.log(this.#maps);
     return this;
   }
   #questionsDefaultSetup(
@@ -24,11 +23,9 @@ export default class MapsProvider implements Provider {
       const [sk, sv] = innerMap;
       if (sk === "default") continue;
       !sv && map.set(sk, def);
-      console.log(map);
-      console.log([sk, def]);
     }
   }
-  get maps() {
+  get maps(): Map<any, Map<any, any>> {
     return this.#maps;
   }
 }

@@ -88,7 +88,6 @@ export default function RequirementForm({
       ]).setup();
       flags.indexed = true;
     }
-    console.log(ctxLabels);
   }, [r, idsSettled]);
   const mainFsClasses = `border p-4 mb-3 formMainFs`,
     mainFsLegClasses = `legMainFs bold`,
