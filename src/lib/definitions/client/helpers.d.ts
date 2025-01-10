@@ -10,16 +10,16 @@ export type nlInp = HTMLInputElement | null;
 export type nlSel = HTMLSelectElement | null;
 export type nlTxtEl = nlInp | HTMLTextAreaElement;
 export type nlFm = HTMLFormElement | null;
+export type List<T> = Array<T> | NodeListOf<T> | HTMLCollectionOf<T>;
 export interface ContextualizedTel {
   ctx: React.Context<ITelCtx> | undefined;
 }
 export type nlRef<T> = React.RefObject<T> | null;
 export type nlElRef = nlRef<nlEl>;
 export type nlRDispatch<T> = React.Dispatch<React.SetStateAction<T>> | null;
-export type entryElement =
-  | HTMLInputElement
-  | HTMLTextAreaElement
-  | HTMLSelectElement;
+export type inputLikeElement = HTMLInputElement | HTMLTextAreaElement;
+export type entryElement = inputLikeElement | HTMLSelectElement;
+export type pressableElement = HTMLButtonElement | HTMLInputElement;
 export type FormControl =
   | entryElement
   | HTMLButtonElement
