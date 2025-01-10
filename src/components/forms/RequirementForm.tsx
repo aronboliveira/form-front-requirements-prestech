@@ -26,6 +26,7 @@ import GenericErrorComponent from "../bloc/errors/Error";
 import { IFormCtx } from "@/lib/definitions/client/interfaces/contexts";
 import { roleType } from "@/lib/definitions/foundations";
 import ContextualQuestions from "../bloc/fieldsets/professional/ContextualQuestions";
+import TabProvider from "@/lib/client/providers/TabProvider";
 export const FormCtx = createContext<IFormCtx>({
   role: "undefined",
   setRole: null,
@@ -61,6 +62,13 @@ export default function RequirementForm({
       )
       .forEach(ctrl => IOModel.setFormControlNameSufix(ctrl as FormControl));
     setNames(true);
+  }, [r]);
+  useEffect(() => {
+    if (!r.current) return;
+    new TabProvider([
+      ...document.querySelectorAll("dialog"),
+      r.current,
+    ]).setup();
   }, [r]);
   useEffect(() => {
     if (!(r.current instanceof HTMLFormElement)) return;

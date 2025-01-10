@@ -16,10 +16,12 @@ export interface ContextualizedTel {
 export type nlRef<T> = React.RefObject<T> | null;
 export type nlElRef = nlRef<nlEl>;
 export type nlRDispatch<T> = React.Dispatch<React.SetStateAction<T>> | null;
-export type FormControl =
+export type entryElement =
   | HTMLInputElement
-  | HTMLSelectElement
   | HTMLTextAreaElement
+  | HTMLSelectElement;
+export type FormControl =
+  | entryElement
   | HTMLButtonElement
   | HTMLOutputElement
   | HTMLFieldSetElement
