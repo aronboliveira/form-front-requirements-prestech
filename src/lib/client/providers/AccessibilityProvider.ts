@@ -18,8 +18,9 @@ export default class AccessibilityProvider {
     for (let i = 0; i < this.#elements.length; i++) {
       const el = this.#elements[i];
       if (!this.isAccessibleRich(el) && !this.isRedundant(el)) continue;
-      this.applyRoleAndTitle(el);
+      this.applyRole(el);
       this.applyAriaLabel(el);
+      this.applyAriaDescription(el);
       this.clearRedundant(el);
       el instanceof HTMLElement && AccessibilityHandler.trackAriaState(el);
     }
@@ -55,70 +56,97 @@ export default class AccessibilityProvider {
     ].some(t => t === tag);
   }
   clearRedundant(el: Element): void {
-    ([
-      "article",
-      "cell",
-      "columnheader",
-      "definition",
-      "directory",
-      "document",
-      "figure",
-      "group",
-      "heading",
-      "img",
-      "list",
-      "listitem",
-      "meter",
-      "row",
-      "rowgroup",
-      "rowheader",
-      "separator",
-      "table",
-      "term",
-      "button",
-      "checkbox",
-      "gridcell",
-      "link",
-      "menuitem",
-      "menuitemcheckbox",
-      "menuitemradio",
-      "option",
-      "progressbar",
-      "radio",
-      "textbox",
-      "grid",
-      "listbox",
-      "radiogroup",
-      "banner",
-      "complementary",
-      "contentinfo",
-      "navigation",
-      "region",
-      "search",
-    ].some(
-      r =>
-        !(
-          (el instanceof HTMLDivElement || el instanceof HTMLSpanElement) &&
-          el.classList.contains("customRole")
-        ) && r === el.role
-    ) ||
-      Object.entries({
-        nav: "navigation",
-        main: "main",
-        footer: "contentinfo",
-        header: "banner",
-        section: "region",
-        article: "article",
-        aside: "complementary",
-        form: "form",
-        button: "button",
-        img: "img",
-        table: "table",
-      }).some(([k, v]) => k === el.tagName.toLowerCase() && v === el.role)) &&
+    !el.classList.contains("customRole") &&
+      ([
+        "article",
+        "cell",
+        "columnheader",
+        "definition",
+        "directory",
+        "document",
+        "figure",
+        "group",
+        "heading",
+        "img",
+        "list",
+        "listitem",
+        "meter",
+        "row",
+        "rowgroup",
+        "rowheader",
+        "separator",
+        "table",
+        "term",
+        "button",
+        "checkbox",
+        "gridcell",
+        "link",
+        "menuitem",
+        "menuitemcheckbox",
+        "menuitemradio",
+        "option",
+        "progressbar",
+        "radio",
+        "textbox",
+        "grid",
+        "listbox",
+        "radiogroup",
+        "banner",
+        "complementary",
+        "contentinfo",
+        "navigation",
+        "region",
+        "search",
+      ].some(r => !DOMValidator.isGeneric(el) && r === el.role) ||
+        Object.entries({
+          nav: "navigation",
+          main: "main",
+          footer: "contentinfo",
+          header: "banner",
+          section: "region",
+          article: "article",
+          aside: "complementary",
+          form: "form",
+          button: "button",
+          img: "img",
+          table: "table",
+        }).some(([k, v]) => k === el.tagName.toLowerCase() && v === el.role) ||
+        (el instanceof HTMLInputElement &&
+          ((el.type === "text" && el.role === "textbox") ||
+            (el.type === "number" && el.role === "spinbutton") ||
+            (el.type === "search" && el.role === "searchbox") ||
+            (el.type === "image" && el.role === "img") ||
+            el.type === el.role))) &&
       el.removeAttribute("role");
   }
-  applyAriaLabel(el: Element): void {}
-  applyRoleAndTitle(el: Element): void {
+  applyAriaLabel(el: Element): void {
+    if (DOMValidator.isCustomEntry(el) && el.dataset.label) {
+      const label =
+        el.parentElement?.querySelector(`#${el.dataset.label}`) ||
+        el.parentElement?.parentElement?.querySelector(
+          `#${el.dataset.label}`
+        ) ||
+        document.getElementById(el.dataset.label);
+      if (!label) return;
+      el.setAttribute(`ariaLabelledBy`, label.id);
+    }
+    //TODO OUTROS MÉTODOS DE IDENTIFICAR DESCRIPTOR E LABELER
+    //TODO SET ARIA-LABEL
+  }
+  applyAriaDescription(el: Element): void {
+    if (el instanceof HTMLElement && el.dataset.descriptor) {
+      const descriptor =
+        el.parentElement?.querySelector(`#${el.dataset.descriptor}`) ||
+        el.parentElement?.parentElement?.querySelector(
+          `#${el.dataset.descriptor}`
+        ) ||
+        document.getElementById(el.dataset.descriptor);
+      if (!descriptor) return;
+      el.setAttribute(`ariaDescribedBy`, descriptor.id);
+    }
+    //TODO SET ARIA-DESCRIPTION
+  }
+  applyRole(el: Element): void {
     const isGeneric = DOMValidator.isGeneric(el),
       lowTag = el.tagName.toLowerCase(),
       isSectGeneric = isGeneric || lowTag === "section",
@@ -143,7 +171,7 @@ export default class AccessibilityProvider {
             : setRole(el, "alert");
         }
       }
-    } else if (el instanceof HTMLElement && el.contentEditable) {
+    } else if (el instanceof HTMLElement && el.contentEditable === "true") {
       if (!(el instanceof HTMLInputElement)) {
         if (!DOMValidator.isDefaultEntry(el)) {
           if (cl.contains("textbox") && !cl.contains("combobox"))
@@ -193,7 +221,13 @@ export default class AccessibilityProvider {
     ) {
       const tip = el.querySelector('[class*="tip"]');
       if (cl.contains("toolbar")) setRole(el, "toolbar");
-      else if (cl.contains("tree")) setRole(el, "tree");
+      else if (
+        cl.contains("tree") ||
+        cl.contains("graph") ||
+        cl.contains("directory") ||
+        cl.contains("directories")
+      )
+        setRole(el, "tree");
       else if (
         cl.contains("tooltip") ||
         (tip &&

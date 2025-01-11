@@ -104,6 +104,12 @@ export default class DOMValidator {
       )
     );
   }
+  static isCustomEntry(el: EventTarget): el is HTMLElement {
+    return (
+      this.isCustomCheckable(el) || this.isCustomTextbox(el)
+      //TODO CUSTOM SELECT
+    );
+  }
   static isDefaultEntry(el: EventTarget): el is entryElement {
     return (
       this.isDefaultRequireableInput(el) ||
@@ -111,20 +117,14 @@ export default class DOMValidator {
       el instanceof HTMLSelectElement
     );
   }
-  static isCustomEntry(el: EventTarget): el is HTMLElement {
-    return (
-      this.isCustomCheckable(el) || this.isCustomTextbox(el)
-      //TODO CUSTOM SELECT
-    );
-  }
   static isEntry(el: EventTarget): el is HTMLElement {
     return this.isDefaultEntry(el) || this.isCustomEntry(el);
   }
-  static isDefaultDisableable(el: EventTarget): el is disableableElement {
-    return this.isDefaultPressable(el) || this.isDefaultEntry(el);
-  }
   static isCustomDisableable(el: EventTarget): el is HTMLElement {
     return this.isCustomPressable(el) || this.isCustomEntry(el);
+  }
+  static isDefaultDisableable(el: EventTarget): el is disableableElement {
+    return this.isDefaultPressable(el) || this.isDefaultEntry(el);
   }
   static isDisableable(el: EventTarget): el is HTMLElement {
     return this.isDefaultDisableable(el) || this.isCustomDisableable(el);

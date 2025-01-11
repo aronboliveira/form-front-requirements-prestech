@@ -1,28 +1,22 @@
-import {
-  entryElement,
-  inputLikeElement,
-  pressableElement,
-} from "@/lib/definitions/client/helpers";
+import { inputLikeElement } from "@/lib/definitions/client/helpers";
 import DOMValidator from "../validators/DOMValidator";
 
 export default class AccessibilityHandler {
   static trackAriaState(el: HTMLElement, def: boolean = false): void {
     if (el.dataset.trackingaria !== "true") {
       el.dataset.trackingaria = "true";
-      if (DOMValidator.isCustomCheckable(el)) {
-        el.dataset.checked = def.toString();
-        this.handleCheckState(el);
-      } else if (DOMValidator.isCustomPressable(el)) {
-        (el as HTMLElement).dataset.pressed = def.toString();
-        this.handlePressState(el);
-      }
-      if (DOMValidator.isCustomEntry(el)) {
+      if (DOMValidator.isCustomDisableable(el)) {
         this.handleStaticAttrs(el);
+        if (DOMValidator.isCustomCheckable(el)) {
+          el.dataset.checked = def.toString();
+          this.handleCheckState(el);
+        } else if (DOMValidator.isCustomPressable(el)) {
+          (el as HTMLElement).dataset.pressed = def.toString();
+          this.handlePressState(el);
+        }
       }
     }
   }
-  static handleHidden(el: HTMLElement): void {}
-  static handleFormControl(el: HTMLElement): void {}
   static handleInput(el: inputLikeElement): void {}
   static handleSelect(el: HTMLSelectElement): void {}
   static handleCheckState(el: Element): void {
@@ -63,9 +57,12 @@ export default class AccessibilityHandler {
       updateAria = (): void => {
         const el = document.getElementById(id);
         if (!(el && DOMValidator.isCustomEntry(el))) return;
-        el.dataset.required
+        el.dataset.required === "true"
           ? el.setAttribute("aria-required", "true")
           : el.setAttribute("aria-required", "false");
+        el.dataset.disabled === "true"
+          ? el.setAttribute("aria-disabled", "true")
+          : el.setAttribute("aria-disabled", "false");
       };
     updateAria();
     setInterval(updateAria, 2000);
