@@ -2,10 +2,14 @@ import {
   disableableElement,
   entryElement,
   genericElement,
+  imageLikeElement,
   inputLikeElement,
   pressableElement,
 } from "@/lib/definitions/client/helpers";
 export default class DOMValidator {
+  static hasAnyClass(el: Element, compared: Array<string>) {
+    return compared.some(cls => el.classList.contains(cls));
+  }
   static isGeneric(el: Element): el is genericElement {
     return el instanceof HTMLDivElement || el instanceof HTMLSpanElement;
   }
@@ -59,6 +63,29 @@ export default class DOMValidator {
   }
   static isButton(el: EventTarget): el is HTMLElement {
     return this.isDefaultPressable(el) || this.isCustomButton(el);
+  }
+  static isCustomImage(el: EventTarget): el is HTMLElement {
+    return (
+      el instanceof HTMLElement &&
+      (el.role === "img" ||
+        el.classList.contains("img") ||
+        el.classList.contains("image"))
+    );
+  }
+  static isDefaultImage(el: EventTarget): el is imageLikeElement {
+    return (
+      el instanceof HTMLImageElement ||
+      (el instanceof HTMLInputElement && el.type === "image")
+    );
+  }
+  static isImage(el: EventTarget): el is HTMLElement {
+    return this.isDefaultImage(el) || this.isCustomImage(el);
+  }
+  static isTable(el: EventTarget): el is HTMLElement {
+    return (
+      el instanceof HTMLTableElement ||
+      (el instanceof HTMLElement && el.classList.contains("table"))
+    );
   }
   static isCustomPressable(el: EventTarget): el is HTMLElement {
     return (

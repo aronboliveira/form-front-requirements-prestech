@@ -1,4 +1,3 @@
-import { inputLikeElement } from "@/lib/definitions/client/helpers";
 import DOMValidator from "../validators/DOMValidator";
 
 export default class AccessibilityHandler {
@@ -13,12 +12,44 @@ export default class AccessibilityHandler {
         } else if (DOMValidator.isCustomPressable(el)) {
           (el as HTMLElement).dataset.pressed = def.toString();
           this.handlePressState(el);
+        } else if (
+          (el as HTMLElement).role === "listbox" ||
+          (el as HTMLElement).role === "menubox" ||
+          (el as HTMLElement).role === "dropdown"
+        ) {
+          (el as HTMLElement).querySelectorAll("*").forEach(c => {
+            if (!(c instanceof HTMLElement) || c instanceof HTMLOptionElement)
+              return;
+            c.dataset.selected === "true"
+              ? (c.ariaSelected = "true")
+              : (c.ariaSelected = "false");
+          });
+          this.handleSelect(el);
         }
       }
     }
   }
-  static handleInput(el: inputLikeElement): void {}
-  static handleSelect(el: HTMLSelectElement): void {}
+  static handleSelect(el: HTMLSelectElement): void {
+    if (
+      el.role !== "listbox" &&
+      el.role !== "menubox" &&
+      el.role !== "dropdown"
+    )
+      return;
+    el.addEventListener("mouseup", ev => {
+      if (!(ev.currentTarget instanceof Element)) return;
+      const t = ev.currentTarget;
+      setTimeout(() => {
+        t?.querySelectorAll("*").forEach(c => {
+          if (!(c instanceof HTMLElement) || c instanceof HTMLOptionElement)
+            return;
+          c.dataset.selected === "true"
+            ? (c.ariaSelected = "true")
+            : (c.ariaSelected = "false");
+        });
+      }, 200);
+    });
+  }
   static handleCheckState(el: Element): void {
     el.addEventListener("mouseup", ev => {
       if (
@@ -39,12 +70,20 @@ export default class AccessibilityHandler {
       ev.button === 0
         ? true
         : false;
-    el.addEventListener(
-      "mousedown",
-      ev =>
-        checkClick(ev) &&
-        (ev.currentTarget as HTMLElement).setAttribute("aria-pressed", "true")
-    );
+    el.addEventListener("mousedown", ev => {
+      const t = ev.currentTarget;
+      if (checkClick(ev)) {
+        (ev.currentTarget as HTMLElement).setAttribute("aria-pressed", "true");
+        if (
+          t instanceof HTMLElement &&
+          (t.ariaExpanded || t.classList.contains("expands"))
+        ) {
+          t.ariaExpanded === "true"
+            ? t.setAttribute("aria-expanded", "false")
+            : t.setAttribute("aria-expanded", "false");
+        }
+      }
+    });
     el.addEventListener(
       "mouseup",
       ev =>
@@ -53,6 +92,7 @@ export default class AccessibilityHandler {
     );
   }
   static handleStaticAttrs(el: HTMLElement): void {
+    if (!DOMValidator.isCustomEntry(el)) return;
     const id = el.id,
       updateAria = (): void => {
         const el = document.getElementById(id);

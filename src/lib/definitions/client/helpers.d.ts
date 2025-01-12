@@ -1,5 +1,6 @@
 //primitives
 export type nlStr = string | null;
+export type voidish = undefined | null;
 //Elements
 export type nlEl = Element | null;
 export type queryableNode = Document | DocumentFragment | Element;
@@ -22,6 +23,7 @@ export type inputLikeElement = HTMLInputElement | HTMLTextAreaElement;
 export type entryElement = inputLikeElement | HTMLSelectElement;
 export type disableableElement = entryElement | HTMLButtonElement;
 export type pressableElement = HTMLButtonElement | HTMLInputElement;
+export type imageLikeElement = HTMLImageElement | HTMLInputElement;
 export type FormControl =
   | entryElement
   | HTMLButtonElement

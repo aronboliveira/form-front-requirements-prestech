@@ -1,6 +1,8 @@
-import { List } from "@/lib/definitions/client/helpers";
+import { List, entryElement, voidish } from "@/lib/definitions/client/helpers";
 import AccessibilityHandler from "../handlers/AccessibilityHandler";
 import DOMValidator from "../validators/DOMValidator";
+import IOHandler from "../handlers/IOHandler";
+import AccessibilityValidator from "../validators/AccessibilityValidator";
 export const setRole = (el: Element, v: string): void => {
   el.setAttribute("role", v);
 };
@@ -120,33 +122,214 @@ export default class AccessibilityProvider {
       el.removeAttribute("role");
   }
   applyAriaLabel(el: Element): void {
-    if (DOMValidator.isCustomEntry(el) && el.dataset.label) {
-      const label =
-        el.parentElement?.querySelector(`#${el.dataset.label}`) ||
-        el.parentElement?.parentElement?.querySelector(
-          `#${el.dataset.label}`
-        ) ||
-        document.getElementById(el.dataset.label);
-      if (!label) return;
-      el.setAttribute(`ariaLabelledBy`, label.id);
-    }
-    //TODO OUTROS MÉTODOS DE IDENTIFICAR DESCRIPTOR E LABELER
-    //TODO SET ARIA-LABEL
+    if (
+      !(DOMValidator.isDisableable(el) || el instanceof HTMLImageElement) ||
+      el.ariaLabel
+    )
+      return;
+    const uiLibraryClasses = {
+        bootstrap: [
+          "btn",
+          "btn-primary",
+          "btn-secondary",
+          "btn-tertiary",
+          "btn-warning",
+        ],
+        materialUI: ["MuiButton-root", "MuiIconButton-root"],
+        others: ["btn-icon", "icon-button", "icon-only"],
+      },
+      findAndAssignLabeler = (el: HTMLElement): HTMLElement | voidish => {
+        if (!el.dataset.labeler) return;
+        const labeler =
+          el.parentElement?.querySelector(`#${el.dataset.labeler}`) ||
+          el.parentElement?.parentElement?.querySelector(
+            `#${el.dataset.labeler}`
+          ) ||
+          document.getElementById(el.dataset.labeler);
+        if (!labeler) return;
+        el.setAttribute(
+          `aria-labelledby`,
+          labeler instanceof HTMLElement
+            ? labeler.dataset.friendlyname || labeler.id
+            : labeler.id
+        );
+        if (labeler instanceof HTMLElement) el.ariaLabel = labeler.innerText;
+      },
+      assignOwn = (el: HTMLElement): void => {
+        el.dataset.labeler = el.dataset.friendlyname || "this";
+        el.setAttribute(`aria-labelledby`, el.dataset.labeler);
+        el.ariaLabel =
+          el instanceof HTMLImageElement
+            ? el.alt
+            : DOMValidator.isCustomImage(el)
+            ? el.dataset.alt || el.innerText
+            : (el as HTMLElement).innerText;
+      };
+    let isDefaultEntry = DOMValidator.isDefaultEntry(el);
+    if (isDefaultEntry) {
+      IOHandler.syncLabel(el as entryElement);
+      const id = el.id;
+      setTimeout(() => {
+        if (!el || !el.isConnected) el = document.getElementById(id) as any;
+        if (!el || !(el as entryElement)?.labels) return;
+        const labeler = (el as entryElement).labels![0];
+        el.setAttribute(
+          `aria-labelledby`,
+          labeler.dataset.friendlyname || labeler.id
+        );
+        el.ariaLabel = labeler.innerText;
+      }, 500);
+    } else if (DOMValidator.isButton(el)) {
+      const useClass = (): boolean => {
+        let inferredLabel;
+        if (
+          DOMValidator.hasAnyClass(el, [
+            ...uiLibraryClasses.bootstrap,
+            ...uiLibraryClasses.materialUI,
+            ...uiLibraryClasses.others,
+          ])
+        ) {
+          if (el.textContent?.trim()) inferredLabel = el.textContent.trim();
+        }
+        el.querySelectorAll("*").forEach(child => {
+          const cl = child.classList;
+          if (
+            cl.contains("fa-search") ||
+            cl.contains("btn-search") ||
+            child.textContent === "search"
+          )
+            inferredLabel = "Search";
+          else if (
+            cl.contains("fa-close") ||
+            cl.contains("btn-close") ||
+            child.textContent === "close"
+          )
+            inferredLabel = "Close";
+          else if (
+            cl.contains("fa-plus") ||
+            cl.contains("btn-plus") ||
+            child.textContent === "add"
+          )
+            inferredLabel = "Add";
+          else if (
+            cl.contains("fa-minus") ||
+            cl.contains("btn-minus") ||
+            child.textContent === "remove"
+          )
+            inferredLabel = "Remove";
+        });
+        if (inferredLabel) el.setAttribute("aria-label", inferredLabel);
+        return inferredLabel ? true : false;
+      };
+      if (el.dataset.label)
+        !findAndAssignLabeler(el) && !useClass() && assignOwn(el);
+      else !useClass() && assignOwn(el);
+    } else if (DOMValidator.isImage(el)) {
+      const assignFig = (el: HTMLElement): boolean => {
+          const fig = el.closest("figure");
+          if (!fig) return false;
+          const capt = el.closest("figcaption");
+          el.ariaLabel = capt ? capt.innerText : fig.innerText;
+          el.setAttribute(
+            `aria-labelledby`,
+            capt
+              ? capt.dataset.friendlyname || capt.id
+              : fig.dataset.friendlyname || fig.id
+          );
+          return true;
+        },
+        fig = (el as HTMLElement).closest("figure");
+      if ((el as HTMLElement).dataset.labeler)
+        !findAndAssignLabeler(el as HTMLElement) &&
+          !assignFig(el as HTMLImageElement) &&
+          assignOwn(el as HTMLElement);
+      else if (fig)
+        !assignFig(el as HTMLImageElement) && assignOwn(el as HTMLElement);
+      else assignOwn(el as HTMLElement);
+    } else if (DOMValidator.isTable(el)) {
+      const capt = (el as HTMLElement).querySelector("caption");
+      if (capt) {
+        (el as HTMLElement).ariaLabel = capt.innerText;
+        (el as HTMLElement).setAttribute(
+          "aria-labelledby",
+          capt.dataset.friendlyname || capt.id
+        );
+      }
+    } else if (AccessibilityValidator.isAriaLabelable(el))
+      !findAndAssignLabeler(el) && assignOwn(el as HTMLElement);
   }
   applyAriaDescription(el: Element): void {
-    if (el instanceof HTMLElement && el.dataset.descriptor) {
-      const descriptor =
-        el.parentElement?.querySelector(`#${el.dataset.descriptor}`) ||
-        el.parentElement?.parentElement?.querySelector(
-          `#${el.dataset.descriptor}`
-        ) ||
-        document.getElementById(el.dataset.descriptor);
-      if (!descriptor) return;
-      el.setAttribute(`ariaDescribedBy`, descriptor.id);
-    }
-    //TODO SET ARIA-DESCRIPTION
+    if (
+      !(DOMValidator.isDisableable(el) || el instanceof HTMLImageElement) ||
+      (el as any)[`aria-describedby`]
+    )
+      return;
+    let isDefaultEntry = DOMValidator.isDefaultEntry(el);
+    const findAndAssignDescriptor = (
+        el: HTMLElement
+      ): HTMLElement | voidish => {
+        let descriptor;
+        if (!el.dataset.descriptor) {
+          const labeler = (el as any)[`aria-labelledby`] || el.dataset.labeler;
+          if (isDefaultEntry && (el as entryElement).labels) {
+            const label = (
+              (el as entryElement).labels as NodeListOf<HTMLLabelElement>
+            )[0];
+            el.dataset.descriptor = label.dataset.friendlyname || label.id;
+            descriptor = label;
+          } else if (labeler)
+            el.dataset.descriptor = labeler.dataset.friendlyname || labeler.id;
+          if (!el.dataset.descriptor) return;
+        }
+        if (!descriptor)
+          descriptor =
+            el.parentElement?.querySelector(`#${el.dataset.descriptor}`) ||
+            el.parentElement?.parentElement?.querySelector(
+              `#${el.dataset.descriptor}`
+            ) ||
+            document.getElementById(el.dataset.descriptor);
+        if (!descriptor) return;
+        el.setAttribute(
+          `aria-describedby`,
+          descriptor instanceof HTMLElement
+            ? descriptor.dataset.friendlyname || descriptor.id
+            : descriptor.id
+        );
+      },
+      assignOwn = (el: HTMLElement): void => {
+        el.dataset.descriptor = el.dataset.friendlyname || "this";
+        el.setAttribute(`aria-describedby`, el.dataset.descriptor);
+      };
+    if (isDefaultEntry || DOMValidator.isButton(el)) {
+      el.dataset.descriptor
+        ? !findAndAssignDescriptor(el) && assignOwn(el)
+        : assignOwn(el);
+    } else if (DOMValidator.isImage(el)) {
+      const assignFig = (el: HTMLElement): boolean => {
+          const fig = el.closest("figure");
+          if (!fig) return false;
+          const capt = el.closest("figcaption");
+          el.setAttribute(
+            `aria-describedby`,
+            capt
+              ? capt.dataset.friendlyname || capt.id
+              : fig.dataset.friendlyname || fig.id
+          );
+          return true;
+        },
+        fig = (el as HTMLElement).closest("figure");
+      if ((el as HTMLElement).dataset.descriptor)
+        !findAndAssignDescriptor(el as HTMLElement) &&
+          !assignFig(el as HTMLImageElement) &&
+          assignOwn(el as HTMLElement);
+      else if (fig)
+        !assignFig(el as HTMLImageElement) && assignOwn(el as HTMLElement);
+      else assignOwn(el as HTMLElement);
+    } else if (AccessibilityValidator.isAriaDescribleable(el))
+      !findAndAssignDescriptor(el) && assignOwn(el as HTMLElement);
   }
   applyRole(el: Element): void {
+    if (el.role) return;
     const isGeneric = DOMValidator.isGeneric(el),
       lowTag = el.tagName.toLowerCase(),
       isSectGeneric = isGeneric || lowTag === "section",
@@ -226,9 +409,16 @@ export default class AccessibilityProvider {
         cl.contains("graph") ||
         cl.contains("directory") ||
         cl.contains("directories")
-      )
+      ) {
         setRole(el, "tree");
-      else if (
+        [...el.children].forEach(c => c.classList.add("branch"));
+        el.querySelectorAll('[class*="branch"]').forEach(branch =>
+          branch.setAttribute("role", "treeitem")
+        );
+        el.querySelectorAll('[class*="group"]').forEach(group =>
+          group.setAttribute("role", "group")
+        );
+      } else if (
         cl.contains("tooltip") ||
         (tip &&
           [...el.querySelectorAll("*")].some(c =>
@@ -266,6 +456,7 @@ export default class AccessibilityProvider {
             "heading",
             "img",
             "link",
+            "list",
             "listitem",
             "main",
             "mark",
@@ -283,6 +474,8 @@ export default class AccessibilityProvider {
             "separator",
             "status",
             "suggestion",
+            "tab",
+            "tab-list",
             "table",
             "timer",
           ].forEach(r => cl.contains(r) && setRole(el, r));
