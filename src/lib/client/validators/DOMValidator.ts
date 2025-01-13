@@ -131,10 +131,18 @@ export default class DOMValidator {
       )
     );
   }
+  static isCustomSelector(el: EventTarget): el is HTMLElement {
+    return (
+      (el as HTMLElement).role === "listbox" ||
+      (el as HTMLElement).role === "menubox" ||
+      (el as HTMLElement).role === "combobox"
+    );
+  }
   static isCustomEntry(el: EventTarget): el is HTMLElement {
     return (
-      this.isCustomCheckable(el) || this.isCustomTextbox(el)
-      //TODO CUSTOM SELECT
+      this.isCustomCheckable(el) ||
+      this.isCustomTextbox(el) ||
+      this.isCustomSelector(el)
     );
   }
   static isDefaultEntry(el: EventTarget): el is entryElement {

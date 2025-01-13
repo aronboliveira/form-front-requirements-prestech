@@ -15,7 +15,7 @@ export default class AccessibilityHandler {
         } else if (
           (el as HTMLElement).role === "listbox" ||
           (el as HTMLElement).role === "menubox" ||
-          (el as HTMLElement).role === "dropdown"
+          (el as HTMLElement).role === "combobox"
         ) {
           (el as HTMLElement).querySelectorAll("*").forEach(c => {
             if (!(c instanceof HTMLElement) || c instanceof HTMLOptionElement)
@@ -33,22 +33,30 @@ export default class AccessibilityHandler {
     if (
       el.role !== "listbox" &&
       el.role !== "menubox" &&
-      el.role !== "dropdown"
+      el.role !== "combobox"
     )
       return;
-    el.addEventListener("mouseup", ev => {
-      if (!(ev.currentTarget instanceof Element)) return;
-      const t = ev.currentTarget;
-      setTimeout(() => {
-        t?.querySelectorAll("*").forEach(c => {
-          if (!(c instanceof HTMLElement) || c instanceof HTMLOptionElement)
-            return;
-          c.dataset.selected === "true"
-            ? (c.ariaSelected = "true")
-            : (c.ariaSelected = "false");
-        });
-      }, 200);
-    });
+    const handleMouseUp = (ev: Event): void => {
+        if (!(ev.currentTarget instanceof Element)) return;
+        const t = ev.currentTarget;
+        setTimeout(() => {
+          t?.querySelectorAll("*").forEach(c => {
+            if (!(c instanceof HTMLElement) || c instanceof HTMLOptionElement)
+              return;
+            c.dataset.selected === "true"
+              ? (c.ariaSelected = "true")
+              : (c.ariaSelected = "false");
+          });
+        }, 200);
+      },
+      handleClick = (ev: Event): void => {
+        if (!(ev.currentTarget instanceof Element)) return;
+        ev.currentTarget.ariaExpanded === "false"
+          ? (ev.currentTarget.ariaExpanded = "true")
+          : (ev.currentTarget.ariaExpanded = "false");
+      };
+    el.addEventListener("mouseup", handleMouseUp);
+    el.role === "combobox" && el.addEventListener("click", handleClick);
   }
   static handleCheckState(el: Element): void {
     el.addEventListener("mouseup", ev => {

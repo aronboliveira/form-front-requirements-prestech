@@ -1,5 +1,4 @@
 import DOMValidator from "./DOMValidator";
-
 export default class AccessibilityValidator {
   static isAriaLabelable(el: EventTarget): boolean {
     return (
@@ -26,6 +25,14 @@ export default class AccessibilityValidator {
       el instanceof HTMLAudioElement ||
       DOMValidator.isGeneric(el as any) ||
       el instanceof SVGElement
+    );
+  }
+  static canBeListbox(el: Element): boolean {
+    return (
+      el instanceof HTMLDivElement ||
+      el instanceof HTMLUListElement ||
+      el.tagName.toLowerCase() === "aside" ||
+      el.tagName.toLowerCase() === "section"
     );
   }
 }

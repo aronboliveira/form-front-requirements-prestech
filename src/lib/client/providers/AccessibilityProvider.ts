@@ -224,6 +224,17 @@ export default class AccessibilityProvider {
       if (el.dataset.label)
         !findAndAssignLabeler(el) && !useClass() && assignOwn(el);
       else !useClass() && assignOwn(el);
+      const id = el.id;
+      setTimeout(() => {
+        if (!el || !el.isConnected) el = document.getElementById(id) as any;
+        if (!el) return;
+        const controlledId = (el as any)[`ariaControls`];
+        if (controlledId) {
+          const controlled = document.getElementById(controlledId);
+          if (!controlled) return;
+          el.ariaHasPopup = controlled.role;
+        }
+      }, 500);
     } else if (DOMValidator.isImage(el)) {
       const assignFig = (el: HTMLElement): boolean => {
           const fig = el.closest("figure");
@@ -333,7 +344,21 @@ export default class AccessibilityProvider {
     const isGeneric = DOMValidator.isGeneric(el),
       lowTag = el.tagName.toLowerCase(),
       isSectGeneric = isGeneric || lowTag === "section",
-      cl = el.classList;
+      cl = el.classList,
+      assignListbox = (list: HTMLElement): void => {
+        if (list.classList.contains("listbox") && list.role !== "listbox")
+          setRole(list, "listbox");
+        [...list.querySelectorAll("*")].forEach(c => {
+          if (
+            !(c instanceof HTMLOptionElement) &&
+            !c.classList.contains("option") &&
+            ![...c.querySelectorAll("*")].length &&
+            (c instanceof HTMLLIElement || DOMValidator.isGeneric(el)) &&
+            c.innerHTML
+          )
+            c.classList.add("option");
+        });
+      };
     if (el.hasChildNodes()) {
       if (el instanceof SVGSVGElement) setRole(el, "img");
       else if (el instanceof HTMLElement) {
@@ -357,8 +382,20 @@ export default class AccessibilityProvider {
     } else if (el instanceof HTMLElement && el.contentEditable === "true") {
       if (!(el instanceof HTMLInputElement)) {
         if (!DOMValidator.isDefaultEntry(el)) {
-          if (cl.contains("textbox") && !cl.contains("combobox"))
+          if (cl.contains("textbox") && !cl.contains("combobox")) {
             setRole(el, "textbox");
+          } else if (cl.contains("combobox") || el.role === "combobox") {
+            if (cl.contains("combobox") && el.role !== "combobox")
+              setRole(el, "combobox");
+            el.querySelectorAll('[class*="group"]').forEach(g =>
+              g.setAttribute("role", "group")
+            );
+            el.ariaExpanded = el.autofocus ? "true" : "false";
+            const owned = el.parentElement?.querySelector(
+              `#${(el as any)[`ariaOwns`]}`
+            );
+            owned instanceof HTMLElement && assignListbox(owned);
+          }
         }
         if (cl.contains("search") || cl.contains("searchbox"))
           setRole(el, "searchbox");
@@ -397,6 +434,21 @@ export default class AccessibilityProvider {
     )
       setRole(el, "search");
     else if (
+      AccessibilityValidator.canBeListbox(el) &&
+      (cl.contains("listbox") || el.role === "listbox")
+    ) {
+      if (cl.contains("listbox") && el.role !== "listbox")
+        setRole(el, "listbox");
+      [...el.querySelectorAll("*")].forEach(c => {
+        if (
+          !c.classList.contains("option") &&
+          ![...c.querySelectorAll("*")].length &&
+          c instanceof Element &&
+          c.innerHTML
+        )
+          c.classList.add("option");
+      });
+    } else if (
       isSectGeneric ||
       lowTag === "nav" ||
       lowTag === "aside" ||
@@ -411,12 +463,22 @@ export default class AccessibilityProvider {
         cl.contains("directories")
       ) {
         setRole(el, "tree");
-        [...el.children].forEach(c => c.classList.add("branch"));
+        [...el.children].forEach(
+          c => !c.classList.contains("branch") && c.classList.add("branch")
+        );
         el.querySelectorAll('[class*="branch"]').forEach(branch =>
           branch.setAttribute("role", "treeitem")
         );
-        el.querySelectorAll('[class*="group"]').forEach(group =>
-          group.setAttribute("role", "group")
+        [...el.querySelectorAll("*")].forEach(c => {
+          const els = [...c.querySelectorAll("*")];
+          !c.classList.contains("branch") &&
+            !c.classList.contains("group") &&
+            els.length &&
+            !els.some(cc => cc.classList.contains("branch")) &&
+            c.classList.add("group");
+        });
+        el.querySelectorAll('[class*="group"]').forEach(g =>
+          g.setAttribute("role", "group")
         );
       } else if (
         cl.contains("tooltip") ||
@@ -442,7 +504,38 @@ export default class AccessibilityProvider {
       if (isGeneric) {
         if (cl.contains("cell") || cl.contains("td") || cl.contains("th"))
           setRole(el, "cell");
-        else if (cl.contains("menuitemcheckbox") && cl.contains("checkbox"))
+        else if (cl.contains("menu")) {
+          [...el.querySelectorAll("*")].forEach(c => {
+            if (
+              c.classList.contains("menuitemcheckbox") ||
+              c.role === "checkbox" ||
+              (c instanceof HTMLInputElement && c.type === "checkbox")
+            ) {
+              c.role = "menuitemcheckbox";
+              if (!(c instanceof HTMLInputElement) && !c.ariaChecked)
+                c.ariaChecked =
+                  c instanceof HTMLElement && c.dataset.checked
+                    ? c.dataset.checked || "false"
+                    : "false";
+            } else if (
+              c.classList.contains("menuitemradio") ||
+              c.role === "radio" ||
+              (c instanceof HTMLInputElement && c.type === "radio")
+            ) {
+              c.role = "menuitemradio";
+              if (!(c instanceof HTMLInputElement) && !c.ariaChecked)
+                c.ariaChecked =
+                  c instanceof HTMLElement && c.dataset.checked
+                    ? c.dataset.checked || "false"
+                    : "false";
+            } else if (
+              !c.querySelectorAll("*").length &&
+              c instanceof Element &&
+              c.innerHTML
+            )
+              c.role = "menuitem";
+          });
+        } else if (cl.contains("menuitemcheckbox") && cl.contains("checkbox"))
           setRole(el, "menuitemcheckbox");
         else if (cl.contains("menuitemradio") && cl.contains("radio"))
           setRole(el, "menuitemradio");
