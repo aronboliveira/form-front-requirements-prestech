@@ -377,6 +377,7 @@ export default class AccessibilityProvider {
           cps.position === "fixed"
             ? setRole(el, "alertdialog")
             : setRole(el, "alert");
+          el.setAttribute("aria-live", "assertive");
         }
       }
     } else if (el instanceof HTMLElement && el.contentEditable === "true") {
