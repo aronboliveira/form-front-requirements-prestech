@@ -10,6 +10,7 @@ export type nlDiv = HTMLDivElement | null;
 export type nlInp = HTMLInputElement | null;
 export type nlSel = HTMLSelectElement | null;
 export type nlTxtEl = nlInp | HTMLTextAreaElement;
+export type nlBtn = HTMLButtonElement | null;
 export type nlFm = HTMLFormElement | null;
 export type List<T> = Array<T> | NodeListOf<T> | HTMLCollectionOf<T>;
 export interface ContextualizedTel {
