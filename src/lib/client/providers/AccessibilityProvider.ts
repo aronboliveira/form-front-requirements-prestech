@@ -228,12 +228,7 @@ export default class AccessibilityProvider {
       setTimeout(() => {
         if (!el || !el.isConnected) el = document.getElementById(id) as any;
         if (!el) return;
-        const controlledId = (el as any)[`ariaControls`];
-        if (controlledId) {
-          const controlled = document.getElementById(controlledId);
-          if (!controlled) return;
-          el.ariaHasPopup = controlled.role;
-        }
+        this.#assignControlled(el);
       }, 500);
     } else if (DOMValidator.isImage(el)) {
       const assignFig = (el: HTMLElement): boolean => {
@@ -380,13 +375,29 @@ export default class AccessibilityProvider {
           el.setAttribute("aria-live", "assertive");
         }
       }
+    } else if (
+      el instanceof HTMLInputElement &&
+      el.type !== "search" &&
+      (cl.contains("search") || cl.contains("searchbox"))
+    ) {
     } else if (el instanceof HTMLElement && el.contentEditable === "true") {
       if (!(el instanceof HTMLInputElement)) {
         if (!DOMValidator.isDefaultEntry(el)) {
           if (cl.contains("textbox") && !cl.contains("combobox")) {
             setRole(el, "textbox");
           } else if (cl.contains("combobox") || el.role === "combobox") {
-            if (cl.contains("combobox") && el.role !== "combobox")
+            if (
+              (cl.contains("combobox") ||
+                ([...el.children].some(
+                  c => c.role === "listbox" || c instanceof HTMLUListElement
+                ) &&
+                  [...el.children].some(
+                    c =>
+                      c.role === "textbox" ||
+                      DOMValidator.isDefaultWritableInput(el)
+                  ))) &&
+              el.role !== "combobox"
+            )
               setRole(el, "combobox");
             el.querySelectorAll('[class*="group"]').forEach(g =>
               g.setAttribute("role", "group")
@@ -397,16 +408,25 @@ export default class AccessibilityProvider {
             );
             owned instanceof HTMLElement && assignListbox(owned);
           }
+          if (
+            (cl.contains("search") && DOMValidator.isEntry(el)) ||
+            cl.contains("searchbox")
+          )
+            setRole(el, "searchbox");
         }
-        if (cl.contains("search") || cl.contains("searchbox"))
-          setRole(el, "searchbox");
       }
     } else if (
-      DOMValidator.isPressable(el) &&
+      (DOMValidator.isPressable(el) || DOMValidator.isCheckable(el)) &&
       (cl.contains("toggle") || cl.contains("switch"))
-    )
-      setRole(el, "switch");
-    else if (isSectGeneric || el instanceof HTMLFieldSetElement) {
+    ) {
+      this.#assignControlled(el);
+      if (
+        (el.ariaChecked === "true" || el.ariaChecked === "false") &&
+        !(el as any)[`ariaControls`] &&
+        !(el as any)[`ariaOwns`]
+      )
+        setRole(el, "switch");
+    } else if (isSectGeneric || el instanceof HTMLFieldSetElement) {
       const desc = [...el.querySelectorAll("*")];
       if (
         desc.some(
@@ -501,7 +521,27 @@ export default class AccessibilityProvider {
         setRole(el, "definition");
       else if (el.hasChildNodes() && cl.contains("document"))
         setRole(el, "document");
-      else if (cl.contains("feed")) setRole(el, "feed");
+      else if (cl.contains("feed")) {
+        setRole(el, "feed");
+        el.ariaLive = "polite";
+      } else if (cl.contains("log") || cl.contains("chat")) {
+        setRole(el, "log");
+        el.setAttribute("aria-relevant", "additions");
+        [...el.querySelectorAll("*")]
+          .filter(
+            el =>
+              DOMValidator.isDefaultWritableInput(el) || el.role === "textbox"
+          )
+          .forEach(tb => {
+            if (!tb.ariaLabel)
+              tb.setAttribute(
+                "aria-label",
+                /pt\-/g.test(navigator.language) ? "Escreva aqui" : "Type here"
+              );
+            !tb.classList.contains("single") &&
+              tb.setAttribute("aria-multiline", "true");
+          });
+      }
       if (isGeneric) {
         if (cl.contains("cell") || cl.contains("td") || cl.contains("th"))
           setRole(el, "cell");
@@ -568,8 +608,7 @@ export default class AccessibilityProvider {
             "separator",
             "status",
             "suggestion",
-            "tab",
-            "tab-list",
+            "tablist",
             "table",
             "timer",
           ].forEach(r => cl.contains(r) && setRole(el, r));
@@ -577,6 +616,21 @@ export default class AccessibilityProvider {
       }
     }
   }
+  #assignControlled = (e: Element): void => {
+    const controlledId = (e as any)[`ariaControls`];
+    if (controlledId) {
+      const controlled = document.getElementById(controlledId);
+      if (!controlled) return;
+      if (controlled.role === "tabpanel") setRole(e, "tab");
+      else if (
+        ["menu", "listbox", "tree", "grid", "dialog"].some(
+          r => r === controlled.role
+        )
+      ) {
+        e.ariaHasPopup = controlled.role;
+      }
+    }
+  };
   get elements(): Array<Element> {
     return this.#elements;
   }

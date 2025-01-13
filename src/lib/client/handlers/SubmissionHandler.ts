@@ -67,4 +67,44 @@ export default class SubmissionHandler {
       }
     }
   }
+  //TODO THROTLING
+  private static instance: SubmissionHandler;
+  private lastClickTime: number = 0;
+  private attemptCount: number = 0;
+  private lockedUntil: number | null = null;
+  public static getInstance(): SubmissionHandler {
+    if (!SubmissionHandler.instance) {
+      SubmissionHandler.instance = new SubmissionHandler();
+    }
+    return SubmissionHandler.instance;
+  }
+  canSubmit(): boolean {
+    const now = Date.now();
+    if (this.lockedUntil && now < this.lockedUntil) {
+      alert(
+        "You've attempted too many submissions. " +
+          "Please wait 10 minutes before trying again."
+      );
+      return false;
+    }
+    if (now - this.lastClickTime < 5000) {
+      alert("Please wait 5 seconds between submissions.");
+      return false;
+    }
+    if (this.attemptCount >= 3 && now - this.lastClickTime < 60000) {
+      this.lockedUntil = now + 10 * 60 * 1000;
+      alert(
+        "You've attempted too many times. " +
+          "You're locked out for 10 minutes."
+      );
+      return false;
+    }
+    this.lastClickTime = now;
+    this.attemptCount++;
+    return true;
+  }
+  resetAttempts(): void {
+    this.attemptCount = 0;
+    this.lockedUntil = null;
+  }
 }

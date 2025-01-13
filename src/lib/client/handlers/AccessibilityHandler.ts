@@ -13,9 +13,9 @@ export default class AccessibilityHandler {
           (el as HTMLElement).dataset.pressed = def.toString();
           this.handlePressState(el);
         } else if (
-          (el as HTMLElement).role === "listbox" ||
-          (el as HTMLElement).role === "menubox" ||
-          (el as HTMLElement).role === "combobox"
+          ["listbox", "menubox", "combobox", "tab", "switch"].some(
+            r => r === (el as HTMLElement).role
+          )
         ) {
           (el as HTMLElement).querySelectorAll("*").forEach(c => {
             if (!(c instanceof HTMLElement) || c instanceof HTMLOptionElement)
@@ -31,9 +31,9 @@ export default class AccessibilityHandler {
   }
   static handleSelect(el: HTMLSelectElement): void {
     if (
-      el.role !== "listbox" &&
-      el.role !== "menubox" &&
-      el.role !== "combobox"
+      !["listbox", "menubox", "combobox", "tab", "switch"].some(
+        r => r === el.role
+      )
     )
       return;
     const handleMouseUp = (ev: Event): void => {

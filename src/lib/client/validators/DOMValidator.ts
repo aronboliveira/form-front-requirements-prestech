@@ -131,6 +131,25 @@ export default class DOMValidator {
       )
     );
   }
+  static isDefaultWritableInput(el: EventTarget): el is HTMLInputElement {
+    return (
+      el instanceof HTMLInputElement &&
+      [
+        "text",
+        "number",
+        "email",
+        "password",
+        "tel",
+        "url",
+        "search",
+        "date",
+        "datetime-local",
+        "month",
+        "week",
+        "time",
+      ].some(t => t === el.type)
+    );
+  }
   static isCustomSelector(el: EventTarget): el is HTMLElement {
     return (
       (el as HTMLElement).role === "listbox" ||
