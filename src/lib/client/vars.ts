@@ -161,3 +161,4 @@ export const CtxLabels: roleQuestionsMap = new Map([
     ]),
   ],
 ]);
+export const suggestionsDict: { [k: string]: string[] } = {};

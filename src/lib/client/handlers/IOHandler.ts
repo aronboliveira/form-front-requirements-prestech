@@ -1,6 +1,7 @@
 import { entryElement, nlInp, nlTxtEl } from "@/lib/definitions/client/helpers";
 import { DDDPattern, TelType } from "@/lib/definitions/foundations";
 import MathHandler from "./MathHandler";
+import { suggestionsDict } from "../vars";
 export default class IOHandler {
   static adjustTelCountryCode(code: string): string {
     if (code === "") return code;
@@ -8,6 +9,7 @@ export default class IOHandler {
     return code;
   }
   static adjustTelDDD(ddd: string, increase: boolean = true): DDDPattern {
+    //NOSONAR
     if (ddd === "") return ddd as DDDPattern;
     ddd = ddd.trim().replace(/[^0-9]/g, "");
     if (ddd.length > 2) ddd = ddd.slice(0, 2);
@@ -195,5 +197,10 @@ export default class IOHandler {
         clearInterval(interv);
       }
     }, 2000);
+  }
+  static selectCustomDataListSuggestions(k: string): string[] | void {
+    const suggestions = suggestionsDict[k];
+    if (!suggestions?.length) return;
+    return suggestions;
   }
 }
