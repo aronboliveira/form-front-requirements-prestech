@@ -9,4 +9,14 @@
   left: 0;
   width: 100%;
   list-style: none;
+  z-index: 1000;
+}
+.opt {
+  padding: 0.6rem;
+  cursor: pointer;
+  &:hover,
+  &.highlighted {
+    background-color: #c2bebe;
+    color: #3b3b3bad;
+  }
 }
