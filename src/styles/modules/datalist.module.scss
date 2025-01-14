@@ -1,0 +1,12 @@
+@use "../abstract/mixins.scss" as *;
+.container {
+  position: relative;
+}
+.datalist {
+  @include nosurround;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  list-style: none;
+}
