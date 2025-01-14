@@ -1,4 +1,4 @@
-import { TelType } from "../helpers";
+import { TelType, nlFm } from "../helpers";
 import { ContextualizedTel, Identifiable, roleType } from "../../foundations";
 import { ITelCtx } from "./contexts";
 export interface OptInput extends Identifiable {
@@ -12,7 +12,19 @@ export interface ITelInput extends OptInput, Partial<ContextualizedTel> {
   ctx?: React.Context<ITelCtx>;
 }
 export interface ICtxTxt extends OptInput {
-  role: roleType
-  topic: 'DailyTasks' | 'MainTaks' | 'MainSw' | 'AddSw' | 'Priority' | 'Optimize' | 'Challenges' | 'Collaboration' | string
+  role: roleType;
+  topic:
+    | "DailyTasks"
+    | "MainTaks"
+    | "MainSw"
+    | "AddSw"
+    | "Priority"
+    | "Optimize"
+    | "Challenges"
+    | "Collaboration"
+    | string;
   placeholder?: string;
+}
+export interface FormRelated {
+  form?: nlFm;
 }

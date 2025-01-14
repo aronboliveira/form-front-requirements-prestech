@@ -1,3 +1,4 @@
+"use client";
 import { classes } from "@/lib/client/vars";
 import { OptInput } from "@/lib/definitions/client/interfaces/components";
 import { useEffect, useRef } from "react";

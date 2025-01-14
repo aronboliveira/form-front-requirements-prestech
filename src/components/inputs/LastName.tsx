@@ -1,3 +1,4 @@
+"use client";
 import { classes } from "@/lib/client/vars";
 import { useRef, useEffect, useState } from "react";
 import CompabilityValidator from "@/lib/client/validators/CompabilityValidator";

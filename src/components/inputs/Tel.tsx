@@ -1,3 +1,4 @@
+"use client";
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import StyleHandler from "@/lib/client/handlers/StyleHandler";
 import { classes } from "@/lib/client/vars";

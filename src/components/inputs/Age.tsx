@@ -1,3 +1,4 @@
+"use client";
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import { classes } from "@/lib/client/vars";
 import { nlInp } from "@/lib/definitions/client/helpers";

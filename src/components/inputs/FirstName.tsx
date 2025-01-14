@@ -1,3 +1,4 @@
+"use client";
 import { nlInp } from "@/lib/definitions/client/helpers";
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import CompabilityValidator from "@/lib/client/validators/CompabilityValidator";

@@ -1,7 +1,8 @@
 "use client";
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import { classes } from "@/lib/client/vars";
-import { PseudoNum, nlInp } from "@/lib/definitions/client/helpers";
+import { nlInp } from "@/lib/definitions/client/helpers";
+import { PseudoNum } from "@/lib/definitions/foundations";
 import { limits } from "@/lib/vars";
 import { useState, useRef } from "react";
 export default function Worktime() {

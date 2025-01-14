@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect, useRef } from "react";
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import { nlEl, nlInp, nlTxtEl } from "@/lib/definitions/client/helpers";
