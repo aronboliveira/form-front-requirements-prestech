@@ -1,20 +1,23 @@
 import DOMValidator from "@/lib/client/validators/DOMValidator";
 import { toast } from "react-hot-toast";
-export default function promptToast(message: string): Promise<boolean> {
+export default function clickToast(message: string): Promise<boolean> {
   const handleInput = (): boolean => {
     if (!window) false;
     const yes = document.getElementById("yesPersist");
     if (!(yes && DOMValidator.isButton(yes))) return false;
-    yes.addEventListener("click", ev => {
-      if (!ev.isTrusted) {
-        const errId = toast.error(
-          navigator.language.startsWith("pt-")
-            ? `Evento não validado!`
-            : `Event not validated!`
-        );
-        setTimeout(() => toast.dismiss(errId), 1000);
-      }
-    });
+    if (!yes.dataset.watching) {
+      yes.addEventListener("click", ev => {
+        if (!ev.isTrusted) {
+          const errId = toast.error(
+            navigator.language.startsWith("pt-")
+              ? `Evento não validado!`
+              : `Event not validated!`
+          );
+          setTimeout(() => toast.dismiss(errId), 1000);
+        }
+      });
+      yes.dataset.watching = "true";
+    }
     return true;
   };
   setTimeout(() => {

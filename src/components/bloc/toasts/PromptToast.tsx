@@ -11,28 +11,31 @@ export default function promptToast(
         const pw = document.querySelector("#pwInpSs");
         if (!(pw instanceof HTMLInputElement)) return;
         pw.value = "";
-        pw.addEventListener("input", ev => {
-          if (!ev.isTrusted) {
-            const errId = toast.error(
-              navigator.language.startsWith("pt-")
-                ? `Evento não validado!`
-                : `Event not validated!`
-            );
-            setTimeout(() => toast.dismiss(errId), 1000);
-            return;
-          }
-          const t = ev.currentTarget;
-          if (!(t instanceof HTMLInputElement)) return;
-          if ((ev as InputEvent).inputType === "insertFromPaste") {
-            const errId = toast.error(
-              navigator.language.startsWith("pt-")
-                ? `Ops! Você não pode colar aqui!`
-                : `Ops! You cannot paste here!`
-            );
-            setTimeout(() => toast.dismiss(errId), 1000);
-            t.value = "";
-          }
-        });
+        if (!pw.dataset.watching) {
+          pw.addEventListener("input", ev => {
+            if (!ev.isTrusted) {
+              const errId = toast.error(
+                navigator.language.startsWith("pt-")
+                  ? `Evento não validado!`
+                  : `Event not validated!`
+              );
+              setTimeout(() => toast.dismiss(errId), 1000);
+              return;
+            }
+            const t = ev.currentTarget;
+            if (!(t instanceof HTMLInputElement)) return;
+            if ((ev as InputEvent).inputType === "insertFromPaste") {
+              const errId = toast.error(
+                navigator.language.startsWith("pt-")
+                  ? `Ops! Você não pode colar aqui!`
+                  : `Ops! You cannot paste here!`
+              );
+              setTimeout(() => toast.dismiss(errId), 1000);
+              t.value = "";
+            }
+          });
+          pw.dataset.watching = "true";
+        }
       };
       window ? handleInput() : setTimeout(handleInput, 1000);
     } catch (e) {
