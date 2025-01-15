@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import Reset from "../../../components/buttons/Reset";
 import promptToast from "../../../components/bloc/toasts/PromptToast";
 import "@testing-library/jest-dom";
-jest.mock("../path/to/bloc/toasts/PromptToast", jest.fn);
+jest.mock("../../../components/bloc/toasts/PromptToast", jest.fn);
 describe("Reset component", () => {
   afterEach(jest.clearAllMocks);
   it("renders a button with text 'Resetar'", () => {

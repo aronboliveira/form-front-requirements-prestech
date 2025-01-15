@@ -13,7 +13,7 @@ Object.defineProperty(window, "sessionStorage", {
   },
   writable: true,
 });
-jest.mock("../path/to/validators/DOMValidator", () => ({
+jest.mock("../../../../lib/client/validators/DOMValidator", () => ({
   isEntry: jest.fn(),
   isDefaultEntry: jest.fn(),
   isCustomEntry: jest.fn(),

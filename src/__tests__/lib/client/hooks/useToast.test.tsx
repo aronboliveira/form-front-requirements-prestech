@@ -9,10 +9,10 @@ jest.mock("react-hot-toast", () => ({
     dismiss: jest.fn(),
   },
 }));
-jest.mock("../path/to/validators/DOMValidator", () => ({
+jest.mock("../../../../lib/client/validators/DOMValidator", () => ({
   isButton: jest.fn(),
 }));
-jest.mock("../path/to/handlers/DOMHandler", () => ({
+jest.mock("../../../../lib/client/handlers/DOMHandler", () => ({
   isClickOutside: jest.fn(),
 }));
 describe("useToast Hook", () => {
