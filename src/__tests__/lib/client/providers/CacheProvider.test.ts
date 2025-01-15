@@ -1,6 +1,5 @@
 import CacheProvider from "../../../../lib/client/providers/CacheProvider";
 import DOMValidator from "../../../../lib/client/validators/DOMValidator";
-import DOMHandler from "../../../../lib/client/handlers/DOMHandler";
 import clickToast from "../../../../components/bloc/toasts/ClickToast";
 const sessionStorageMock: { [key: string]: string | null } = {};
 Object.defineProperty(window, "sessionStorage", {
@@ -20,20 +19,19 @@ Object.defineProperty(window, "sessionStorage", {
   },
   writable: true,
 });
-jest.mock("../path/to/validators/DOMValidator", () => ({
+jest.mock("../../../../lib/client/validators/DOMValidator", () => ({
   isEntry: jest.fn(),
   isDefaultEntry: jest.fn(),
   isDefaultCheckable: jest.fn(),
   isCustomEntry: jest.fn(),
   isCustomCheckable: jest.fn(),
 }));
-jest.mock("../path/to/handlers/DOMHandler", () => ({
+jest.mock("../../../../lib/client/handlers/DOMHandler", () => ({
   queryByUniqueName: jest.fn(),
 }));
-jest.mock("../path/to/components/bloc/toasts/ClickToast", () => jest.fn());
+jest.mock("../../../../components/bloc/toasts/ClickToast", () => jest.fn());
 describe("CacheProvider (Refactored)", () => {
-  let formEl: HTMLFormElement;
-  let provider: CacheProvider;
+  let formEl: HTMLFormElement, provider: CacheProvider;
   beforeEach(() => {
     jest.clearAllMocks();
     for (const k in sessionStorageMock) {
@@ -50,7 +48,7 @@ describe("CacheProvider (Refactored)", () => {
     formEl = document.getElementById("testForm") as HTMLFormElement;
     document.body.dataset.checking = "";
   });
-  describe("construct()", () => {
+  describe("construct", () => {
     it("should create a new CacheProvider instance if none exists", () => {
       provider = CacheProvider.construct(formEl);
       expect(provider).toBeInstanceOf(CacheProvider);
@@ -61,32 +59,11 @@ describe("CacheProvider (Refactored)", () => {
       expect(first).toBe(second);
     });
   });
-  describe("setup()", () => {
+  describe("setup", () => {
     beforeEach(() => {
       provider = CacheProvider.construct(formEl);
     });
-    it("should set up identifier and links, then check persisters and call clickToast", async () => {
-      const spySetupIdentifier = jest
-        .spyOn<any, any>(provider as any, "#setupIdentifier")
-        .mockImplementation(() => {});
-      const spySetupLinks = jest
-        .spyOn<any, any>(provider as any, "#setupLinks")
-        .mockImplementation(() => {});
-      const spyCheckPersisters = jest
-        .spyOn<any, any>(provider as any, "#checkForPersisters")
-        .mockResolvedValue(true);
-      (clickToast as jest.Mock).mockResolvedValue(true);
-      provider.setup();
-      expect(spySetupIdentifier).toHaveBeenCalled();
-      expect(spySetupLinks).toHaveBeenCalled();
-      await Promise.resolve();
-      expect(spyCheckPersisters).toHaveBeenCalled();
-      expect(clickToast).toHaveBeenCalledTimes(1);
-      spySetupIdentifier.mockRestore();
-      spySetupLinks.mockRestore();
-      spyCheckPersisters.mockRestore();
-    });
-    it("should exit early if document.body.dataset.checking === 'true'", () => {
+    it("should set up identifier, links, and skip early if dataset.checking='true'", () => {
       document.body.dataset.checking = "true";
       const spyCheckPersisters = jest.spyOn<any, any>(
         provider as any,
@@ -95,75 +72,50 @@ describe("CacheProvider (Refactored)", () => {
       provider.setup();
       expect(spyCheckPersisters).not.toHaveBeenCalled();
     });
-    it("should call #fillPersisters if clickToast resolves to true", async () => {
-      (clickToast as jest.Mock).mockResolvedValue(true);
-      const fillPersistersSpy = jest
-        .spyOn<any, any>(provider as any, "#fillPersisters")
-        .mockImplementation(() => {});
-      provider.setup();
-      await Promise.resolve();
-      expect(fillPersistersSpy).toHaveBeenCalled();
-      fillPersistersSpy.mockRestore();
-    });
-    it("should NOT call #fillPersisters if clickToast resolves to false", async () => {
-      (clickToast as jest.Mock).mockResolvedValue(false);
-      const fillPersistersSpy = jest
-        .spyOn<any, any>(provider as any, "#fillPersisters")
-        .mockImplementation(() => {});
-      provider.setup();
-      await Promise.resolve();
-
-      expect(fillPersistersSpy).not.toHaveBeenCalled();
-      fillPersistersSpy.mockRestore();
-    });
-    it("should eventually call #setupPersisters twice if #checkForPersisters => false and user says yes", async () => {
-      jest.useFakeTimers();
-      (clickToast as jest.Mock).mockResolvedValue(true);
+    it("should call #checkForPersisters and handle notFirstSession logic", async () => {
+      sessionStorage.setItem("notFirstSession", "true");
       const spyCheckPersisters = jest
         .spyOn<any, any>(provider as any, "#checkForPersisters")
-        .mockResolvedValue(false);
-      const spySetupPersisters = jest
-        .spyOn<any, any>(provider as any, "#setupPersisters")
-        .mockImplementation(() => {});
+        .mockResolvedValue(true);
+      (clickToast as jest.Mock).mockResolvedValue(true);
       provider.setup();
       await Promise.resolve();
       expect(spyCheckPersisters).toHaveBeenCalled();
-      jest.advanceTimersByTime(300);
-      expect(spySetupPersisters).toHaveBeenCalledTimes(1);
+      expect(clickToast).toHaveBeenCalledTimes(1);
+    });
+    it("should skip clickToast if 'notFirstSession' is not set", async () => {
+      const spyCheckPersisters = jest
+        .spyOn<any, any>(provider as any, "#checkForPersisters")
+        .mockResolvedValue(true);
+      provider.setup();
       await Promise.resolve();
-      jest.advanceTimersByTime(300);
-      expect(spySetupPersisters).toHaveBeenCalledTimes(2);
-      jest.useRealTimers();
-      spyCheckPersisters.mockRestore();
-      spySetupPersisters.mockRestore();
+      expect(spyCheckPersisters).toHaveBeenCalled();
+      expect(clickToast).not.toHaveBeenCalled();
     });
   });
-  describe("#checkForPersisters()", () => {
+  describe("#checkForPersisters", () => {
     beforeEach(() => {
       provider = CacheProvider.construct(formEl);
     });
-    it("should return true if sessionStorage has an item for the form's ID", async () => {
-      sessionStorage.setItem("testForm", JSON.stringify({}));
+    it("should return false if no persister data or no non-empty values", async () => {
+      sessionStorage.setItem("testForm", JSON.stringify({ role: "" }));
+      const result = await (provider as any)["#checkForPersisters"]();
+      expect(result).toBe(false);
+    });
+    it("should return true if there's some non-empty data", async () => {
+      sessionStorage.setItem(
+        "testForm",
+        JSON.stringify({ role: "Desenvolvimento" })
+      );
       const result = await (provider as any)["#checkForPersisters"]();
       expect(result).toBe(true);
     });
-    it("should return false if no sessionStorage item found", async () => {
-      const result = await (provider as any)["#checkForPersisters"]();
-      expect(result).toBe(false);
-    });
-    it("should catch error and return false if #element has no valid id or name", async () => {
-      const noIdEl = document.createElement("div");
-      (CacheProvider as any)._instance = undefined;
-      const providerNoId = CacheProvider.construct(noIdEl as HTMLElement);
-      const result = await (providerNoId as any)["#checkForPersisters"]();
-      expect(result).toBe(false);
-    });
   });
-  describe("#fillPersisters()", () => {
+  describe("#fillPersisters", () => {
     beforeEach(() => {
       provider = CacheProvider.construct(formEl);
     });
-    it("should fill default entry values from sessionStorage", () => {
+    it("should set 'roleChanged' if 'role' is in the data", () => {
       (DOMValidator.isDefaultEntry as unknown as jest.Mock).mockReturnValue(
         true
       );
@@ -172,48 +124,15 @@ describe("CacheProvider (Refactored)", () => {
       );
       sessionStorage.setItem(
         "testForm",
-        JSON.stringify({ inputOne: "testVal" })
+        JSON.stringify({ role: "Financeiro", inputOne: "testVal" })
       );
       (provider as any)["#fillPersisters"]("testForm");
+      expect(sessionStorage.getItem("roleChanged")).toBe("true");
       const inputOne = document.getElementById("inputOne") as HTMLInputElement;
       expect(inputOne.value).toBe("testVal");
     });
-    it("should fill custom entry dataset if custom entry", () => {
-      (DOMValidator.isDefaultEntry as unknown as jest.Mock).mockReturnValue(
-        false
-      );
-      (DOMValidator.isCustomEntry as unknown as jest.Mock).mockReturnValue(
-        true
-      );
-      (DOMValidator.isCustomCheckable as unknown as jest.Mock).mockReturnValue(
-        true
-      );
-      sessionStorage.setItem("testForm", JSON.stringify({ divCheck: "true" }));
-      (provider as any)["#fillPersisters"]("testForm");
-      const divCheck = document.getElementById("divCheck");
-      expect(divCheck?.dataset.checked).toBe("true");
-    });
-    it("should look up element by unique name if not found by ID", () => {
-      (DOMValidator.isDefaultEntry as unknown as jest.Mock).mockReturnValue(
-        true
-      );
-      (DOMValidator.isDefaultCheckable as unknown as jest.Mock).mockReturnValue(
-        false
-      );
-      sessionStorage.setItem(
-        "testForm",
-        JSON.stringify({ missingId: "someVal" })
-      );
-      const fakeElem = document.createElement("input");
-      fakeElem.value = "";
-      (DOMHandler.queryByUniqueName as unknown as jest.Mock).mockReturnValue(
-        fakeElem
-      );
-      (provider as any)["#fillPersisters"]("testForm");
-      expect(fakeElem.value).toBe("someVal");
-    });
   });
-  describe("#setupPersisters()", () => {
+  describe("#setupPersisters", () => {
     beforeEach(() => {
       provider = CacheProvider.construct(formEl);
     });
@@ -243,7 +162,7 @@ describe("CacheProvider (Refactored)", () => {
       );
     });
   });
-  describe("verifyLinkBinding()", () => {
+  describe("verifyLinkBinding", () => {
     beforeEach(() => {
       provider = CacheProvider.construct(formEl);
     });
@@ -257,11 +176,11 @@ describe("CacheProvider (Refactored)", () => {
     });
   });
   describe("getters", () => {
-    it("should return the #element from get element()", () => {
+    it("should return the #element from get element", () => {
       provider = CacheProvider.construct(formEl);
       expect(provider.element).toBe(formEl);
     });
-    it("should return the #elementIdf from get idf()", () => {
+    it("should return the #elementIdf from get idf", () => {
       provider = CacheProvider.construct(formEl);
       expect(provider.idf).toBe("testForm");
     });

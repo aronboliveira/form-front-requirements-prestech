@@ -8,10 +8,10 @@ export default function ContextualText({
   role,
   topic,
   required,
-  placeholder,
+  label,
 }: Readonly<ICtxTxt>) {
-  const cTopic = StringHelper.capitalize(topic),
-    cRole = StringHelper.capitalize(role),
+  const cTopic = StringHelper.capitalize(topic).replace(/\s\|/g, ""),
+    cRole = StringHelper.capitalize(role).replace(/\s\|/g, ""),
     _case = `${cRole}${cTopic}`,
     listName = `suggestions${_case}`,
     optsClass = `opt${_case}`,
@@ -20,11 +20,11 @@ export default function ContextualText({
   return (
     <div className={`div${cTopic} ${s.container}`} id={`${role}${cTopic}`}>
       <label
-        className={classes.inpClasses}
+        className={classes.inpLabClasses}
         id={`${role}${cTopic}`}
         htmlFor={`text${_case}`}
       >
-        {topic}
+        {label}
       </label>
       <textarea
         ref={inpRef as RefObject<HTMLTextAreaElement>}
@@ -32,8 +32,8 @@ export default function ContextualText({
         className={classes.contextualTextClasses}
         id={`text${_case}`}
         name={`${StringHelper.pascalToSnake(cTopic)}`}
+        placeholder='Escreva aqui'
         required={required}
-        placeholder={placeholder ?? "Escreva aqui"}
         autoComplete='on'
         spellCheck='true'
         lang='pt'

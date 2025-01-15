@@ -28,6 +28,7 @@ import { roleType } from "@/lib/definitions/foundations";
 import ContextualQuestions from "../bloc/fieldsets/professional/ContextualQuestions";
 import TabProvider from "@/lib/client/providers/TabProvider";
 import { flags } from "@/lib/client/vars";
+import ContextValidator from "@/lib/client/validators/ContextValidator";
 export const FormCtx = createContext<IFormCtx>({
   role: "undefined",
   setRole: null,
@@ -37,8 +38,8 @@ export default function RequirementForm({
   labels: ctxLabels,
 }: Readonly<{ labels: Map<"roleQuestions", any> }>) {
   const r = useRef<nlFm>(null),
-    [namedSettled, setNames] = useState<boolean>(false), //NOSONAR
-    [idsSettled, setIds] = useState<boolean>(false), //NOSONAR
+    [namedSettled, setNames] = useState<boolean>(false),
+    [idsSettled, setIds] = useState<boolean>(false),
     [role, setRole] = useState<roleType>("undefined"),
     contextValue = useMemo<IFormCtx>(
       () => ({
@@ -65,9 +66,6 @@ export default function RequirementForm({
     setNames(true);
   }, [r]);
   useEffect(() => {
-    if (!r.current) return;
-  }, [r]);
-  useEffect(() => {
     if (!(r.current instanceof HTMLFormElement)) return;
     IOModel.setIds(r.current);
     setIds(true);
@@ -87,7 +85,15 @@ export default function RequirementForm({
       ]).setup();
       flags.indexed = true;
     }
+    const roleChanged = sessionStorage.getItem("roleChanged");
+    if (roleChanged === "true") {
+      const role = sessionStorage.getItem("role");
+      role && setRole(ContextValidator.isRoleType(role) ? role : "undefined");
+    }
   }, [r, idsSettled]);
+  useEffect(() => {
+    IOModel.setPlaceholders();
+  });
   const mainFsClasses = `border p-4 mb-3 formMainFs`,
     mainFsLegClasses = `legMainFs bold`,
     mainFsSect = `mainFsSect`,
@@ -96,7 +102,6 @@ export default function RequirementForm({
   return (
     <ErrorBoundary
       FallbackComponent={() => (
-        //NOSONAR
         <GenericErrorComponent message='Erro ao Carregar Formulário!' />
       )}
     >
@@ -179,7 +184,7 @@ export default function RequirementForm({
                     },
                   ].map(({ t, id }, i) => (
                     <Range
-                      key={`office_apps__${i}`} //NOSONAR
+                      key={`office_apps__${i}`}
                       label={t}
                       required={true}
                       id={id}
@@ -213,7 +218,7 @@ export default function RequirementForm({
                     },
                   ].map(({ t, id }, i) => (
                     <Range
-                      key={`office_platforms__${i}`} //NOSONAR
+                      key={`office_platforms__${i}`}
                       label={t}
                       required={true}
                       id={id}
@@ -228,7 +233,6 @@ export default function RequirementForm({
               </h2>
               <ErrorBoundary
                 FallbackComponent={() => (
-                  //NOSONAR
                   <GenericErrorComponent message='Erro ao carregar campos sobre Inteligências Artficiais' />
                 )}
               >
@@ -263,7 +267,15 @@ export default function RequirementForm({
             </section>
           </fieldset>
           <hr />
-          <ContextualQuestions />
+          {role !== "undefined" && (
+            <ErrorBoundary
+              FallbackComponent={() => (
+                <GenericErrorComponent message='Erro gerando questões contextuais' />
+              )}
+            >
+              <ContextualQuestions role={role} />
+            </ErrorBoundary>
+          )}
           <hr />
           <ButtonsBlock />
         </form>

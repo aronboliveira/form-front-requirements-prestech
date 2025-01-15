@@ -60,7 +60,7 @@ export default function useCustomDataList() {
   useEffect(() => {
     if (!inpRef.current?.dataset.opts) return;
     const opts = document.querySelectorAll(
-      `class*=[${inpRef.current.dataset.opts}]`
+      `[class*="${inpRef.current.dataset.opts}"]`
     );
     if (!opts) return;
     dlRefs.current = Array.from(opts as NodeListOf<HTMLLIElement>);

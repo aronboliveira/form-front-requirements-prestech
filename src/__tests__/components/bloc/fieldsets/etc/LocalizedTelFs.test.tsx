@@ -3,7 +3,8 @@
  */
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import LocalizedTelFs from "../../../../components/bloc/fieldsets/LocalizedTelFs";
+import LocalizedTelFs from "../../../../../components/bloc/fieldsets/etc/LocalizedTelFs";
+import "@testing-library/jest-dom";
 describe("LocalizedTelFs component", () => {
   it("renders TelCountryCode, DDD, and Tel inputs", () => {
     render(<LocalizedTelFs />);

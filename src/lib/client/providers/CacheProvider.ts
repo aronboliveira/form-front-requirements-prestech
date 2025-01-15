@@ -35,6 +35,13 @@ export default class CacheProvider implements Provider {
     this.#setupLinks(allEls);
     if (document.body.dataset.checking === "true") return;
     this.#checkForPersisters().then(ok => {
+      const setPersist = (): void => {
+        this.#setupPersisters(
+          allEls.filter(e => DOMValidator.isEntry(e)) as HTMLElement[]
+        );
+        // sessionStorage.removeItem("roleChanged");
+        // sessionStorage.removeItem("role");
+      };
       if (
         !ok ||
         !(
@@ -42,29 +49,19 @@ export default class CacheProvider implements Provider {
           (this.#element && "name" in this.#element && this.#element.name)
         )
       ) {
-        setTimeout(
-          () =>
-            this.#setupPersisters(
-              allEls.filter(e => DOMValidator.isEntry(e)) as HTMLElement[]
-            ),
-          300
-        );
+        setTimeout(setPersist, 300);
       }
-      clickToast(
-        navigator.language.startsWith("pt-")
-          ? "Cache para campos do formulário detectado. Deseja preencher?"
-          : "Cache for form fields detected. Do you want to fill them?"
-      ).then(y => {
-        console.log(y);
-        y && this.#fillPersisters(this.idf);
-        setTimeout(
-          () =>
-            this.#setupPersisters(
-              allEls.filter(e => DOMValidator.isEntry(e)) as HTMLElement[]
-            ),
-          300
-        );
-      });
+      if (sessionStorage.getItem("notFirstSession")) {
+        clickToast(
+          navigator.language.startsWith("pt-")
+            ? "Cache para campos do formulário detectado. Deseja preencher?"
+            : "Cache for form fields detected. Do you want to fill them?"
+        ).then(y => {
+          y && this.#fillPersisters(this.idf);
+          setTimeout(setPersist, 300);
+        });
+      }
+      sessionStorage.setItem("notFirstSession", "true");
     });
     document.body.dataset.checking = "true";
   }
@@ -106,7 +103,8 @@ export default class CacheProvider implements Provider {
         throw new DOMException("Failed to setup identifier", "SyntaxError");
       const idf = this.#element.id || (this.#element as HTMLFormElement).name,
         persistData = sessionStorage.getItem(idf);
-      if (!persistData) return false;
+      if (!persistData || !Object.values(persistData).some(v => v))
+        return false;
       return true;
     } catch (e) {
       console.error(
@@ -126,11 +124,16 @@ export default class CacheProvider implements Provider {
       );
       if (!Object.keys(parsed).length)
         throw new Error(`Parsed object has no keys`);
+      sessionStorage.setItem("roleChanged", "false");
       const els = Object.entries(parsed);
       for (let i = 0; i < els.length; i++) {
         const id = els[i][0];
         let v = els[i][1];
         if (!id) continue;
+        if (id === "role") {
+          sessionStorage.setItem("roleChanged", "true");
+          sessionStorage.setItem("role", v);
+        }
         let entry = document.getElementById(id);
         if (!entry) entry = DOMHandler.queryByUniqueName(id);
         if (!entry) continue;
@@ -180,7 +183,6 @@ export default class CacheProvider implements Provider {
     }
     sessionStorage.setItem(idf, JSON.stringify(CacheProvider.persisters));
     const cycle = (): void => {
-      console.log("cycling");
       const entries = Object.entries(CacheProvider.persisters);
       for (let j = 0; j < entries.length; j++) {
         let el = document.getElementById(entries[j][0]);

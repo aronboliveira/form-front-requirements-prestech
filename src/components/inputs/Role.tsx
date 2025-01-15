@@ -13,7 +13,10 @@ export default function Role() {
     r = useRef<nlSel>(null);
   let role = "undefined",
     setRole: nlRDispatch<roleType> = null;
-  if (ctx) setRole = ctx.setRole;
+  if (ctx) {
+    setRole = ctx.setRole;
+    role = ctx.role;
+  }
   useEffect(() => IOHandler.syncLabel(r.current), [r]);
   return (
     <div className={`${classes.inpDivClasses} divRole`}>
