@@ -76,7 +76,7 @@ export default function RequirementForm({
     if (!(r.current instanceof HTMLFormElement)) return;
     IOModel.setLinks();
     IOModel.setSpellChecks();
-    cache = new CacheProvider(r.current);
+    cache = CacheProvider.construct(r.current);
     cache.setup();
     r.current.key = MathHandler.generateRandomKey(r.current.key, 255);
     setTimeout(IOModel.setPlaceholders, 500);

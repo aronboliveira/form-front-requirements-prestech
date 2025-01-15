@@ -47,6 +47,7 @@ sensitive/
 prisma/
 src/server/model/
 src/server/models/
+src/app/api/**
 *.pem
 *.key
 *.crt

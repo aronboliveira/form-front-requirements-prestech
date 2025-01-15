@@ -1,3 +1,5 @@
+import { nlHtEl } from "@/lib/definitions/client/helpers";
+
 export default class DOMHandler {
   static isClickOutside(
     event: MouseEvent | React.MouseEvent,
@@ -6,14 +8,8 @@ export default class DOMHandler {
     try {
       if (!document.querySelector(`#${dlgInBtn.id}` || "dialog"))
         throw new Error(`Modal for outside click not in screen anymore.`);
-      const rect = dlgInBtn.getBoundingClientRect();
-      const { clientX, clientY } = event;
-      console.log([
-        clientX < rect.left,
-        clientX > rect.right,
-        clientY < rect.top,
-        clientY > rect.bottom,
-      ]);
+      const rect = dlgInBtn.getBoundingClientRect(),
+        { clientX, clientY } = event;
       return [
         clientX < rect.left,
         clientX > rect.right,
@@ -23,5 +19,10 @@ export default class DOMHandler {
     } catch (e) {
       return [false, false, false, false];
     }
+  }
+  static queryByUniqueName(idf: string): nlHtEl {
+    const names = document.getElementsByName(idf);
+    if (names.length === 1) return names[0];
+    else return null;
   }
 }
