@@ -1,6 +1,8 @@
 import CacheProvider from "../../../../lib/client/providers/CacheProvider";
 import DOMValidator from "../../../../lib/client/validators/DOMValidator";
 import clickToast from "../../../../components/bloc/toasts/ClickToast";
+import DOMHandler from "../../../../lib/client/handlers/DOMHandler";
+import SubmissionHandler from "../../../../lib/client/handlers/SubmissionHandler";
 const sessionStorageMock: { [key: string]: string | null } = {};
 Object.defineProperty(window, "sessionStorage", {
   value: {
@@ -30,7 +32,7 @@ jest.mock("../../../../lib/client/handlers/DOMHandler", () => ({
   queryByUniqueName: jest.fn(),
 }));
 jest.mock("../../../../components/bloc/toasts/ClickToast", () => jest.fn());
-describe("CacheProvider (Refactored)", () => {
+describe("CacheProvider", () => {
   let formEl: HTMLFormElement, provider: CacheProvider;
   beforeEach(() => {
     jest.clearAllMocks();
@@ -47,6 +49,62 @@ describe("CacheProvider (Refactored)", () => {
     `;
     formEl = document.getElementById("testForm") as HTMLFormElement;
     document.body.dataset.checking = "";
+  });
+  describe(" #setupPersisters", () => {
+    let provider: any; // or the actual class type if you have it
+    beforeEach(() => {
+      provider = new CacheProvider(document.createElement("form"));
+      jest.clearAllMocks();
+    });
+    it("throws if #element is missing", () => {
+      (provider as any)["#element"] = null;
+      expect(() => (provider as any)["#setupPersisters"]([])).toThrowError(
+        "HierarchyRequestError"
+      );
+    });
+    it("throws if no valid identifier in #element", () => {
+      const formEl = document.createElement("form");
+      (provider as any)["#element"] = formEl;
+      expect(() => (provider as any)["#setupPersisters"]([])).toThrow(
+        "SyntaxError"
+      );
+    });
+    it("stores extracted values in sessionStorage for each element", () => {
+      const formEl = document.createElement("form");
+      formEl.id = "myForm";
+      (provider as any)["#element"] = formEl;
+      const el1 = document.createElement("input");
+      el1.id = "one";
+      el1.value = "val1";
+      const el2 = document.createElement("div");
+      el2.id = "two";
+      el2.dataset.value = "val2";
+      const spyExtract = jest
+        .spyOn(DOMHandler, "extractValue")
+        .mockImplementation((el: HTMLElement) => {
+          if (el.id === "one") return "val1";
+          if (el.id === "two") return "val2";
+          return "";
+        });
+
+      (provider as any)["#setupPersisters"]([el1, el2]);
+      const stored = sessionStorage.getItem("myForm");
+      expect(stored).not.toBeNull();
+      const parsed = JSON.parse(stored!);
+      expect(parsed["one"]).toBe("val1");
+      expect(parsed["two"]).toBe("val2");
+
+      spyExtract.mockRestore();
+    });
+  });
+  describe("SubmissionHandler static construct()", () => {
+    it("returns an existing instance if present, otherwise creates a new one", () => {
+      const form = document.createElement("form");
+      const first = SubmissionHandler.construct(form);
+      const second = SubmissionHandler.construct(form);
+      expect(first).toBeInstanceOf(SubmissionHandler);
+      expect(second).toBe(first);
+    });
   });
   describe("construct", () => {
     it("should create a new CacheProvider instance if none exists", () => {

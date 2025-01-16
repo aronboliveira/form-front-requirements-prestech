@@ -1,8 +1,7 @@
 import { JSDOM } from "jsdom";
 import DOMValidator from "../../../../lib/client/validators/DOMValidator";
 describe("DOMValidator", () => {
-  let dom: JSDOM;
-  let document: Document;
+  let dom: JSDOM, document: Document;
   beforeEach(() => {
     dom = new JSDOM(`
 		<html>

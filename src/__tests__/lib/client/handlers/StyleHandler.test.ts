@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 import StyleHandler from "../../../../lib/client/handlers/StyleHandler";
+import "@testing-library/jest-dom";
 describe("StyleHandler", () => {
   let element: HTMLElement, mockSheet: CSSStyleSheet;
   beforeEach(() => document.body.appendChild(document.createElement("div")));
@@ -90,5 +91,63 @@ describe("StyleHandler", () => {
     expect(document.getElementById("pseudos")?.textContent).not.toContain(
       "invalid-property"
     );
+  });
+  describe("pulseColor()", () => {
+    it("does nothing if el is not HTMLElement", () => {
+      StyleHandler.pulseColor(null as any);
+    });
+    it("pulses border if context='both' or 'border'", () => {
+      const el = document.createElement("div");
+      jest.useFakeTimers();
+      StyleHandler.pulseColor(el, "blue", "border");
+      jest.advanceTimersByTime(250);
+      expect(el.style.borderColor).toBe("blue");
+      jest.advanceTimersByTime(750);
+      expect(el.style.borderColor).toBe("rgb(222, 226, 230)");
+      jest.useRealTimers();
+    });
+    it("pulses font if context='both' or 'font'", () => {
+      const el = document.createElement("div");
+      jest.useFakeTimers();
+      StyleHandler.pulseColor(el, "green", "font");
+      jest.advanceTimersByTime(250);
+      expect(el.style.color).toBe("green");
+      jest.advanceTimersByTime(750);
+      expect(el.style.color).toBe("rgb(33, 37, 41)");
+      jest.useRealTimers();
+    });
+  });
+  describe("switchPlaceholder()", () => {
+    beforeEach(() => {
+      StyleHandler.placeholderCounter = 0.7;
+      jest.clearAllMocks();
+    });
+    it("updates placeholder, adds style with new color, then reverts after 3.5s", () => {
+      jest.useFakeTimers();
+      const input = document.createElement("input");
+      input.placeholder = "old placeholder";
+      input.classList.add("someClass");
+      input.id = "myInput";
+      StyleHandler.switchPlaceholder(input, "newPh", "#123");
+      expect(input.placeholder).toBe("newPh");
+      let styleNode = document.getElementById("placeholdersStyles");
+      expect(styleNode).toBeInTheDocument();
+      jest.advanceTimersByTime(3500);
+      styleNode = document.getElementById("placeholdersStyles");
+      expect(styleNode).toBeNull();
+      expect(input.placeholder).toBe("old placeholder");
+      jest.useRealTimers();
+    });
+    it("increments placeholderCounter and updates opacity on interval", () => {
+      jest.useFakeTimers();
+      const input = document.createElement("input");
+      StyleHandler.switchPlaceholder(input);
+      jest.advanceTimersByTime(250);
+      expect(StyleHandler.placeholderCounter).toBeLessThan(0.7);
+      jest.advanceTimersByTime(250);
+      expect(StyleHandler.placeholderCounter).toBeLessThan(0.65); // e.g. 0.60
+      // etc.
+      jest.useRealTimers();
+    });
   });
 });
