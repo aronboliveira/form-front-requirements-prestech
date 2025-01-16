@@ -14,7 +14,10 @@ export default class SubmissionHandler {
     this.#processor = _processor || new SubmissionProcessor();
     this.#form = _form;
   }
-  submit(): { ok: boolean; cause: string } {
+  construct(_form: HTMLFormElement, _processor?: SubmissionProcessor): SubmissionHandler {
+    return SubmissionHandler._instance ? this : new SubmissionHandler(_form, _processor);
+  }
+  submit(): { ok: boolean; cause: string } { 
     if (this.#form.noValidate)
       return { ok: false, cause: "Form noValidate attribute active" };
     this.scan();
