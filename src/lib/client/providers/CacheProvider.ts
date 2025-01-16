@@ -161,25 +161,12 @@ export default class CacheProvider implements Provider {
       );
     if (!(this.#element.id || ("name" in this.#element && this.#element.name)))
       throw new DOMException("Failed to setup identifier", "SyntaxError");
-    const idf = this.#element.id || (this.#element as HTMLFormElement).name,
-      extractValue = (el: HTMLElement): string => {
-        let value = "";
-        if (DOMValidator.isDefaultEntry(el)) {
-          DOMValidator.isDefaultCheckable(el)
-            ? (value = el.checked.toString())
-            : (value = el.value);
-        } else if (DOMValidator.isCustomEntry(el)) {
-          if (DOMValidator.isCustomCheckable(el) && el.dataset.checked)
-            value = el.dataset.checked;
-          else value = el.dataset.value ? el.dataset.value : el.innerText;
-        }
-        return value;
-      };
+    const idf = this.#element.id || (this.#element as HTMLFormElement).name;
     for (let i = 0; i < els.length; i++) {
       const el = els[i],
         elIdf = el.id || (("name" in el ? el.name : "") as string);
       if (!elIdf) continue;
-      CacheProvider.persisters[elIdf] = extractValue(el);
+      CacheProvider.persisters[elIdf] = DOMHandler.extractValue(el);
     }
     sessionStorage.setItem(idf, JSON.stringify(CacheProvider.persisters));
     const cycle = (): void => {
@@ -188,7 +175,7 @@ export default class CacheProvider implements Provider {
         let el = document.getElementById(entries[j][0]);
         if (!el) el = DOMHandler.queryByUniqueName(entries[j][0]);
         if (!el) continue;
-        CacheProvider.persisters[entries[j][0]] = extractValue(el);
+        CacheProvider.persisters[entries[j][0]] = DOMHandler.extractValue(el);
       }
       sessionStorage.setItem(idf, JSON.stringify(CacheProvider.persisters));
     };

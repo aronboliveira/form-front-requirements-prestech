@@ -1,4 +1,4 @@
-import { jsErrorsFriendlyNames } from "../vars";
+import { flags, jsErrorsFriendlyNames } from "../vars";
 
 export default class ExceptionHandler {
   static classify(exception: Error | DOMException): {
@@ -101,51 +101,50 @@ export default class ExceptionHandler {
     }
   }
   static describeValidityState(vs: ValidityState, custom?: string): string {
-    const isPt = navigator.language.startsWith("pt-");
     for (const v of Object.getOwnPropertyNames(vs)) {
       if (v === "valid") continue;
       if ((vs as any)[v] === false) {
         switch (v as keyof ValidityState) {
           case "badInput":
-            return isPt ? "Entrada inadequada" : "Inadequate entry";
+            return flags.pt ? "Entrada inadequada" : "Inadequate entry";
           case "patternMismatch":
-            return isPt ? "Padrão inadequado" : "Inadequate pattern";
+            return flags.pt ? "Padrão inadequado" : "Inadequate pattern";
           case "valueMissing":
-            return isPt
+            return flags.pt
               ? "O valor não pôde ser lido"
               : "The value could not be read";
           case "tooShort":
-            return isPt
+            return flags.pt
               ? "Número de dígitos insuficiente"
               : "Number os digits insufficient";
           case "tooLong":
-            return isPt
+            return flags.pt
               ? "Número de dígitos excessivo"
               : "Excessive number os digits";
           case "rangeUnderflow":
-            return isPt
+            return flags.pt
               ? "O valor não atende o número mínimo"
               : "The value is below the mininum accepted";
           case "rangeOverflow":
-            return isPt
+            return flags.pt
               ? "O valor está além do número máximo"
               : "The value is above the maximum accepted";
           case "typeMismatch":
-            return isPt
+            return flags.pt
               ? "Tipo de entrada inadequada"
               : "Type of entry inadequate";
           case "stepMismatch":
-            return isPt
+            return flags.pt
               ? "A entrada não segue a progressão requirida"
               : "The entry does not follow the required step pattern";
           case "customError":
             return custom
               ? custom
-              : isPt
+              : flags.pt
               ? "Erro personalizado não identificado"
               : "Undefined Custom error";
           default:
-            return isPt
+            return flags.pt
               ? "Há algo errado com a entrada"
               : "There is something wrong with the entry";
         }
@@ -153,8 +152,8 @@ export default class ExceptionHandler {
     }
     return "";
   }
-  static getFriendlyErrorMessage(errorType: string, isPt: boolean): string {
-    const friendlyNames = isPt
+  static getFriendlyErrorMessage(errorType: string): string {
+    const friendlyNames = flags.pt
       ? jsErrorsFriendlyNames?.PT
       : jsErrorsFriendlyNames?.EN;
     if (!friendlyNames) return errorType;

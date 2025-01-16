@@ -30,6 +30,7 @@ import TabProvider from "@/lib/client/providers/TabProvider";
 import { flags } from "@/lib/client/vars";
 import ContextValidator from "@/lib/client/validators/ContextValidator";
 import TechnologiesLists from "../bloc/fieldsets/professional/TechCheckboxesGrid";
+import DOMHandler from "@/lib/client/handlers/DOMHandler";
 export const FormCtx = createContext<IFormCtx>({
   role: "undefined",
   setRole: null,
@@ -52,6 +53,7 @@ export default function RequirementForm({
     );
   let cache = null;
   useEffect(() => {
+    DOMHandler.isPt();
     IOModel.setConstraintPatterns();
     if (!(r.current instanceof HTMLFormElement)) return;
     IOModel.setFormDataLength(r.current);

@@ -17,6 +17,7 @@ export const classes: { [k: string]: string } = {
 };
 export const flags: { [k: string]: string | boolean | number } = {
   indexed: false,
+  pt: true,
 };
 export const CtxLabels: roleQuestionsMap = new Map([
   [

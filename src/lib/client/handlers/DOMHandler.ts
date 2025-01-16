@@ -1,5 +1,6 @@
 import { nlHtEl, nlStr, rMouseEvent } from "@/lib/definitions/client/helpers";
-
+import { flags } from "../vars";
+import DOMValidator from "../validators/DOMValidator";
 export default class DOMHandler {
   #shouldEvaluateTime: boolean = false;
   #shouldEvaluateClient: boolean = false;
@@ -36,6 +37,24 @@ export default class DOMHandler {
   }
   static getIdentifier(el: Element): nlStr {
     return el.id || ("name" in el ? (el.name as string) : null);
+  }
+  static extractValue(el: HTMLElement): string {
+    let value = "";
+    if (DOMValidator.isDefaultEntry(el)) {
+      DOMValidator.isDefaultCheckable(el)
+        ? (value = el.checked.toString())
+        : (value = el.value);
+    } else if (DOMValidator.isCustomEntry(el)) {
+      if (DOMValidator.isCustomCheckable(el) && el.dataset.checked)
+        value = el.dataset.checked;
+      else value = el.dataset.value ? el.dataset.value : el.innerText;
+    }
+    return value;
+  }
+  static isPt(): boolean {
+    const isPt = navigator.language.startsWith("pt-");
+    flags.pt = isPt;
+    return isPt;
   }
   public get shouldEvaluateTime(): boolean {
     return this.#shouldEvaluateTime;

@@ -6,16 +6,19 @@ import { entryElement, voidish } from "@/lib/definitions/client/helpers";
 import DOMValidator from "../validators/DOMValidator";
 import SubmissionProcessor from "../processors/SubmissionProcessor";
 import DOMHandler from "./DOMHandler";
+import { flags } from "../vars";
 export default class SubmissionHandler {
   private static _instance: SubmissionHandler;
-  readonly #form: HTMLFormElement;
   readonly #processor: SubmissionProcessor;
+  #form: HTMLFormElement;
   #attempts: number;
+  formId: string;
   constructor(_form: HTMLFormElement, _processor?: SubmissionProcessor) {
     if (!SubmissionHandler._instance) SubmissionHandler._instance = this;
     this.#processor = _processor || new SubmissionProcessor();
     this.#form = _form;
     this.#attempts = 0;
+    this.formId = _form.id || _form.name || "";
   }
   public static construct(
     _form: HTMLFormElement,
@@ -73,10 +76,56 @@ export default class SubmissionHandler {
     }
     return true;
   }
-  public submit(): { ok: boolean; cause: string } {
+  public submit(
+    endpoint: string,
+    axios: boolean = true
+  ): { ok: boolean; cause: string } {
+    this.#setForm();
     if (this.#form.noValidate)
       return { ok: false, cause: "Form noValidate attribute active" };
-    this.scan();
+    const { successful, failed, successfulCustom, failedCustom } = this.scan();
+    for (const fail of failed) {
+      if (!fail.required) continue;
+      fail.scrollIntoView({ block: "center", inline: "center" });
+      return {
+        ok: false,
+        cause: flags.pt
+          ? "Falha na validação de entrada exigida"
+          : "Failed to validate a required entry",
+      };
+    }
+    for (const fail of failedCustom) {
+      if (!fail.dataset.required) continue;
+      fail.scrollIntoView({ block: "center", inline: "center" });
+      return {
+        ok: false,
+        cause: flags.pt
+          ? "Falha na validação de entrada exigida"
+          : "Failed to validate a required entry",
+      };
+    }
+    const ss = [...successful, ...successfulCustom];
+    if (
+      ss.length <
+      [...this.#form.elements].filter(e => DOMValidator.isEntry(e)).length
+    )
+      return {
+        ok: false,
+        cause: flags.pt
+          ? "Foram capturadas menos entradas do que o exigido"
+          : "The read number of entries was less than the mininum",
+      };
+    const data: { [k: string]: string } = {};
+    for (const s of ss) {
+      if (DOMValidator.isDefaultEntry(s))
+        data[s.name || s.id] = DOMHandler.extractValue(s);
+      else if (!(s.dataset.name || s.dataset.id)) continue;
+      data[(s.dataset.name as string) || (s.dataset.id as string)] =
+        DOMHandler.extractValue(s);
+    }
+    axios
+      ? this.#sendToServerWithAxios(endpoint, data)
+      : this.#fetchToServer(endpoint, data);
     return { ok: true, cause: "Form correctly submitted" };
   }
   public scan(): {
@@ -85,6 +134,7 @@ export default class SubmissionHandler {
     successfulCustom: HTMLElement[];
     failedCustom: HTMLElement[];
   } {
+    this.#setForm();
     const els = [
         ...[...this.#form.elements].filter(e => DOMValidator.isDefaultEntry(e)),
         ...[...this.#form.querySelectorAll(".customRole")].filter(
@@ -120,14 +170,13 @@ export default class SubmissionHandler {
     }
     return { successful, failed, successfulCustom, failedCustom };
   }
-  public async sendToServerWithAxios(
+  async #sendToServerWithAxios(
     endpoint: string,
     data: { [k: string]: string },
     headers: PostHeaders = {
       "Content-Type": "application/json",
     }
   ): Promise<any> {
-    const isPt = navigator.language.startsWith("pt-");
     try {
       const res = await axios.post(endpoint, data, {
         headers,
@@ -148,24 +197,23 @@ export default class SubmissionHandler {
         statusText:
           typeof status === "number"
             ? status.toString().startsWith("4")
-              ? isPt
+              ? flags.pt
                 ? "Erro localizando recursos"
                 : "Failed locating resources"
-              : isPt
+              : flags.pt
               ? "Erro interno"
               : "Internal Error"
-            : ExceptionHandler.getFriendlyErrorMessage(status.type, isPt),
+            : ExceptionHandler.getFriendlyErrorMessage(status.type),
       });
     }
   }
-  public async fetchToServer(
+  async #fetchToServer(
     endpoint: string,
     data: { [k: string]: string },
     headers: PostHeaders = {
       "Content-Type": "application/json",
     }
   ) {
-    const isPt = navigator.language.startsWith("pt-");
     try {
       const res = await fetch(endpoint, {
         method: "POST",
@@ -182,7 +230,7 @@ export default class SubmissionHandler {
       );
       return new Response("", {
         status: typeof status === "number" ? status : status.status,
-        statusText: ExceptionHandler.getFriendlyErrorMessage(status.type, isPt),
+        statusText: ExceptionHandler.getFriendlyErrorMessage(status.type),
       });
     }
   }
@@ -208,6 +256,13 @@ export default class SubmissionHandler {
   }
   public get form(): HTMLFormElement | voidish {
     return this.#form;
+  }
+  #setForm(): boolean {
+    if (this.#form && this.#form.isConnected) return true;
+    const form = DOMHandler.queryByUniqueName(this.formId) as any;
+    if (!(form instanceof HTMLFormElement)) return false;
+    this.#form = form;
+    return true;
   }
   public get processor(): SubmissionProcessor {
     return this.#processor;
