@@ -6,6 +6,9 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
   constructor() {
     if (!SubmissionProcessor._instance) SubmissionProcessor._instance = this;
   }
+  public construct(): SubmissionProcessor {
+    return !SubmissionProcessor._instance ? this : new SubmissionProcessor(); 
+  }
   public process(el: HTMLElement): number {
     if (DOMValidator.isDefaultEntry(el)) {
       const res = this.#evaluateDefaulEntry(el);
