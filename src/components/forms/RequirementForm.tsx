@@ -29,6 +29,7 @@ import ContextualQuestions from "../bloc/fieldsets/professional/ContextualQuesti
 import TabProvider from "@/lib/client/providers/TabProvider";
 import { flags } from "@/lib/client/vars";
 import ContextValidator from "@/lib/client/validators/ContextValidator";
+import TechnologiesLists from "../bloc/fieldsets/professional/TechCheckboxesGrid";
 export const FormCtx = createContext<IFormCtx>({
   role: "undefined",
   setRole: null,
@@ -194,7 +195,6 @@ export default function RequirementForm({
               </ErrorBoundary>
               <ErrorBoundary
                 FallbackComponent={() => (
-                  //NOSONAR
                   <GenericErrorComponent message='Erro ao carregar campos sobre Plataformas' />
                 )}
               >
@@ -276,6 +276,8 @@ export default function RequirementForm({
               <ContextualQuestions role={role} />
             </ErrorBoundary>
           )}
+          <hr />
+          <TechnologiesLists />
           <hr />
           <ButtonsBlock />
         </form>

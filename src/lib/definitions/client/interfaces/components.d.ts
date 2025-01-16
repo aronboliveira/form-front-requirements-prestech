@@ -32,3 +32,18 @@ export interface ICtxTxt extends OptInput {
     | string;
   placeholder?: string;
 }
+export interface SpinnerComponentProps {
+  spinnerClass?: "spinner-border" | "spinner-grow";
+  spinnerColor?:
+    | "text-danger"
+    | "text-primary"
+    | "text-secondary"
+    | "text-success"
+    | "text-warning"
+    | "text-info"
+    | "text-light"
+    | "text-dark"
+    | "";
+  message?: string;
+  fs?: boolean;
+}

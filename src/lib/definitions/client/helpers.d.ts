@@ -34,6 +34,7 @@ export type FormControl =
   | HTMLOptionElement
   | HTMLOptGroupElement
   | HTMLDataListElement;
+export type rMouseEvent = MouseEvent | React.MouseEvent;
 //Values
 export type CSSDisplay =
   | "none"

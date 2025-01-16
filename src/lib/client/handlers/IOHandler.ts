@@ -9,7 +9,6 @@ export default class IOHandler {
     return code;
   }
   static adjustTelDDD(ddd: string, increase: boolean = true): DDDPattern {
-    //NOSONAR
     if (ddd === "") return ddd as DDDPattern;
     ddd = ddd.trim().replace(/[^0-9]/g, "");
     if (ddd.length > 2) ddd = ddd.slice(0, 2);
