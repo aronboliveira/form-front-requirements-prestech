@@ -2,6 +2,9 @@ import { Processor } from "@/lib/definitions/foundations";
 import DOMValidator from "../validators/DOMValidator";
 import { entryElement } from "@/lib/definitions/client/helpers";
 import MathHandler from "../handlers/MathHandler";
+import ExceptionHandler from "../handlers/ErrorHandler";
+import StyleHandler from "../handlers/StyleHandler";
+import DOMHandler from "../handlers/DOMHandler";
 export default class SubmissionProcessor implements Processor<HTMLElement> {
   private static _instance: SubmissionProcessor;
   constructor() {
@@ -39,28 +42,47 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
     else if (DOMValidator.isDefaultWritableInput(el)) {
       if (!el.checkValidity()) {
         el.reportValidity();
-        //display invalidity as placeholder and border
-        //set temporary placeholder in DOMHandler
-        //set temporary border in StyleHandler
+        StyleHandler.pulseColor(el);
+        StyleHandler.switchPlaceholder(
+          el,
+          ExceptionHandler.describeValidityState(el.validity)
+        );
         return false;
       }
       return true;
     } else if ((el as HTMLInputElement).type === "color") {
       const max = (el as HTMLInputElement).dataset.max,
-        min = (el as HTMLInputElement).dataset.min;
+        min = (el as HTMLInputElement).dataset.min,
+        id = DOMHandler.getIdentifier(el),
+        handleInvalidity = (el: HTMLElement): void => {
+          el.dataset.invalid = "true";
+          el.setAttribute("aria-invalid", "true");
+          StyleHandler.pulseColor(el);
+          setTimeout(() => {
+            if (!id) return;
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.removeAttribute("dataset-invalid");
+            el.removeAttribute("aria-invalid");
+          }, 4000);
+        };
       if (max) {
-        //display invalidity as border
         const decMax = MathHandler.hexToDecimal(max),
           decV = MathHandler.hexToDecimal((el as HTMLInputElement).value);
         if (!Number.isFinite(decMax)) return true;
-        if (!Number.isFinite(decV) || decV > decMax) return false;
+        if (!Number.isFinite(decV) || decV > decMax) {
+          (el as HTMLInputElement).required && handleInvalidity(el);
+          return false;
+        }
       }
       if (min) {
-        //display invalidity as border
         const decMin = MathHandler.hexToDecimal(min),
           decV = MathHandler.hexToDecimal((el as HTMLInputElement).value);
         if (!Number.isFinite(decMin)) return true;
-        if (!Number.isFinite(decV) || decV < decMin) return false;
+        if (!Number.isFinite(decV) || decV < decMin) {
+          (el as HTMLInputElement).required && handleInvalidity(el);
+          return false;
+        }
       }
       return true;
     }
@@ -69,6 +91,7 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
   #evaluateCheckable(el: HTMLInputElement): boolean | void {
     if (el.type == "checkbox") return el.checked;
     else if (el.type === "radio") {
+      //handle radiogroup
     } else return;
   }
   #evaluateSelect(el: HTMLSelectElement): boolean {
@@ -84,7 +107,11 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
   #evaluateTextArea(el: HTMLTextAreaElement): boolean {
     if (!el.checkValidity()) {
       el.reportValidity();
-      //display invalidity as placeholder and border
+      StyleHandler.pulseColor(el);
+      StyleHandler.switchPlaceholder(
+        el,
+        ExceptionHandler.describeValidityState(el.validity)
+      );
       return false;
     }
     return true;

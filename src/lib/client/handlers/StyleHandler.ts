@@ -1,6 +1,13 @@
-import { CSSDisplay, nlHtEl, nlStr } from "@/lib/definitions/client/helpers";
+import {
+  CSSDisplay,
+  inputLikeElement,
+  nlHtEl,
+  nlStr,
+} from "@/lib/definitions/client/helpers";
 import StyleValidator from "../validators/StyleValidator";
 import CompabilityValidator from "../validators/CompabilityValidator";
+import DOMHandler from "./DOMHandler";
+import DOMValidator from "../validators/DOMValidator";
 export const pseudos: Map<string, Map<string, Map<string, string>>> = new Map();
 export default class StyleHandler {
   static toggleVisibility(
@@ -29,7 +36,6 @@ export default class StyleHandler {
   }
   static findStyleSheet(
     styleSheetIdentifier: RegExp,
-    // ruleIdentifier: RegExp,
     attr = "href"
   ): CSSStyleSheet | undefined {
     const matchedSheets = [...document.styleSheets].filter(
@@ -104,5 +110,96 @@ export default class StyleHandler {
       styles += `}`;
     }
     pseudoStyles.innerText = styles;
+  }
+  static pulseColor(
+    el: nlHtEl,
+    color: string = "red",
+    context: string = "both",
+    double: boolean = false
+  ): void {
+    if (!(el instanceof HTMLElement && typeof color === "string")) return;
+    const iniColor = "rgb(222, 226, 230)",
+      iniFontColor = "rgb(33, 37, 41)",
+      pulseBColor = (el: HTMLElement): void => {
+        setTimeout(() => {
+          if (!el.style.transition)
+            el.style.transition = "border-color 0.5s ease-in";
+          else el.style.transition += "border-color 0.5s ease-in";
+          el.style.borderColor = color;
+          setTimeout(() => {
+            el.style.borderColor = iniColor;
+          }, 750);
+        }, 250);
+      },
+      pulseFColor = (el: HTMLElement): void => {
+        setTimeout(() => {
+          if (el.style.transition) el.style.transition += "color 0.5s ease-in";
+          else el.style.transition = "color 0.5s ease-in";
+          el.style.color = color;
+          setTimeout(() => {
+            el.style.color = iniFontColor;
+          }, 750);
+        }, 250);
+      };
+    if (context === "both" || context === "border") {
+      pulseBColor(el);
+      double && setTimeout(() => pulseBColor(el), 1600);
+    }
+    if (context === "both" || context === "font") {
+      pulseFColor(el);
+      double && setTimeout(() => pulseFColor(el), 1600);
+    }
+  }
+  static placeholderCounter = 0.7;
+  static switchPlaceholder(
+    el: inputLikeElement,
+    newPh: string = "...",
+    newColor = "#511"
+  ): void {
+    const prev = el.placeholder,
+      id = DOMHandler.getIdentifier(el),
+      idRef = "placeholdersStyles";
+    el.placeholder = newPh;
+    let phs = document.getElementById(idRef);
+    if (!phs) {
+      phs = document.createElement("style");
+      phs.id = idRef;
+    }
+    if (!phs.innerHTML)
+      phs.innerHTML = `${[...el.classList].map(c => `.${c}`)}${
+        el.id ? `#${el.id}` : ""
+      }::placeholder { color: ${newColor}; opacity: ${0.7} }`;
+    else
+      phs.innerHTML += `\n${[...el.classList].map(c => `.${c}`)}${
+        el.id ? `#${el.id}` : ""
+      }::placeholder { color: ${newColor}; opacity: ${0.7}; }`;
+    const interv = setInterval(i => {
+      const phs = document.getElementById(idRef);
+      if (!phs || !/opacity/g.test(phs.innerHTML)) {
+        clearInterval(i);
+        return;
+      }
+      StyleHandler.placeholderCounter -= 0.05;
+      phs.innerHTML.replace(
+        /opacity\:\s([0-1]?\.[0-9]+);/g,
+        () => `opacity: ${StyleHandler.placeholderCounter};`
+      );
+    }, 250);
+    setTimeout(() => {
+      interv && clearInterval(interv);
+      const phs = document.getElementById(idRef);
+      phs && phs.remove();
+      if (!id) return;
+      const el = DOMHandler.queryByUniqueName(id);
+      if (
+        !(
+          el &&
+          (DOMValidator.isDefaultTextbox(el) ||
+            DOMValidator.isDefaultWritableInput(el))
+        )
+      )
+        return;
+      el.placeholder = prev;
+    }, 3500);
   }
 }
