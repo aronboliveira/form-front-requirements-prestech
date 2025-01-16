@@ -8,17 +8,21 @@ export default class MathHandler {
     let returnVal = 0;
     try {
       if (typeof iniVal !== "string")
-        throw new Error(
+        throw new TypeError(
           "Failed to validate argument: iniVal must be a string."
         );
       if (typeof context !== "string")
-        throw new Error(
+        throw new TypeError(
           "Failed to validate argument: context must be a string."
         );
       if (typeof def !== "number")
-        throw new Error("Failed to validate argument: def must be a number.");
+        throw new TypeError(
+          "Failed to validate argument: def must be a number."
+        );
       if (typeof fixed !== "number")
-        throw new Error("Failed to validate argument: fixed must be a number.");
+        throw new TypeError(
+          "Failed to validate argument: fixed must be a number."
+        );
       switch (context) {
         case "int":
           returnVal = parseInt(iniVal, 10) || def;
@@ -34,7 +38,7 @@ export default class MathHandler {
           if (!Number.isFinite(returnVal) || isNaN(returnVal)) returnVal = def;
           break;
         default:
-          throw new Error(`Context of parsing invalid.`);
+          throw new SyntaxError(`Context of parsing invalid.`);
       }
       return returnVal || 0;
     } catch (e) {

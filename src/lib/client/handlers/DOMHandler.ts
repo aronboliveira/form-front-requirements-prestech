@@ -1,4 +1,4 @@
-import { nlHtEl, rMouseEvent } from "@/lib/definitions/client/helpers";
+import { nlHtEl, nlStr, rMouseEvent } from "@/lib/definitions/client/helpers";
 
 export default class DOMHandler {
   #shouldEvaluateTime: boolean = false;
@@ -33,6 +33,9 @@ export default class DOMHandler {
     const names = document.getElementsByName(idf);
     if (names.length === 1) return names[0];
     else return null;
+  }
+  static getIdentifier(el: Element): nlStr {
+    return el.id || ("name" in el ? (el.name as string) : null);
   }
   public get shouldEvaluateTime(): boolean {
     return this.#shouldEvaluateTime;

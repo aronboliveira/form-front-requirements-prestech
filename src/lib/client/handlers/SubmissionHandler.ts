@@ -5,19 +5,19 @@ import ExceptionHandler from "./ErrorHandler";
 import { entryElement, voidish } from "@/lib/definitions/client/helpers";
 import DOMValidator from "../validators/DOMValidator";
 import SubmissionProcessor from "../processors/SubmissionProcessor";
+import DOMHandler from "./DOMHandler";
 export default class SubmissionHandler {
   private static _instance: SubmissionHandler;
-  private lastClickTime: number = 0;
-  private attemptCount: number = 0;
-  private lockedUntil: number | null = null;
   readonly #form: HTMLFormElement;
   readonly #processor: SubmissionProcessor;
+  #attempts: number;
   constructor(_form: HTMLFormElement, _processor?: SubmissionProcessor) {
     if (!SubmissionHandler._instance) SubmissionHandler._instance = this;
     this.#processor = _processor || new SubmissionProcessor();
     this.#form = _form;
+    this.#attempts = 0;
   }
-  static construct(
+  public static construct(
     _form: HTMLFormElement,
     _processor?: SubmissionProcessor
   ): SubmissionHandler {
@@ -25,42 +25,61 @@ export default class SubmissionHandler {
       ? SubmissionHandler._instance
       : new SubmissionHandler(_form, _processor);
   }
-  canSubmit(): boolean {
-    const now = Date.now();
-    if (this.lockedUntil && now < this.lockedUntil) {
-      alert(
-        "You've attempted too many submissions. " +
-          "Please wait 10 minutes before trying again."
+  public canSubmit(caller: HTMLElement): boolean {
+    this.#attempts += 1;
+    if (this.#attempts > 4) {
+      const id = DOMHandler.getIdentifier(caller);
+      if (DOMValidator.isDefaultDisableable(caller)) {
+        caller.disabled = true;
+        setTimeout(() => {
+          if (!id) return;
+          const caller = DOMHandler.queryByUniqueName(id);
+          if (!caller || !DOMValidator.isDefaultDisableable(caller)) return;
+          caller.disabled = false;
+        }, 3000);
+      } else if (DOMValidator.isCustomDisableable(caller)) {
+        caller.dataset.disabled = "true";
+        if (!caller.classList.contains("disabled"))
+          caller.classList.add("disabled");
+        setTimeout(() => {
+          if (!id) return;
+          const caller = document.getElementById(id);
+          if (!caller || !DOMValidator.isCustomDisableable(caller)) return;
+          caller.hasAttribute("dataset-disabled") &&
+            caller.removeAttribute("dataset-disabled");
+        }, 3000);
+      }
+      toast(
+        navigator.language.startsWith("pt-")
+          ? "Tentativas excedidas para o intervalo de tempo. Aguarde para tentar novamente."
+          : "Attempts exceded for the time interval. Please wait and try again.",
+        { icon: "⏳" }
       );
+      setTimeout(() => {
+        const submitBtn =
+          document.getElementById("submitBtn") ||
+          document.querySelector('a[href*="/base"]');
+        if (
+          submitBtn instanceof HTMLButtonElement ||
+          submitBtn instanceof HTMLInputElement
+        )
+          submitBtn.disabled = false;
+      }, 3000);
       return false;
+    } else if (this.#attempts === 1) {
+      setTimeout(() => {
+        this.#attempts = 0;
+      }, 10000);
     }
-    if (now - this.lastClickTime < 5000) {
-      alert("Please wait 5 seconds between submissions.");
-      return false;
-    }
-    if (this.attemptCount >= 3 && now - this.lastClickTime < 60000) {
-      this.lockedUntil = now + 10 * 60 * 1000;
-      alert(
-        "You've attempted too many times. " +
-          "You're locked out for 10 minutes."
-      );
-      return false;
-    }
-    this.lastClickTime = now;
-    this.attemptCount++;
     return true;
   }
-  resetAttempts(): void {
-    this.attemptCount = 0;
-    this.lockedUntil = null;
-  }
-  submit(): { ok: boolean; cause: string } {
+  public submit(): { ok: boolean; cause: string } {
     if (this.#form.noValidate)
       return { ok: false, cause: "Form noValidate attribute active" };
     this.scan();
     return { ok: true, cause: "Form correctly submitted" };
   }
-  scan(): {
+  public scan(): {
     successful: entryElement[];
     failed: entryElement[];
     successfulCustom: HTMLElement[];
@@ -101,7 +120,7 @@ export default class SubmissionHandler {
     }
     return { successful, failed, successfulCustom, failedCustom };
   }
-  async sendToServerWithAxios(
+  public async sendToServerWithAxios(
     endpoint: string,
     data: { [k: string]: string },
     headers: PostHeaders = {
@@ -139,7 +158,7 @@ export default class SubmissionHandler {
       });
     }
   }
-  async fetchToServer(
+  public async fetchToServer(
     endpoint: string,
     data: { [k: string]: string },
     headers: PostHeaders = {
@@ -167,7 +186,7 @@ export default class SubmissionHandler {
       });
     }
   }
-  handleResponse(res: Response | AxiosResponse, router: any) {
+  public handleResponse(res: Response | AxiosResponse, router: any) {
     if (res.status.toString().startsWith("2")) {
       toast.success("O formulário foi submetido com sucesso!");
       setTimeout(() => router.push("/"), 2000);
@@ -184,13 +203,16 @@ export default class SubmissionHandler {
       }
     }
   }
-  getInstance(): SubmissionHandler | void {
+  public getInstance(): SubmissionHandler | void {
     return SubmissionHandler._instance;
   }
-  get form(): HTMLFormElement | voidish {
+  public get form(): HTMLFormElement | voidish {
     return this.#form;
   }
-  get processor(): SubmissionProcessor {
+  public get processor(): SubmissionProcessor {
     return this.#processor;
+  }
+  public get attemps(): number {
+    return this.#attempts;
   }
 }
