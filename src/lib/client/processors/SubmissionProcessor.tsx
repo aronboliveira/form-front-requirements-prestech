@@ -91,10 +91,12 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
   #evaluateCheckable(el: HTMLInputElement): boolean | void {
     if (el.type == "checkbox") return el.checked;
     else if (el.type === "radio") {
+      //TODO
       //handle radiogroup
     } else return;
   }
   #evaluateSelect(el: HTMLSelectElement): boolean {
+    //TODO
     //display invalidity as border
     //handle multiple
     if (el.dataset.notaccepted)
@@ -117,6 +119,7 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
     return true;
   }
   #evaluateCustomEntry(el: HTMLElement): boolean {
+    //TODO
     return true;
   }
 }

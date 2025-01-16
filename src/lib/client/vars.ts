@@ -15,9 +15,14 @@ export const classes: { [k: string]: string } = {
   btnSec: `${btn} btn-secondary`,
   btnPrim: `${btn} btn-primary`,
 };
-export const flags: { [k: string]: string | boolean | number } = {
+export const flags: {
+  indexed: boolean;
+  pt: boolean;
+  failedTimeoutAttempts: number;
+} = {
   indexed: false,
   pt: true,
+  failedTimeoutAttempts: 0,
 };
 export const CtxLabels: roleQuestionsMap = new Map([
   [
