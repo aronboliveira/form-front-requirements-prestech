@@ -92,13 +92,26 @@ export default class IOHandler {
   static applyTelExtension(telValue: string, type: TelType): string {
     if (telValue === "") return telValue;
     telValue = telValue.trim().replaceAll(/[^0-9\-\+]/g, "");
+    const ini = telValue;
     if (type === "local") {
       if (
         ((telValue.startsWith("9") && telValue.length === 5) ||
           (!telValue.startsWith("9") && telValue.length === 4)) &&
-        !/\-/.test(telValue)
+        !/\-/g.test(telValue)
       )
         telValue += "-";
+      if (
+        telValue.startsWith("9") &&
+        telValue.length > 5 &&
+        !/\-/g.test(telValue)
+      )
+        telValue = `${telValue.slice(0, 5)}-${telValue.slice(5)}`;
+      else if (
+        !telValue.startsWith("9") &&
+        telValue.length > 4 &&
+        !/\-/g.test(telValue)
+      )
+        telValue = `${telValue.slice(0, 4)}-${telValue.slice(4)}`;
       if (telValue.startsWith("9") && telValue.length > 10)
         telValue = telValue.slice(0, 10);
       else if (!telValue.startsWith("9") && telValue.length > 9)
@@ -133,7 +146,9 @@ export default class IOHandler {
         }
       } else telValue = IOHandler.applyTelExtension(telValue, "national");
     }
-    return telValue;
+    return ini === telValue && telValue.endsWith("-")
+      ? telValue.slice(0, -1)
+      : telValue;
   }
   static applyUpperCase(v: string, limit?: number): string {
     return limit ? (v.length === limit ? v.toUpperCase() : v) : v.toUpperCase();

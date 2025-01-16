@@ -48,14 +48,18 @@ export default function Tel({
         })()}
         required={required ? true : false}
         className={classes.inpClasses}
-        onChange={ev =>
-          setV(
-            IOHandler.applyTelExtension(
-              ev.currentTarget.value,
+        onChange={ev => {
+          const t = ev.currentTarget;
+          setV(prev => {
+            const curr = IOHandler.applyTelExtension(
+              t.value,
               type
-            ) as ValidPhonePattern
-          )
-        }
+            ) as ValidPhonePattern;
+            return curr === prev && curr.endsWith("-")
+              ? (curr.slice(0, -1) as ValidPhonePattern)
+              : curr;
+          });
+        }}
       />
     </div>
   );
