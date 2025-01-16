@@ -51,4 +51,12 @@ export default class MathHandler {
     }
     return newKey;
   }
+  static isValidHex(v: string): boolean {
+    return /^#[0-9A-Fa-f]+$/g.test(v);
+  }
+  static hexToDecimal(v: string): number {
+    if (!this.isValidHex(v)) return NaN;
+    if (v.startsWith("#")) v = v.slice(1);
+    return parseInt(v, 16);
+  }
 }

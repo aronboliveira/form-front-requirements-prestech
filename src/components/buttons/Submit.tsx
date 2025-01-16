@@ -21,13 +21,18 @@ export default function Submit({ form }: FormRelated) {
           toast.success(
             "Successfuly sent to the server. Waiting for response."
           );
-          SubmissionHandler.sendToServerWithAxios(
-            "api/submit/route",
-            {}, //TODO MAPPEAR DATA
-            { "Content-Type": "application/json" }
-          ).then(res => {
-            console.log(res);
-          });
+          const form =
+            ev.currentTarget.form ?? ev.currentTarget.closest("form");
+          if (!form) return;
+          SubmissionHandler.construct(form)
+            .sendToServerWithAxios(
+              "api/submit/route",
+              {},
+              { "Content-Type": "application/json" }
+            )
+            .then(res => {
+              console.log(res);
+            });
         } else toast.error(res);
       }}
     >

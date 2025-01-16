@@ -6,6 +6,9 @@ export interface Identifiable {
 export interface Provider {
   setup: () => void;
 }
+export interface Processor<T> {
+  process: (data: T) => any;
+}
 export interface Mapper {
   map: (data: any) => any;
 }
@@ -20,20 +23,20 @@ export type roleType =
   | "desenvolvimento"
   | "devOps"
   | "undefined";
-  export type officeTopicType =
-  | 'DailyTasks'
-  | 'MainTasks'
-  | 'MainSw'
-  | 'AddSw'
-  | 'Priority'
-  | 'Optimize'
-  | 'Challenges'
-  | 'Collaboration'
-  export type roleQuestionsMap = Map<
+export type officeTopicType =
+  | "DailyTasks"
+  | "MainTasks"
+  | "MainSw"
+  | "AddSw"
+  | "Priority"
+  | "Optimize"
+  | "Challenges"
+  | "Collaboration";
+export type roleQuestionsMap = Map<
   officeTopicType,
-  Map<Omit<roleType | 'default', 'undefined'>, string>
->
-export type mapLabels = 'roleQuestions';
+  Map<Omit<roleType | "default", "undefined">, string>
+>;
+export type mapLabels = "roleQuestions";
 export type TelType = "local" | "national" | "complete";
 //Patterns
 export type PseudoNum = `${number}`;

@@ -1,3 +1,5 @@
+import { jsErrorsFriendlyNames } from "../vars";
+
 export default class ExceptionHandler {
   static classify(exception: Error | DOMException): {
     type: string;
@@ -21,7 +23,6 @@ export default class ExceptionHandler {
         };
       } else if (exception instanceof DOMException) {
         const name = exception.name.toLowerCase().replace("error", "").trim();
-
         switch (name) {
           case "indexsize":
           case "hierarchyrequest":
@@ -98,5 +99,66 @@ export default class ExceptionHandler {
         status: 500,
       };
     }
+  }
+  static describeValidityState(vs: ValidityState, custom?: string): string {
+    const isPt = navigator.language.startsWith("pt-");
+    for (const v of Object.getOwnPropertyNames(vs)) {
+      if (v === "valid") continue;
+      if ((vs as any)[v] === false) {
+        switch (v as keyof ValidityState) {
+          case "badInput":
+            return isPt ? "Entrada inadequada" : "Inadequate entry";
+          case "patternMismatch":
+            return isPt ? "Padrão inadequado" : "Inadequate pattern";
+          case "valueMissing":
+            return isPt
+              ? "O valor não pôde ser lido"
+              : "The value could not be read";
+          case "tooShort":
+            return isPt
+              ? "Número de dígitos insuficiente"
+              : "Number os digits insufficient";
+          case "tooLong":
+            return isPt
+              ? "Número de dígitos excessivo"
+              : "Excessive number os digits";
+          case "rangeUnderflow":
+            return isPt
+              ? "O valor não atende o número mínimo"
+              : "The value is below the mininum accepted";
+          case "rangeOverflow":
+            return isPt
+              ? "O valor está além do número máximo"
+              : "The value is above the maximum accepted";
+          case "typeMismatch":
+            return isPt
+              ? "Tipo de entrada inadequada"
+              : "Type of entry inadequate";
+          case "stepMismatch":
+            return isPt
+              ? "A entrada não segue a progressão requirida"
+              : "The entry does not follow the required step pattern";
+          case "customError":
+            return custom
+              ? custom
+              : isPt
+              ? "Erro personalizado não identificado"
+              : "Undefined Custom error";
+          default:
+            return isPt
+              ? "Há algo errado com a entrada"
+              : "There is something wrong with the entry";
+        }
+      }
+    }
+    return "";
+  }
+  static getFriendlyErrorMessage(errorType: string, isPt: boolean): string {
+    const friendlyNames = isPt
+      ? jsErrorsFriendlyNames?.PT
+      : jsErrorsFriendlyNames?.EN;
+    if (!friendlyNames) return errorType;
+    const friendlyMessage = friendlyNames.get(errorType);
+    return friendlyMessage || errorType;
   }
 }
