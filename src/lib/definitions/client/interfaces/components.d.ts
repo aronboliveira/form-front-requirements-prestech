@@ -47,3 +47,7 @@ export interface SpinnerComponentProps {
   message?: string;
   fs?: boolean;
 }
+export interface DlgProps {
+  dispatch: React.Dispatch<React.SetStateAction<boolean>>;
+  state: boolean;
+}

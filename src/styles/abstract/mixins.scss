@@ -16,3 +16,45 @@
   border-radius: 0.25rem;
   transition: border-color 0.15 ease-in-out, box-shadow 0.15s ease-in-out;
 }
+@mixin size($num1, $unit1, $num2, $unit2) {
+  width: #{$num1}#{$unit1};
+  height: #{$num2}#{$unit2};
+}
+@mixin szFull {
+  width: 100%;
+  height: 100%;
+}
+@mixin minWD($num1, $num2) {
+  width: $num1;
+  min-width: $num2;
+}
+@mixin maxSizeB($num1, $num2) {
+  max-width: $num1;
+  max-height: $num2;
+}
+@mixin fCNoW {
+  display: flex;
+  flex-flow: column nowrap;
+}
+@mixin flAlItCt {
+  display: flex;
+  align-items: center;
+}
+@mixin modalDlgBSLike() {
+  position: relative;
+  animation: dropIn 0.3s ease-out forwards, fadeIn 0.6s ease-in-out forwards;
+}
+@mixin modal($size, $left, $z) {
+  @include fCNoW;
+  @include modalDlgBSLike;
+  @include size($size, "vw", "max-content", "");
+  left: #{$left}#{"%"};
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0.6rem #0000004d;
+  z-index: $z;
+  &::backdrop {
+    background-color: #00000080;
+  }
+}

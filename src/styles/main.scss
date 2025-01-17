@@ -20,6 +20,11 @@ body {
   @include nosurround;
   box-sizing: border-box;
 }
+@supports (scrollbar-width: thin) {
+  * {
+    scrollbar-width: thin;
+  }
+}
 a {
   color: inherit;
   text-decoration: none;
@@ -40,6 +45,10 @@ h2 {
     color: rgb(74, 80, 86);
     margin-bottom: 1rem;
   }
+}
+h3 {
+  box-shadow: none;
+  margin-block: 1.5rem !important;
 }
 hr {
   opacity: 0.1;
@@ -130,6 +139,12 @@ button {
   margin-bottom: var(--spacing-md);
   padding: var(--spacing-base);
 }
+.flexAlItCt {
+  @include flAlItCt;
+}
+.flexNoWC {
+  @include fCNoW;
+}
 .form-range {
   transition: background 0.3s ease;
   &::-webkit-slider-thumb,
@@ -143,12 +158,14 @@ button {
     }
   }
 }
+.rGap2v {
+  row-gap: 2vh;
+}
 .sectSubDiv {
   margin-bottom: 1.5rem;
 }
 .telBlock {
-  display: flex;
-  align-items: center;
+  @include flAlItCt;
   column-gap: 0.5rem;
   .dddBlock {
     width: 3.5rem;
@@ -175,6 +192,9 @@ button {
   .telMainBlock {
     margin-top: 1rem;
   }
+}
+.wsBs {
+  white-space: pre-wrap;
 }
 #ctaBtnsBlock {
   display: flex;

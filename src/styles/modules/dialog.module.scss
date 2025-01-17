@@ -1,0 +1,64 @@
+@use "../abstract/mixins.scss" as *;
+.modalContent {
+  @include modal(90, 5, 900);
+  scrollbar-width: thin;
+  padding: 2%;
+  &.defDp {
+    display: revert;
+  }
+  &.modalContent__stk2 {
+    @include modal(80, 10, 990);
+    padding: 2%;
+    white-space: normal;
+  }
+  &.wid50v {
+    @include minWD(50vw, 20rem);
+  }
+  .fieldset {
+    position: relative;
+    min-width: 95%;
+  }
+  .section {
+    padding: 2%;
+    min-width: 80%;
+  }
+  .div,
+  .section,
+  .form {
+    min-width: 92%;
+  }
+  section {
+    padding: 2%;
+    min-width: 80%;
+  }
+  > fieldset {
+    position: relative;
+    min-width: 95%;
+  }
+  > * > *:is(div):is(fieldset):is(section):is(form) {
+    min-width: 92%;
+  }
+  @media (max-width: 600px) {
+    position: sticky;
+    align-items: self-start;
+    padding: 3%;
+    top: 50%;
+    bottom: 0.8%;
+    right: 5%;
+    z-index: 1000;
+    @include maxSizeB(90vw, 94vh);
+    ::backdrop {
+      @include szFull;
+      top: 0;
+      left: 0;
+      background-color: (0, 0, 0, 0.5);
+      z-index: 999;
+    }
+  }
+}
+.modalContent__fit {
+  @include modal(80, 2, 990);
+  padding: 2%;
+  white-space: normal;
+  width: fit-content;
+}

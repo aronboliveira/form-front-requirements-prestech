@@ -1,6 +1,9 @@
 import MathHandler from "@/lib/client/handlers/MathHandler";
 import { flags } from "@/lib/client/vars";
 import { useEffect } from "react";
+import { createRoot } from "react-dom/client";
+import TimeoutModal from "../modals/TimeoutModal";
+import withModalDispatch from "../highOrder/withModalDispatch";
 export default function Watcher({ _case }: { _case: "mainForm" }) {
   useEffect(() => {
     if ((document.body.dataset.oncount = "true")) return;
@@ -20,7 +23,8 @@ export default function Watcher({ _case }: { _case: "mainForm" }) {
       flags.failedTimeoutAttempts = 0;
       if (newTimer <= 0) {
         document.body.innerHTML = "";
-        //TODO RENDER MODAL
+        const Enhanced = withModalDispatch(TimeoutModal);
+        createRoot(document.body).render(<Enhanced />);
         clearInterval(i);
         return;
       }

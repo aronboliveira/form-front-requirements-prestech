@@ -35,7 +35,6 @@ export default function AutoCorrectSwitch() {
         role='switch'
         id={`autoFillBtn`}
         data-title='Cálculo automático'
-        defaultChecked
         onChange={ev => setOn(ev.currentTarget.checked)}
       />
       <strong>Correção Automática</strong>

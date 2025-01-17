@@ -4,7 +4,6 @@ export const TelCtx = createContext<ITelCtx>({
   required: false,
   label: "unique",
 });
-
 export default function withTelContext<T extends ITelCtx>(
   Wrapped: React.ComponentType<T>
 ) {
