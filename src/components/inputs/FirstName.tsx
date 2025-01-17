@@ -2,7 +2,7 @@
 import { nlInp } from "@/lib/definitions/client/helpers";
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import CompabilityValidator from "@/lib/client/validators/CompabilityValidator";
-import { classes } from "@/lib/client/vars";
+import { classes, flags } from "@/lib/client/vars";
 import { useEffect, useRef, useState } from "react";
 import StringHelper from "@/lib/helpers/StringHelper";
 import StyleHandler from "@/lib/client/handlers/StyleHandler";
@@ -33,9 +33,12 @@ export default function FirstName() {
         autoComplete='given-name'
         // autoFocus
         className={`${classes.inpClasses} name firstName`}
-        onChange={ev =>
-          setV(IOHandler.applyUpperCase(ev.currentTarget.value, 1))
-        }
+        onChange={ev => {
+          const t = ev.currentTarget;
+          flags.isAutoCorrectOn
+            ? setV(IOHandler.applyUpperCase(t.value, 1))
+            : setV(t.value);
+        }}
       />
     </div>
   );

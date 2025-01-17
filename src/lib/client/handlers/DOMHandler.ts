@@ -18,7 +18,7 @@ export default class DOMHandler {
   constructor(public ev: React.UIEvent | React.MouseEvent | Event) {
     this.ev = ev;
   }
-  static isClickOutside(
+  public static isClickOutside(
     event: MouseEvent | React.MouseEvent,
     dlgInBtn: Element
   ): boolean[] {
@@ -37,15 +37,15 @@ export default class DOMHandler {
       return [false, false, false, false];
     }
   }
-  static queryByUniqueName(idf: string): nlHtEl {
+  public static queryByUniqueName(idf: string): nlHtEl {
     const names = document.getElementsByName(idf);
     if (names.length === 1) return names[0];
     else return null;
   }
-  static getIdentifier(el: Element): nlStr {
+  public static getIdentifier(el: Element): nlStr {
     return el.id || ("name" in el ? (el.name as string) : null);
   }
-  static extractValue(el: HTMLElement): string {
+  public static extractValue(el: HTMLElement): string {
     let value = "";
     if (DOMValidator.isDefaultEntry(el)) {
       DOMValidator.isDefaultCheckable(el)
@@ -58,7 +58,7 @@ export default class DOMHandler {
     }
     return value;
   }
-  static isPt(): boolean {
+  public static isPt(): boolean {
     const isPt = navigator.language.startsWith("pt-");
     flags.pt = isPt;
     return isPt;
@@ -79,56 +79,6 @@ export default class DOMHandler {
       return false;
     }
     return true;
-  }
-  public get shouldEvaluateTime(): boolean {
-    return this.#shouldEvaluateTime;
-  }
-  public get shouldEvaluateClient(): boolean {
-    return this.#shouldEvaluateClient;
-  }
-  public get clientAttempt(): number {
-    return this.#clientAttempt;
-  }
-  public get lastClickTime(): number {
-    return this.#lastClickTime;
-  }
-  public get lastClickX(): number {
-    return this.#lastClickX;
-  }
-  public get lastClickY(): number {
-    return this.#lastClickY;
-  }
-  #setLastClickTime(time: number): void {
-    this.#lastClickTime = time;
-  }
-  #setLastClickCoordinates(x: number, y: number): void {
-    this.#lastClickX = x;
-    this.#lastClickY = y;
-  }
-  #incrementClientAttempt(): void {
-    this.#clientAttempt += 1;
-  }
-  #enableEvaluateTime(): void {
-    this.#shouldEvaluateTime = true;
-  }
-  #enableEvaluateClient(): void {
-    this.#shouldEvaluateClient = true;
-  }
-  #isTrustedEvent(ev: rMouseEvent): boolean {
-    return ev.isTrusted;
-  }
-  #isMouseMovementZero(ev: rMouseEvent): boolean {
-    return ev.movementX === 0 && ev.movementY === 0;
-  }
-  #isSuspiciousTimeInterval(): boolean {
-    return new Date().getTime() - this.#lastClickTime < 100;
-  }
-  #isSuspiciousClientMovement(ev: rMouseEvent): boolean {
-    return (
-      this.#clientAttempt > 1 &&
-      ev.clientX === this.#lastClickX &&
-      ev.clientY === this.#lastClickY
-    );
   }
   public evaluateClickMovements(): [string, boolean] {
     let suspicious = true;
@@ -195,5 +145,55 @@ export default class DOMHandler {
         suspicious,
       ];
     }
+  }
+  public get shouldEvaluateTime(): boolean {
+    return this.#shouldEvaluateTime;
+  }
+  public get shouldEvaluateClient(): boolean {
+    return this.#shouldEvaluateClient;
+  }
+  public get clientAttempt(): number {
+    return this.#clientAttempt;
+  }
+  public get lastClickTime(): number {
+    return this.#lastClickTime;
+  }
+  public get lastClickX(): number {
+    return this.#lastClickX;
+  }
+  public get lastClickY(): number {
+    return this.#lastClickY;
+  }
+  #setLastClickTime(time: number): void {
+    this.#lastClickTime = time;
+  }
+  #setLastClickCoordinates(x: number, y: number): void {
+    this.#lastClickX = x;
+    this.#lastClickY = y;
+  }
+  #incrementClientAttempt(): void {
+    this.#clientAttempt += 1;
+  }
+  #enableEvaluateTime(): void {
+    this.#shouldEvaluateTime = true;
+  }
+  #enableEvaluateClient(): void {
+    this.#shouldEvaluateClient = true;
+  }
+  #isTrustedEvent(ev: rMouseEvent): boolean {
+    return ev.isTrusted;
+  }
+  #isMouseMovementZero(ev: rMouseEvent): boolean {
+    return ev.movementX === 0 && ev.movementY === 0;
+  }
+  #isSuspiciousTimeInterval(): boolean {
+    return new Date().getTime() - this.#lastClickTime < 100;
+  }
+  #isSuspiciousClientMovement(ev: rMouseEvent): boolean {
+    return (
+      this.#clientAttempt > 1 &&
+      ev.clientX === this.#lastClickX &&
+      ev.clientY === this.#lastClickY
+    );
   }
 }

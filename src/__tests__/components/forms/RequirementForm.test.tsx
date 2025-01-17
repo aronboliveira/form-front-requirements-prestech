@@ -4,6 +4,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import RequirementForm from "../../../components/forms/RequirementForm";
+import "@testing-library/jest-dom";
 describe("RequirementForm component", () => {
   it("renders the form with ID 'requirementsForm'", () => {
     render(<RequirementForm />);

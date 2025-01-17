@@ -151,11 +151,37 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
     return DOMHandler.verifyValidity(el);
   }
   #evaluateCheckable(el: HTMLInputElement): boolean | void {
-    if (el.type == "checkbox") return el.checked;
-    else if (el.type === "radio") {
-      //TODO
-      //handle radiogroup
+    if (el.type === "radio" || el.type === "checkbox") {
+      const nameds = document.getElementsByName(el.name);
+      if (nameds.length === 1) return el.checked;
+      else if (nameds.length > 1) return this.#evaluateRadioGroup(el);
+      else return;
     } else return;
+  }
+  #evaluateRadioGroup(el: HTMLInputElement): boolean | void {
+    try {
+      const parent =
+        el.closest(".radioGroup") ||
+        el.closest(`[role="radiogroup"]`) ||
+        el.closest(".checkGroup") ||
+        el.parentElement?.parentElement;
+      if (!(parent instanceof Element)) return;
+      const radios = [...parent.querySelectorAll('input[type="radio"]')].filter(
+        e => e instanceof HTMLInputElement && e.name === el.name
+      );
+      if (radios.length === 0) return;
+      if (radios.length === 1) return el.checked;
+      if (radios.length > 1) {
+        return Array.from(radios).some(
+          r =>
+            r instanceof HTMLInputElement &&
+            (r.type === "radio" || r.type === "checkbox") &&
+            r.checked
+        );
+      }
+    } catch (e) {
+      return;
+    }
   }
   #evaluateSelect(el: HTMLSelectElement): boolean {
     if (el.multiple) {

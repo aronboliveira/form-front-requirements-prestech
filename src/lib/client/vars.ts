@@ -18,10 +18,12 @@ export const classes: { [k: string]: string } = {
 export const flags: {
   indexed: boolean;
   pt: boolean;
+  isAutoCorrectOn: boolean;
   failedTimeoutAttempts: number;
 } = {
   indexed: false,
   pt: true,
+  isAutoCorrectOn: true,
   failedTimeoutAttempts: 0,
 };
 export const borderColors: { [k: string]: string } = {};

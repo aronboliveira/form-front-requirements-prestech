@@ -1,7 +1,7 @@
 "use client";
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import StyleHandler from "@/lib/client/handlers/StyleHandler";
-import { classes } from "@/lib/client/vars";
+import { classes, flags } from "@/lib/client/vars";
 import { ITelInput } from "@/lib/definitions/client/interfaces/components";
 import { nlInp } from "@/lib/definitions/client/helpers";
 import { ValidPhonePattern } from "@/lib/definitions/foundations";
@@ -53,6 +53,7 @@ export default function Tel({
         onChange={ev => {
           const t = ev.currentTarget;
           setV(prev => {
+            if (!flags.isAutoCorrectOn) return t.value as ValidPhonePattern;
             const curr = IOHandler.applyTelExtension(
               t.value,
               type

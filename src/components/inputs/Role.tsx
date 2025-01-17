@@ -23,8 +23,6 @@ export default function Role() {
       <label className={classes.inpLabClasses} htmlFor={id}>
         Cargo na Empresa
       </label>
-      {/* //TODO TEM QUE SER MÚLTIPLO */}
-      {/* //TODO INCLUIR POWERSHELL E OPERAÇÕES EM CLOUD */}
       <select
         className={classes.selectClasses}
         name={id}

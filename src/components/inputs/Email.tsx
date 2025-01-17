@@ -2,7 +2,7 @@
 import { nlInp } from "@/lib/definitions/client/helpers";
 import { IEmailInput } from "@/lib/definitions/client/interfaces/components";
 import IOHandler from "@/lib/client/handlers/IOHandler";
-import { classes } from "@/lib/client/vars";
+import { classes, flags } from "@/lib/client/vars";
 import { limits, patterns } from "@/lib/vars";
 import { useState, useEffect, useRef } from "react";
 import StyleHandler from "@/lib/client/handlers/StyleHandler";
@@ -37,12 +37,18 @@ export default function Email({
         pattern={patterns.email}
         required={required ? true : false}
         className={classes.inpClasses}
-        onChange={ev =>
-          setV(IOHandler.applyEmailExtension(ev.currentTarget.value))
-        }
-        onClick={ev =>
-          setV(IOHandler.applyEmailExtension(ev.currentTarget.value))
-        }
+        onChange={ev => {
+          const t = ev.currentTarget;
+          flags.isAutoCorrectOn
+            ? setV(IOHandler.applyEmailExtension(t.value))
+            : setV(t.value);
+        }}
+        onClick={ev => {
+          const t = ev.currentTarget;
+          flags.isAutoCorrectOn
+            ? setV(IOHandler.applyEmailExtension(t.value))
+            : setV(t.value);
+        }}
       />
     </div>
   );
