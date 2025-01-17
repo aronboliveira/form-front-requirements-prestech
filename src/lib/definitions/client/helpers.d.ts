@@ -66,3 +66,17 @@ export type CSSDisplay =
   | "initial"
   | "inherit"
   | "unset";
+export type ClassesKey =
+  | "inpDivClasses"
+  | "inpLabClasses"
+  | "inpClasses"
+  | "textClasses"
+  | "contextualTextClasses"
+  | "ccClasses"
+  | "dddClasses"
+  | "telClasses"
+  | "selectClasses"
+  | "btnSec"
+  | "btnPrim"
+  | "mainFsClasses"
+  | "mainFsLegClasses";

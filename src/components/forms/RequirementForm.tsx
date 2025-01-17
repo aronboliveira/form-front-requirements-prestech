@@ -27,7 +27,7 @@ import { IFormCtx } from "@/lib/definitions/client/interfaces/contexts";
 import { roleType } from "@/lib/definitions/foundations";
 import ContextualQuestions from "../bloc/fieldsets/professional/ContextualQuestions";
 import TabProvider from "@/lib/client/providers/TabProvider";
-import { flags } from "@/lib/client/vars";
+import { classes, flags } from "@/lib/client/vars";
 import ContextValidator from "@/lib/client/validators/ContextValidator";
 import TechnologiesLists from "../bloc/fieldsets/professional/TechnologiesList";
 import DOMHandler from "@/lib/client/handlers/DOMHandler";
@@ -89,11 +89,8 @@ export default function RequirementForm({
       ]).setup();
       flags.indexed = true;
     }
-    const roleChanged = sessionStorage.getItem("roleChanged");
-    if (roleChanged === "true") {
-      const role = sessionStorage.getItem("role");
-      role && setRole(ContextValidator.isRoleType(role) ? role : "undefined");
-    }
+    const role = sessionStorage.getItem("role");
+    role && setRole(ContextValidator.isRoleType(role) ? role : "undefined");
     setTimeout(() => {
       new StyleProvider().setup();
     }, 500);
@@ -101,9 +98,7 @@ export default function RequirementForm({
   useEffect(() => {
     IOModel.setPlaceholders();
   });
-  const mainFsClasses = `border p-4 mb-3 formMainFs`,
-    mainFsLegClasses = `legMainFs bold`,
-    mainFsSect = `mainFsSect`,
+  const mainFsSect = `mainFsSect`,
     sectSubDiv_1 = `sectSubDiv`,
     EnhancedTelFs = withTelContext(LocalizedTelFs);
   return (
@@ -124,8 +119,8 @@ export default function RequirementForm({
           target='self'
           encType='application/x-www-form-urlencoded'
         >
-          <fieldset className={mainFsClasses} id='fsId'>
-            <legend className={mainFsLegClasses} id='legIdf'>
+          <fieldset className={classes.mainFsClasses} id='fsId'>
+            <legend className={classes.mainFsLegClasses} id='legIdf'>
               Dados Básicos
             </legend>
             <hr style={{ marginBlock: "2rem" }} />
@@ -154,9 +149,9 @@ export default function RequirementForm({
               </fieldset>
             </section>
           </fieldset>
-          <fieldset className={mainFsClasses} id='divTechs'>
+          <fieldset className={classes.mainFsClasses} id='divTechs'>
             <legend
-              className={mainFsLegClasses}
+              className={classes.mainFsLegClasses}
               id='legTechs'
               style={{ paddingBottom: "1rem" }}
             >

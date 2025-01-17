@@ -79,7 +79,7 @@ export default function ContextualQuestions() {
         <fieldset
           key={`${g}-${i}`}
           id={`fs${g}${cRole}`}
-          className={`fsCtxQuestions fs${cRole}`}
+          className={`border p-4 mb-3 formMainFs fsCtxQuestions fs${cRole}`}
         >
           {sgs.map(({ t, r, l }, j) => (
             <ContextualText

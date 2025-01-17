@@ -160,15 +160,16 @@ button {
   }
 }
 .fsTechCb {
-  display: flex;
   margin: var(--spacing-base) auto;
-  max-width: 80vw;
+  max-width: 95vw;
   .legTechCb {
     font-weight: bold;
     margin-bottom: var(--spacing-base);
   }
   .fsSubTechCb {
     display: grid;
+    grid-auto-flow: row;
+    grid-auto-rows: min-content;
     gap: var(--spacing-md);
     margin-bottom: var(--spacing-md);
     max-width: 100%;
@@ -181,13 +182,14 @@ button {
     @media (max-width: 899px) {
       @include g4x1;
     }
-    .divTechCb {
-      @include flAlItCt;
-      justify-content: flex-start;
-      input {
-        &[type="checkbox"] {
-          margin-right: var(--spacing-sm);
-        }
+  }
+  .divTechCb {
+    display: flex;
+    justify-content: flex-start;
+    gap: var(--spacing-sm);
+    input {
+      &[type="checkbox"] {
+        margin-right: var(--spacing-sm);
       }
     }
   }

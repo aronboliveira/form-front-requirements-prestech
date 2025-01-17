@@ -39,8 +39,6 @@ export default class CacheProvider implements Provider {
         this.#setupPersisters(
           allEls.filter(e => DOMValidator.isEntry(e)) as HTMLElement[]
         );
-        // sessionStorage.removeItem("roleChanged");
-        // sessionStorage.removeItem("role");
       };
       if (
         !ok ||
@@ -124,16 +122,12 @@ export default class CacheProvider implements Provider {
       );
       if (!Object.keys(parsed).length)
         throw new Error(`Parsed object has no keys`);
-      sessionStorage.setItem("roleChanged", "false");
       const els = Object.entries(parsed);
       for (let i = 0; i < els.length; i++) {
         const id = els[i][0];
         let v = els[i][1];
         if (!id) continue;
-        if (id === "role") {
-          sessionStorage.setItem("roleChanged", "true");
-          sessionStorage.setItem("role", v);
-        }
+        id === "role" && sessionStorage.setItem("role", v);
         let entry = document.getElementById(id);
         if (!entry) entry = DOMHandler.queryByUniqueName(id);
         if (!entry) continue;

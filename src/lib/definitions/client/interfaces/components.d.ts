@@ -1,5 +1,11 @@
 import { TelType, nlFm } from "../helpers";
-import { ContextualizedTel, Identifiable, roleType } from "../../foundations";
+import {
+  ContextualizedTel,
+  Identifiable,
+  PseudoNum,
+  roleType,
+  techAppKey,
+} from "../../foundations";
 import { ITelCtx } from "./contexts";
 export interface FormRelated {
   form?: nlFm;
@@ -51,8 +57,11 @@ export interface DlgProps {
   dispatch: React.Dispatch<React.SetStateAction<boolean>>;
   state: boolean;
 }
+export interface CtxCbContainerProps {
+  apps: techAppKey[];
+  num: PseudoNum;
+}
 export interface CtxCbProps {
   app: techAppKey;
-  ownNum: string;
-  role: roleType;
+  ownNum: PseudoNum;
 }

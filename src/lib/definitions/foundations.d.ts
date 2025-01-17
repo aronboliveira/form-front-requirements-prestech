@@ -1,3 +1,4 @@
+import { TechApps } from "../client/vars";
 import { nlEl } from "./client/helpers";
 import { ITelCtx } from "./client/interfaces/contexts";
 export interface Identifiable {
@@ -36,6 +37,7 @@ export type roleQuestionsMap = Map<
   officeTopicType,
   Map<Omit<roleType | "default", "undefined">, string>
 >;
+export type techAppKey = keyof typeof TechApps;
 export type mapLabels = "roleQuestions";
 export type TelType = "local" | "national" | "complete";
 //Patterns

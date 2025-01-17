@@ -7,6 +7,7 @@ import { FormCtx } from "../forms/RequirementForm";
 import { IFormCtx } from "@/lib/definitions/client/interfaces/contexts";
 import { roleType } from "@/lib/definitions/foundations";
 import { nlRDispatch } from "@/lib/definitions/client/helpers";
+import StringHelper from "@/lib/helpers/StringHelper";
 export default function Role() {
   const id = "role",
     ctx = useContext<IFormCtx>(FormCtx),
@@ -40,17 +41,11 @@ export default function Role() {
           ].map(({ l }, i) => (
             <option
               key={`opt_gestao__${i}`}
-              id={l
-                .split("|")
-                .map(
-                  f =>
-                    `${f.charAt(0).toUpperCase().trim()}${f
-                      .slice(1)
-                      .toLowerCase()
-                      .trim()}`
-                )
-                .join()}
+              id={StringHelper.unfriendlyName(l)}
               className='optGestao'
+              value={StringHelper.removeDiacritical(
+                StringHelper.unfriendlyName(l).replace(/_/g, "")
+              )}
             >
               {l}
             </option>
@@ -66,18 +61,13 @@ export default function Role() {
           ].map(({ l }, i) => (
             <option
               key={`opt_tecnico__${i}`}
-              id={l
-                .split(" ")
-                .map(
-                  f =>
-                    `${f.charAt(0).toUpperCase().trim()}${f
-                      .toLowerCase()
-                      .replace(/é/g, "e")
-                      .replace(/ó/g, "o")
-                      .trim()}`
-                )
-                .join()}
+              id={StringHelper.removeDiacritical(
+                StringHelper.unfriendlyName(l)
+              )}
               className='optTecnico'
+              value={StringHelper.removeDiacritical(
+                StringHelper.unfriendlyName(l).replace(/_/g, "")
+              )}
             >
               {l}
             </option>
