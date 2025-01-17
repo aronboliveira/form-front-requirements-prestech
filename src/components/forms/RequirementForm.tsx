@@ -155,7 +155,7 @@ export default function RequirementForm({
               id='legTechs'
               style={{ paddingBottom: "1rem" }}
             >
-              Tecnologias
+              Tecnologias: Familiaridade
             </legend>
             <hr style={{ marginBlock: "2rem" }} />
             <section className={mainFsSect} id='sectOffice'>

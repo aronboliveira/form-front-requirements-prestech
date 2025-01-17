@@ -98,9 +98,15 @@ export default function TechnologiesLists() {
         ref={r}
         key={key}
       >
-        <legend className={`${legBase}`} id={`${legBase}${cRole}`}>
-          Tecnologias usadas: {friendlyRoles[role] || friendlyRoles.undefined}
+        <legend
+          className={`${classes.mainFsLegClasses} ${legBase}`}
+          id={`${legBase}${cRole}`}
+          style={{ paddingBottom: "1rem", marginBottom: "0.5rem" }}
+        >
+          Tecnologias Específicas:{" "}
+          {friendlyRoles[role] || friendlyRoles.undefined}
         </legend>
+        <hr style={{ marginBlock: "2rem" }} />
         {roleApps.map((apps, i) => (
           <TechCheckboxes
             key={`techcbs__${i}`}

@@ -1,6 +1,11 @@
 import { FormCtx } from "@/components/forms/RequirementForm";
 import ContextualText from "@/components/inputs/contextual/ContextualText";
-import { Acronyms, AcronymsDefaults, CtxLabels } from "@/lib/client/vars";
+import {
+  Acronyms,
+  AcronymsDefaults,
+  CtxLabels,
+  classes,
+} from "@/lib/client/vars";
 import { IFormCtx } from "@/lib/definitions/client/interfaces/contexts";
 import { officeTopicType, roleType } from "@/lib/definitions/foundations";
 import StringHelper from "@/lib/helpers/StringHelper";
@@ -81,6 +86,13 @@ export default function ContextualQuestions() {
           id={`fs${g}${cRole}`}
           className={`border p-4 mb-3 formMainFs fsCtxQuestions fs${cRole}`}
         >
+          <legend
+            className={classes.mainFsLegClasses}
+            style={{ marginBottom: "0.5rem", paddingBottom: "1rem" }}
+          >
+            Tecnologias Gerais: {g === "Tasks" ? "Aplicativos" : "Plataformas"}
+          </legend>
+          <hr style={{ marginBlock: "2rem" }} />
           {sgs.map(({ t, r, l }, j) => (
             <ContextualText
               key={`${g}__${j}`}
