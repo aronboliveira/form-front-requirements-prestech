@@ -18,6 +18,7 @@ export default function Email({
     if (!(r.current instanceof HTMLInputElement)) return;
     if (r.current.value.startsWith("@")) StyleHandler.blurOnChange(r.current);
     IOHandler.syncLabel(r.current);
+    required && StyleHandler.alarmBorder(r.current);
   }, [r, v]);
   return (
     <div className={classes.inpDivClasses}>

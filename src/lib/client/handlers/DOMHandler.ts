@@ -1,6 +1,13 @@
-import { nlHtEl, nlStr, rMouseEvent } from "@/lib/definitions/client/helpers";
+import {
+  entryElement,
+  nlHtEl,
+  nlStr,
+  rMouseEvent,
+} from "@/lib/definitions/client/helpers";
 import { flags } from "../vars";
 import DOMValidator from "../validators/DOMValidator";
+import StyleHandler from "./StyleHandler";
+import ExceptionHandler from "./ErrorHandler";
 export default class DOMHandler {
   #shouldEvaluateTime: boolean = false;
   #shouldEvaluateClient: boolean = false;
@@ -55,6 +62,23 @@ export default class DOMHandler {
     const isPt = navigator.language.startsWith("pt-");
     flags.pt = isPt;
     return isPt;
+  }
+  public static verifyValidity(el: entryElement): boolean {
+    if (!el.checkValidity()) {
+      el.reportValidity();
+      StyleHandler.pulseColor(el);
+      if (
+        DOMValidator.isDefaultWritableInput(el) ||
+        el instanceof HTMLTextAreaElement
+      ) {
+        StyleHandler.switchPlaceholder(
+          el,
+          ExceptionHandler.describeValidityState(el.validity)
+        );
+      }
+      return false;
+    }
+    return true;
   }
   public get shouldEvaluateTime(): boolean {
     return this.#shouldEvaluateTime;

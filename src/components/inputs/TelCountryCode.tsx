@@ -7,6 +7,7 @@ import { classes } from "@/lib/client/vars";
 import "react-phone-input-2/lib/style.css";
 import StringHelper from "@/lib/helpers/StringHelper";
 import { nlDiv, nlHtEl, nlInp } from "@/lib/definitions/client/helpers";
+import StyleHandler from "@/lib/client/handlers/StyleHandler";
 export default function TelCountryCode({ required, id }: TelFragmentOptInput) {
   id ||= "countryCode";
   const [v, setV] = useState<string>(""),
@@ -34,6 +35,7 @@ export default function TelCountryCode({ required, id }: TelFragmentOptInput) {
       linkedTo.current.focus();
     }
     IOHandler.syncLabel(r.current as nlInp);
+    required && StyleHandler.alarmBorder(r.current);
   }, [r, v]);
   return (
     <div ref={dr} className={`${classes.inpDivClasses} countryCodeBlock`}>

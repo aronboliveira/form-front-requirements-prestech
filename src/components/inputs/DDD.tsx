@@ -26,6 +26,7 @@ export default function DDD({ required, id }: TelFragmentOptInput) {
       return;
     r.current.dataset.linkedto = linkedTo.current.id;
     IOHandler.syncLabel(r.current);
+    required && StyleHandler.alarmBorder(r.current);
   }, [r, v]);
   return (
     <div className={`${classes.inpDivClasses} dddBlock`}>

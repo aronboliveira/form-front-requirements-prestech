@@ -5,6 +5,7 @@ import CompabilityValidator from "@/lib/client/validators/CompabilityValidator";
 import { classes } from "@/lib/client/vars";
 import { useEffect, useRef, useState } from "react";
 import StringHelper from "@/lib/helpers/StringHelper";
+import StyleHandler from "@/lib/client/handlers/StyleHandler";
 export default function FirstName() {
   const r = useRef<nlInp>(null),
     id = "firstName",
@@ -13,7 +14,11 @@ export default function FirstName() {
     if (!(r.current instanceof HTMLInputElement)) return;
     if (!CompabilityValidator.isSafari()) r.current.autocapitalize = "words";
   }, [r]);
-  useEffect(() => IOHandler.syncLabel(r.current), [r, v]);
+  useEffect(() => {
+    if (!r.current) return;
+    IOHandler.syncLabel(r.current);
+    StyleHandler.alarmBorder(r.current);
+  }, [r, v]);
   return (
     <div className={classes.inpDivClasses}>
       <label className={classes.inpLabClasses} htmlFor={id}>

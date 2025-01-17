@@ -23,7 +23,9 @@ export default function Tel({
       StyleHandler.blurOnChange(i);
       i.style;
     }
+    if (!r.current) return;
     IOHandler.syncLabel(r.current);
+    required && StyleHandler.alarmBorder(r.current);
   }, [v, r]);
   return (
     <div className={`${classes.inpDivClasses} telMainBlock`}>

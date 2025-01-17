@@ -86,7 +86,11 @@ export default class SubmissionHandler {
     const { successful, failed, successfulCustom, failedCustom } = this.scan();
     for (const fail of failed) {
       if (!fail.required) continue;
-      fail.scrollIntoView({ block: "center", inline: "center" });
+      fail.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
+      });
       return {
         ok: false,
         cause: flags.pt
@@ -96,7 +100,11 @@ export default class SubmissionHandler {
     }
     for (const fail of failedCustom) {
       if (!fail.dataset.required) continue;
-      fail.scrollIntoView({ block: "center", inline: "center" });
+      fail.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
+      });
       return {
         ok: false,
         cause: flags.pt

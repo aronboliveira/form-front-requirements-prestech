@@ -6,6 +6,7 @@ import IOHandler from "@/lib/client/handlers/IOHandler";
 import { nlInp } from "@/lib/definitions/client/helpers";
 import { autoCapitalizeInputs } from "@/lib/client/handlers/AutoCorrectHandler";
 import StringHelper from "@/lib/helpers/StringHelper";
+import StyleHandler from "@/lib/client/handlers/StyleHandler";
 export default function LastName() {
   const r = useRef<nlInp>(null),
     id = "lastName",
@@ -15,7 +16,11 @@ export default function LastName() {
     if (!CompabilityValidator.isSafari())
       r.current.autocapitalize = "sentences";
   }, [r]);
-  useEffect(() => IOHandler.syncLabel(r.current), [r, v]);
+  useEffect(() => {
+    if (!r.current) return;
+    IOHandler.syncLabel(r.current);
+    StyleHandler.alarmBorder(r.current);
+  }, [r, v]);
   return (
     <div className={classes.inpDivClasses}>
       <label className={classes.inpLabClasses} htmlFor={id}>

@@ -24,6 +24,8 @@ export const flags: {
   pt: true,
   failedTimeoutAttempts: 0,
 };
+export const borderColors: { [k: string]: string } = {};
+export const fontColors: { [k: string]: string } = {};
 export const CtxLabels: roleQuestionsMap = new Map([
   [
     "DailyTasks",

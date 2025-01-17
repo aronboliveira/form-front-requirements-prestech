@@ -1,5 +1,6 @@
 "use client";
 import IOHandler from "@/lib/client/handlers/IOHandler";
+import StyleHandler from "@/lib/client/handlers/StyleHandler";
 import { classes } from "@/lib/client/vars";
 import { nlInp } from "@/lib/definitions/client/helpers";
 import { PseudoNum } from "@/lib/definitions/foundations";
@@ -10,7 +11,11 @@ export default function Age() {
     r = useRef<nlInp>(null),
     id = "age",
     maxLength = 3;
-  useEffect(() => IOHandler.syncLabel(r.current), [r, v]);
+  useEffect(() => {
+    if (!r.current) return;
+    IOHandler.syncLabel(r.current);
+    StyleHandler.alarmBorder(r.current);
+  }, [r, v]);
   return (
     <div className={`${classes.inpDivClasses}`}>
       <label className={classes.inpLabClasses} htmlFor={id}>

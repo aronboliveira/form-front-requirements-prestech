@@ -1,4 +1,5 @@
 import DOMHandler from "../../../../lib/client/handlers/DOMHandler";
+import StyleHandler from "../../../../lib/client/handlers/StyleHandler";
 import DOMValidator from "../../../../lib/client/validators/DOMValidator";
 import { flags } from "../../../../lib/client/vars";
 describe("DOMHandler", () => {
@@ -242,6 +243,54 @@ describe("DOMHandler", () => {
       const result = DOMHandler.isPt();
       expect(result).toBe(false);
       expect(flags.pt).toBe(false);
+    });
+  });
+  describe("verifyValidity", () => {
+    let inputEl: HTMLInputElement;
+    beforeEach(() => {
+      jest.clearAllMocks();
+      inputEl = document.createElement("input");
+      inputEl.type = "text";
+      inputEl.value = "some value";
+      inputEl.checkValidity = jest.fn().mockReturnValue(true);
+      inputEl.reportValidity = jest.fn();
+    });
+    it("returns true if element is valid", () => {
+      const result = DOMHandler.verifyValidity(inputEl as any);
+      expect(result).toBe(true);
+      expect(inputEl.reportValidity).not.toHaveBeenCalled();
+      expect(StyleHandler.pulseColor).not.toHaveBeenCalled();
+      expect(StyleHandler.switchPlaceholder).not.toHaveBeenCalled();
+    });
+    it("returns false if element is invalid", () => {
+      (inputEl.checkValidity as jest.Mock).mockReturnValue(false);
+      const result = DOMHandler.verifyValidity(inputEl as any);
+      expect(result).toBe(false);
+      expect(inputEl.reportValidity).toHaveBeenCalledTimes(1);
+      expect(StyleHandler.pulseColor).toHaveBeenCalledWith(inputEl);
+      (
+        DOMValidator.isDefaultWritableInput as unknown as jest.Mock
+      ).mockReturnValue(true);
+    });
+    it("calls switchPlaceholder if invalid and defaultWritableInput or textarea", () => {
+      (inputEl.checkValidity as unknown as jest.Mock).mockReturnValue(false);
+      (
+        DOMValidator.isDefaultWritableInput as unknown as jest.Mock
+      ).mockReturnValue(true);
+      const result = DOMHandler.verifyValidity(inputEl as any);
+      expect(result).toBe(false);
+      expect(StyleHandler.switchPlaceholder).toHaveBeenCalledWith(
+        inputEl,
+        "Invalid input"
+      );
+    });
+    it("does not call switchPlaceholder if invalid but not a writable input/textarea", () => {
+      (inputEl.checkValidity as unknown as jest.Mock).mockReturnValue(false);
+      (
+        DOMValidator.isDefaultWritableInput as unknown as jest.Mock
+      ).mockReturnValue(false);
+      DOMHandler.verifyValidity(inputEl as any);
+      expect(StyleHandler.switchPlaceholder).not.toHaveBeenCalled();
     });
   });
 });

@@ -8,8 +8,11 @@ import StyleValidator from "../validators/StyleValidator";
 import CompabilityValidator from "../validators/CompabilityValidator";
 import DOMHandler from "./DOMHandler";
 import DOMValidator from "../validators/DOMValidator";
+import { borderColors, fontColors } from "../vars";
 export const pseudos: Map<string, Map<string, Map<string, string>>> = new Map();
 export default class StyleHandler {
+  static placeholderCounter = 0.7;
+  static alarmColor = "#511";
   static toggleVisibility(
     element: nlHtEl,
     condition: any,
@@ -113,13 +116,14 @@ export default class StyleHandler {
   }
   static pulseColor(
     el: nlHtEl,
-    color: string = "red",
+    color: string = StyleHandler.alarmColor,
     context: string = "both",
     double: boolean = false
   ): void {
     if (!(el instanceof HTMLElement && typeof color === "string")) return;
-    const iniColor = "rgb(222, 226, 230)",
-      iniFontColor = "rgb(33, 37, 41)",
+    const id = DOMHandler.getIdentifier(el),
+      iniColor = id ? fontColors[id] : "rgb(222, 226, 230)",
+      iniFontColor = id ? borderColors[id] : "rgb(33, 37, 41)",
       pulseBColor = (el: HTMLElement): void => {
         setTimeout(() => {
           if (!el.style.transition)
@@ -141,6 +145,7 @@ export default class StyleHandler {
           }, 750);
         }, 250);
       };
+    el.dataset.pulsing = "true";
     if (context === "both" || context === "border") {
       pulseBColor(el);
       double && setTimeout(() => pulseBColor(el), 1600);
@@ -149,12 +154,37 @@ export default class StyleHandler {
       pulseFColor(el);
       double && setTimeout(() => pulseFColor(el), 1600);
     }
+    setTimeout(() => {
+      if (!id) return;
+      const el = DOMHandler.queryByUniqueName(id);
+      if (!el) return;
+      el.dataset.pulsing = "false";
+    }, 1600);
   }
-  static placeholderCounter = 0.7;
+  static alarmBorder(
+    el: HTMLElement,
+    color: string = StyleHandler.alarmColor
+  ): void {
+    const id = DOMHandler.getIdentifier(el);
+    if (!id) return;
+    const baseColor = borderColors[id];
+    if (!baseColor) return;
+    if (
+      (DOMValidator.isDefaultEntry(el) && !el.checkValidity()) ||
+      (DOMValidator.isCustomEntry(el) && el.dataset.invalid === "true")
+    ) {
+      el.style.borderColor = color;
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.style.borderColor = baseColor;
+      }, 2000);
+    } else el.style.borderColor = baseColor;
+  }
   static switchPlaceholder(
     el: inputLikeElement,
     newPh: string = "...",
-    newColor = "#511"
+    newColor = StyleHandler.alarmColor
   ): void {
     const prev = el.placeholder,
       id = DOMHandler.getIdentifier(el),

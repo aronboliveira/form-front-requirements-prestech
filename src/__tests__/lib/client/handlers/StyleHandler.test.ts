@@ -3,6 +3,8 @@
  */
 import StyleHandler from "../../../../lib/client/handlers/StyleHandler";
 import "@testing-library/jest-dom";
+import { borderColors } from "../../../../lib/client/vars";
+import DOMValidator from "../../../../lib/client/validators/DOMValidator";
 describe("StyleHandler", () => {
   let element: HTMLElement, mockSheet: CSSStyleSheet;
   beforeEach(() => document.body.appendChild(document.createElement("div")));
@@ -145,9 +147,72 @@ describe("StyleHandler", () => {
       jest.advanceTimersByTime(250);
       expect(StyleHandler.placeholderCounter).toBeLessThan(0.7);
       jest.advanceTimersByTime(250);
-      expect(StyleHandler.placeholderCounter).toBeLessThan(0.65); // e.g. 0.60
-      // etc.
+      expect(StyleHandler.placeholderCounter).toBeLessThan(0.65);
       jest.useRealTimers();
+    });
+    describe("alarmBorder", () => {
+      let el: HTMLInputElement;
+      beforeEach(() => {
+        jest.clearAllMocks();
+        el = document.createElement("input");
+        el.id = "someId";
+        borderColors["someId"] = "#ccc";
+      });
+      afterEach(() => {
+        delete borderColors["someId"];
+      });
+      it("does nothing if there's no identifier", () => {
+        el.id = "";
+        StyleHandler.alarmBorder(el);
+        expect(el.style.borderColor).toBe("");
+      });
+      it("does nothing if there's no baseColor in borderColors map", () => {
+        el.id = "unknownId";
+        StyleHandler.alarmBorder(el);
+        expect(el.style.borderColor).toBe("");
+      });
+      it("sets borderColor to baseColor if element is valid", () => {
+        (DOMValidator.isDefaultEntry as unknown as jest.Mock).mockReturnValue(
+          true
+        );
+        el.checkValidity = jest.fn().mockReturnValue(true);
+        StyleHandler.alarmBorder(el);
+        expect(el.style.borderColor).toBe("#ccc");
+      });
+      it("sets borderColor to alarmColor if invalid, then reverts after 2s", () => {
+        jest.useFakeTimers();
+        (DOMValidator.isDefaultEntry as unknown as jest.Mock).mockReturnValue(
+          true
+        );
+        el.checkValidity = jest.fn().mockReturnValue(false);
+        StyleHandler.alarmBorder(el);
+        expect(el.style.borderColor).toBe("red");
+        jest.advanceTimersByTime(2000);
+        expect(el.style.borderColor).toBe("#ccc");
+        jest.useRealTimers();
+      });
+      it("uses dataset.invalid === 'true' for custom entries", () => {
+        (DOMValidator.isDefaultEntry as unknown as jest.Mock).mockReturnValue(
+          false
+        );
+        (DOMValidator.isCustomEntry as unknown as jest.Mock).mockReturnValue(
+          true
+        );
+        el.dataset.invalid = "true";
+        StyleHandler.alarmBorder(el);
+        expect(el.style.borderColor).toBe(StyleHandler.alarmBorder);
+      });
+      it("reverts to baseColor immediately if custom entry but dataset.invalid !== 'true'", () => {
+        (DOMValidator.isDefaultEntry as unknown as jest.Mock).mockReturnValue(
+          false
+        );
+        (DOMValidator.isCustomEntry as unknown as jest.Mock).mockReturnValue(
+          true
+        );
+        el.dataset.invalid = "false";
+        StyleHandler.alarmBorder(el);
+        expect(el.style.borderColor).toBe("#ccc");
+      });
     });
   });
 });
