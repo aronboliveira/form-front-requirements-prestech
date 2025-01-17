@@ -16,10 +16,12 @@ export default function Submit({ form }: FormRelated) {
       id={id}
       className={classes.btnPrim}
       onClick={ev => {
-        const [res, ok] = new DOMHandler(ev).evaluateClickMovements();
-        if (ok) {
+        const [res, suspicious] = new DOMHandler(ev).evaluateClickMovements();
+        if (!suspicious) {
           toast.success(
-            "Successfuly sent to the server. Waiting for response."
+            flags.pt
+              ? "Submissão validada. Esperando resposta..."
+              : "Successfuly validated. Waiting for response..."
           );
           const form =
             ev.currentTarget.form ?? ev.currentTarget.closest("form");
@@ -27,7 +29,7 @@ export default function Submit({ form }: FormRelated) {
           const { ok, cause } =
             SubmissionHandler.construct(form).submit("api/submit/route");
           !ok
-            ? toast.error(flags.pt ? `Falha: ${cause}` : `Failed: ${cause}`)
+            ? toast.error(flags.pt ? `Erro: ${cause}` : `Error: ${cause}`)
             : toast.success(
                 flags.pt
                   ? "O formulário foi validado e submetido. Por favor, aguarde..."

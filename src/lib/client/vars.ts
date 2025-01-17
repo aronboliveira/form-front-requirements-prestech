@@ -28,6 +28,42 @@ export const flags: {
 };
 export const borderColors: { [k: string]: string } = {};
 export const fontColors: { [k: string]: string } = {};
+export enum Acronyms {
+  dt = "DailyTasks",
+  mt = "MainTasks",
+  ms = "MainSw",
+  as = "AddSw",
+  pr = "Priorization",
+  op = "Optimize",
+  ch = "Challenges",
+  co = "Collaboration",
+}
+export enum AcronymsDefaults {
+  dt = "Quais são suas principais tarefas diárias?",
+  mt = "Quais são suas principais atividade na empresa que poderiam ser beneficiadas com novas automações e ouros recursos virtuais?",
+  ms = "Quais ferramentas digitais ou sistemas virtuais você utiliza rotineiramente no trabalho?",
+  as = "Caso utilize outros softwares no contexto anterior, mencione aqui:",
+  pr = "Como você utiliza tecnologias para a organização e planejamento das suas atividades de trabalho?",
+  op = "Existem, no seu trabalho, processos manuais ou repetitivos que você acredita que poderiam ser melhorados com tecnologias novas ou mais atualizadas?",
+  ch = "Quais desafios você encontra ao utilizar as suas atuais tecnologias de trabalho? Comente comparando com outras tecnologias similares, se adequado, ou com maneiras como você gostaria de melhorar.",
+  co = "De que forma você utiliza as tecnologias para colaborar e integrar com a sua equipe de trabalho?",
+}
+export enum TechApps {
+  office365 = "Office 365",
+  googleDrive = "Google Drive",
+  slack = "Slack",
+  zoom = "Zoom",
+  trello = "Trello",
+  sapErp = "SAP ERP",
+  msDynamicsCrm = "Microsoft Dynamics CRM",
+  msTeams = "Microsoft Teams",
+  sharePoint = "SharePoint",
+  powerBi = "Power BI",
+  yammer = "Yammer",
+  asana = "Asana",
+  box = "Box",
+  oneDrive = "OneDrive",
+}
 export const CtxLabels: roleQuestionsMap = new Map([
   [
     "DailyTasks",

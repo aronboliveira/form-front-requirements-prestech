@@ -1,5 +1,6 @@
 @use "./abstract/vars.scss" as *;
 @use "./abstract/mixins.scss" as *;
+@use "sass:color";
 html,
 body {
   @include nosurround;
@@ -43,7 +44,7 @@ h2 {
     font-size: 1.2rem !important;
     box-shadow: none;
     color: rgb(74, 80, 86);
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-base);
   }
 }
 h3 {
@@ -73,7 +74,7 @@ select {
   margin-bottom: var(--spacing-sm);
   &:focus {
     font-weight: bold;
-    background-color: lighten(#cdd1d1, 40%);
+    background-color: color.adjust(#cdd1d1, $lightness: 40%);
     outline: none;
   }
 }
@@ -97,7 +98,7 @@ input {
     margin-bottom: 0;
   }
   &[id^="tel"] {
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-base);
   }
 }
 button {
@@ -110,11 +111,11 @@ button {
   border: none;
   cursor: pointer;
   &:hover {
-    background-color: darken(#001f3f, 10%);
+    background-color: color.adjust(#001f3f, $lightness: -10%);
     transform: translateY(-1px);
   }
   &:active {
-    background-color: lighten(#001f3f, 5%);
+    background-color: color.adjust(#001f3f, $lightness: -5%);
     transform: translateY(2px);
   }
 }
@@ -127,10 +128,10 @@ button {
   padding: var(--spacing-base);
 }
 .contextualText {
-  margin-block: 0.25rem 1.5rem;
+  margin-block: var(--spacing-tiny) var(--spacing-md);
 }
 .countryCodeBlock {
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-sm);
 }
 .fieldset-form {
   @include box-rounded-squary(6px);
@@ -158,15 +159,48 @@ button {
     }
   }
 }
+.fsTechCb {
+  display: flex;
+  margin: var(--spacing-base) auto;
+  max-width: 80vw;
+  .legTechCb {
+    font-weight: bold;
+    margin-bottom: var(--spacing-base);
+  }
+  .fsSubTechCb {
+    display: grid;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    max-width: 100%;
+    @media (min-width: 1600px) {
+      @include g1x4;
+    }
+    @media (min-width: 900px) and (max-width: 1599px) {
+      @include g2x2;
+    }
+    @media (max-width: 899px) {
+      @include g4x1;
+    }
+    .divTechCb {
+      @include flAlItCt;
+      justify-content: flex-start;
+      input {
+        &[type="checkbox"] {
+          margin-right: var(--spacing-sm);
+        }
+      }
+    }
+  }
+}
 .rGap2v {
   row-gap: 2vh;
 }
 .sectSubDiv {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-md);
 }
 .telBlock {
   @include flAlItCt;
-  column-gap: 0.5rem;
+  column-gap: var(--spacing-sm);
   .dddBlock {
     width: 3.5rem;
   }
@@ -190,7 +224,7 @@ button {
     }
   }
   .telMainBlock {
-    margin-top: 1rem;
+    margin-top: var(--spacing-base);
   }
 }
 .wsBs {
@@ -198,11 +232,11 @@ button {
 }
 #ctaBtnsBlock {
   display: flex;
-  column-gap: 2rem;
-  margin-top: 2rem;
+  column-gap: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
 }
 #legIdf {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-md);
 }
 @media (prefers-color-scheme: dark) {
   html {

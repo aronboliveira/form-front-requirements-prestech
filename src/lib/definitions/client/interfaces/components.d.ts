@@ -51,3 +51,8 @@ export interface DlgProps {
   dispatch: React.Dispatch<React.SetStateAction<boolean>>;
   state: boolean;
 }
+export interface CtxCbProps {
+  app: techAppKey;
+  ownNum: string;
+  role: roleType;
+}

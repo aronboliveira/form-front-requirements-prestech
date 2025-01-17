@@ -7,7 +7,7 @@ export function correctCursorNextWords(
 ): [string, boolean] | void {
   let text = (textElement as nlTxtEl)?.value || textElement.textContent || "",
     isFixAfterDCursorExec = false;
-  console.log("line 10 " + text);
+  // // console.log("line 10 " + text);
   if (isFixAfterDCursorExec) return;
   const selectionPosition = window.getSelection()?.getRangeAt(0).startOffset,
     id = textElement.id,
@@ -32,7 +32,7 @@ export function correctCursorNextWords(
       }
     };
   text = wrongStartCorrection(text, match) ?? "";
-  console.log("line 34 " + text);
+  // // console.log("line 34 " + text);
   textElement.addEventListener("keyup", ev => handle(ev as KeyboardEvent));
   setTimeout(() => {
     const el = document.getElementById(id);
@@ -52,7 +52,7 @@ export function wrongStartCorrection(
     text =
       text.slice(wrongStartLength - 1) + text.slice(0, wrongStartLength - 1);
   }
-  console.log("line 54 " + text);
+  // // console.log("line 54 " + text);
   return text;
 }
 export function moveCursorToTheEnd(
@@ -93,15 +93,15 @@ export function fixFirstLetter(
 ): string {
   let contText =
     (textElement as nlTxtEl)?.value || textElement.textContent || "";
-  console.log("line 96 " + contText);
+  // console.log("line 96 " + contText);
   const firstLetterMatch = fstLet?.match(regex);
   if (firstLetterMatch) {
     contText = fstLet?.toUpperCase() + contText.substring(1).toLowerCase();
-    console.log("line 100 " + contText);
+    // console.log("line 100 " + contText);
     if (range.endOffset >= 1)
       fixCursorPosition(textElement, range, selection, shouldSetEnd);
   }
-  console.log("line 101 " + contText);
+  // console.log("line 101 " + contText);
   return contText;
 }
 export function fixWrongStarts(
@@ -114,7 +114,7 @@ export function fixWrongStarts(
     arrText.splice(text.indexOf(match), length, "");
     text = arrText.toString().replaceAll(",", "");
   }
-  console.log("line 114 " + text);
+  // console.log("line 114 " + text);
   return text || "";
 }
 export function fixNextWordsIniNotD(
@@ -125,12 +125,12 @@ export function fixNextWordsIniNotD(
   const gLetMatchI = remadeText.lastIndexOf(letMatch) + 1,
     capChar = remadeText.charAt(gLetMatchI)?.toUpperCase(),
     arrText = Array.from(remadeText);
-  console.log("line 128 " + arrText);
+  // console.log("line 128 " + arrText);
   arrText[gLetMatchI] = capChar;
   remadeText = arrText.toString().replaceAll(",", "");
   if (remadeText.match(/^\s[\w]+/g))
     remadeText = remadeText.slice(1, remadeText.length) + " ";
-  console.log("line 129 " + remadeText);
+  // console.log("line 129 " + remadeText);
   return remadeText;
 }
 export function fixNextWordsAfterD(
@@ -149,7 +149,7 @@ export function fixNextWordsAfterD(
       remadeText = citeTextArrayD.toString().replaceAll(",", "");
     }
   }
-  console.log("line 148 " + remadeText);
+  // console.log("line 148 " + remadeText);
   return remadeText;
 }
 export function fixUnproperUppercases(
@@ -207,7 +207,7 @@ export function fixUnproperUppercases(
       ? textBeforeRepetitions + loweredRepetitions + "S" + textAfterRepetitions
       : textBeforeRepetitions + loweredRepetitions + textAfterRepetitions;
   }
-  console.log("line 206 " + text);
+  // console.log("line 206 " + text);
   return text;
 }
 export function fixForcedUpperCase(
@@ -229,7 +229,7 @@ export function fixForcedUpperCase(
     if (wordMatch.length >= 1 && startSlicedCite)
       text = startSlicedCite + text?.slice(strDAfterMinusInd);
   }
-  console.log("line 228 " + text);
+  // console.log("line 228 " + text);
   return text;
 }
 export function autoCapitalizeInputs(
@@ -244,7 +244,7 @@ export function autoCapitalizeInputs(
   )
     return "";
   let text = textEl?.value ?? null;
-  console.log("line 243 " + text);
+  // console.log("line 243 " + text);
   if (!(isAutocorrectOn && text)) return "";
   //inicialização de expressões regex com seus objetos e matches associados
   const newWordMatches = text.match(
@@ -316,7 +316,7 @@ export function autoCapitalizeInputs(
     isCursorAutoMoved = false;
   if (text.length === 1 && !newWordMatches) {
     text = fixFirstLetter(text[0], /\b\w/, textEl, range, selection, false);
-    console.log("line 315 " + text);
+    // console.log("line 315 " + text);
   } else if (
     text.length > 1 &&
     !textEl.classList.contains("autocorrectFirst")
@@ -328,7 +328,7 @@ export function autoCapitalizeInputs(
         wrongCharsMatchesOp2 ||
         wrongCharsMatchesOp3
       ) {
-        // console.log("correção de início");
+        // // console.log("correção de início");
         const wrongCharsMatches = [
           ...(wrongCharsMatchesOp1 || []),
           ...(wrongCharsMatchesOp2 || []),
@@ -352,11 +352,11 @@ export function autoCapitalizeInputs(
         }
       }
       if (wrongStartMatch) {
-        // console.log("wrong start");
+        // // console.log("wrong start");
         text = wrongStartCorrection(text, wrongStartMatch) ?? "";
       }
       if (newWordMatches) {
-        // console.log("new word");
+        // // console.log("new word");
         newWordMatches.forEach((): void => {
           //Capitalizar palavras após a primeira
           if (letterMatchesIniNotD && !letterMatchesIniD) {
@@ -489,7 +489,7 @@ export function autoCapitalizeInputs(
         unproperUppercases.forEach(multipleUppercasesMatch => {
           if (text && multipleUppercasesMatch) {
             text = fixUnproperUppercases(text, multipleUppercasesMatch, "NoD");
-            console.log("line 492 " + text);
+            // console.log("line 492 " + text);
             //fix para delay em processamento do S em conjunções
             const upperlowercombDS = text.match(
               /D[a-záàâäãéèêëíìîïóòôöõúùûü][S][\s]/
@@ -514,7 +514,7 @@ export function autoCapitalizeInputs(
               multipleUppercasesMatch,
               "YesDVal"
             );
-            console.log("line 517 " + text);
+            // console.log("line 517 " + text);
             isUndoUppercase = true;
             const res = correctCursorNextWords(
               isCursorAutoMoved,
@@ -541,7 +541,7 @@ export function autoCapitalizeInputs(
         letterNotMatchesAfterD = [];
       //statement para fluxo validando match de iniciais
       if (letterMatchesIniD || letterMatchesIniNotD) {
-        // console.log("init d");
+        // // console.log("init d");
         //Forçar upper case
         const DMatch = [
             ...(letterMatchesAfterDOp1 || []),
@@ -552,7 +552,7 @@ export function autoCapitalizeInputs(
         for (let iM = 0; iM < wordMatch.length; iM++) {
           if (uppercasesRegexObj.test(wordMatch[iM])) continue;
           text = fixForcedUpperCase(text, wordMatch, wordMatch[iM]);
-          console.log("line 555 " + text);
+          // console.log("line 555 " + text);
           if (DMatch.flat(1).length > 0) {
             [text, isCursorAutoMoved] = correctCursorNextWords(
               isCursorAutoMoved,
@@ -566,19 +566,19 @@ export function autoCapitalizeInputs(
       //Correções adicionais no final da edição automática
       if (wrongCharsMatchesOp1)
         text = text?.replaceAll(wrongCharsRegexOp1, "") ?? null;
-      console.log("line 564 " + text);
+      // console.log("line 564 " + text);
       if (wrongCharsMatchesOp2)
         text = text?.replaceAll(wrongCharsRegexOp2, "") ?? null;
-      console.log("line 567 " + text);
+      // console.log("line 567 " + text);
       if (wrongCharsMatchesOp3)
         text = text?.replaceAll(wrongCharsRegexOp3, "") ?? null;
-      console.log("line 570 " + text);
+      // console.log("line 570 " + text);
       if (text.match(/\s[\s]+/g))
         text = text?.replaceAll(/\s[\s]+/g, " ") ?? null;
-      console.log("line 573 " + text);
+      // console.log("line 573 " + text);
       if (text.match(/^[a-záàâäãéèêëíìîïóòôöõúùûü]/))
         text = text.slice(0, 1).toUpperCase() + text.slice(1);
-      console.log("line 576 " + text);
+      // console.log("line 576 " + text);
       return text;
     }
   }

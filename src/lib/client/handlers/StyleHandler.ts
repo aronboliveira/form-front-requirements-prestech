@@ -12,7 +12,7 @@ import { borderColors, fontColors } from "../vars";
 export const pseudos: Map<string, Map<string, Map<string, string>>> = new Map();
 export default class StyleHandler {
   static placeholderCounter = 0.7;
-  static alarmColor = "#511";
+  static alarmColor = "#811";
   static toggleVisibility(
     element: nlHtEl,
     condition: any,
@@ -122,37 +122,47 @@ export default class StyleHandler {
   ): void {
     if (!(el instanceof HTMLElement && typeof color === "string")) return;
     const id = DOMHandler.getIdentifier(el),
-      iniColor = id ? fontColors[id] : "rgb(222, 226, 230)",
-      iniFontColor = id ? borderColors[id] : "rgb(33, 37, 41)",
-      pulseBColor = (el: HTMLElement): void => {
+      iniColor = id ? borderColors[id] : "rgb(222, 226, 230)",
+      iniFontColor = id ? fontColors[id] : "rgb(33, 37, 41)",
+      pulseBColor = (): void => {
         setTimeout(() => {
-          if (!el.style.transition)
-            el.style.transition = "border-color 0.5s ease-in";
-          else el.style.transition += "border-color 0.5s ease-in";
+          if (!id) return;
+          const el = DOMHandler.queryByUniqueName(id);
+          if (!el) return;
+          if (!el.style.transition) el.style.transition = "border 0.5s ease-in";
+          else el.style.transition += "border 0.5s ease-in";
           el.style.borderColor = color;
           setTimeout(() => {
+            const el = DOMHandler.queryByUniqueName(id);
+            if (!el) return;
             el.style.borderColor = iniColor;
           }, 750);
         }, 250);
       },
-      pulseFColor = (el: HTMLElement): void => {
+      pulseFColor = (): void => {
         setTimeout(() => {
+          if (!id) return;
+          const el = DOMHandler.queryByUniqueName(id);
+          if (!el) return;
           if (el.style.transition) el.style.transition += "color 0.5s ease-in";
           else el.style.transition = "color 0.5s ease-in";
           el.style.color = color;
           setTimeout(() => {
+            const el = DOMHandler.queryByUniqueName(id);
+            if (!el) return;
             el.style.color = iniFontColor;
           }, 750);
         }, 250);
       };
     el.dataset.pulsing = "true";
+    // console.log([iniColor, iniFontColor]);
     if (context === "both" || context === "border") {
-      pulseBColor(el);
-      double && setTimeout(() => pulseBColor(el), 1600);
+      pulseBColor();
+      double && setTimeout(pulseBColor, 1600);
     }
     if (context === "both" || context === "font") {
-      pulseFColor(el);
-      double && setTimeout(() => pulseFColor(el), 1600);
+      pulseFColor();
+      double && setTimeout(pulseFColor, 1600);
     }
     setTimeout(() => {
       if (!id) return;
@@ -189,6 +199,7 @@ export default class StyleHandler {
     const prev = el.placeholder,
       id = DOMHandler.getIdentifier(el),
       idRef = "placeholdersStyles";
+    if (!id || !newPh) return;
     el.placeholder = newPh;
     let phs = document.getElementById(idRef);
     if (!phs) {
@@ -198,7 +209,7 @@ export default class StyleHandler {
     if (!phs.innerHTML)
       phs.innerHTML = `${[...el.classList].map(c => `.${c}`)}${
         el.id ? `#${el.id}` : ""
-      }::placeholder { color: ${newColor}; opacity: ${0.7} }`;
+      }::placeholder { color: ${newColor}; opacity: ${0.7}; }`;
     else
       phs.innerHTML += `\n${[...el.classList].map(c => `.${c}`)}${
         el.id ? `#${el.id}` : ""
@@ -221,6 +232,10 @@ export default class StyleHandler {
       phs && phs.remove();
       if (!id) return;
       const el = DOMHandler.queryByUniqueName(id);
+      if (id === "firstName") {
+        console.log(el?.constructor.name);
+        if (el instanceof HTMLInputElement) console.log(el.type);
+      }
       if (
         !(
           el &&

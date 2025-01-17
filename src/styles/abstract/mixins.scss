@@ -58,3 +58,12 @@
     background-color: #00000080;
   }
 }
+@mixin g1x4() {
+  grid-template: 1fr / repeat(4, 1fr);
+}
+@mixin g2x2() {
+  grid-template: repeat(2, 1fr) / repeat(2, 1fr);
+}
+@mixin g4x1() {
+  grid-template-columns: repeat(4, 1fr) / 1fr;
+}

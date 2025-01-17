@@ -67,7 +67,6 @@ export default function Range(props: OptInput) {
         pseudos = StyleValidator.scanPseudoSelectorTag();
       if (!pseudos) return;
       let val = (curr - (curr % modulator)) * 0.05;
-      console.log(curr);
       const bgColor = handleTrackSlide(
         (val !== 0 && val !== 5) || (curr <= 0 && curr >= 20) ? val + 1 : val
       );

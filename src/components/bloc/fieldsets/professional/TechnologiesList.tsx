@@ -3,7 +3,6 @@ import React from "react";
 export default function TechnologiesLists() {
   return (
     <div>
-      {/* 1. EXECUTIVO | ADMINISTRATIVO */}
       <h3>1. Executivo | Administrativo</h3>
       <div className={classes.inpDivClasses}>
         <input type='checkbox' className='form-check-input' id='exec1' />
@@ -140,8 +139,6 @@ export default function TechnologiesLists() {
           OneDrive
         </label>
       </div>
-
-      {/* 2. FINANCEIRO */}
       <h3>2. Financeiro</h3>
       <div className={classes.inpDivClasses}>
         <input type='checkbox' className='form-check-input' id='fin1' />
@@ -278,8 +275,6 @@ export default function TechnologiesLists() {
           FreshBooks
         </label>
       </div>
-
-      {/* 3. COMERCIAL */}
       <h3>3. Comercial</h3>
       <div className={classes.inpDivClasses}>
         <input type='checkbox' className='form-check-input' id='com1' />
@@ -416,8 +411,6 @@ export default function TechnologiesLists() {
           Microsoft Teams
         </label>
       </div>
-
-      {/* 4. MARKETING */}
       <h3>4. Marketing</h3>
       <div className={classes.inpDivClasses}>
         <input type='checkbox' className='form-check-input' id='mkt1' />
@@ -554,8 +547,6 @@ export default function TechnologiesLists() {
           Adobe Photoshop
         </label>
       </div>
-
-      {/* 5. SUPORTE TÉCNICO N1 */}
       <h3>5. Suporte Técnico N1</h3>
       <div className={classes.inpDivClasses}>
         <input type='checkbox' className='form-check-input' id='supN1_1' />
@@ -692,8 +683,6 @@ export default function TechnologiesLists() {
           Sistemas de Ticket Básicos
         </label>
       </div>
-
-      {/* 6. SUPORTE TÉCNICO N2 */}
       <h3>6. Suporte Técnico N2</h3>
       <div className={classes.inpDivClasses}>
         <input type='checkbox' className='form-check-input' id='supN2_1' />
@@ -822,7 +811,6 @@ export default function TechnologiesLists() {
         </label>
       </div>
       <div className={classes.inpDivClasses}>
-        {/* Just to keep the pattern of 15 items */}
         <input type='checkbox' className='form-check-input' id='supN2_15' />
         <label
           className={`${classes.inpLabClasses} form-check-label`}
@@ -831,8 +819,6 @@ export default function TechnologiesLists() {
           Backup e Restore Avançado
         </label>
       </div>
-
-      {/* 7. OPERATÓRIO (OPERAÇÕES) */}
       <h3>7. Operatório (Operações)</h3>
       <div className={classes.inpDivClasses}>
         <input type='checkbox' className='form-check-input' id='op1' />
@@ -969,8 +955,6 @@ export default function TechnologiesLists() {
           Grafana
         </label>
       </div>
-
-      {/* 8. DESENVOLVIMENTO DE SOFTWARE */}
       <h3>8. Desenvolvimento de Software</h3>
       <div className={classes.inpDivClasses}>
         <input type='checkbox' className='form-check-input' id='dev1' />
@@ -1107,8 +1091,6 @@ export default function TechnologiesLists() {
           Azure
         </label>
       </div>
-
-      {/* 9. DEVOPS */}
       <h3>9. DevOps</h3>
       <div className={classes.inpDivClasses}>
         <input type='checkbox' className='form-check-input' id='devops1' />

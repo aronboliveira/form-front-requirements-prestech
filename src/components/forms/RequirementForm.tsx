@@ -29,7 +29,7 @@ import ContextualQuestions from "../bloc/fieldsets/professional/ContextualQuesti
 import TabProvider from "@/lib/client/providers/TabProvider";
 import { flags } from "@/lib/client/vars";
 import ContextValidator from "@/lib/client/validators/ContextValidator";
-import TechnologiesLists from "../bloc/fieldsets/professional/TechCheckboxesGrid";
+import TechnologiesLists from "../bloc/fieldsets/professional/TechnologiesList";
 import DOMHandler from "@/lib/client/handlers/DOMHandler";
 import StyleProvider from "@/lib/client/providers/StyleProvider";
 export const FormCtx = createContext<IFormCtx>({
@@ -279,7 +279,7 @@ export default function RequirementForm({
                 <GenericErrorComponent message='Erro gerando questões contextuais' />
               )}
             >
-              <ContextualQuestions role={role} />
+              <ContextualQuestions />
             </ErrorBoundary>
           )}
           <hr />

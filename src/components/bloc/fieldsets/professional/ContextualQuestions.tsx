@@ -1,8 +1,27 @@
+import { FormCtx } from "@/components/forms/RequirementForm";
 import ContextualText from "@/components/inputs/contextual/ContextualText";
-import { roleType } from "@/lib/definitions/foundations";
+import { Acronyms, AcronymsDefaults, CtxLabels } from "@/lib/client/vars";
+import { IFormCtx } from "@/lib/definitions/client/interfaces/contexts";
+import { officeTopicType, roleType } from "@/lib/definitions/foundations";
 import StringHelper from "@/lib/helpers/StringHelper";
-export default function ContextualQuestions({ role }: { role: roleType }) {
-  const cRole = StringHelper.capitalize(role).replace(/\s\|/g, "");
+import { useContext } from "react";
+export default function ContextualQuestions() {
+  let role: roleType = "undefined";
+  const ctx = useContext<IFormCtx>(FormCtx);
+  role = ctx.role || "undefined";
+  const cRole = StringHelper.unfriendlyName(role, true),
+    lRole = StringHelper.unfriendlyName(role),
+    labels = Object.fromEntries(
+      [
+        ...["dt", "mt", "ms", "as", "pr", "op", "ch", "co"].map(
+          a => (Acronyms as any)[a]
+        ),
+      ].map<[officeTopicType, string]>(t => {
+        const map = CtxLabels.get(t);
+        if (!map) return [t, ""];
+        return [t, map.get(lRole) ?? ""];
+      })
+    ) as { [K in officeTopicType]: string };
   return (
     <>
       {[
@@ -10,24 +29,24 @@ export default function ContextualQuestions({ role }: { role: roleType }) {
           g: "Tasks",
           sgs: [
             {
-              t: "DailyTasks",
+              t: Acronyms.dt,
               r: true,
-              l: "Quais são as suas principais tarefas diárias?",
+              l: labels.DailyTasks || AcronymsDefaults.dt,
             },
             {
-              t: "MainTasks",
+              t: Acronyms.mt,
               r: true,
-              l: "Quais são suas principais atividades na empresa que poderiam ser beneficiadas com novas automações e outros recursos virtuais?",
+              l: labels.MainTasks || AcronymsDefaults.mt,
             },
             {
-              t: "MainSw",
+              t: Acronyms.ms,
               r: false,
-              l: "Quais ferramentas ou sistemas você utiliza rotineiramente?",
+              l: labels.MainSw || AcronymsDefaults.ms,
             },
             {
-              t: "AddSw",
+              t: Acronyms.as,
               r: false,
-              l: "Caso utilize outros Softwares no contexto anterior, mencione aqui:",
+              l: labels.AddSw || AcronymsDefaults.as,
             },
           ],
         },
@@ -35,24 +54,24 @@ export default function ContextualQuestions({ role }: { role: roleType }) {
           g: "Platforms",
           sgs: [
             {
-              t: "Priorization",
+              t: Acronyms.pr,
               r: true,
-              l: "Como você utiliza tecnologias para a organização e planejamento das suas atividades de trabalho?",
+              l: labels.Priority || AcronymsDefaults.pr,
             },
             {
-              t: "Optimize",
+              t: Acronyms.op,
               r: true,
-              l: "Existem, no seu trabalho, processos manuais ou repetitivos que você acredita que poderiam ser melhorados com tecnologias novas ou mais atualizadas?",
+              l: labels.Optimize || AcronymsDefaults.op,
             },
             {
-              t: "Challenges",
+              t: Acronyms.ch,
               r: false,
-              l: "Quais desafios você encontra ao utilizar as suas atuais tecnologias de trabalho? Comente comparando com outras semelhantes ou como gostaria de melhorar.",
+              l: labels.Challenges || AcronymsDefaults.ch,
             },
             {
-              t: "Collaboration",
+              t: Acronyms.co,
               r: false,
-              l: "De que forma você utiliza as tecnologias para colaborar e integrar com a sua equipe de trabalho?",
+              l: labels.Collaboration || AcronymsDefaults.co,
             },
           ],
         },

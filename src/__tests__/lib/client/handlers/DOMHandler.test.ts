@@ -95,6 +95,10 @@ describe("DOMHandler", () => {
         <input name="duplicate" id="duplicate2" />
       `)
     );
+    it("should return the unique element if the id is valid", () =>
+      expect(DOMHandler.queryByUniqueName("uniqueId")).toBeInstanceOf(
+        HTMLInputElement
+      ));
     it("should return the single element if there is exactly one with that name", () => {
       const el = DOMHandler.queryByUniqueName("unique");
       expect(el).toBeInstanceOf(HTMLInputElement);

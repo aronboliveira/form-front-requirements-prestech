@@ -58,21 +58,11 @@ export default class SubmissionHandler {
           : "Attempts exceded for the time interval. Please wait and try again.",
         { icon: "⏳" }
       );
-      setTimeout(() => {
-        const submitBtn =
-          document.getElementById("submitBtn") ||
-          document.querySelector('a[href*="/base"]');
-        if (
-          submitBtn instanceof HTMLButtonElement ||
-          submitBtn instanceof HTMLInputElement
-        )
-          submitBtn.disabled = false;
-      }, 3000);
       return false;
     } else if (this.#attempts === 1) {
       setTimeout(() => {
         this.#attempts = 0;
-      }, 10000);
+      }, 12_000);
     }
     return true;
   }

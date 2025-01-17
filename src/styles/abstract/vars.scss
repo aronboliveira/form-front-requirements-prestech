@@ -7,10 +7,11 @@
   --color-gray: #808080;
   --color-highlight: #00ffe4;
   --font-stack: "Arial", sans-serif;
-  --spacing-base: 16px;
-  --spacing-sm: 8px;
-  --spacing-md: 24px;
-  --spacing-lg: 32px;
+  --spacing-tiny: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-base: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
 }
 @media (prefers-color-scheme: dark) {
   :root {

@@ -38,6 +38,8 @@ export default class DOMHandler {
     }
   }
   public static queryByUniqueName(idf: string): nlHtEl {
+    const identified = document.getElementById(idf);
+    if (identified) return identified;
     const names = document.getElementsByName(idf);
     if (names.length === 1) return names[0];
     else return null;

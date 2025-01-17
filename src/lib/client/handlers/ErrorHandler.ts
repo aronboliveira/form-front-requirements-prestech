@@ -101,7 +101,9 @@ export default class ExceptionHandler {
     }
   }
   static describeValidityState(vs: ValidityState, custom?: string): string {
-    for (const v of Object.getOwnPropertyNames(vs)) {
+    for (const v of Object.keys(
+      ValidityState.prototype
+    ) as (keyof ValidityState)[]) {
       if (v === "valid") continue;
       if ((vs as any)[v] === false) {
         switch (v as keyof ValidityState) {
