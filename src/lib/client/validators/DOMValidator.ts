@@ -4,6 +4,7 @@ import {
   genericElement,
   imageLikeElement,
   inputLikeElement,
+  listElement,
   pressableElement,
 } from "@/lib/definitions/client/helpers";
 export default class DOMValidator {
@@ -182,5 +183,13 @@ export default class DOMValidator {
   }
   static isDisableable(el: EventTarget): el is HTMLElement {
     return this.isDefaultDisableable(el) || this.isCustomDisableable(el);
+  }
+  static isDefaultList(el: EventTarget): el is listElement {
+    return (
+      el instanceof HTMLUListElement ||
+      el instanceof HTMLOListElement ||
+      el instanceof HTMLDataListElement ||
+      el instanceof HTMLMenuElement
+    );
   }
 }

@@ -26,6 +26,7 @@ export type entryElement = inputLikeElement | HTMLSelectElement;
 export type disableableElement = entryElement | HTMLButtonElement;
 export type pressableElement = HTMLButtonElement | HTMLInputElement;
 export type imageLikeElement = HTMLImageElement | HTMLInputElement;
+export type listElement = HTMLUListElement | HTMLOListElement | HTMLMenuElement;
 export type FormControl =
   | entryElement
   | HTMLButtonElement
