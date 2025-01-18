@@ -32,6 +32,7 @@ import ContextValidator from "@/lib/client/validators/ContextValidator";
 import TechnologiesLists from "../bloc/fieldsets/professional/TechnologiesList";
 import DOMHandler from "@/lib/client/handlers/DOMHandler";
 import StyleProvider from "@/lib/client/providers/StyleProvider";
+import LoggingHandler from "@/lib/client/handlers/LoggingHandler";
 export const FormCtx = createContext<IFormCtx>({
   role: "undefined",
   setRole: null,
@@ -94,6 +95,7 @@ export default function RequirementForm({
     setTimeout(() => {
       new StyleProvider().setup();
     }, 500);
+    new LoggingHandler(r.current.id).logSubgroup(true, true);
   }, [r, idsSettled]);
   useEffect(() => {
     IOModel.setPlaceholders();

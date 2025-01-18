@@ -1,5 +1,4 @@
 import DOMValidator from "../validators/DOMValidator";
-
 export default class LoggingProcessor {
   static evaluateElementPrototype(el: Element) {
     if (el instanceof HTMLFormElement || el instanceof HTMLFieldSetElement)

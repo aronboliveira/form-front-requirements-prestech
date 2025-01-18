@@ -166,9 +166,10 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
         el.closest(".checkGroup") ||
         el.parentElement?.parentElement;
       if (!(parent instanceof Element)) return;
-      const radios = [...parent.querySelectorAll('input[type="radio"]')].filter(
-        e => e instanceof HTMLInputElement && e.name === el.name
-      );
+      const radios = [
+        ...parent.querySelectorAll('input[type="radio"]'),
+        ...parent.querySelectorAll('input[type="checkbox"]'),
+      ].filter(e => e instanceof HTMLInputElement && e.name === el.name);
       if (radios.length === 0) return;
       if (radios.length === 1) return el.checked;
       if (radios.length > 1) {
@@ -176,7 +177,8 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
           r =>
             r instanceof HTMLInputElement &&
             (r.type === "radio" || r.type === "checkbox") &&
-            r.checked
+            r.checked &&
+            r.dataset.notaccepted !== "true"
         );
       }
     } catch (e) {
