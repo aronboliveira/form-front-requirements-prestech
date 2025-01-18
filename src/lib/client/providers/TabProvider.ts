@@ -6,7 +6,7 @@ export default class TabProvider implements Provider {
   constructor(_elements: Array<Element>) {
     this.#elements = _elements;
   }
-  public setup() {
+  public setup(): TabProvider {
     const sorted = [];
     for (const el of this.#elements)
       el instanceof HTMLDialogElement ? sorted.unshift(el) : sorted.push(el);
@@ -14,6 +14,7 @@ export default class TabProvider implements Provider {
       if (el instanceof HTMLDialogElement) this.tabIndexDlg(el);
       else if (el instanceof HTMLFormElement) this.tabIndexForm(el);
     }
+    return this;
   }
   public tabIndexForm(fm: HTMLFormElement): void {
     const inps = [...fm.elements].filter(

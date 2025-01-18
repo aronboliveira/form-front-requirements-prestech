@@ -18,9 +18,7 @@ jest.mock("@/lib/client/handlers/StyleHandler", () => ({
   },
 }));
 describe("Tel Component", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+  beforeEach(jest.clearAllMocks);
   it("renders with a default label 'Telefone' if none is provided", () => {
     render(<Tel />);
     expect(screen.getByText("Telefone")).toBeInTheDocument();

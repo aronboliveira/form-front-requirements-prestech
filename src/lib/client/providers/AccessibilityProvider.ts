@@ -3,10 +3,11 @@ import AccessibilityHandler from "../handlers/AccessibilityHandler";
 import DOMValidator from "../validators/DOMValidator";
 import IOHandler from "../handlers/IOHandler";
 import AccessibilityValidator from "../validators/AccessibilityValidator";
+import { Provider } from "@/lib/definitions/foundations";
 export const setRole = (el: Element, v: string): void => {
   el.setAttribute("role", v);
 };
-export default class AccessibilityProvider {
+export default class AccessibilityProvider implements Provider {
   #elements: Array<Element>;
   constructor(_elements: List<Element>) {
     this.#elements = (() => {
@@ -15,8 +16,8 @@ export default class AccessibilityProvider {
       ].filter(el => el instanceof Element);
     })();
   }
-  setup(): void {
-    if (!this.#elements.length) return;
+  setup(): AccessibilityProvider {
+    if (!this.#elements.length) return this;
     for (let i = 0; i < this.#elements.length; i++) {
       const el = this.#elements[i];
       if (!this.isAccessibleRich(el) && !this.isRedundant(el)) continue;
@@ -26,6 +27,7 @@ export default class AccessibilityProvider {
       this.clearRedundant(el);
       el instanceof HTMLElement && AccessibilityHandler.trackAriaState(el);
     }
+    return this;
   }
   isAccessibleRich(el: Element): boolean {
     return el instanceof HTMLHtmlElement ||

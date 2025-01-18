@@ -1,6 +1,6 @@
 import DOMValidator from "../validators/DOMValidator";
 export default class LoggingProcessor {
-  static evaluateElementPrototype(el: Element) {
+  static evaluateElementPrototype(el: Element): number {
     if (el instanceof HTMLFormElement || el instanceof HTMLFieldSetElement)
       return 0;
     if (el instanceof HTMLSelectElement) return 1;

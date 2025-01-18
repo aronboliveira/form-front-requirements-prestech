@@ -1,3 +1,4 @@
+import ArrayLikeMapper from "../mappers/ArrayLikeMapper";
 import LoggingProcessor from "../processors/LoggingProcessor";
 import DOMValidator from "../validators/DOMValidator";
 import DOMHandler from "./DOMHandler";
@@ -6,7 +7,11 @@ export default class LoggingHandler {
   constructor(elementId: string) {
     this.elementId = elementId;
   }
-  logSubgroup(objects: boolean = false, entriesOnly: boolean = false) {
+  logSubgroup(
+    objects: boolean = false,
+    entriesOnly: boolean = false,
+    showProperties: boolean = false
+  ) {
     const logged = DOMHandler.queryByUniqueName(this.elementId);
     if (!logged)
       return console.error(
@@ -17,38 +22,63 @@ export default class LoggingHandler {
       console.warn(`It wasn't possible to defined the prototype case.`);
       return;
     }
-    const logGroupObjs = (list: Element[]) => {
-        list.forEach(el => {
+    const idf = logged.id || logged.tagName,
+      logGroupObjs = (list: Element[]) => {
+        list.forEach((el, i, arr) => {
+          console.log(`Entry ${i + 1}`);
           console.log(DOMHandler.getIdentifier(el) || el.tagName);
-          console.log({
-            constructor: el.constructor.name,
-            attributes: Array.from(el.attributes).reduce((ac, at) => {
-              (ac as any)[at.name] = at.value;
-              return ac;
-            }, {}),
-            properties: Object.getOwnPropertyNames(el).reduce((ac, p) => {
-              try {
-                (ac as any)[p] = (el as any)[p];
-              } catch (e) {
-                (ac as any)[p] = "Unaccessible";
-              }
-              return ac;
-            }, {} as Record<string, any>),
-          });
+          console.log(`Constructor: ${el.constructor.name}`);
+          console.log(
+            `Attributes: ${JSON.stringify(
+              ArrayLikeMapper.toKeyObject(el.attributes, "name", "value")
+            )}`
+          );
+          showProperties &&
+            console.log(
+              `Properties: ${ArrayLikeMapper.toRecord(
+                Object.getOwnPropertyNames(el),
+                el
+              )}`
+            );
+          if (i === arr.length - 1) {
+            console.log("Final Array");
+            console.log(arr);
+          }
+          console.log("------------");
         });
       },
-      idf = logged.id || logged.tagName;
+      logGroup = (e: any, i: number, arr: any[]) => {
+        console.log(`Entry ${i + 1}`);
+        console.log(e);
+        if (i === arr.length - 1) {
+          console.log("Final Array");
+          console.log(arr);
+        }
+        console.log("------------");
+      };
+    function processElements<T extends Element>(
+      idf: string,
+      elements: Iterable<T>,
+      objects: boolean,
+      logGroupObjs: (elements: T[]) => void
+    ) {
+      console.groupCollapsed(idf);
+      const elementsArray = Array.from(elements);
+      if (objects) logGroupObjs(elementsArray);
+      else for (const element of elementsArray) console.log(element);
+      console.groupEnd();
+    }
     switch (_case) {
       case 0:
         console.groupCollapsed(idf);
         !objects
           ? entriesOnly
-            ? console.log(
-                Array.from((logged as HTMLFormElement).elements).filter(e =>
-                  DOMValidator.isEntry(e)
-                )
+            ? Array.from((logged as HTMLFormElement).elements)
+                .filter(e => DOMValidator.isEntry(e))
+                .forEach((e, i, arr) => logGroup(e, i, arr))
+            : Array.from((logged as HTMLFormElement).elements).forEach(
+                (e, i, arr) => logGroup(e, i, arr)
               )
-            : console.log(Array.from((logged as HTMLFormElement).elements))
           : logGroupObjs(
               entriesOnly
                 ? Array.from((logged as HTMLFormElement).elements).filter(e =>
@@ -58,76 +88,66 @@ export default class LoggingHandler {
             );
         console.groupEnd();
         break;
-      case 1:
-        console.groupCollapsed(idf);
-        for (const e of (logged as HTMLSelectElement).options) {
-          !objects
-            ? console.log(e)
-            : logGroupObjs(Array.from((logged as HTMLSelectElement).options));
-        }
-        console.groupEnd();
+      case 1: {
+        const elements = (logged as HTMLSelectElement).options;
+        processElements(idf, elements, objects, logGroupObjs);
         break;
-      case 2:
-        console.groupCollapsed(idf);
-        if (!(logged as HTMLInputElement).labels) {
+      }
+      case 2: {
+        const labels = (logged as HTMLInputElement).labels;
+        if (!labels) {
+          console.groupCollapsed(idf);
           console.error(`No labels available`);
+          console.groupEnd();
           break;
         }
-        for (const e of (logged as HTMLInputElement).labels!) {
-          !objects
-            ? console.log(e)
-            : logGroupObjs(Array.from((logged as HTMLInputElement).labels!));
-        }
-        console.groupEnd();
+        processElements(idf, labels, objects, logGroupObjs);
         break;
-      case 3:
-        console.groupCollapsed(idf);
-        for (const e of (logged as HTMLUListElement).getElementsByTagName(
+      }
+      case 3: {
+        const elements = (logged as HTMLUListElement).getElementsByTagName(
           "li"
-        )) {
-          !objects
-            ? console.log(e)
-            : logGroupObjs(
-                Array.from(
-                  (logged as HTMLUListElement).getElementsByTagName("li")
-                )
-              );
-        }
-        console.groupEnd();
+        );
+        processElements(idf, elements, objects, logGroupObjs);
         break;
-      case 4:
-        console.groupCollapsed(idf);
-        for (const e of (logged as HTMLOptGroupElement).getElementsByTagName(
+      }
+      case 4: {
+        const dtElements = (logged as HTMLDListElement).getElementsByTagName(
+          "dt"
+        );
+        const ddElements = (logged as HTMLDListElement).getElementsByTagName(
+          "dd"
+        );
+        const combinedElements = Array.from([...dtElements, ...ddElements]);
+        processElements(idf, combinedElements, objects, logGroupObjs);
+        break;
+      }
+      case 5: {
+        const elements = (logged as HTMLOptGroupElement).getElementsByTagName(
           "option"
-        )) {
-          !objects
-            ? console.log(e)
-            : logGroupObjs(
-                Array.from([
-                  ...(logged as HTMLDListElement).getElementsByTagName("dt"),
-                  ...(logged as HTMLDListElement).getElementsByTagName("dd"),
-                ])
-              );
-        }
-        console.groupEnd();
+        );
+        processElements(idf, elements, objects, logGroupObjs);
         break;
-      case 5:
-        console.groupCollapsed(idf);
-        for (const e of (logged as HTMLOptGroupElement).getElementsByTagName(
-          "option"
-        )) {
-          !objects
-            ? console.log(e)
-            : logGroupObjs(
-                Array.from(
-                  (logged as HTMLSelectElement).getElementsByTagName("option")
-                )
-              );
-        }
-        console.groupEnd();
-        break;
+      }
       default:
-        console.log(logged.children);
+        console.groupCollapsed(idf);
+        !objects
+          ? entriesOnly
+            ? Array.from((logged as Element).children)
+                .filter(e => DOMValidator.isEntry(e))
+                .forEach((e, i, arr) => logGroup(e, i, arr))
+            : Array.from((logged as Element).children).forEach((e, i, arr) =>
+                logGroup(e, i, arr)
+              )
+          : logGroupObjs(
+              entriesOnly
+                ? Array.from((logged as Element).children).filter(e =>
+                    DOMValidator.isEntry(e)
+                  )
+                : Array.from((logged as Element).children)
+            );
+        console.groupEnd();
+        break;
     }
   }
 }

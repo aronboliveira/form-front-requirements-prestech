@@ -1,5 +1,6 @@
 import { FormControl, nlEl, nlFm } from "@/lib/definitions/client/helpers";
 import { limits } from "@/lib/vars";
+import DOMValidator from "../validators/DOMValidator";
 export class IOModel {
   static setConstraintPatterns(): void {
     for (const form of document.forms) {
@@ -117,10 +118,7 @@ export class IOModel {
   static setFormControlNameSufix(el: FormControl | null): void {
     if (!el || !("name" in el)) return;
     const hasFormProp =
-        el instanceof HTMLInputElement ||
-        el instanceof HTMLSelectElement ||
-        el instanceof HTMLTextAreaElement ||
-        el instanceof HTMLButtonElement ||
+        DOMValidator.isDefaultDisableable(el) ||
         el instanceof HTMLOutputElement ||
         el instanceof HTMLFieldSetElement ||
         el instanceof HTMLObjectElement,

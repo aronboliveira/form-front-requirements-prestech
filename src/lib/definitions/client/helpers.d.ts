@@ -4,6 +4,34 @@ export type voidish = undefined | null;
 //Elements
 export type nlEl = Element | null;
 export type queryableNode = Document | DocumentFragment | Element;
+export type ArrayLikeNotIterable = NamedNodeMap | DOMStringMap | TouchList;
+export type Int8ArrayLike = Int8Array | Uint8Array | Uint8ClampedArray;
+export type Int16ArrayLike = Int16Array | Uint16Array;
+export type Int32ArrayLike = Int32Array | Uint32Array;
+export type FloatArrayLike = Float32Array | Float64Array;
+export type TypedArray =
+  | Int8ArrayLike
+  | Int16ArrayLike
+  | Int32ArrayLike
+  | FloatArrayLike;
+export type BaseArray = Array | TypedArray;
+export type SizeableIterable = Map | Set;
+export type SettableIterable = SizeableIterable | TypedArray;
+export type BaseIterableNotIterator = BaseArray | SizeableIterable | String;
+export type BaseIterable = BaseIterableNotIterator | Generator;
+export type DOMIterable = NodeList | HTMLCollection | DOMStringList;
+export type IterableNotIterator = BaseIterableNotIterator | DOMIterable;
+export type SpecialHTMLCollection =
+  | HTMLFormControlsCollection
+  | HTMLOptionsCollection;
+export type SpecialNodeList = RadioNodeList;
+export type SpecialDOMCollection = SpecialHTMLCollection | SpecialNodeList;
+export type IterableIterator = Generator;
+export type ArrayLike =
+  | ArrayLikeNotIterable
+  | IterableNotIterator
+  | IterableIterator;
+export type ForEachable = BaseArray | SizeableIterable | DOMIterable;
 export type nlQueryableNode = queryableNode | null;
 export type nlHtEl = HTMLElement | null;
 export type nlDiv = HTMLDivElement | null;

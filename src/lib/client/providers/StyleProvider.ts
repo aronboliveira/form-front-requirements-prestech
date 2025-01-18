@@ -1,7 +1,8 @@
+import { Provider } from "@/lib/definitions/foundations";
 import DOMHandler from "../handlers/DOMHandler";
 import { borderColors, fontColors } from "../vars";
-export default class StyleProvider {
-  setup(): void {
+export default class StyleProvider implements Provider {
+  public setup(): StyleProvider {
     const els = document.body.querySelectorAll("*");
     for (let i = 0; i < els.length; i++) {
       const el = els[i],
@@ -23,5 +24,6 @@ export default class StyleProvider {
       }
     };
     setInterval(cycle, 2000);
+    return this;
   }
 }

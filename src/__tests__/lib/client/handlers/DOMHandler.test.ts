@@ -116,14 +116,12 @@ describe("DOMHandler", () => {
       const result = DOMHandler.getIdentifier(el);
       expect(result).toBe("myId");
     });
-
     it("should return el.name if no id but a name is present", () => {
       const input = document.createElement("input");
-      (input as any).name = "myInput"; // TypeScript might complain, so cast to any
+      (input as any).name = "myInput";
       const result = DOMHandler.getIdentifier(input);
       expect(result).toBe("myInput");
     });
-
     it("should return null if neither id nor name is present", () => {
       const el = document.createElement("div");
       const result = DOMHandler.getIdentifier(el);
@@ -131,10 +129,7 @@ describe("DOMHandler", () => {
     });
   });
   describe("extractValue", () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
+    beforeEach(jest.clearAllMocks);
     it("returns checked state if isDefaultEntry + isDefaultCheckable", () => {
       (DOMValidator.isDefaultEntry as unknown as jest.Mock).mockReturnValue(
         true
@@ -142,15 +137,12 @@ describe("DOMHandler", () => {
       (DOMValidator.isDefaultCheckable as unknown as jest.Mock).mockReturnValue(
         true
       );
-
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
       checkbox.checked = true;
-
       const result = DOMHandler.extractValue(checkbox);
       expect(result).toBe("true");
     });
-
     it("returns element.value if isDefaultEntry + not checkable", () => {
       (DOMValidator.isDefaultEntry as unknown as jest.Mock).mockReturnValue(
         true
@@ -158,13 +150,11 @@ describe("DOMHandler", () => {
       (DOMValidator.isDefaultCheckable as unknown as jest.Mock).mockReturnValue(
         false
       );
-
       const input = document.createElement("input");
       input.value = "hello";
       const result = DOMHandler.extractValue(input);
       expect(result).toBe("hello");
     });
-
     it("returns dataset.checked if isCustomEntry + isCustomCheckable + el.dataset.checked", () => {
       (DOMValidator.isDefaultEntry as unknown as jest.Mock).mockReturnValue(
         false
@@ -175,14 +165,11 @@ describe("DOMHandler", () => {
       (DOMValidator.isCustomCheckable as unknown as jest.Mock).mockReturnValue(
         true
       );
-
       const div = document.createElement("div");
       div.dataset.checked = "false";
-
       const result = DOMHandler.extractValue(div);
       expect(result).toBe("false");
     });
-
     it("returns dataset.value if isCustomEntry + not customCheckable + dataset.value", () => {
       (DOMValidator.isDefaultEntry as unknown as jest.Mock).mockReturnValue(
         false
@@ -193,13 +180,11 @@ describe("DOMHandler", () => {
       (DOMValidator.isCustomCheckable as unknown as jest.Mock).mockReturnValue(
         false
       );
-
       const div = document.createElement("div");
       div.dataset.value = "some data";
       const result = DOMHandler.extractValue(div);
       expect(result).toBe("some data");
     });
-
     it("returns innerText if isCustomEntry + no dataset.value", () => {
       (DOMValidator.isDefaultEntry as unknown as jest.Mock).mockReturnValue(
         false
@@ -207,13 +192,11 @@ describe("DOMHandler", () => {
       (DOMValidator.isCustomEntry as unknown as jest.Mock).mockReturnValue(
         true
       );
-
       const div = document.createElement("div");
       div.innerText = "my text";
       const result = DOMHandler.extractValue(div);
       expect(result).toBe("my text");
     });
-
     it("returns empty string if no recognized scenario", () => {
       (DOMValidator.isDefaultEntry as unknown as jest.Mock).mockReturnValue(
         false
@@ -221,7 +204,6 @@ describe("DOMHandler", () => {
       (DOMValidator.isCustomEntry as unknown as jest.Mock).mockReturnValue(
         false
       );
-
       const span = document.createElement("span");
       expect(DOMHandler.extractValue(span)).toBe("");
     });

@@ -4,7 +4,7 @@ export default class MapsProvider implements Provider {
   constructor(_maps: Map<any, Map<any, any>>) {
     this.#maps = _maps;
   }
-  public setup(): this {
+  public setup(): MapsProvider {
     for (const map of this.#maps.entries()) {
       if (!map?.length) continue;
       const [k] = map,
