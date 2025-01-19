@@ -19,6 +19,11 @@ export default function Role() {
     role = ctx.role;
   }
   useEffect(() => IOHandler.syncLabel(r.current), [r]);
+  useEffect(() => {
+    const storageRole = sessionStorage.getItem("role");
+    if (!storageRole) return;
+    sessionStorage.setItem("role", role);
+  }, [role]);
   return (
     <div className={`${classes.inpDivClasses} divRole`}>
       <label className={classes.inpLabClasses} htmlFor={id}>

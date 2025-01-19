@@ -1,3 +1,4 @@
+"use client";
 import { FormCtx } from "@/components/forms/RequirementForm";
 import ContextualCheckbox from "@/components/inputs/contextual/ContextualCheckbox";
 import { CtxCbContainerProps } from "@/lib/definitions/client/interfaces/components";

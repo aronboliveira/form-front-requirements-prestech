@@ -1,12 +1,33 @@
+"use client";
 import MathHandler from "@/lib/client/handlers/MathHandler";
 import { flags } from "@/lib/client/vars";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import TimeoutModal from "../modals/TimeoutModal";
 import withModalDispatch from "../highOrder/withModalDispatch";
-export default function Watcher({ _case }: { _case: "mainForm" }) {
+import { WatcherProps } from "@/lib/definitions/client/interfaces/components";
+import ContextValidator from "@/lib/client/validators/ContextValidator";
+import DOMValidator from "@/lib/client/validators/DOMValidator";
+export default function Watcher({ _case, d, v }: WatcherProps) {
+  const cycle = useCallback(() => {
+    if (!d) return;
+    let role = sessionStorage.getItem("role");
+    if (!role) {
+      const roleEl = document.getElementById("role");
+      if (!roleEl || !(roleEl && DOMValidator.isDefaultEntry(roleEl))) return;
+      role = roleEl.value;
+    }
+    if (
+      ContextValidator.isRoleType(role) &&
+      (!v || !ContextValidator.isRoleType(v) || v !== role)
+    ) {
+      console.log("rerendering");
+      d(role);
+    }
+  }, [_case, d]);
   useEffect(() => {
-    if ((document.body.dataset.oncount = "true")) return;
+    if (_case !== "mainForm" || document.body.dataset.oncount === "true")
+      return;
     sessionStorage.setItem("timer", "3600000");
     const interv = setInterval(i => {
       const t = sessionStorage.getItem("timer");
@@ -36,7 +57,14 @@ export default function Watcher({ _case }: { _case: "mainForm" }) {
       flags.failedTimeoutAttempts = 0;
     }, 3_600_000);
     document.body.dataset.oncount = "true";
-  }, []);
+  }, [_case]);
+  useEffect(() => {
+    if (_case !== "role" || document.body.dataset.observingrole === "true")
+      return;
+    cycle();
+    setInterval(cycle, 1_000);
+    document.body.dataset.observingrole = "true";
+  }, [_case]);
   return (
     <span
       className='watcher'

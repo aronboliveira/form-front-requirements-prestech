@@ -1,9 +1,13 @@
 import { ClassesKey } from "../definitions/client/helpers";
-import { roleQuestionsMap } from "../definitions/foundations";
+import {
+  roleQuestionsMap,
+  roleType,
+  techAppKey,
+} from "../definitions/foundations";
 const inps = `form-control`,
   texts = `${inps} form-text-area`,
   btn = `btn`;
-export const classes: Record<ClassesKey, string> = {
+export const classes: Readonly<Record<ClassesKey, string>> = {
   inpDivClasses: `mb-3 inpDivClasses`,
   inpLabClasses: `form-label`,
   inpClasses: `${inps}`,
@@ -163,6 +167,67 @@ export const TechApps = {
   elkStack: "ELK Stack",
   helm: "Helm",
 } as const;
+export const groupedApps: Readonly<Record<roleType, Array<techAppKey[]>>> = {
+  executivoAdministrativo: [
+    ["office365", "outlook", "slack", "googleDrive"],
+    ["zoom", "trello", "sapErp", "msDynamicsCrm"],
+    ["msTeams", "sharePoint", "powerBi", "yammer"],
+    ["asana", "box", "oneDrive", "sapFico"],
+  ],
+  financeiro: [
+    ["oracleFinance", "msExcel", "quickBooks", "totvsProtheus"],
+    ["netSuite", "xero", "tableau", "sql"],
+    ["python", "googleFinance", "eikonReuters", "bloombergTerminal"],
+    ["freshBooks", "salesforce", "msDynamics365", "pipedrive"],
+  ],
+  comercial: [
+    ["hubspot", "linkedInSalesNavigator", "mailchimp", "zoomInfo"],
+    ["googleWorkspace", "excel", "whatsAppBusiness", "twilio"],
+    ["googleAds", "facebookAds", "instagramAds", "googleAnalytics"],
+    ["semRush", "rdStation", "canva", "wordpress"],
+  ],
+  marketing: [
+    ["hootsuite", "buffer", "linkedInCampaignManager", "adobeIllustrator"],
+    ["adobePhotoshop", "windows10_11", "macOs", "activeDirectoryBasic"],
+    ["remoteDesktop", "ferramentasAntivirus", "zendesk", "chromeOs"],
+    ["ios", "android", "ferramentasRedeBasicas", "sistemasTicketBasicos"],
+  ],
+  suporteTecnicoN1: [
+    ["windowsServer", "linuxServer", "activeDirectoryAdvanced", "exchange"],
+    ["serviceNow", "itilTools", "vmwareVirtualBox", "cisco"],
+    ["firewallFortinet", "wireshark", "scripting", "monitoramento"],
+    [
+      "endpointManagement",
+      "antimalwareEnterpriseTools",
+      "backupRestoreAvancado",
+      "totvs",
+    ],
+  ],
+  suporteTecnicoN2: [
+    ["sapEcc", "jira", "docker", "oracleDatabase"],
+    ["postgreSql", "mySql", "linuxBash", "git"],
+    ["jenkins", "grafana", "java", "javaScript"],
+    ["csharp", "nodeJs", "react", "angular"],
+  ],
+  operatorio: [
+    ["sapEcc", "jira", "docker", "oracleDatabase"],
+    ["postgreSql", "mySql", "linuxBash", "git"],
+    ["jenkins", "grafana", "java", "javaScript"],
+    ["csharp", "nodeJs", "react", "angular"],
+  ],
+  desenvolvimento: [
+    ["sapEcc", "jira", "docker", "oracleDatabase"],
+    ["postgreSql", "mySql", "linuxBash", "git"],
+    ["jenkins", "grafana", "java", "javaScript"],
+    ["csharp", "nodeJs", "react", "angular"],
+  ],
+  devOps: [
+    ["gitHub", "sqlDatabases", "noSql", "aws"],
+    ["azure", "kubernetes", "gitLabCiCd", "terraform"],
+    ["ansible", "chef", "puppet", "prometheus"],
+  ],
+  undefined: [[]],
+};
 export enum friendlyRoles {
   executivoAdministrativo = "Executivo | Administrativo",
   financeiro = "Financeiro",

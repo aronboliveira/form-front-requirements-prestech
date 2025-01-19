@@ -7,6 +7,7 @@ import {
   techAppKey,
 } from "../../foundations";
 import { ITelCtx } from "./contexts";
+import { SetStateAction } from "react";
 export interface FormRelated {
   form?: nlFm;
 }
@@ -64,4 +65,9 @@ export interface CtxCbContainerProps {
 export interface CtxCbProps {
   app: techAppKey;
   ownNum: PseudoNum;
+}
+export interface WatcherProps {
+  _case: "mainForm" | "role";
+  d?: React.Dispatch<SetStateAction<any>>;
+  v?: any;
 }

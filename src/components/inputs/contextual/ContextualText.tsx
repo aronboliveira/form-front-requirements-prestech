@@ -1,3 +1,4 @@
+"use client";
 import useCustomDataList from "@/lib/client/hooks/useCustomDataList";
 import { classes } from "@/lib/client/vars";
 import { ICtxTxt } from "@/lib/definitions/client/interfaces/components";

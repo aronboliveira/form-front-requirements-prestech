@@ -23,7 +23,7 @@ export default function ContextualCheckbox({ app, ownNum }: CtxCbProps) {
         type='checkbox'
         id={app}
         name={StringHelper.camelToSnake(app)}
-        className='form-check-input'
+        className='form-check-input green-check'
         disabled={!friendlyAppName ? true : false}
       />
       <label htmlFor={app} id={`label${base}${cRole || ownNum}`}>

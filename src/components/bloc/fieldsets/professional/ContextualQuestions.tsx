@@ -1,4 +1,6 @@
+"use client";
 import { FormCtx } from "@/components/forms/RequirementForm";
+import Watcher from "@/components/hidden/Watcher";
 import ContextualText from "@/components/inputs/contextual/ContextualText";
 import {
   Acronyms,
@@ -9,26 +11,31 @@ import {
 import { IFormCtx } from "@/lib/definitions/client/interfaces/contexts";
 import { officeTopicType, roleType } from "@/lib/definitions/foundations";
 import StringHelper from "@/lib/helpers/StringHelper";
-import { useContext } from "react";
-export default function ContextualQuestions() {
+import { memo, useContext, useMemo, useState } from "react";
+const ContextualQuestions = memo(() => {
   let role: roleType = "undefined";
   const ctx = useContext<IFormCtx>(FormCtx);
   role = ctx.role || "undefined";
   const cRole = StringHelper.unfriendlyName(role, true),
     lRole = StringHelper.unfriendlyName(role),
-    labels = Object.fromEntries(
-      [
-        ...["dt", "mt", "ms", "as", "pr", "op", "ch", "co"].map(
-          a => (Acronyms as any)[a]
-        ),
-      ].map<[officeTopicType, string]>(t => {
-        const map = CtxLabels.get(t);
-        if (!map) return [t, ""];
-        return [t, map.get(lRole) ?? ""];
-      })
-    ) as { [K in officeTopicType]: string };
+    [key, setKey] = useState<string>(crypto.randomUUID()),
+    labels = useMemo(
+      () =>
+        Object.fromEntries(
+          [
+            ...["dt", "mt", "ms", "as", "pr", "op", "ch", "co"].map(
+              a => (Acronyms as any)[a]
+            ),
+          ].map<[officeTopicType, string]>(t => {
+            const map = CtxLabels.get(t);
+            if (!map) return [t, ""];
+            return [t, map.get(lRole) ?? ""];
+          })
+        ) as { [K in officeTopicType]: string },
+      [lRole]
+    );
   return (
-    <>
+    <span key={key}>
       {[
         {
           g: "Tasks",
@@ -104,6 +111,8 @@ export default function ContextualQuestions() {
           ))}
         </fieldset>
       ))}
-    </>
+      <Watcher _case='role' d={setKey} />
+    </span>
   );
-}
+});
+export default ContextualQuestions;

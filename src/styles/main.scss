@@ -146,6 +146,14 @@ button {
 .flexNoWC {
   @include fCNoW;
 }
+.form-check-input {
+  &.green-check {
+    &:checked {
+      background-color: var(--success-green);
+      border-color: var(--success-green);
+    }
+  }
+}
 .form-range {
   transition: background 0.3s ease;
   &::-webkit-slider-thumb,
