@@ -130,7 +130,7 @@ export type GetHeaders = GeneralHeaders & {
 export type PostHeaders = GeneralHeaders & {
   "X-Requested-With"?: string;
   "Content-Length"?: string;
-} & Record<CustomHeaderKeys, CustomHeaderValues>;
+} & Optional<Record<CustomHeaderKeys, CustomHeaderValues>>;
 export type OptionsHeaders = GeneralHeaders & {
   Allow?: AllowValues;
 };
