@@ -22,6 +22,14 @@ export const classes: Readonly<Record<ClassesKey, string>> = {
   mainFsClasses: `border p-4 mb-3 formMainFs`,
   mainFsLegClasses: `legMainFs bold`,
 };
+export enum colors {
+  grey = "#8a8888",
+  orangeRed = "#ff4d4d",
+  orangeBasic = "#ffa500",
+  yellowGold = "#ffea00",
+  greenMid = "#32cd32",
+  turquoise = "#11c2dded",
+}
 export const flags: {
   indexed: boolean;
   pt: boolean;

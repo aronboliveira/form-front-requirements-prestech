@@ -1,5 +1,5 @@
 "use client";
-import { classes } from "@/lib/client/vars";
+import { classes, colors } from "@/lib/client/vars";
 import { OptInput } from "@/lib/definitions/client/interfaces/components";
 import { useEffect, useRef } from "react";
 import s from "@/styles/modules/range.module.scss";
@@ -14,17 +14,17 @@ export default function Range(props: OptInput) {
     handleTrackSlide = (val: number): string => {
       switch (val) {
         case 1:
-          return "#ff4d4d";
+          return colors.orangeRed;
         case 2:
-          return "#ffa500";
+          return colors.orangeBasic;
         case 3:
-          return "#ffea00";
+          return colors.yellowGold;
         case 4:
-          return "#32cd32";
+          return colors.greenMid;
         case 5:
-          return "#11c2dded";
+          return colors.turquoise;
         default:
-          return "#8a8888";
+          return colors.grey;
       }
     },
     min = 0,
@@ -74,14 +74,39 @@ export default function Range(props: OptInput) {
       setTimeout(() => {
         const el = document.getElementById(idf);
         if (!(el instanceof HTMLInputElement)) return;
-        if (el.value === "20")
-          if (el)
-            StyleHandler.updatePseudos({
-              idf: `.form-range#${idf}`,
-              pseudo: pseudoElement,
-              prop: "background-color",
-              value: "#ff4d4d",
-            });
+        const update = (color: keyof typeof colors) => {
+          StyleHandler.updatePseudos({
+            idf: `.form-range#${idf}`,
+            pseudo: pseudoElement,
+            prop: "background-color",
+            value: colors[color],
+          });
+        };
+        console.log(el.value);
+        switch (el.value) {
+          case "20":
+            update("orangeRed");
+            break;
+          case "40":
+            update("orangeBasic");
+            break;
+          case "60":
+            update("yellowGold");
+            break;
+          case "80":
+            update("greenMid");
+            break;
+          case "100":
+            update("turquoise");
+            break;
+          default:
+            const parsed = MathHandler.parseNotNaN(el.value, 0, "int");
+            parsed > 50
+              ? update("greenMid")
+              : parsed > 20
+              ? update("orangeBasic")
+              : update("grey");
+        }
       }, 200);
       StyleHandler.updatePseudos({
         idf: `.form-range#${ev.currentTarget.id}`,

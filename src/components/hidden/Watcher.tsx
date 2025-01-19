@@ -17,13 +17,9 @@ export default function Watcher({ _case, d, v }: WatcherProps) {
       if (!roleEl || !(roleEl && DOMValidator.isDefaultEntry(roleEl))) return;
       role = roleEl.value;
     }
-    if (
-      ContextValidator.isRoleType(role) &&
-      (!v || !ContextValidator.isRoleType(v) || v !== role)
-    ) {
-      console.log("rerendering");
+    ContextValidator.isRoleType(role) &&
+      (!v || !ContextValidator.isRoleType(v) || v !== role) &&
       d(role);
-    }
   }, [_case, d]);
   useEffect(() => {
     if (_case !== "mainForm" || document.body.dataset.oncount === "true")
