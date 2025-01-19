@@ -4,7 +4,7 @@ export type voidish = undefined | null;
 //Elements
 export type nlEl = Element | null;
 export type queryableNode = Document | DocumentFragment | Element;
-export type ArrayLikeNotIterable = NamedNodeMap | DOMStringMap | TouchList;
+export type ArrayLikeNotIterable = NamedNodeMap | DOMStringMap | TouchList; // .length and [], but no ... or for+of
 export type Int8ArrayLike = Int8Array | Uint8Array | Uint8ClampedArray;
 export type Int16ArrayLike = Int16Array | Uint16Array;
 export type Int32ArrayLike = Int32Array | Uint32Array;
@@ -14,19 +14,24 @@ export type TypedArray =
   | Int16ArrayLike
   | Int32ArrayLike
   | FloatArrayLike;
-export type BaseArray = Array | TypedArray;
-export type SizeableIterable = Map | Set;
-export type SettableIterable = SizeableIterable | TypedArray;
+export type BaseArray = Array | TypedArray; // sharing many Array methods
+export type SizeableIterable = Map | Set; // .size
+export type SettableIterable = SizeableIterable | TypedArray; // .set()
 export type BaseIterableNotIterator = BaseArray | SizeableIterable | String;
-export type BaseIterable = BaseIterableNotIterator | Generator;
-export type DOMIterable = NodeList | HTMLCollection | DOMStringList;
+export type BaseIterable = BaseIterableNotIterator | Generator; // .next(): { done: boolean, value: any }
+export type DOMIterable =
+  | NodeList
+  | HTMLCollection
+  | DOMStringList
+  | CSSRuleList
+  | StyleSheetList;
 export type IterableNotIterator = BaseIterableNotIterator | DOMIterable;
 export type SpecialHTMLCollection =
   | HTMLFormControlsCollection
   | HTMLOptionsCollection;
-export type SpecialNodeList = RadioNodeList;
+export type SpecialNodeList = RadioNodeList; // .value()
 export type SpecialDOMCollection = SpecialHTMLCollection | SpecialNodeList;
-export type IterableIterator = Generator;
+export type IterableIterator = Generator; // .next() returns own object
 export type ArrayLike =
   | ArrayLikeNotIterable
   | IterableNotIterator
