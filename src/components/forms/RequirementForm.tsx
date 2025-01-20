@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
   useMemo,
+  useTransition,
 } from "react";
 import FirstName from "@/components/inputs/FirstName";
 import LastName from "@/components/inputs/LastName";
@@ -33,10 +34,12 @@ import TechnologiesLists from "../bloc/fieldsets/professional/TechnologiesList";
 import DOMHandler from "@/lib/client/handlers/DOMHandler";
 import StyleProvider from "@/lib/client/providers/StyleProvider";
 import LoggingHandler from "@/lib/client/handlers/LoggingHandler";
+import Spinner from "../bloc/transicional/Spinner";
 export const FormCtx = createContext<IFormCtx>({
   role: "undefined",
   setRole: null,
   ctxLabels: new Map(),
+  setTransition: null,
 });
 export default function RequirementForm({
   labels: ctxLabels,
@@ -45,13 +48,15 @@ export default function RequirementForm({
     [namedSettled, setNames] = useState<boolean>(false),
     [idsSettled, setIds] = useState<boolean>(false),
     [role, setRole] = useState<roleType>("undefined"),
+    [isTransitioning, setTransition] = useTransition(),
     contextValue = useMemo<IFormCtx>(
       () => ({
         role,
         setRole,
         ctxLabels,
+        setTransition,
       }),
-      [role]
+      [role, setRole, ctxLabels, setTransition]
     );
   let cache = null;
   useEffect(() => {
@@ -110,6 +115,7 @@ export default function RequirementForm({
       )}
     >
       <FormCtx.Provider value={contextValue}>
+        {isTransitioning && <Spinner />}
         <form
           ref={r}
           key={crypto.randomUUID()}
@@ -259,7 +265,7 @@ export default function RequirementForm({
                     },
                   ].map(({ t, id }, i) => (
                     <Range
-                      key={`ias__${i}`} //NOSONAR
+                      key={`ias__${i}`}
                       label={t}
                       required={true}
                       id={id}

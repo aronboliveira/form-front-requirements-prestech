@@ -48,6 +48,8 @@ prisma/
 src/server/model/
 src/server/models/
 src/app/api/**
+!/src/app/api/test/
+!/src/app/api/test/**
 *.pem
 *.key
 *.crt

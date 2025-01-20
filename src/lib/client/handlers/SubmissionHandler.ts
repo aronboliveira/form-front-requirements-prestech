@@ -1,6 +1,6 @@
 import { toast } from "react-hot-toast";
 import axios, { AxiosResponse } from "axios";
-import { PostHeaders } from "@/lib/definitions/foundations";
+import { PostHeaders, routes } from "@/lib/definitions/foundations";
 import ExceptionHandler from "./ErrorHandler";
 import { entryElement, voidish } from "@/lib/definitions/client/helpers";
 import DOMValidator from "../validators/DOMValidator";
@@ -10,6 +10,7 @@ import { flags } from "../vars";
 export default class SubmissionHandler {
   private static _instance: SubmissionHandler;
   readonly #processor: SubmissionProcessor;
+  readonly #routes = new Map([["sendRequirements", "YXBpL3Rlc3Q="]]);
   #form: HTMLFormElement;
   #attempts: number;
   formId: string;
@@ -66,10 +67,10 @@ export default class SubmissionHandler {
     }
     return true;
   }
-  public submit(
-    endpoint: string,
+  public async submit(
+    endpoint: keyof routes,
     axios: boolean = true
-  ): { ok: boolean; cause: string } {
+  ): Promise<{ ok: boolean; cause: string }> {
     this.#setForm();
     if (this.#form.noValidate)
       return { ok: false, cause: "Form noValidate attribute active" };
@@ -121,10 +122,23 @@ export default class SubmissionHandler {
       data[(s.dataset.name as string) || (s.dataset.id as string)] =
         DOMHandler.extractValue(s);
     }
-    axios
-      ? this.#sendToServerWithAxios(endpoint, data)
-      : this.#fetchToServer(endpoint, data);
-    return { ok: true, cause: "Form correctly submitted" };
+    const res = axios
+      ? await this.#sendToServerWithAxios(endpoint, data)
+      : await this.#fetchToServer(endpoint, data);
+    return res.status.toString().startsWith("4") ||
+      res.status.toString().startsWith("5")
+      ? {
+          ok: false,
+          cause: flags.pt
+            ? "Erro submetendo o formulário"
+            : "Error submitting form",
+        }
+      : {
+          ok: true,
+          cause: flags.pt
+            ? "Formulário corretamente submetido"
+            : "Form correctly submitted",
+        };
   }
   public scan(): {
     successful: entryElement[];
@@ -174,9 +188,11 @@ export default class SubmissionHandler {
     headers: PostHeaders = {
       "Content-Type": "application/json",
     }
-  ): Promise<any> {
+  ): Promise<AxiosResponse | Response> {
     try {
-      const res = await axios.post(endpoint, data, {
+      const destiny = this.#routes.get(endpoint);
+      if (!destiny) throw new SyntaxError("The endpoint key is not mapped.");
+      const res = await axios.post(atob(destiny), data, {
         headers,
       });
       return res;
@@ -186,10 +202,20 @@ export default class SubmissionHandler {
           ? e.response?.status || 500
           : ExceptionHandler.classify(e as Error);
       console.error(
-        `Error sending data with Axios:\n${status}.${(e as Error).name} — ${
+        `Error posting data:\n${status}. ${(e as Error).name} — ${
           (e as Error).message
         }`
       );
+      toast.error(
+        flags.pt
+          ? `Erro: ${ExceptionHandler.getHttpResponseFriendlyMessage(
+              typeof status === "number" ? status : status.status
+            )}`
+          : `Erro: ${ExceptionHandler.getHttpResponseFriendlyMessage(
+              typeof status === "number" ? status : status.status
+            )}`
+      );
+      sessionStorage.setItem("isHttp", "true");
       return new Response("", {
         status: typeof status === "number" ? status : status.status,
         statusText:
@@ -211,9 +237,11 @@ export default class SubmissionHandler {
     headers: PostHeaders = {
       "Content-Type": "application/json",
     }
-  ) {
+  ): Promise<Response> {
     try {
-      const res = await fetch(endpoint, {
+      const destiny = this.#routes.get(endpoint);
+      if (!destiny) throw new SyntaxError("The endpoint key is not mapped.");
+      const res = await fetch(atob(destiny), {
         method: "POST",
         headers,
         body: JSON.stringify(data),

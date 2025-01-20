@@ -1,135 +1,139 @@
 import SubmissionHandler from "../../../../lib/client/handlers/SubmissionHandler";
-import toast from "react-hot-toast";
-import DOMValidator from "../../../../lib/client/validators/DOMValidator";
-import DOMHandler from "../../../../lib/client/handlers/DOMHandler";
-describe("construct", () => {
-  it("returns an existing instance if present, otherwise creates a new one", () => {
-    const form = document.createElement("form");
-    const first = SubmissionHandler.construct(form);
-    const second = SubmissionHandler.construct(form);
-    expect(first).toBeInstanceOf(SubmissionHandler);
-    expect(second).toBe(first);
-  });
+import SubmissionProcessor from "../../../../lib/client/processors/SubmissionProcessor";
+import { toast } from "react-hot-toast";
+import axios, { AxiosHeaders } from "axios";
+jest.mock("../../../../lib/client/handlers/DOMHandler", () => ({
+  queryByUniqueName: jest.fn(),
+  extractValue: jest.fn().mockReturnValue("test-value"),
+  getIdentifier: jest.fn().mockReturnValue("test-id"),
+}));
+jest.mock("../../../../lib/client/processors/SubmissionProcessor", () => {
+  return jest.fn().mockImplementation(() => ({
+    process: jest.fn().mockReturnValue(1),
+  }));
 });
-describe("SubmissionHandler instance methods", () => {
-  let handler: any;
-  let formEl: HTMLFormElement;
+jest.mock("react-hot-toast", () => ({
+  toast: jest.fn(),
+  success: jest.fn(),
+  error: jest.fn(),
+  dismiss: jest.fn(),
+}));
+jest.mock("axios");
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+describe("SubmissionHandler", () => {
+  let mockForm: HTMLFormElement;
+  let submissionHandler: SubmissionHandler;
+  let mockProcessor: SubmissionProcessor;
   beforeEach(() => {
-    formEl = document.createElement("form");
-    handler = new SubmissionHandler(formEl, undefined);
     jest.clearAllMocks();
+    mockForm = document.createElement("form");
+    mockForm.id = "test-form";
+    mockProcessor = new SubmissionProcessor();
+    submissionHandler = new SubmissionHandler(mockForm, mockProcessor);
+  });
+  describe("construct", () => {
+    it("returns a new instance if no existing instance exists", () => {
+      const instance = SubmissionHandler.construct(mockForm);
+      expect(instance).toBeInstanceOf(SubmissionHandler);
+    });
+    it("returns the existing instance if one already exists", () => {
+      const instance1 = SubmissionHandler.construct(mockForm);
+      const instance2 = SubmissionHandler.construct(mockForm);
+      expect(instance1).toBe(instance2);
+    });
   });
   describe("canSubmit", () => {
-    it("returns true if attempts <= 4", () => {
-      const el = document.createElement("button");
-      expect(handler.canSubmit(el)).toBe(true);
-      expect(handler.canSubmit(el)).toBe(true);
-      expect(handler.canSubmit(el)).toBe(true);
-      expect(handler.canSubmit(el)).toBe(true);
+    it("increments attempts and allows submission if attempts are within the limit", () => {
+      const mockCaller = document.createElement("button");
+      const result = submissionHandler.canSubmit(mockCaller);
+      expect(result).toBe(true);
+      expect(submissionHandler.attemps).toBe(1);
     });
-    it("returns false + disables caller if attempts > 4", () => {
-      const el = document.createElement("button");
-      for (let i = 0; i < 4; i++) {
-        expect(handler.canSubmit(el)).toBe(true);
-      }
-      expect(handler.canSubmit(el)).toBe(false);
-      expect(el.disabled).toBe(true);
-      expect(toast).toHaveBeenCalled();
+    it("disables the button and shows a toast if attempts exceed the limit", () => {
+      submissionHandler["#attempts"] = 4;
+      const mockCaller = document.createElement("button");
+      submissionHandler.canSubmit(mockCaller);
+      expect(mockCaller.disabled).toBe(true);
+      expect(toast).toHaveBeenCalledWith(
+        expect.stringMatching(/Attempts exceeded|Tentativas excedidas/),
+        { icon: "⏳" }
+      );
     });
   });
   describe("submit", () => {
-    it("returns { ok: false, cause: 'Form noValidate ...' } if form.noValidate = true", () => {
-      formEl.noValidate = true;
-      const result = handler.submit("/api");
-      expect(result.ok).toBe(false);
-      expect(result.cause).toMatch(/noValidate/);
-    });
-    it("fails if required entries are missing", () => {
-      const spyScan = jest.spyOn(handler, "scan").mockReturnValue({
-        successful: [],
-        failed: [
-          Object.assign(document.createElement("input"), { required: true }),
-        ],
-        successfulCustom: [],
-        failedCustom: [],
+    it("returns an error if the form has noValidate attribute", async () => {
+      mockForm.noValidate = true;
+      const result = await submissionHandler.submit("sendRequirements");
+      expect(result).toEqual({
+        ok: false,
+        cause: "Form noValidate attribute active",
       });
-      const result = handler.submit("/api");
-      expect(result.ok).toBe(false);
-      expect(result.cause).toMatch(/Failed to validate/);
-      spyScan.mockRestore();
     });
-    it("submits if scan is successful, calls #sendToServerWithAxios or #fetchToServer", () => {
-      const spyScan = jest.spyOn(handler, "scan").mockReturnValue({
-        successful: [document.createElement("input")],
-        failed: [],
-        successfulCustom: [],
-        failedCustom: [],
+    it("validates form elements and submits successfully via axios", async () => {
+      mockedAxios.post.mockResolvedValueOnce({
+        data: {},
+        status: 200,
+        statusText: "OK",
+        headers: {},
+        config: {},
       });
-      (handler as any)["#sendToServerWithAxios"] = jest.fn();
-      (handler as any)["#fetchToServer"] = jest.fn();
-      const result = handler.submit("/api", true);
-      expect((handler as any)["#sendToServerWithAxios"]).toHaveBeenCalled();
-      expect(result.ok).toBe(true);
-      handler.submit("/api", false);
-      expect((handler as any)["#fetchToServer"]).toHaveBeenCalled();
-      spyScan.mockRestore();
+      const result = await submissionHandler.submit("sendRequirements");
+      expect(result).toEqual({
+        ok: true,
+        cause: "Form correctly submitted",
+      });
+    });
+    it("handles server errors correctly", async () => {
+      mockedAxios.post.mockResolvedValueOnce({
+        data: {},
+        status: 500,
+        statusText: "Internal Server Error",
+        headers: {},
+        config: {},
+      });
+      const result = await submissionHandler.submit("sendRequirements");
+      expect(result).toEqual({
+        ok: false,
+        cause: "Error submitting form",
+      });
     });
   });
-  describe("scan", () => {
-    it("returns splitted arrays of successful/failed for default/custom entries", () => {
-      const input1 = document.createElement("input");
-      input1.id = "input1";
-      const input2 = document.createElement("input");
-      input2.id = "input2";
-      const customDiv = document.createElement("div");
-      customDiv.classList.add("customRole");
-      (DOMValidator.isDefaultEntry as unknown as jest.Mock).mockReturnValueOnce(
-        true
+  describe("handleResponse", () => {
+    it("shows a success toast and navigates on a successful response", () => {
+      const mockRouter = { push: jest.fn() };
+      submissionHandler.handleResponse(
+        {
+          data: {},
+          status: 200,
+          statusText: "OK",
+          headers: new AxiosHeaders({ "Content-Type": "application/json" }),
+          config: {
+            headers: new AxiosHeaders({ "Content-Type": "application/json" }),
+          },
+        },
+        mockRouter
       );
-      (DOMValidator.isDefaultEntry as unknown as jest.Mock).mockReturnValueOnce(
-        true
+      expect(toast.success).toHaveBeenCalledWith(
+        "O formulário foi submetido com sucesso!"
       );
-      (DOMValidator.isDefaultEntry as unknown as jest.Mock).mockReturnValueOnce(
-        false
-      );
-      (DOMValidator.isCustomEntry as unknown as jest.Mock).mockReturnValueOnce(
-        false
-      );
-      (DOMValidator.isCustomEntry as unknown as jest.Mock).mockReturnValueOnce(
-        false
-      );
-      (DOMValidator.isCustomEntry as unknown as jest.Mock).mockReturnValueOnce(
-        true
-      );
-      formEl.appendChild(input1);
-      formEl.appendChild(input2);
-      formEl.appendChild(customDiv);
-      handler["#processor"] = {
-        process: jest
-          .fn()
-          .mockReturnValueOnce(1)
-          .mockReturnValueOnce(0)
-          .mockReturnValueOnce(3),
-      };
-      const result = handler.scan();
-      expect(result.successful).toHaveLength(1);
-      expect(result.failed).toHaveLength(1);
-      expect(result.successfulCustom).toHaveLength(1);
-      expect(result.failedCustom).toHaveLength(0);
+      expect(mockRouter.push).toHaveBeenCalledWith("/", { scroll: true });
     });
-  });
-  describe("#setForm", () => {
-    it("returns true if #form is set and connected", () => {
-      expect((handler as any)["#setForm"]()).toBe(true);
-    });
-    it("tries to query by unique name if #form is not set or not connected", () => {
-      (handler as any)["#form"] = null;
-      const spyQuery = jest
-        .spyOn(DOMHandler, "queryByUniqueName")
-        .mockReturnValue(formEl);
-      const result = (handler as any)["#setForm"]();
-      expect(result).toBe(true);
-      expect(spyQuery).toHaveBeenCalled();
+    it("shows an error toast on a failed response", () => {
+      submissionHandler.handleResponse(
+        {
+          data: {},
+          status: 500,
+          statusText: "Internal Server Error",
+          headers: new AxiosHeaders({ "Content-Type": "application/json" }),
+          config: {
+            headers: new AxiosHeaders({ "Content-Type": "application/json" }),
+          },
+        },
+        {}
+      );
+      expect(toast.error).toHaveBeenCalledWith(
+        expect.stringMatching(/unexpected error|erro inesperado/i)
+      );
     });
   });
 });

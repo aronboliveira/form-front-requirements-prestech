@@ -13,6 +13,9 @@ export interface Processor<T> {
 export interface Mapper {
   [methodName: string]: (data: T, ...args: any) => Exclude<any, T>;
 }
+export interface routes {
+  sendRequirements: string;
+}
 export type roleType =
   | "executivoAdministrativo"
   | "financeiro"
@@ -53,6 +56,7 @@ export type ValidPhonePattern =
       | ""}${number}${number}${number}${number}${
       | number
       | ""}${"-"}?${number}${number}${number}${number}`;
+//HTTP
 export type HttpBaseKeys = "Accept" | "Authorization";
 export type BaseValues =
   | "application/json"
@@ -147,12 +151,11 @@ export type HTTPReturns =
   | "redirect"
   | "serverError"
   | "clientError";
+export type ResponseLanguage<PT extends string, EN extends string> = {
+  pt: PT;
+  en: EN;
+};
 export type HTTPResponseInfoCode = 100 | 101 | 102 | 103;
-export type HTTPResponseInfoLabel =
-  | "Continue"
-  | "Switching Protocols"
-  | "Processing"
-  | "Early Hints";
 export type HTTPResponseSuccessfulCode =
   | 200
   | 201
@@ -164,17 +167,6 @@ export type HTTPResponseSuccessfulCode =
   | 207
   | 208
   | 226;
-export type HTTPResponseSuccessfulLabel =
-  | "OK"
-  | "Created"
-  | "Accepted"
-  | "Non-Authoritative Information"
-  | "No Content"
-  | "Reset Content"
-  | "Partial Content"
-  | "Multi-Status"
-  | "Already Reported"
-  | "IM Used";
 export type HTTPResponseRedirectCode =
   | 300
   | 301
@@ -184,15 +176,6 @@ export type HTTPResponseRedirectCode =
   | 306
   | 307
   | 308;
-export type HTTPResponseRedirectLabel =
-  | "Multiple Choices"
-  | "Moved Permanently"
-  | "Found"
-  | "See Other"
-  | "Not Modified"
-  | "Unused"
-  | "Temporary Redirect"
-  | "Permanent Redirect";
 export type HTTPResponseClientErrorCode =
   | 400
   | 401
@@ -223,12 +206,83 @@ export type HTTPResponseClientErrorCode =
   | 429
   | 431
   | 451;
-export type HTTPResponseClientErrorLabel =
+export type HTTPResponseServerErrorCode =
+  | 500
+  | 501
+  | 502
+  | 503
+  | 504
+  | 505
+  | 506
+  | 507
+  | 508
+  | 510
+  | 511;
+export type HTTPResponseInfoLabelEn =
+  | "Continue"
+  | "Switching Protocols"
+  | "Processing"
+  | "Early Hints";
+export type HTTPResponseInfoLabelPt =
+  | "Continuar"
+  | "Trocando Protocolos"
+  | "Processando"
+  | "Primeiras Dicas";
+export type HTTPResponseInfoLabel =
+  | HTTPResponseInfoLabelEn
+  | HTTPResponseInfoLabelPt;
+export type HTTPResponseSuccessfulLabelEn =
+  | "OK"
+  | "Created"
+  | "Accepted"
+  | "Non-Authoritative Information"
+  | "No Content"
+  | "Reset Content"
+  | "Partial Content"
+  | "Multi-Status"
+  | "Already Reported"
+  | "IM Used";
+export type HTTPResponseSuccessfulLabelPt =
+  | "Tudo Certo"
+  | "Criado"
+  | "Aceito"
+  | "Informações Não-Autoritativas"
+  | "Sem Conteúdo"
+  | "Redefinir Conteúdo"
+  | "Conteúdo Parcial"
+  | "Status Múltiplo"
+  | "Já Reportado"
+  | "IM Usado";
+export type HTTPResponseSuccessfulLabel =
+  | HTTPResponseSuccessfulLabelEn
+  | HTTPResponseSuccessfulLabelPt;
+export type HTTPResponseRedirectLabelEn =
+  | "Multiple Choices"
+  | "Moved Permanently"
+  | "Found"
+  | "See Other"
+  | "Not Modified"
+  | "Unused"
+  | "Temporary Redirect"
+  | "Permanent Redirect";
+export type HTTPResponseRedirectLabelPt =
+  | "Múltiplas Escolhas"
+  | "Movido Permanentemente"
+  | "Encontrado"
+  | "Ver Outro"
+  | "Não Modificado"
+  | "Não Usado"
+  | "Redirecionamento Temporário"
+  | "Redirecionamento Permanente";
+export type HTTPResponseRedirectLabel =
+  | HTTPResponseRedirectLabelEn
+  | HTTPResponseRedirectLabelPt;
+export type HTTPResponseClientErrorLabelEn =
   | "Bad Request"
   | "Unauthorized"
   | "Payment Required"
   | "Forbidden"
-  | "Not Found"
+  | "Resource Not Found"
   | "Method Not Allowed"
   | "Not Acceptable"
   | "Proxy Authentication Required"
@@ -246,26 +300,47 @@ export type HTTPResponseClientErrorLabel =
   | "Misdirected Request"
   | "Unprocessable Content"
   | "Locked"
-  | "Failed Dependendcy"
+  | "Failed Dependency"
   | "Too Early"
   | "Upgrade Required"
   | "Precondition Required"
   | "Too Many Requests"
   | "Request Header Fields Too Large"
   | "Unavailable For Legal Reasons";
-export type HTTPResponseServerErrorCode =
-  | 500
-  | 501
-  | 502
-  | 503
-  | 504
-  | 505
-  | 506
-  | 507
-  | 508
-  | 510
-  | 511;
-export type HTTPResponseServerErrorLabel =
+export type HTTPResponseClientErrorLabelPt =
+  | "Requisição Inválida"
+  | "Não Autorizado"
+  | "Pagamento Necessário"
+  | "Proibido"
+  | "Recurso não encontrado"
+  | "Método Não Permitido"
+  | "Não Aceitável"
+  | "Autenticação de Proxy Necessária"
+  | "Tempo Limite da Requisição"
+  | "Conflito"
+  | "Perdido"
+  | "Comprimento Necessário"
+  | "Pré-condição Falhou"
+  | "Conteúdo Muito Grande"
+  | "URI Muito Longo"
+  | "Tipo de Mídia Não Suportado"
+  | "Intervalo Não Satisfatório"
+  | "Expectativa Falhou"
+  | "Eu sou um bule"
+  | "Requisição Mal Direcionada"
+  | "Conteúdo Não Processável"
+  | "Bloqueado"
+  | "Dependência Falhou"
+  | "Muito Cedo"
+  | "Atualização Necessária"
+  | "Pré-condição Necessária"
+  | "Muitas Requisições"
+  | "Campos do Cabeçalho da Requisição Muito Grandes"
+  | "Indisponível por Motivos Legais";
+export type HTTPResponseClientErrorLabel =
+  | HTTPResponseClientErrorLabelEn
+  | HTTPResponseClientErrorLabelPt;
+export type HTTPResponseServerErrorLabelEn =
   | "Internal Server Error"
   | "Not Implemented"
   | "Bad Gateway"
@@ -277,6 +352,21 @@ export type HTTPResponseServerErrorLabel =
   | "Loop Detected"
   | "Not Extended"
   | "Network Authentication Required";
+export type HTTPResponseServerErrorLabelPt =
+  | "Erro Interno do Servidor"
+  | "Não Implementado"
+  | "Gateway Inválido"
+  | "Serviço Indisponível"
+  | "Tempo Limite do Gateway"
+  | "Versão HTTP Não Suportada"
+  | "Variante Também Negocia"
+  | "Armazenamento Insuficiente"
+  | "Loop Detectado"
+  | "Não Estendido"
+  | "Autenticação de Rede Necessária";
+export type HTTPResponseServerErrorLabel =
+  | HTTPResponseServerErrorLabelEn
+  | HTTPResponseServerErrorLabelPt;
 export type HTTPResponseInfo = {
   [K in HTTPResponseInfoLabel]: HTTPResponseInfoCode;
 };

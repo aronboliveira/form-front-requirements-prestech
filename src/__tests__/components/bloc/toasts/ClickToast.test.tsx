@@ -11,9 +11,7 @@ jest.mock("@/lib/client/validators/DOMValidator", () => ({
   isButton: jest.fn(),
 }));
 describe("clickToast", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+  beforeEach(jest.clearAllMocks);
   it("renders the toast with the correct message", () => {
     const message = "Are you sure?";
     clickToast(message);

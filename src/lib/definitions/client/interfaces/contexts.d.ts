@@ -13,4 +13,5 @@ export interface IFormCtx {
   role: roleType;
   setRole: nlRDispatch<roleType>;
   ctxLabels: Map<mapLabels, Map<any, any>>;
+  setTransition: React.TransitionStartFunction | null;
 }
