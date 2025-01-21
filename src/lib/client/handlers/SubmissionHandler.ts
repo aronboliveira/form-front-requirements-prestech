@@ -10,7 +10,9 @@ import { flags } from "../vars";
 export default class SubmissionHandler {
   private static _instance: SubmissionHandler;
   readonly #processor: SubmissionProcessor;
-  readonly #routes = new Map([["sendRequirements", "YXBpL3Rlc3Q="]]);
+  readonly #routes = new Map([
+    ["sendRequirements", "YXBpL21haW5Gb3JtU3VibWl0"],
+  ]);
   #form: HTMLFormElement;
   #attempts: number;
   formId: string;
@@ -208,10 +210,10 @@ export default class SubmissionHandler {
       );
       toast.error(
         flags.pt
-          ? `Erro: ${ExceptionHandler.getHttpResponseFriendlyMessage(
+          ? `Erro: ${SubmissionProcessor.getHttpResponseFriendlyMessage(
               typeof status === "number" ? status : status.status
             )}`
-          : `Erro: ${ExceptionHandler.getHttpResponseFriendlyMessage(
+          : `Erro: ${SubmissionProcessor.getHttpResponseFriendlyMessage(
               typeof status === "number" ? status : status.status
             )}`
       );

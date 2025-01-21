@@ -10,17 +10,19 @@ import { RefObject, useContext } from "react";
 import { toast } from "react-hot-toast";
 import { FormCtx } from "../forms/RequirementForm";
 import { disableableElement } from "@/lib/definitions/client/helpers";
+import promptToast from "../bloc/toasts/PromptToast";
 export default function Submit({ form }: FormRelated) {
   const id = "btnSubmit",
     r = useFormButton({ form, idf: id }),
     router = useRouter(),
     ctx = useContext<IFormCtx>(FormCtx),
     handleClick = (el: disableableElement): void => {
-      toast.success(
+      const tId = toast.success(
         flags.pt
           ? "Submissão validada. Esperando resposta..."
           : "Successfuly validated. Waiting for response..."
       );
+      setTimeout(() => toast.dismiss(tId), 750);
       if (!el || !el.isConnected)
         el = document.getElementById(id) as HTMLButtonElement;
       if (!el) return;
@@ -44,8 +46,16 @@ export default function Submit({ form }: FormRelated) {
                     : "The form was validated and submitted. Please wait..."
                 );
                 router.push("/success", { scroll: true });
+                setTimeout(router.back, 3000);
               })();
         });
+    },
+    check = async (): Promise<boolean> => {
+      const msg = await promptToast(
+        "Você confirma o envio dos dados?",
+        "Escreva aqui"
+      );
+      return msg.includes("confirm");
     };
   const setTransition = ctx.setTransition || null;
   return (
@@ -64,9 +74,24 @@ export default function Submit({ form }: FormRelated) {
         const el = ev.currentTarget;
         if (setTransition)
           setTransition(() => {
-            setTimeout(() => handleClick(el), 500);
+            setTimeout(() => {
+              check().then(res => {
+                res
+                  ? handleClick(el)
+                  : toast(flags.pt ? `CAPTCHA falhou` : `CAPTCHA failed`, {
+                      icon: "📑",
+                    });
+              });
+            }, 500);
           });
-        else handleClick(el);
+        else
+          check().then(res => {
+            res
+              ? handleClick(el)
+              : toast(flags.pt ? `CAPTCHA falhou` : `CAPTCHA failed`, {
+                  icon: "📑",
+                });
+          });
       }}
     >
       <span>Enviar</span>

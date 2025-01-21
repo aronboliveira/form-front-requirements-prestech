@@ -180,3 +180,17 @@ export const StartingHTTPDigits: Readonly<{ [k: PseudoNum]: HTTPReturns }> = {
   "8": "serverError",
   "9": "serverError",
 } as const;
+export enum HTTPReturnsFriendlyEn {
+  i = "Information",
+  s = "Successful",
+  r = "Redirection",
+  se = "Server Error",
+  ce = "Client Error",
+}
+export enum HTTPReturnsFriendlyPt {
+  i = "Informação",
+  s = "Sucesso",
+  r = "Redireção",
+  se = "Erro no Servidor",
+  ce = "Erro no Cliente",
+}

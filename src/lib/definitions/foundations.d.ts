@@ -1,5 +1,6 @@
+import { AxiosResponse } from "axios";
 import { TechApps } from "../client/vars";
-import { nlEl } from "./client/helpers";
+import { nlEl, nlStr } from "./client/helpers";
 import { ITelCtx } from "./client/interfaces/contexts";
 export interface Identifiable {
   id?: string;
@@ -9,6 +10,18 @@ export interface Provider {
 }
 export interface Processor<T> {
   process: (data: T) => any;
+}
+export interface Controller {
+  #codedEndpoint: string;
+  #relatedView: string;
+  #relatedModel?: string;
+  endpoint: () => string;
+}
+export interface PostController {
+  post: (
+    data: { [k: string]: string },
+    headers: PostHeaders
+  ) => AxiosResponse | Response;
 }
 export interface Mapper {
   [methodName: string]: (data: T, ...args: any) => Exclude<any, T>;
@@ -151,6 +164,19 @@ export type HTTPReturns =
   | "redirect"
   | "serverError"
   | "clientError";
+export type HTTPReturnsFriendlyEn =
+  | "Information"
+  | "Successful"
+  | "Redirection"
+  | "Server Error"
+  | "Client Error";
+export type HTTPReturnsFriendlyPt =
+  | "Informação"
+  | "Sucesso"
+  | "Redireção"
+  | "Erro no Servidor"
+  | "Erro no Cliente";
+export type HTTPReturnsFriendly = HTTPReturnsFriendlyEn | HTTPReturnsFriendlyPt;
 export type ResponseLanguage<PT extends string, EN extends string> = {
   pt: PT;
   en: EN;

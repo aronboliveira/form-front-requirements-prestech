@@ -1,6 +1,4 @@
-import { PseudoNum } from "@/lib/definitions/foundations";
 import { flags, jsErrorsFriendlyNames } from "../vars";
-import { HTTPRes, StartingHTTPDigits } from "@/lib/vars";
 export default class ExceptionHandler {
   static classify(exception: Error | DOMException): {
     type: string;
@@ -163,21 +161,12 @@ export default class ExceptionHandler {
     const friendlyMessage = friendlyNames.get(errorType);
     return friendlyMessage || errorType;
   }
-  static getHttpResponseFriendlyMessage(code: number): string {
-    const firstDigit = code.toString().slice(0, 1) as PseudoNum,
-      def = "Internal Server Error";
-    if (
-      !["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].some(
-        n => n === firstDigit
-      )
-    )
-      return def;
-    //@ts-ignore
-    const dict = HTTPRes[StartingHTTPDigits[firstDigit] || 500]?.get(code),
-      lang = flags.pt ? "pt" : "en";
-    if (!(dict as any)[lang]) return def;
-    const msg = (dict as any)[lang];
-    if (!msg) return def;
-    return msg;
+  static isErrorCode(code: number): boolean {
+    const firstDigit = code.toString().charAt(0);
+    return firstDigit === "4" || firstDigit === "5";
+  }
+  static isOkishCode(code: number): boolean {
+    const firstDigit = code.toString().charAt(0);
+    return ["1", "2", "3"].some(d => firstDigit === d);
   }
 }

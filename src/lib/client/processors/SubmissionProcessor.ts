@@ -1,4 +1,8 @@
-import { Processor } from "@/lib/definitions/foundations";
+import {
+  HTTPReturnsFriendly,
+  Processor,
+  PseudoNum,
+} from "@/lib/definitions/foundations";
 import DOMValidator from "../validators/DOMValidator";
 import { entryElement } from "@/lib/definitions/client/helpers";
 import MathHandler from "../handlers/MathHandler";
@@ -6,6 +10,12 @@ import StyleHandler from "../handlers/StyleHandler";
 import DOMHandler from "../handlers/DOMHandler";
 import { toast } from "react-hot-toast";
 import { flags } from "../vars";
+import {
+  HTTPRes,
+  HTTPReturnsFriendlyEn,
+  HTTPReturnsFriendlyPt,
+  StartingHTTPDigits,
+} from "@/lib/vars";
 export default class SubmissionProcessor implements Processor<HTMLElement> {
   private static _instance: SubmissionProcessor;
   constructor() {
@@ -248,5 +258,38 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
         .map(v => v.trim())
         .some(v => v === value);
     return true;
+  }
+  static getHttpResponseFriendlyMessage(code: number): string {
+    const firstDigit = code.toString().slice(0, 1) as PseudoNum,
+      def = "Internal Server Error";
+    if (
+      !["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].some(
+        n => n === firstDigit
+      )
+    )
+      return def;
+    const dict = HTTPRes[StartingHTTPDigits[firstDigit] || 500]?.get(code),
+      lang = flags.pt ? "pt" : "en";
+    if (!(dict as any)[lang]) return def;
+    const msg = `${SubmissionProcessor.classifyHttpCategory(firstDigit)} — ${
+      (dict as any)[lang]
+    }`;
+    if (!msg) return def;
+    return msg;
+  }
+  static classifyHttpCategory(code: string): HTTPReturnsFriendly {
+    if (code.length > 1) code = code.slice(0, 1);
+    switch (code) {
+      case "1":
+        return flags.pt ? HTTPReturnsFriendlyPt.i : HTTPReturnsFriendlyEn.i;
+      case "2":
+        return flags.pt ? HTTPReturnsFriendlyPt.s : HTTPReturnsFriendlyEn.s;
+      case "3":
+        return flags.pt ? HTTPReturnsFriendlyPt.r : HTTPReturnsFriendlyEn.r;
+      case "4":
+        return flags.pt ? HTTPReturnsFriendlyPt.ce : HTTPReturnsFriendlyEn.ce;
+      default:
+        return flags.pt ? HTTPReturnsFriendlyPt.se : HTTPReturnsFriendlyPt.se;
+    }
   }
 }
