@@ -5,6 +5,11 @@ import { ITelCtx } from "./client/interfaces/contexts";
 export interface Identifiable {
   id?: string;
 }
+export interface RequestOpts {
+  request: Request;
+  id: string;
+  priority?: number;
+}
 export interface Provider {
   setup: () => Provider;
 }
@@ -12,10 +17,11 @@ export interface Processor<T> {
   process: (data: T) => any;
 }
 export interface Controller {
-  #codedEndpoint: string;
-  #relatedView: string;
-  #relatedModel?: string;
-  endpoint: () => string;
+  _reqs: RequestOptions[] | null;
+  max: number;
+}
+export interface PostController extends Controller {
+  post: (...args: any) => NextResponse | Response;
 }
 export interface PostController {
   post: (
