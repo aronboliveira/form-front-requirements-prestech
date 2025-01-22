@@ -7,4 +7,12 @@ export default class ObjectHelper {
     );
     return Object.freeze(obj);
   }
+  public static JSONSafeStringify(data: any): string {
+    try {
+      return JSON.stringify(data);
+    } catch (e) {
+      console.error(`Error stringifying data:\n${(e as Error).message}`);
+      return "";
+    }
+  }
 }

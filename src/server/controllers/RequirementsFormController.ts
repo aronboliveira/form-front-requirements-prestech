@@ -4,13 +4,20 @@ import {
   RequestOpts,
 } from "@/lib/definitions/foundations";
 import { NextResponse } from "next/server";
+import ResourcesProvider from "../providers/ResourcesProvider";
+import LoggingHandler from "../handlers/LoggingHandler";
 export default class RequirementFormController implements PostController {
   static _instance: RequirementFormController;
   static defMsg: string = "Undefined response message";
   defStatus: HTTPResponseCode;
   readonly max: number;
   _reqs: Array<RequestOpts> | null;
-  constructor(_reqs: Array<RequestOpts>, _max: number = 64) {
+  constructor(
+    _reqs: Array<RequestOpts>,
+    _max: number = ResourcesProvider.sharedResources[
+      RequirementFormController.constructor.name
+    ] ?? 102
+  ) {
     this.max = _max;
     Object.defineProperty(this, "max", {
       value: _max,
@@ -51,10 +58,12 @@ export default class RequirementFormController implements PostController {
     if (!this._reqs) {
       const msg = `No Requests List available for the instance`;
       console.warn(msg);
+      LoggingHandler.logDefault(msg, "RequirementFormController.checkQueue");
       return { ok: false, msg, status: 410 };
     }
     if (checkLength && this._reqs.length > this.max) {
       const msg = `The current Requests List available for the instance has a length larger than the accepted.`;
+      LoggingHandler.logDefault(msg, "RequirementFormController.checkQueue");
       console.warn(msg);
       return { ok: false, msg, status: 429 };
     }
@@ -82,10 +91,13 @@ export default class RequirementFormController implements PostController {
       }
       return NextResponse.json({ message: "Request Posted!" });
     } catch (e) {
-      console.error(
-        `Error posting request ${idx} in ${
-          RequirementFormController._instance.constructor.name
-        }:\n${(e as Error).message}`
+      const errMsg = `Error posting request ${idx} in ${
+        RequirementFormController._instance.constructor.name
+      }:\n${(e as Error).message}`;
+      console.error(errMsg);
+      LoggingHandler.logDefault(
+        `${errMsg} — ${msg}`,
+        "RequirementFormController.post"
       );
       return NextResponse.json({
         message: `Error: ${status} — ${msg}. Failed to POST.`,
@@ -114,8 +126,11 @@ export default class RequirementFormController implements PostController {
       this._reqs?.splice(i, 1);
       return NextResponse.json({ message: "Request received!" });
     } catch (e) {
-      console.error(
-        `Request or Controller Instance not validated. Aborting POST.`
+      const errMsg = `Request or Controller Instance not validated. Aborting POST.`;
+      console.error(errMsg);
+      LoggingHandler.logDefault(
+        `${errMsg} — ${msg}`,
+        "RequirementFormController.postImmediately"
       );
       return NextResponse.json({
         message: `Error: ${status} — ${msg}. Failed to POST.`,
@@ -134,7 +149,8 @@ export default class RequirementFormController implements PostController {
       reqs.forEach(r => this._reqs?.push(r));
       return NextResponse.json({ message: `Successfully set Requests` });
     } catch (e) {
-      console.error(`Error:\n${(e as Error).message}`);
+      console.error(`Error: \n${(e as Error).message}`);
+      LoggingHandler.logDefault(msg, "RequirementFormController.setRequest");
       return NextResponse.json({
         message: `Error: ${status} — ${msg}. Failed to enqueue Requests.`,
       });
@@ -153,7 +169,12 @@ export default class RequirementFormController implements PostController {
         message: "The instance queue was correctly cleared.",
       });
     } catch (e) {
-      console.error(`Error clearing requests list:\n${(e as Error).message}`);
+      const errMsg = `Error clearing requests list:\n${(e as Error).message}`;
+      console.error(errMsg);
+      LoggingHandler.logDefault(
+        `${errMsg}\n${msg}`,
+        "RequirementFormController._clearRequests"
+      );
       return NextResponse.json({
         message: `Error: ${status} — ${msg}. Failed to clear Requests.`,
       });
