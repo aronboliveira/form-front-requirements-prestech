@@ -19,11 +19,13 @@ export const patterns: Readonly<{
   countryCode: string;
   ddd: string;
   age: string;
+  internationalTel: RegExp;
 }> = Object.freeze({
   email: `^[^\s@]+@[^\s@]+\.[^\s@]+$`,
   countryCode: "^\\+[0-9]{2,4}s?$",
   ddd: `^[0-9]{2,}$`,
   age: `^[0-9]{1,3}$`,
+  internationalTel: /^[0-9()\-\s+]{1,20}$/,
 });
 export const limits: Readonly<{
   tiny: {
