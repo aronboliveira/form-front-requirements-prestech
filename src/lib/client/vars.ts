@@ -4,6 +4,7 @@ import {
   roleType,
   techAppKey,
 } from "../definitions/foundations";
+import ObjectHelper from "../helpers/ObjectHelper";
 const inps = `form-control`,
   texts = `${inps} form-text-area`,
   btn = `btn`;
@@ -393,7 +394,9 @@ export const CtxLabels: roleQuestionsMap = new Map([
   ],
 ]);
 export const suggestionsDict: { [k: string]: string[] } = {};
-export const jsErrorsFriendlyNames: { [k: string]: Map<string, string> } = {
+export const jsErrorsFriendlyNames: Readonly<{
+  [k: string]: Map<string, string>;
+}> = ObjectHelper.deepFreeze({
   EN: new Map<string, string>([
     ["TypeError", "Type Error"],
     ["SyntaxError", "Syntax Error"],
@@ -466,4 +469,4 @@ export const jsErrorsFriendlyNames: { [k: string]: Map<string, string> } = {
     ["InternalError", "Erro Interno"],
     ["UnhandledException", "Exceção Não Manipulada"],
   ]),
-};
+});

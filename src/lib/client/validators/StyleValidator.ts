@@ -1,6 +1,6 @@
 import { CSSDisplay } from "@/lib/definitions/client/helpers";
 export default class StyleValidator {
-  static readonly VALID_DISPLAYS: CSSDisplay[] = [
+  static readonly VALID_DISPLAYS: Readonly<CSSDisplay[]> = Object.freeze([
     "none",
     "block",
     "inline",
@@ -28,10 +28,10 @@ export default class StyleValidator {
     "initial",
     "inherit",
     "unset",
-  ];
+  ]);
   static evaluateDisplay(
     value: string,
-    values: CSSDisplay[] = StyleValidator.VALID_DISPLAYS
+    values: CSSDisplay[] = [...StyleValidator.VALID_DISPLAYS]
   ): boolean {
     return values.includes(value as CSSDisplay) ? true : false;
   }

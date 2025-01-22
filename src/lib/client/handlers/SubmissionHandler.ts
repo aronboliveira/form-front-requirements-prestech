@@ -7,18 +7,24 @@ import DOMValidator from "../validators/DOMValidator";
 import SubmissionProcessor from "../processors/SubmissionProcessor";
 import DOMHandler from "./DOMHandler";
 import { flags } from "../vars";
+import ObjectHelper from "@/lib/helpers/ObjectHelper";
 export default class SubmissionHandler {
   private static _instance: SubmissionHandler;
   readonly #processor: SubmissionProcessor;
-  readonly #routes = new Map([
-    ["sendRequirements", "YXBpL21haW5Gb3JtU3VibWl0"],
-  ]);
+  readonly #routes = ObjectHelper.deepFreeze(
+    new Map([["sendRequirements", "YXBpL21haW5Gb3JtU3VibWl0"]])
+  );
   #form: HTMLFormElement;
   #attempts: number;
   formId: string;
   constructor(_form: HTMLFormElement, _processor?: SubmissionProcessor) {
     if (!SubmissionHandler._instance) SubmissionHandler._instance = this;
-    this.#processor = _processor || new SubmissionProcessor();
+    this.#processor = _processor ? _processor : new SubmissionProcessor();
+    Object.defineProperty(this, "#processor", {
+      value: _processor ? _processor : new SubmissionProcessor(),
+      writable: false,
+      configurable: false,
+    });
     this.#form = _form;
     this.#attempts = 0;
     this.formId = _form.id || _form.name || "";
