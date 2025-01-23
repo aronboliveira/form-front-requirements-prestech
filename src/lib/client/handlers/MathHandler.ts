@@ -63,4 +63,7 @@ export default class MathHandler {
     if (v.startsWith("#")) v = v.slice(1);
     return parseInt(v, 16);
   }
+  static toNatural(v: number): number {
+    return Number.isFinite(v) && v > 0 ? Math.abs(Math.round(v)) : 1;
+  }
 }
