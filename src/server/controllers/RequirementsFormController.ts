@@ -1,16 +1,21 @@
 import {
   HTTPResponseCode,
+  HTTPResponseLabel,
   PostController,
+  PseudoNum,
   RequestOpts,
 } from "@/lib/definitions/foundations";
 import { NextResponse } from "next/server";
 import ResourcesProvider from "../providers/ResourcesProvider";
 import LoggingHandler from "../handlers/LoggingHandler";
+import ExceptionHandler from "@/lib/client/handlers/ErrorHandler";
+import { HTTPRes, StartingHTTPDigits } from "@/lib/vars";
+import chalk from "chalk";
 export default class RequirementFormController implements PostController {
   static _instance: RequirementFormController;
   static defMsg: string = "Undefined response message";
-  defStatus: HTTPResponseCode;
   readonly max: number;
+  defStatus: HTTPResponseCode;
   _reqs: Array<RequestOpts> | null;
   constructor(
     _reqs: Array<RequestOpts>,
@@ -57,19 +62,21 @@ export default class RequirementFormController implements PostController {
   } {
     if (!this._reqs) {
       const msg = `No Requests List available for the instance`;
-      console.warn(msg);
+      chalk.yellow(console.warn(msg));
       LoggingHandler.logDefault(msg, "RequirementFormController.checkQueue");
       return { ok: false, msg, status: 410 };
     }
     if (checkLength && this._reqs.length > this.max) {
       const msg = `The current Requests List available for the instance has a length larger than the accepted.`;
       LoggingHandler.logDefault(msg, "RequirementFormController.checkQueue");
-      console.warn(msg);
+      chalk.yellow(console.warn(msg));
       return { ok: false, msg, status: 429 };
     }
     return { ok: true, msg: "Enqueuing is available.", status: 100 };
   }
-  public post(n: number = 1): NextResponse<{ message: string }> {
+  public async post(
+    n: number = 1
+  ): Promise<NextResponse<{ message: string; status: string }>> {
     let idx = NaN,
       msg = RequirementFormController.defMsg,
       status = this.defStatus;
@@ -81,30 +88,67 @@ export default class RequirementFormController implements PostController {
         throw new ReferenceError(
           `No requests are available for this instance.`
         );
+      const results: Array<{
+        id: string;
+        status: number;
+        message: HTTPResponseLabel;
+      }> = [];
       for (let i = 0; i < n; i++) {
-        this._reqs?.[this._reqs?.length].request
-          .json()
-          .then(d => console.log(d));
+        const last = this._reqs?.[this._reqs?.length - 1];
+        if (!last) break;
+        //PLACEHOLDER
+        const s = (await last.request.json()) ? 201 : 400;
+        let label: HTTPResponseLabel = ExceptionHandler.isOkishCode(s)
+          ? "OK"
+          : "Internal Server Error";
+        const dict =
+          HTTPRes[
+            StartingHTTPDigits[s.toString().charAt(0) as PseudoNum] ??
+              "serverError"
+          ].get(s);
+        if (dict) label = dict.en;
+        LoggingHandler.logDefault(label, "RequirementFormController.post");
+        results.push({ id: last.id, status: s, message: label });
         const p = this._reqs?.pop();
         idx = i;
-        console.log(`Popped ${p?.id ?? "undefined request"}`);
+        chalk.grey(console.log(`Popped ${p?.id ?? "undefined request"}`));
       }
-      return NextResponse.json({ message: "Request Posted!" });
+      if (!results?.length)
+        return NextResponse.json({ message: "Length Required", status: "411" });
+      else if (results.length === 1)
+        return NextResponse.json({
+          message: results[results.length - 1].message,
+          status: "200",
+        });
+      else
+        return NextResponse.json({
+          message: results.reduce(
+            (acc, r, i) => acc + (i === 0 ? r.message : `\t${r.message}`),
+            ""
+          ),
+          status: results.reduce(
+            (acc, r, i) => acc + (i === 0 ? r.status : `\t${r.status}`),
+            ""
+          ),
+        });
     } catch (e) {
       const errMsg = `Error posting request ${idx} in ${
         RequirementFormController._instance.constructor.name
       }:\n${(e as Error).message}`;
-      console.error(errMsg);
+      chalk.red(console.error(errMsg));
       LoggingHandler.logDefault(
         `${errMsg} — ${msg}`,
         "RequirementFormController.post"
       );
       return NextResponse.json({
         message: `Error: ${status} — ${msg}. Failed to POST.`,
+        status: status.toString(),
       });
     }
   }
-  public postImmediately(id: string): NextResponse<{ message: string }> {
+  public async postImmediately(
+    id: string
+  ): Promise<NextResponse<{ message: string; status: HTTPResponseCode }>> {
     let msg = RequirementFormController.defMsg,
       status = this.defStatus;
     try {
@@ -121,23 +165,37 @@ export default class RequirementFormController implements PostController {
           `Request or Controller Instance not validated. Aborting POST.`
         );
       const i = this._reqs?.indexOf(_req);
-      if (!i) throw new RangeError(`Index of Request could not be found.`);
-      _req.request.json().then(d => console.log(d));
+      if (i === -1)
+        throw new RangeError(`Index of Request could not be found.`);
+      //PLACEHOLDER
+      status = (await _req.request.json()) ? 201 : 400;
+      if (!ExceptionHandler.isOkishCode(status))
+        throw new Error(`Service failed with status ${status}`);
       this._reqs?.splice(i, 1);
-      return NextResponse.json({ message: "Request received!" });
+      LoggingHandler.logDefault(msg, "RequirementFormController.post");
+      chalk.grey(console.log(`Processed request with ID: ${id}`));
+      return NextResponse.json({
+        message: "Request processed successfully!",
+        status,
+      });
     } catch (e) {
-      const errMsg = `Request or Controller Instance not validated. Aborting POST.`;
-      console.error(errMsg);
+      const errMsg = `Error processing request with ID: ${id}:\n${
+        (e as Error).message
+      }`;
+      chalk.red(console.error(errMsg));
       LoggingHandler.logDefault(
         `${errMsg} — ${msg}`,
         "RequirementFormController.postImmediately"
       );
       return NextResponse.json({
-        message: `Error: ${status} — ${msg}. Failed to POST.`,
+        message: `Error: ${status} — ${msg}. Failed to process request.`,
+        status,
       });
     }
   }
-  public setRequest(...reqs: RequestOpts[]): NextResponse<{ message: string }> {
+  public setRequest(
+    ...reqs: RequestOpts[]
+  ): NextResponse<{ message: string; status: HTTPResponseCode }> {
     let msg = RequirementFormController.defMsg,
       status = this.defStatus;
     try {
@@ -147,16 +205,23 @@ export default class RequirementFormController implements PostController {
       if (!ok)
         throw new ReferenceError(`Error: Failed to enqueue Requests: ${msg}`);
       reqs.forEach(r => this._reqs?.push(r));
-      return NextResponse.json({ message: `Successfully set Requests` });
+      return NextResponse.json({
+        message: `Successfully set Requests`,
+        status,
+      });
     } catch (e) {
-      console.error(`Error: \n${(e as Error).message}`);
+      chalk.red(console.error(`Error: \n${(e as Error).message}`));
       LoggingHandler.logDefault(msg, "RequirementFormController.setRequest");
       return NextResponse.json({
         message: `Error: ${status} — ${msg}. Failed to enqueue Requests.`,
+        status,
       });
     }
   }
-  _clearRequests(): NextResponse<{ message: string }> {
+  _clearRequests(): NextResponse<{
+    message: string;
+    status: HTTPResponseCode;
+  }> {
     let msg = RequirementFormController.defMsg,
       status = this.defStatus;
     try {
@@ -167,16 +232,18 @@ export default class RequirementFormController implements PostController {
       this._reqs?.splice(0, this._reqs?.length || 0);
       return NextResponse.json({
         message: "The instance queue was correctly cleared.",
+        status,
       });
     } catch (e) {
       const errMsg = `Error clearing requests list:\n${(e as Error).message}`;
-      console.error(errMsg);
+      chalk.red(console.error(errMsg));
       LoggingHandler.logDefault(
         `${errMsg}\n${msg}`,
         "RequirementFormController._clearRequests"
       );
       return NextResponse.json({
         message: `Error: ${status} — ${msg}. Failed to clear Requests.`,
+        status,
       });
     }
   }

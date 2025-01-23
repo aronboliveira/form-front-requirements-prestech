@@ -8,7 +8,7 @@ export default class LoggingHandler {
       `[${new Date().toISOString()}] ID: ${id}, Payload: ${ObjectHelper.JSONSafeStringify(
         payload
       )}\n`,
-      { encoding: "utf-8" }
+      { encoding: "utf-8", mode: 0o660 }
     );
   }
 }
