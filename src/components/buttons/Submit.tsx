@@ -17,6 +17,23 @@ export default function Submit({ form }: FormRelated) {
     r = useFormButton({ form, idf: id }),
     router = useRouter(),
     ctx = useContext<IFormCtx>(FormCtx),
+    cpt = "isWaitingCaptcha",
+    check = async (): Promise<boolean> => {
+      const msg = await promptToast(
+        "Escreva CONFIRMAR para finalizar",
+        "Escreva aqui"
+      );
+      return /confirm/gi.test(msg);
+    },
+    loopChanged = (changed: string[]): void => {
+      for (const idf of changed) {
+        const e = DOMHandler.queryByUniqueName(idf);
+        if (!e) continue;
+        if (DOMValidator.isDefaultDisableable(e)) e.disabled = false;
+        else e.dataset.disabled = "false";
+      }
+      sessionStorage.getItem(cpt) && sessionStorage.removeItem(cpt);
+    },
     handleClick = useCallback(
       (el: disableableElement): void => {
         const tId = toast.success(
@@ -66,12 +83,7 @@ export default function Submit({ form }: FormRelated) {
           : toast(flags.pt ? `CAPTCHA falhou` : `CAPTCHA failed`, {
               icon: "📑",
             });
-        for (const idf of changed) {
-          const e = DOMHandler.queryByUniqueName(idf);
-          if (!e) continue;
-          if (DOMValidator.isDefaultDisableable(e)) e.disabled = false;
-          else e.dataset.disabled = "false";
-        }
+        loopChanged(changed);
       },
       [flags.pt]
     ),
@@ -104,13 +116,6 @@ export default function Submit({ form }: FormRelated) {
       },
       [form]
     ),
-    check = async (): Promise<boolean> => {
-      const msg = await promptToast(
-        "Escreva CONFIRMAR para finalizar",
-        "Escreva aqui"
-      );
-      return /confirm/gi.test(msg);
-    },
     setTransition = ctx.setTransition || null;
   return (
     <button
@@ -127,6 +132,7 @@ export default function Submit({ form }: FormRelated) {
         }
         const el = ev.currentTarget,
           changed: string[] = [];
+        sessionStorage.setItem(cpt, "true");
         if (setTransition)
           setTransition(() => {
             setTimeout(() => {
@@ -138,6 +144,10 @@ export default function Submit({ form }: FormRelated) {
           handleDisable(changed);
           check().then(res => handleRes(res, el, changed));
         }
+        setTimeout(
+          () => sessionStorage.getItem(cpt) && loopChanged(changed),
+          3000
+        );
       }}
     >
       <span>Enviar</span>

@@ -12,7 +12,7 @@ export default class SubmissionHandler {
   private static _instance: SubmissionHandler;
   readonly #processor: SubmissionProcessor;
   readonly #routes = ObjectHelper.deepFreeze(
-    new Map([["sendRequirements", "YXBpL21haW5Gb3JtU3VibWl0"]])
+    new Map([["sendRequirements", "YXBpL3Rlc3Q="]])
   );
   #form: HTMLFormElement;
   #attempts: number;
@@ -112,16 +112,16 @@ export default class SubmissionHandler {
       };
     }
     const ss = [...successful, ...successfulCustom];
-    if (
-      ss.length <
-      [...this.#form.elements].filter(e => DOMValidator.isEntry(e)).length
-    )
-      return {
-        ok: false,
-        cause: flags.pt
-          ? "Foram capturadas menos entradas do que o exigido"
-          : "The read number of entries was less than the mininum",
-      };
+    // if (
+    //   ss.length <
+    //   [...this.#form.elements].filter(e => DOMValidator.isEntry(e)).length
+    // )
+    //   return {
+    //     ok: false,
+    //     cause: flags.pt
+    //       ? "Foram capturadas menos entradas do que o exigido"
+    //       : "The read number of entries was less than the mininum",
+    //   };
     const data: { [k: string]: string } = {};
     for (const s of ss) {
       if (DOMValidator.isDefaultEntry(s))
