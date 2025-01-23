@@ -1,5 +1,7 @@
 import { ClassesKey } from "../definitions/client/helpers";
 import {
+  OfficeBlocks,
+  dictLabelsRangeGroups,
   roleQuestionsMap,
   roleType,
   techAppKey,
@@ -44,6 +46,50 @@ export const flags: {
 };
 export const borderColors: { [k: string]: string } = {};
 export const fontColors: { [k: string]: string } = {};
+export enum friendlyAppName {
+  bi = "Plataformas para Inteligência de Negócios (PowerBI, Tableau, Qlik Sense, etc.)",
+  crm = "Plataformas de Gerenciamento de Relação com Clientes e Equipes (Monday.com, ClickUp, Slack, Jira, etc.)",
+  doc = "Softwares de Redação (Microsoft Word, Google Docs, Libre Office Writter, etc.)",
+  erp = "Plataformas de Planejamento de Recursos de Negócios (SAP, SAT, TOTVS, SalesForce, etc.)",
+  fm = "Softwares para Construção de Formulários (Google Forms, Jotform, Typeform, etc.)",
+  pln = "Plataformas de Gestão de Atividades e Planejamento (Notion, Trello, Microsoft Planner, Google Calendar, etc.)",
+  ss = "Softwares de Planilhamento (Microsoft Excel, Google Sheets, Libre Office Calc, etc.)",
+  stg = "Plataformas de Armazenamento em Nuvem (Google Drive, Dropbox, Amazon S3, etc.)",
+}
+export enum friendlyAiName {
+  audio = "Inteligências Artificiais Generativas de Áudio (ElevenLabs, PlayHT, ParrotAI, etc.)",
+  image = "Inteligências Artificiais Generativas de Imagem (Dall-E, Midjourney, Stable Diffusion, etc.)",
+  llms = "Grandes Modelos de Linguagem (ChatGPT, Gemini, LLaMa, GitHub Copilot, etc.)",
+  video = "Inteligências Artificiais Generativas de Vídeo (Sora, Runway, Fliki, etc.)",
+}
+export const dictLabelsRange: Record<
+  dictLabelsRangeGroups,
+  | OfficeBlocks
+  | {
+      [k: string]: string;
+    }
+> = {
+  office: {
+    apps: {
+      doc: friendlyAppName.doc,
+      planning: friendlyAppName.pln,
+      spreadSheet: friendlyAppName.ss,
+      storage: friendlyAppName.stg,
+    },
+    platforms: {
+      bi: friendlyAppName.bi,
+      crm: friendlyAppName.crm,
+      erp: friendlyAppName.erp,
+      form: friendlyAppName.fm,
+    },
+  },
+  ai: {
+    audio: friendlyAiName.audio,
+    image: friendlyAiName.image,
+    llms: friendlyAiName.llms,
+    video: friendlyAiName.video,
+  },
+};
 export enum Acronyms {
   dt = "DailyTasks",
   mt = "MainTasks",

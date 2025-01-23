@@ -35,6 +35,7 @@ import DOMHandler from "@/lib/client/handlers/DOMHandler";
 import StyleProvider from "@/lib/client/providers/StyleProvider";
 import LoggingHandler from "@/lib/client/handlers/LoggingHandler";
 import Spinner from "../bloc/transicional/Spinner";
+import Watcher from "../hidden/Watcher";
 export const FormCtx = createContext<IFormCtx>({
   role: "undefined",
   setRole: null,
@@ -219,7 +220,7 @@ export default function RequirementForm({
                     },
                     {
                       t: "Plataformas de Gestão de Atividades e Planejamento (Notion, Trello, Microsoft Planner, Google Calendar, etc.)",
-                      id: "forms",
+                      id: "planning",
                     },
                     {
                       t: "Plataformas para Inteligência de Negócios (PowerBI, Tableau, Qlik Sense, etc.)",
@@ -290,6 +291,7 @@ export default function RequirementForm({
           <hr />
           <ButtonsBlock />
         </form>
+        <Watcher _case='mainForm' />
       </FormCtx.Provider>
     </ErrorBoundary>
   );

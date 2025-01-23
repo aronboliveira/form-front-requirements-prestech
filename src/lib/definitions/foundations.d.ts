@@ -55,6 +55,12 @@ export type officeTopicType =
   | "Optimize"
   | "Challenges"
   | "Collaboration";
+export type dictLabelsRangeGroups = "office" | "ai";
+export type officeSoftwareLabels = "apps" | "platforms";
+export type OfficeBlocks = {
+  apps: { [k: string]: string };
+  platforms: { [k: string]: string };
+};
 export type roleQuestionsMap = Map<
   officeTopicType,
   Map<Omit<roleType | "default", "undefined">, string>
