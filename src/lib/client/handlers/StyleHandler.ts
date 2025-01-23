@@ -155,7 +155,6 @@ export default class StyleHandler {
         }, 250);
       };
     el.dataset.pulsing = "true";
-    // console.log([iniColor, iniFontColor]);
     if (context === "both" || context === "border") {
       pulseBColor();
       double && setTimeout(pulseBColor, 1600);
@@ -232,10 +231,6 @@ export default class StyleHandler {
       phs && phs.remove();
       if (!id) return;
       const el = DOMHandler.queryByUniqueName(id);
-      if (id === "firstName") {
-        console.log(el?.constructor.name);
-        if (el instanceof HTMLInputElement) console.log(el.type);
-      }
       if (
         !(
           el &&
@@ -246,5 +241,14 @@ export default class StyleHandler {
         return;
       el.placeholder = prev;
     }, 3500);
+  }
+  static tickFading(el: nlHtEl, timeout: number = 100): void {
+    if (!el) return;
+    const prev = getComputedStyle(el).opacity;
+    el.style.opacity = "0";
+    setTimeout(() => {
+      if (!el) return;
+      el.style.opacity = prev || "1";
+    }, timeout);
   }
 }

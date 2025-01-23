@@ -1,14 +1,24 @@
 "use client";
 import { classes, colors } from "@/lib/client/vars";
-import { OptInput } from "@/lib/definitions/client/interfaces/components";
-import { useEffect, useRef } from "react";
+import { RangeInputBlock } from "@/lib/definitions/client/interfaces/components";
+import { useCallback, useEffect, useRef, useState } from "react";
 import s from "@/styles/modules/range.module.scss";
 import { nlInp } from "@/lib/definitions/client/helpers";
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import StyleHandler from "@/lib/client/handlers/StyleHandler";
 import MathHandler from "@/lib/client/handlers/MathHandler";
 import StyleValidator from "@/lib/client/validators/StyleValidator";
-export default function Range(props: OptInput) {
+import { complexityLevel, rangeCtxId } from "@/lib/definitions/foundations";
+import Bi from "../bloc/fieldsets/ranged/office/OfficeBi";
+import StoragePlatforms from "../bloc/fieldsets/ranged/office/OfficeStorage";
+import Crms from "../bloc/fieldsets/ranged/office/OfficeCrms";
+import Docs from "../bloc/fieldsets/ranged/office/OfficeDocs";
+import Erps from "../bloc/fieldsets/ranged/office/OfficeErps";
+import FormBuilders from "../bloc/fieldsets/ranged/office/OfficeForms";
+import Planning from "../bloc/fieldsets/ranged/office/OfficePlanning";
+import Spreadsheets from "../bloc/fieldsets/ranged/office/OfficeSpreadsheets";
+import { JSX } from "react/jsx-runtime";
+export default function Range(props: RangeInputBlock): JSX.Element {
   const r = useRef<nlInp>(null),
     coloringStylesheet = useRef<CSSStyleSheet | undefined>(undefined),
     handleTrackSlide = (val: number): string => {
@@ -27,9 +37,35 @@ export default function Range(props: OptInput) {
           return colors.grey;
       }
     },
+    handleCtxComponent = useCallback(
+      (lvl: complexityLevel): JSX.Element => {
+        switch (props.id as rangeCtxId) {
+          case "businessInteligence":
+            return <Bi lvl={lvl} />;
+          case "cloudStorage":
+            return <StoragePlatforms lvl={lvl} />;
+          case "Crms":
+            return <Crms lvl={lvl} />;
+          case "docs":
+            return <Docs lvl={lvl} />;
+          case "Erps":
+            return <Erps lvl={lvl} />;
+          case "formBuilders":
+            return <FormBuilders lvl={lvl} />;
+          case "planning":
+            return <Planning lvl={lvl} />;
+          case "spreadSheets":
+            return <Spreadsheets lvl={lvl} />;
+          default:
+            return <></>;
+        }
+      },
+      [props.id]
+    ),
     min = 0,
     max = 100,
-    modulator = 20;
+    modulator = 20,
+    [ctxLevel, setCtxFs] = useState<complexityLevel | 0>(0);
   useEffect(() => {
     if (
       !(r.current instanceof HTMLInputElement) ||
@@ -74,38 +110,45 @@ export default function Range(props: OptInput) {
       setTimeout(() => {
         const el = document.getElementById(idf);
         if (!(el instanceof HTMLInputElement)) return;
-        const update = (color: keyof typeof colors) => {
+        const update = (color: keyof typeof colors, v: string) => {
           StyleHandler.updatePseudos({
             idf: `.form-range#${idf}`,
             pseudo: pseudoElement,
             prop: "background-color",
             value: colors[color],
           });
+          setTimeout(() => {
+            let value = Math.round(MathHandler.parseNotNaN(v));
+            value = (value - (value % modulator)) * 0.05;
+            console.log(value);
+            if (value < 0) value = 0;
+            if (value > 5) value = 5;
+            setCtxFs(value as complexityLevel);
+          }, 500);
         };
-        console.log(el.value);
         switch (el.value) {
           case "20":
-            update("orangeRed");
+            update("orangeRed", el.value);
             break;
           case "40":
-            update("orangeBasic");
+            update("orangeBasic", el.value);
             break;
           case "60":
-            update("yellowGold");
+            update("yellowGold", el.value);
             break;
           case "80":
-            update("greenMid");
+            update("greenMid", el.value);
             break;
           case "100":
-            update("turquoise");
+            update("turquoise", el.value);
             break;
           default:
             const parsed = MathHandler.parseNotNaN(el.value, 0, "int");
             parsed > 50
-              ? update("greenMid")
+              ? update("greenMid", el.value)
               : parsed > 20
-              ? update("orangeBasic")
-              : update("grey");
+              ? update("orangeBasic", el.value)
+              : update("grey", el.value);
         }
       }, 200);
       StyleHandler.updatePseudos({
@@ -118,7 +161,7 @@ export default function Range(props: OptInput) {
     r.current.dataset.slideable = "true";
   }, [r]);
   return (
-    <div className={`${classes.inpDivClasses} ${s.divRange}`}>
+    <fieldset className={`${classes.inpDivClasses} ${s.divRange}`}>
       <label className={`${classes.inpLabClasses} labelRange`}>
         {props.label}
       </label>
@@ -139,6 +182,7 @@ export default function Range(props: OptInput) {
           )}
         </span>
       </div>
-    </div>
+      {ctxLevel >= 1 && handleCtxComponent(ctxLevel as complexityLevel)}
+    </fieldset>
   );
 }

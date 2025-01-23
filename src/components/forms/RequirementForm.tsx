@@ -25,10 +25,10 @@ import Range from "../inputs/Range";
 import { ErrorBoundary } from "react-error-boundary";
 import GenericErrorComponent from "../bloc/errors/Error";
 import { IFormCtx } from "@/lib/definitions/client/interfaces/contexts";
-import { roleType } from "@/lib/definitions/foundations";
+import { rangeCtxId, roleType } from "@/lib/definitions/foundations";
 import ContextualQuestions from "../bloc/fieldsets/professional/ContextualQuestions";
 import TabProvider from "@/lib/client/providers/TabProvider";
-import { classes, flags } from "@/lib/client/vars";
+import { classes, dictLabelsRange, flags } from "@/lib/client/vars";
 import ContextValidator from "@/lib/client/validators/ContextValidator";
 import TechnologiesLists from "../bloc/fieldsets/professional/TechnologiesList";
 import DOMHandler from "@/lib/client/handlers/DOMHandler";
@@ -171,26 +171,25 @@ export default function RequirementForm({
               <h2 className='sectHeading'>Documentação, Gestão e Análise</h2>
               <ErrorBoundary
                 FallbackComponent={() => (
-                  //NOSONAR
                   <GenericErrorComponent message='Erro ao carregar campos sobre Aplicativos' />
                 )}
               >
                 <fieldset className={sectSubDiv_1} id='fsOfficeApps'>
                   {[
                     {
-                      t: "Softwares de Planilhamento (Microsoft Excel, Google Sheets, Libre Office Calc, etc.)",
-                      id: "spreadsheets",
+                      t: dictLabelsRange.office.apps.spreadSheet,
+                      id: "spreadSheets",
                     },
                     {
-                      t: "Softwares de Redação (Microsoft Word, Google Docs, Libre Office Writter, etc.)",
+                      t: dictLabelsRange.office.apps.doc,
                       id: "docs",
                     },
                     {
-                      t: "Softwares para Construção de Formulários (Google Forms, Jotform, Typeform, etc.)",
+                      t: dictLabelsRange.office.apps.form,
                       id: "formBuilders",
                     },
                     {
-                      t: "Plataformas de Armazenamento em Nuvem (Google Drive, Dropbox, Amazon S3, etc.)",
+                      t: dictLabelsRange.office.apps.storage,
                       id: "cloudStorage",
                     },
                   ].map(({ t, id }, i) => (
@@ -198,7 +197,7 @@ export default function RequirementForm({
                       key={`office_apps__${i}`}
                       label={t}
                       required={true}
-                      id={id}
+                      id={id as rangeCtxId}
                     />
                   ))}
                 </fieldset>
@@ -211,19 +210,19 @@ export default function RequirementForm({
                 <fieldset className={sectSubDiv_1} id='fsOfficePlatforms'>
                   {[
                     {
-                      t: "Plataformas de Gerenciamento de Relação com Clientes e Equipes (Monday.com, ClickUp, Slack, Jira, etc.)",
-                      id: "CRMs",
+                      t: dictLabelsRange.office.platforms.crm,
+                      id: "Crms",
                     },
                     {
-                      t: "Plataformas de Planejamento de Recursos de Negócios (SAP, SAT, TOTVS, SalesForce, etc.)",
-                      id: "ERPs",
+                      t: dictLabelsRange.office.platforms.erp,
+                      id: "Erps",
                     },
                     {
-                      t: "Plataformas de Gestão de Atividades e Planejamento (Notion, Trello, Microsoft Planner, Google Calendar, etc.)",
+                      t: dictLabelsRange.office.platforms.planning,
                       id: "planning",
                     },
                     {
-                      t: "Plataformas para Inteligência de Negócios (PowerBI, Tableau, Qlik Sense, etc.)",
+                      t: dictLabelsRange.office.platforms.bi,
                       id: "businessInteligence",
                     },
                   ].map(({ t, id }, i) => (
@@ -231,7 +230,7 @@ export default function RequirementForm({
                       key={`office_platforms__${i}`}
                       label={t}
                       required={true}
-                      id={id}
+                      id={id as rangeCtxId}
                     />
                   ))}
                 </fieldset>
@@ -249,19 +248,19 @@ export default function RequirementForm({
                 <fieldset className={sectSubDiv_1} id='fsAIs'>
                   {[
                     {
-                      t: "Grandes Modelos de Linguagem (ChatGPT, Gemini, LLaMa, GitHub Copilot, etc.)",
+                      t: dictLabelsRange.ai.llms,
                       id: "LLMs",
                     },
                     {
-                      t: "Inteligências Artificiais Generativas de Imagem (Dall-E, Midjourney, Stable Diffusion, etc.)",
+                      t: dictLabelsRange.ai.image,
                       id: "imageAIs",
                     },
                     {
-                      t: "Inteligências Artificiais Generativas de Vídeo (Sora, Runway, Fliki, etc.)",
+                      t: dictLabelsRange.ai.video,
                       id: "videoAIs",
                     },
                     {
-                      t: "Inteligências Artificiais Generativas de Áudio (ElevenLabs, PlayHT, ParrotAI, etc.)",
+                      t: dictLabelsRange.ai.audio,
                       id: "audioAIs",
                     },
                   ].map(({ t, id }, i) => (
@@ -269,7 +268,7 @@ export default function RequirementForm({
                       key={`ias__${i}`}
                       label={t}
                       required={true}
-                      id={id}
+                      id={id as rangeCtxId}
                     />
                   ))}
                 </fieldset>

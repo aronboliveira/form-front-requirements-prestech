@@ -1,7 +1,7 @@
 import { ClassesKey } from "../definitions/client/helpers";
 import {
+  AiBlocks,
   OfficeBlocks,
-  dictLabelsRangeGroups,
   roleQuestionsMap,
   roleType,
   techAppKey,
@@ -9,7 +9,8 @@ import {
 import ObjectHelper from "../helpers/ObjectHelper";
 const inps = `form-control`,
   texts = `${inps} form-text-area`,
-  btn = `btn`;
+  btn = `btn`,
+  officeRangeds = `fsRanged fsOffice`;
 export const classes: Readonly<Record<ClassesKey, string>> = {
   inpDivClasses: `mb-3 inpDivClasses`,
   inpLabClasses: `form-label`,
@@ -24,6 +25,9 @@ export const classes: Readonly<Record<ClassesKey, string>> = {
   btnPrim: `${btn} btn-primary`,
   mainFsClasses: `border p-4 mb-3 formMainFs`,
   mainFsLegClasses: `legMainFs bold`,
+  officePlatforms: `${officeRangeds} fsOfficePlatforms`,
+  officeApps: `${officeRangeds} fsOfficeApps`,
+  aiApps: `fsRanged fsAis`,
 };
 export enum colors {
   grey = "#8a8888",
@@ -62,17 +66,14 @@ export enum friendlyAiName {
   llms = "Grandes Modelos de Linguagem (ChatGPT, Gemini, LLaMa, GitHub Copilot, etc.)",
   video = "Inteligências Artificiais Generativas de Vídeo (Sora, Runway, Fliki, etc.)",
 }
-export const dictLabelsRange: Record<
-  dictLabelsRangeGroups,
-  | OfficeBlocks
-  | {
-      [k: string]: string;
-    }
-> = {
+export const dictLabelsRange: {
+  office: OfficeBlocks;
+  ai: AiBlocks;
+} = {
   office: {
     apps: {
       doc: friendlyAppName.doc,
-      planning: friendlyAppName.pln,
+      form: friendlyAppName.fm,
       spreadSheet: friendlyAppName.ss,
       storage: friendlyAppName.stg,
     },
@@ -80,7 +81,7 @@ export const dictLabelsRange: Record<
       bi: friendlyAppName.bi,
       crm: friendlyAppName.crm,
       erp: friendlyAppName.erp,
-      form: friendlyAppName.fm,
+      planning: friendlyAppName.pln,
     },
   },
   ai: {

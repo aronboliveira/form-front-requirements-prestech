@@ -57,10 +57,36 @@ export type officeTopicType =
   | "Collaboration";
 export type dictLabelsRangeGroups = "office" | "ai";
 export type officeSoftwareLabels = "apps" | "platforms";
+export type rangeCtxId =
+  | "businessInteligence"
+  | "cloudStorage"
+  | "Crms"
+  | "docs"
+  | "Erps"
+  | "formBuilders"
+  | "planning"
+  | "spreadSheets";
 export type OfficeBlocks = {
-  apps: { [k: string]: string };
-  platforms: { [k: string]: string };
+  apps: {
+    doc: string;
+    form: string;
+    spreadSheet: string;
+    storage: string;
+  };
+  platforms: {
+    bi: string;
+    crm: string;
+    erp: string;
+    planning: string;
+  };
 };
+export type AiBlocks = {
+  audio: string;
+  image: string;
+  llms: string;
+  video: string;
+};
+export type complexityLevel = 1 | 2 | 3 | 4 | 5;
 export type roleQuestionsMap = Map<
   officeTopicType,
   Map<Omit<roleType | "default", "undefined">, string>

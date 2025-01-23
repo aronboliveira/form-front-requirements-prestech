@@ -45,6 +45,7 @@ export type nlSel = HTMLSelectElement | null;
 export type nlTxtEl = nlInp | HTMLTextAreaElement;
 export type nlBtn = HTMLButtonElement | null;
 export type nlFm = HTMLFormElement | null;
+export type nlFs = HTMLFieldSetElement | null;
 export type nlDlg = HTMLDialogElement | null;
 export type List<T> = Array<T> | NodeListOf<T> | HTMLCollectionOf<T>;
 export interface ContextualizedTel {
@@ -113,4 +114,7 @@ export type ClassesKey =
   | "btnSec"
   | "btnPrim"
   | "mainFsClasses"
-  | "mainFsLegClasses";
+  | "mainFsLegClasses"
+  | "officePlatforms"
+  | "officeApps"
+  | "aiApps";

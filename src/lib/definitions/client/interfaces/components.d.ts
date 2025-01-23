@@ -71,3 +71,11 @@ export interface WatcherProps {
   d?: React.Dispatch<SetStateAction<any>>;
   v?: any;
 }
+export interface RangeInputBlock extends Omit<OptInput, "id"> {
+  id: rangeCtxIds;
+  required?: boolean;
+  label?: string;
+}
+export interface RangeCtxBlockProps {
+  lvl: 1 | 2 | 3 | 4 | 5;
+}
