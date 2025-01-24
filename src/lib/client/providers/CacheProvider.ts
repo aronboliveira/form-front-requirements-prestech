@@ -165,7 +165,38 @@ export default class CacheProvider implements Provider {
     }
     sessionStorage.setItem(idf, JSON.stringify(CacheProvider.persisters));
     const cycle = (): void => {
-      const entries = Object.entries(CacheProvider.persisters);
+      let entries = [...Object.entries(CacheProvider.persisters)],
+        addEntries = [...document.querySelectorAll("*")]
+          .filter(
+            e =>
+              DOMValidator.isEntry(e) &&
+              !entries.some(et => {
+                const idf = DOMHandler.getIdentifier(e);
+                if (!idf) return true;
+                return idf === et[0];
+              })
+          )
+          .map(e => [
+            DOMHandler.getIdentifier(e),
+            DOMValidator.isDefaultEntry(e)
+              ? e.value
+              : (e as HTMLElement).dataset?.value || "",
+          ]) as [string, string][];
+      entries.concat(addEntries);
+      entries = entries.map(p => {
+        const clonableId = `${p[0].slice(
+            0,
+            p[0].indexOf("__") || p[0].length
+          )}`,
+          clones = document.querySelectorAll(`#${clonableId}`);
+        console.log(clonableId);
+        if (clones.length !== 1) return p;
+        const el = document.getElementById(clonableId);
+        if (!el) return p;
+        if (el.id !== clonableId) el.id = clonableId;
+        return [clonableId, p[1]];
+      });
+      console.log(entries);
       for (let j = 0; j < entries.length; j++) {
         let el = document.getElementById(entries[j][0]);
         if (!el) el = DOMHandler.queryByUniqueName(entries[j][0]);

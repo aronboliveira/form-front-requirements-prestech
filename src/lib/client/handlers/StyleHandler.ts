@@ -244,9 +244,15 @@ export default class StyleHandler {
   }
   static tickFading(el: nlHtEl, timeout: number = 100): void {
     if (!el) return;
-    const prev = getComputedStyle(el).opacity;
-    el.style.opacity = "0";
+    const prev = getComputedStyle(el).opacity,
+      id = DOMHandler.getIdentifier(el);
+    el.style.opacity = "1";
     setTimeout(() => {
+      if (prev === "0") return;
+      if (!el) {
+        if (!id) return;
+        el = DOMHandler.queryByUniqueName(id);
+      }
       if (!el) return;
       el.style.opacity = prev || "1";
     }, timeout);

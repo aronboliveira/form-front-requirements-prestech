@@ -120,7 +120,6 @@ export default function Range(props: RangeInputBlock): JSX.Element {
           setTimeout(() => {
             let value = Math.round(MathHandler.parseNotNaN(v));
             value = (value - (value % modulator)) * 0.05;
-            console.log(value);
             if (value < 0) value = 0;
             if (value > 5) value = 5;
             setCtxFs(value as complexityLevel);
@@ -162,7 +161,10 @@ export default function Range(props: RangeInputBlock): JSX.Element {
   }, [r]);
   return (
     <fieldset className={`${classes.inpDivClasses} ${s.divRange}`}>
-      <label className={`${classes.inpLabClasses} labelRange`}>
+      <label
+        className={`${classes.inpLabClasses} labelRange`}
+        htmlFor={props.id}
+      >
         {props.label}
       </label>
       <div>
