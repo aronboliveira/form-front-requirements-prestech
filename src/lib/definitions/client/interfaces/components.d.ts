@@ -8,6 +8,7 @@ import {
 } from "../../foundations";
 import { ITelCtx } from "./contexts";
 import { SetStateAction } from "react";
+import { Acronyms } from "@/lib/client/vars";
 export interface FormRelated {
   form?: nlFm;
 }
@@ -31,16 +32,8 @@ export interface ITelInput extends OptInput, Partial<ContextualizedTel> {
 }
 export interface ICtxTxt extends OptInput {
   role: roleType;
-  topic:
-    | "DailyTasks"
-    | "MainTaks"
-    | "MainSw"
-    | "AddSw"
-    | "Priority"
-    | "Optimize"
-    | "Challenges"
-    | "Collaboration"
-    | string;
+  topic: Acronyms[keyof Acronyms];
+  acronym: AcronymsDefaults[keyof AcronymsDefaults];
   placeholder?: string;
 }
 export interface SpinnerComponentProps {

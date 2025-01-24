@@ -2,10 +2,10 @@ import { entryElement, nlInp, nlTxtEl } from "@/lib/definitions/client/helpers";
 import { DDDPattern, TelType } from "@/lib/definitions/foundations";
 import MathHandler from "./MathHandler";
 import {
-  // Acronyms,
-  // AcronymsDefaults,
-  // friendlyRoles,
+  AcronymsDefaults,
+  friendlyRoles,
   suggestionsDict,
+  suggestionsGroupsMap,
 } from "../vars";
 export default class IOHandler {
   static adjustTelCountryCode(code: string): string {
@@ -222,12 +222,12 @@ export default class IOHandler {
     if (!suggestions?.length) return;
     return suggestions;
   }
-  // static selectContextualizedList(
-  //   ctx: keyof typeof friendlyRoles,
-  //   k: keyof typeof AcronymsDefaults
-  // ): string[] | void {
-  //   const ctxGrp = suggestionsGroupsMap.get(ctx);
-  //   if (!ctxGrp) return;
-  //   const sg = ctxGrp.get(k);
-  // }
+  static selectContextualizedList(
+    ctx: keyof typeof friendlyRoles,
+    k: keyof typeof AcronymsDefaults
+  ): string[] | void {
+    const ctxGrp = suggestionsGroupsMap.get(ctx);
+    if (!ctxGrp) return;
+    return ctxGrp.get(k);
+  }
 }

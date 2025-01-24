@@ -6,18 +6,20 @@ import StringHelper from "@/lib/helpers/StringHelper";
 import s from "@/styles/modules/datalist.module.scss";
 import { RefObject } from "react";
 export default function ContextualText({
+  acronym,
   role,
   topic,
   required,
   label,
+  placeholder,
 }: Readonly<ICtxTxt>) {
-  const cTopic = StringHelper.capitalize(topic).replace(/\s\|/g, ""),
+  const cTopic = StringHelper.capitalize(topic.toString()).replace(/\s\|/g, ""),
     cRole = StringHelper.capitalize(role).replace(/\s\|/g, ""),
     _case = `${cRole}${cTopic}`,
     listName = `suggestions${_case}`,
     optsClass = `opt${_case}`,
     { inpRef, v, dl, showDl, cursor, setV, handleClick, handleKeyDown } =
-      useCustomDataList();
+      useCustomDataList(acronym);
   return (
     <div className={`div${cTopic} ${s.container}`} id={`${role}${cTopic}`}>
       <label
@@ -33,7 +35,7 @@ export default function ContextualText({
         className={classes.contextualTextClasses}
         id={`text${_case}`}
         name={`${StringHelper.pascalToSnake(cTopic)}`}
-        placeholder='Escreva aqui'
+        placeholder={placeholder || "Escreva aqui"}
         required={required}
         autoComplete='on'
         spellCheck='true'

@@ -1,14 +1,22 @@
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef, useContext } from "react";
 import IOHandler from "../handlers/IOHandler";
 import DOMValidator from "../validators/DOMValidator";
 import { inputLikeElement, voidish } from "@/lib/definitions/client/helpers";
-export default function useCustomDataList() {
+import { IFormCtx } from "@/lib/definitions/client/interfaces/contexts";
+import { FormCtx } from "@/components/forms/RequirementForm";
+import { roleType } from "@/lib/definitions/foundations";
+import { Acronyms } from "../vars";
+export default function useCustomDataList(acronym: keyof typeof Acronyms) {
   const [dl, setDl] = useState<string[]>([]),
     [showDl, setShowDl] = useState<boolean>(false),
     [v, setV] = useState<string>(""),
     [cursor, setCursor] = useState<number>(0),
     inpRef = useRef<inputLikeElement>(null),
     dlRefs = useRef<(HTMLLIElement | voidish)[]>([]),
+    ctx = useContext<IFormCtx>(FormCtx),
+    role = useRef<roleType>(
+      ctx?.role || sessionStorage.get("role") || "undefined"
+    ),
     unmountList = useCallback((): void => {
       setShowDl(() => false);
       setDl(() => []);
@@ -49,7 +57,10 @@ export default function useCustomDataList() {
       unmountList();
       return;
     }
-    const opts = IOHandler.selectCustomDataListSuggestions(v);
+    if (role.current === "undefined" || !role?.current)
+      role.current =
+        (sessionStorage.getItem("role") as roleType) || "undefined";
+    const opts = IOHandler.selectContextualizedList(role.current, acronym);
     if (!opts?.length) {
       unmountList();
       return;
