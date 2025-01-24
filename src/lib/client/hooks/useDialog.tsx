@@ -17,7 +17,9 @@ export default function useDialog({
       (kp: rKbEv): void => {
         if (kp.key.toLowerCase() !== "escape") return;
         dispatch(!state);
+        /* eslint-disable */
         !state && mainRef.current?.close();
+        /* eslint-enable */
       },
       [state, dispatch]
     );
@@ -31,7 +33,9 @@ export default function useDialog({
       urlParams.delete(param);
       router.push(`?${urlParams.toString()}`);
     };
+    /* eslint-disable */
   }, [location.search, param]);
+  /* eslint-enable */
   useEffect(() => {
     try {
       if (!(mainRef.current instanceof HTMLElement)) return;

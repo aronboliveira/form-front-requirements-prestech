@@ -32,7 +32,7 @@ export default class ZodHandler {
   static strMinMaxPattern({
     min = 0,
     max = limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
-    exp = /^*$/,
+    exp = /^.*$/,
     req = true,
   }: MinMaxPattern): OptableZodStr {
     return req

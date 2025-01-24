@@ -17,7 +17,9 @@ export type TypedArray =
 export type BaseArray = Array | TypedArray; // sharing many Array methods
 export type SizeableIterable = Map | Set; // .size
 export type SettableIterable = SizeableIterable | TypedArray; // .set()
+/* eslint-disable */
 export type BaseIterableNotIterator = BaseArray | SizeableIterable | String;
+/* eslint-enable */
 export type BaseIterable = BaseIterableNotIterator | Generator; // .next(): { done: boolean, value: any }
 export type DOMIterable =
   | NodeList

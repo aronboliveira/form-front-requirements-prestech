@@ -19,7 +19,7 @@ export default function useCustomDataList() {
         setV(() => `${v}${text}`);
         unmountList();
       },
-      [unmountList, setV]
+      [unmountList, setV, v]
     ),
     handleKeyDown = useCallback(
       (e: React.KeyboardEvent<HTMLElement>): void => {
@@ -38,7 +38,7 @@ export default function useCustomDataList() {
             setCursor(prev => (prev > 0 ? prev-- : dl.length--));
         }
       },
-      [setV]
+      [setV, dl.length, selectOpt]
     ),
     handleClick = (opt: HTMLElement): void => {
       if (!opt?.innerText) return;
@@ -70,8 +70,10 @@ export default function useCustomDataList() {
         o.focus();
         o.classList.add("highlight");
       } else {
+        /* eslint-disable */
         o.classList.contains("highlight") && o.classList.remove("highlight");
         o.blur();
+        /* eslint-enable */
       }
     });
   }, [dl, cursor]);

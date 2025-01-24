@@ -2,9 +2,9 @@ import { entryElement, nlInp, nlTxtEl } from "@/lib/definitions/client/helpers";
 import { DDDPattern, TelType } from "@/lib/definitions/foundations";
 import MathHandler from "./MathHandler";
 import {
-  Acronyms,
-  AcronymsDefaults,
-  friendlyRoles,
+  // Acronyms,
+  // AcronymsDefaults,
+  // friendlyRoles,
   suggestionsDict,
 } from "../vars";
 export default class IOHandler {

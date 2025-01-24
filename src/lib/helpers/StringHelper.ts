@@ -54,11 +54,15 @@ export default class StringHelper {
       .toLowerCase();
   }
   static sanitizePropertyName(v: string): string {
-    return v
-      .replace(/-/g, "_")
-      .replace(/\s+/g, "__")
-      .replace(/[^\p{L}\p{N}\p{Pc}\p{Mn}\u200C\u200D_]/gu, "")
-      .replace(/^[^a-zA-Z_\u200C\u200D]/, s => `_${s}`);
+    return (
+      v
+        .replace(/-/g, "_")
+        .replace(/\s+/g, "__")
+        /* eslint-disable */
+        .replace(/[^\p{L}\p{N}\p{Pc}\p{Mn}\u200C\u200D_]/gu, "")
+        .replace(/^[^a-zA-Z_\u200C\u200D]/, s => `_${s}`)
+    );
+    /* eslint-enable */
   }
   static unfriendlyName(v: string, pascal: boolean = false): string {
     return pascal

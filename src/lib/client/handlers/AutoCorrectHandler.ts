@@ -363,7 +363,6 @@ export function autoCapitalizeInputs(
             letterMatchesIniNotD.forEach(letterMatch => {
               text = fixNextWordsIniNotD(text, letterMatch);
             });
-            text = text;
             const res = correctCursorNextWords(
               isCursorAutoMoved,
               isUndoUppercase,
@@ -416,7 +415,6 @@ export function autoCapitalizeInputs(
             letterMatchesAfterD?.forEach(letterMatchD => {
               text = fixNextWordsAfterD(text, letterMatchD);
             });
-            text = text;
             for (
               let iD = 0;
               iD < Array.from(letterMatchesAfterD ?? []).length;

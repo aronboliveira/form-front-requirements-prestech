@@ -19,8 +19,12 @@ export interface OptInput extends Identifiable {
   required?: boolean;
   label?: string;
 }
-export interface TelFragmentOptInput extends OptInput {}
-export interface IEmailInput extends OptInput {}
+export interface TelFragmentOptInput extends OptInput {
+  local?: TelType;
+}
+export interface IEmailInput extends OptInput {
+  restriction?: RegExp;
+}
 export interface ITelInput extends OptInput, Partial<ContextualizedTel> {
   type: TelType;
   ctx?: React.Context<ITelCtx>;

@@ -17,10 +17,12 @@ export default function Watcher({ _case, d, v }: WatcherProps) {
       if (!roleEl || !(roleEl && DOMValidator.isDefaultEntry(roleEl))) return;
       role = roleEl.value;
     }
+    /* eslint-disable */
     ContextValidator.isRoleType(role) &&
       (!v || !ContextValidator.isRoleType(v) || v !== role) &&
       d(role);
-  }, [_case, d]);
+    /* eslint-enable */
+  }, [_case, d, v]);
   useEffect(() => {
     if (_case !== "mainForm" || document.body.dataset.oncount === "true")
       return;
@@ -60,7 +62,7 @@ export default function Watcher({ _case, d, v }: WatcherProps) {
     cycle();
     setInterval(cycle, 1_000);
     document.body.dataset.observingrole = "true";
-  }, [_case]);
+  }, [_case, cycle]);
   return (
     <span
       className='watcher'

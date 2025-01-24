@@ -2,7 +2,7 @@ import DOMValidator from "@/lib/client/validators/DOMValidator";
 import { toast } from "react-hot-toast";
 export default function clickToast(message: string): Promise<boolean> {
   const handleClick = (): boolean => {
-    if (!window) false;
+    if (!window) return false;
     const yes = document.getElementById("yesPersist");
     if (!(yes && DOMValidator.isButton(yes))) return false;
     if (!yes.dataset.watching) {
@@ -22,7 +22,7 @@ export default function clickToast(message: string): Promise<boolean> {
   };
   setTimeout(() => {
     try {
-      window ? handleClick() : setTimeout(handleClick, 1000);
+      return window ? handleClick() : setTimeout(handleClick, 1000);
     } catch (e) {
       return;
     }
@@ -54,7 +54,9 @@ export default function clickToast(message: string): Promise<boolean> {
               className='btn btn-info'
               id='yesPersist'
               onClick={() => {
+                /* eslint-disable */
                 handleClick() ? resolve(true) : resolve(false);
+                /* eslint-enable */
                 setTimeout(() => toast.dismiss(t.id), 200);
               }}
               style={{ marginLeft: "10px" }}

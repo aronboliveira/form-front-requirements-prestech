@@ -19,7 +19,7 @@ export default function Email({
     if (r.current.value.startsWith("@")) StyleHandler.blurOnChange(r.current);
     IOHandler.syncLabel(r.current);
     required && StyleHandler.alarmBorder(r.current);
-  }, [r, v]);
+  }, [r, v, required]);
   return (
     <div className={classes.inpDivClasses}>
       <label className={classes.inpLabClasses} htmlFor={id}>
@@ -39,15 +39,19 @@ export default function Email({
         className={classes.inpClasses}
         onChange={ev => {
           const t = ev.currentTarget;
+          /* eslint-disable */
           flags.isAutoCorrectOn
             ? setV(IOHandler.applyEmailExtension(t.value))
             : setV(t.value);
+          /* eslint-enable */
         }}
         onClick={ev => {
           const t = ev.currentTarget;
+          /* eslint-disable */
           flags.isAutoCorrectOn
             ? setV(IOHandler.applyEmailExtension(t.value))
             : setV(t.value);
+          /* eslint-ensable */
         }}
       />
     </div>

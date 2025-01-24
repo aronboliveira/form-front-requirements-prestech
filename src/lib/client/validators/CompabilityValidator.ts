@@ -1,7 +1,9 @@
 export default class CompabilityValidator {
   static isChromium(): boolean {
+    //@ts-ignore
     return navigator.userAgentData
-      ? navigator.userAgentData.brands.some(brand =>
+      ? //@ts-ignore
+        navigator.userAgentData.brands.some(brand =>
           ["chrome", "edge", "samsung", "opera", "vivaldi", "brave"].some(
             name => brand.brand.toLowerCase().includes(name)
           )
@@ -11,7 +13,9 @@ export default class CompabilityValidator {
         );
   }
   static isSafari(): boolean {
+    //@ts-ignore
     if (navigator.userAgentData)
+      //@ts-ignore
       return navigator.userAgentData.brands.some(brand =>
         /safari/gi.test(brand.brand)
       )
@@ -28,8 +32,10 @@ export default class CompabilityValidator {
     return CompabilityValidator.isChromium() || CompabilityValidator.isSafari();
   }
   static isFirefox(): boolean {
+    //@ts-ignore
     return navigator.userAgentData
-      ? navigator.userAgentData.brands.some(brand =>
+      ? //@ts-ignore
+        navigator.userAgentData.brands.some(brand =>
           brand.brand.toLowerCase().includes("firefox")
         )
       : /Firefox/gi.test(navigator.userAgent);

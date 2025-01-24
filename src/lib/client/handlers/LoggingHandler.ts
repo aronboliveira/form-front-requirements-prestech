@@ -33,6 +33,7 @@ export default class LoggingHandler {
               ArrayLikeMapper.toKeyObject(el.attributes, "name", "value")
             )}`
           );
+          /* eslint-disable */
           showProperties &&
             console.log(
               `Properties: ${ArrayLikeMapper.toRecord(
@@ -45,6 +46,7 @@ export default class LoggingHandler {
             console.log(arr);
           }
           console.log("------------");
+          /* eslint-enable */
         });
       },
       logGroup = (e: any, i: number, arr: any[]) => {

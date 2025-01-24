@@ -25,7 +25,9 @@ export default class AccessibilityProvider implements Provider {
       this.applyAriaLabel(el);
       this.applyAriaDescription(el);
       this.clearRedundant(el);
+      /* eslint-disable */
       el instanceof HTMLElement && AccessibilityHandler.trackAriaState(el);
+      /* eslint-enable */
     }
     return this;
   }
@@ -60,6 +62,7 @@ export default class AccessibilityProvider implements Provider {
     ].some(t => t === tag);
   }
   clearRedundant(el: Element): void {
+    /* eslint-disable */
     !el.classList.contains("customRole") &&
       ([
         "article",
@@ -122,6 +125,7 @@ export default class AccessibilityProvider implements Provider {
             (el.type === "image" && el.role === "img") ||
             el.type === el.role))) &&
       el.removeAttribute("role");
+    /* eslint-enable */
   }
   applyAriaLabel(el: Element): void {
     if (
@@ -182,7 +186,7 @@ export default class AccessibilityProvider implements Provider {
         el.ariaLabel = labeler.innerText;
       }, 500);
     } else if (DOMValidator.isButton(el)) {
-      const useClass = (): boolean => {
+      const utilizeClass = (): boolean => {
         let inferredLabel;
         if (
           DOMValidator.hasAnyClass(el, [
@@ -220,12 +224,14 @@ export default class AccessibilityProvider implements Provider {
           )
             inferredLabel = "Remove";
         });
+        /* eslint-disable */
         if (inferredLabel) el.setAttribute("aria-label", inferredLabel);
         return inferredLabel ? true : false;
+        /* eslint-enable */
       };
       if (el.dataset.label)
-        !findAndAssignLabeler(el) && !useClass() && assignOwn(el);
-      else !useClass() && assignOwn(el);
+        !findAndAssignLabeler(el) && !utilizeClass() && assignOwn(el);
+      else !utilizeClass() && assignOwn(el);
       const id = el.id;
       setTimeout(() => {
         if (!el || !el.isConnected) el = document.getElementById(id) as any;
@@ -336,6 +342,7 @@ export default class AccessibilityProvider implements Provider {
     } else if (AccessibilityValidator.isAriaDescribleable(el))
       !findAndAssignDescriptor(el) && assignOwn(el as HTMLElement);
   }
+  /* eslint-disable */
   applyRole(el: Element): void {
     if (el.role) return;
     const isGeneric = DOMValidator.isGeneric(el),
@@ -377,11 +384,13 @@ export default class AccessibilityProvider implements Provider {
           el.setAttribute("aria-live", "assertive");
         }
       }
-    } else if (
+    }
+    if (
       el instanceof HTMLInputElement &&
       el.type !== "search" &&
       (cl.contains("search") || cl.contains("searchbox"))
     ) {
+      setRole(el, "searchbox");
     } else if (el instanceof HTMLElement && el.contentEditable === "true") {
       if (!(el instanceof HTMLInputElement)) {
         if (!DOMValidator.isDefaultEntry(el)) {
@@ -618,6 +627,7 @@ export default class AccessibilityProvider implements Provider {
       }
     }
   }
+  /* eslint-enable */
   #assignControlled = (e: Element): void => {
     const controlledId = (e as any)[`ariaControls`];
     if (controlledId) {

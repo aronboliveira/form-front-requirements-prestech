@@ -23,7 +23,10 @@ export default class DOMHandler {
     dlgInBtn: Element
   ): boolean[] {
     try {
-      if (!document.querySelector(`#${dlgInBtn.id}` || "dialog"))
+      if (
+        !document.querySelector(`#${dlgInBtn.id}`) &&
+        !document.querySelector("dialog")
+      )
         throw new Error(`Modal for outside click not in screen anymore.`);
       const rect = dlgInBtn.getBoundingClientRect(),
         { clientX, clientY } = event;
@@ -50,9 +53,11 @@ export default class DOMHandler {
   public static extractValue(el: HTMLElement): string {
     let value = "";
     if (DOMValidator.isDefaultEntry(el)) {
+      /* eslint-disable */
       DOMValidator.isDefaultCheckable(el)
         ? (value = el.checked.toString())
         : (value = el.value);
+      /* eslint-enable */
     } else if (DOMValidator.isCustomEntry(el)) {
       if (DOMValidator.isCustomCheckable(el) && el.dataset.checked)
         value = el.dataset.checked;
@@ -136,8 +141,10 @@ export default class DOMHandler {
       this.#incrementClientAttempt();
       this.#setLastClickCoordinates(this.ev.clientX, this.ev.clientY);
       suspicious = false;
+      /* eslint-disable */
       localStorage.getItem("shouldTrustNavigate") &&
         localStorage.removeItem("shouldTrustNavigate");
+      /* eslint-enable */
       return ["Attempt validated.", suspicious];
     } catch (e) {
       return [

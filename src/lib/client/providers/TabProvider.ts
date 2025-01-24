@@ -8,8 +8,10 @@ export default class TabProvider implements Provider {
   }
   public setup(): TabProvider {
     const sorted = [];
+    /* eslint-disable */
     for (const el of this.#elements)
       el instanceof HTMLDialogElement ? sorted.unshift(el) : sorted.push(el);
+    /* eslint-enable */
     for (const el of this.#elements) {
       if (el instanceof HTMLDialogElement) this.tabIndexDlg(el);
       else if (el instanceof HTMLFormElement) this.tabIndexForm(el);

@@ -294,7 +294,7 @@ export enum friendlyRoles {
   operatorio = "Operatório",
   desenvolvimento = "Desenvolvimento",
   devOps = "DevOps",
-  default = "Cargo Indefinido",
+  default = "Cargo Não Definido",
   undefined = "Cargo Indefinido",
 }
 export const CtxLabels: roleQuestionsMap = new Map([

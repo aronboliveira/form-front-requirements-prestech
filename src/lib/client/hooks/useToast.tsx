@@ -1,7 +1,7 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { toast } from "react-hot-toast";
 import DOMValidator from "../validators/DOMValidator";
-import { nlHtEl } from "@/lib/definitions/client/helpers";
+import { nlBtn } from "@/lib/definitions/client/helpers";
 import DOMHandler from "../handlers/DOMHandler";
 export default function useToast({
   id,
@@ -10,7 +10,7 @@ export default function useToast({
   id?: string;
   enterBtnId: string;
 }) {
-  let enterBtn: nlHtEl = null;
+  const enterBtn = useRef<nlBtn>(null);
   const handleEsc = useCallback(
       (ev: KeyboardEvent): void => {
         if (ev.key !== "Escape") return;
@@ -20,25 +20,26 @@ export default function useToast({
     ),
     handleEnter = useCallback(
       (ev: KeyboardEvent): void => {
-        if (ev.key !== "Enter" || !enterBtn || !DOMValidator.isButton(enterBtn))
+        if (
+          ev.key !== "Enter" ||
+          !enterBtn ||
+          !DOMValidator.isButton(enterBtn.current as any)
+        )
           return;
-        enterBtn.click();
+        enterBtn.current?.click();
       },
       [enterBtn]
     ),
-    handleClick = useCallback(
-      (ev: MouseEvent): void => {
-        const toastBox = document.getElementById("activeToast");
-        if (!toastBox) return;
-        if (DOMHandler.isClickOutside(ev, toastBox).some(coord => coord))
-          toast.dismiss();
-      },
-      [id]
-    );
+    handleClick = useCallback((ev: MouseEvent): void => {
+      const toastBox = document.getElementById("activeToast");
+      if (!toastBox) return;
+      if (DOMHandler.isClickOutside(ev, toastBox).some(coord => coord))
+        toast.dismiss();
+    }, []);
   useEffect(() => {
     if (!window || document.body.dataset.toasthandling === "true") return;
     addEventListener("keyup", handleEsc);
-    enterBtn = document.getElementById(enterBtnId);
+    enterBtn.current = document.getElementById(enterBtnId) as nlBtn;
     addEventListener("keydown", handleEnter);
     document.body.addEventListener("click", handleClick);
     return () => {

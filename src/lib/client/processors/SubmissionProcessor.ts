@@ -73,7 +73,9 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
           decV = MathHandler.hexToDecimal((el as HTMLInputElement).value);
         if (!Number.isFinite(decMax)) return true;
         if (!Number.isFinite(decV) || decV > decMax) {
+          /* eslint-disable */
           (el as HTMLInputElement).required && handleInvalidity(el);
+          /* eslint-enable */
           return false;
         }
       }

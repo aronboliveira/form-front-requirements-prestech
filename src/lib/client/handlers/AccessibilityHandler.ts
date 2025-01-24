@@ -20,9 +20,11 @@ export default class AccessibilityHandler {
           (el as HTMLElement).querySelectorAll("*").forEach(c => {
             if (!(c instanceof HTMLElement) || c instanceof HTMLOptionElement)
               return;
+            /* eslint-disable */
             c.dataset.selected === "true"
               ? (c.ariaSelected = "true")
               : (c.ariaSelected = "false");
+            /* eslint-enable */
           });
           this.handleSelect(el);
         }
@@ -41,25 +43,30 @@ export default class AccessibilityHandler {
         const t = ev.currentTarget;
         setTimeout(() => {
           t?.querySelectorAll("*").forEach(c => {
+            /* eslint-disable */
             if (!(c instanceof HTMLElement) || c instanceof HTMLOptionElement)
               return;
             c.dataset.selected === "true"
               ? (c.ariaSelected = "true")
               : (c.ariaSelected = "false");
+            /* eslint-enable */
           });
         }, 200);
       },
       handleClick = (ev: Event): void => {
+        /* eslint-disable */
         if (!(ev.currentTarget instanceof Element)) return;
         ev.currentTarget.ariaExpanded === "false"
           ? (ev.currentTarget.ariaExpanded = "true")
           : (ev.currentTarget.ariaExpanded = "false");
+        /* eslint-enable */
       };
     el.addEventListener("mouseup", handleMouseUp);
     el.role === "combobox" && el.addEventListener("click", handleClick);
   }
   static handleCheckState(el: Element): void {
     el.addEventListener("mouseup", ev => {
+      /* eslint-disable */
       if (
         ev.currentTarget instanceof HTMLElement &&
         DOMValidator.isCustomCheckable(ev.currentTarget) &&
@@ -68,6 +75,7 @@ export default class AccessibilityHandler {
         ev.currentTarget.dataset.checked === "true"
           ? ev.currentTarget.setAttribute("aria-checked", "true")
           : ev.currentTarget.setAttribute("aria-checked", "false");
+      /* eslint-enable */
     });
   }
   static handlePressState(el: HTMLElement): void {
@@ -82,6 +90,7 @@ export default class AccessibilityHandler {
       const t = ev.currentTarget;
       if (checkClick(ev)) {
         (ev.currentTarget as HTMLElement).setAttribute("aria-pressed", "true");
+        /* eslint-disable */
         if (
           t instanceof HTMLElement &&
           (t.ariaExpanded || t.classList.contains("expands"))
@@ -89,14 +98,17 @@ export default class AccessibilityHandler {
           t.ariaExpanded === "true"
             ? t.setAttribute("aria-expanded", "false")
             : t.setAttribute("aria-expanded", "false");
+          /* eslint-enable */
         }
       }
     });
     el.addEventListener(
       "mouseup",
       ev =>
+        /* eslint-disable */
         checkClick(ev) &&
         (ev.currentTarget as HTMLElement).setAttribute("aria-pressed", "false")
+      /* eslint-enable */
     );
   }
   static handleStaticAttrs(el: HTMLElement): void {

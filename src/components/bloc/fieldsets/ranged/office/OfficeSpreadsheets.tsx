@@ -1,8 +1,9 @@
 import s from "@/styles/modules/rangeCtx.module.scss";
-import { RangeCtxBlockProps } from "@/lib/definitions/client/interfaces/components";
+// import { RangeCtxBlockProps } from "@/lib/definitions/client/interfaces/components";
 import useRangedCtxBlock from "@/lib/client/hooks/useRangedCtxBlock";
 import { classes } from "@/lib/client/vars";
-export default function Spreadsheets({ lvl }: RangeCtxBlockProps) {
+export default function Spreadsheets() {
+// { lvl }: RangeCtxBlockProps
   const { r } = useRangedCtxBlock();
   return (
     <fieldset

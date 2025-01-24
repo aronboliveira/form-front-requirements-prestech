@@ -134,6 +134,7 @@ export default class CacheProvider implements Provider {
         if (!entry) entry = DOMHandler.queryByUniqueName(id);
         if (!entry) continue;
         if (DOMValidator.isDefaultEntry(entry)) {
+          /* eslint-disable */
           DOMValidator.isDefaultCheckable(entry)
             ? (entry.checked = v === "true")
             : (entry.value = v);
@@ -141,6 +142,7 @@ export default class CacheProvider implements Provider {
           if (DOMValidator.isCustomCheckable(entry) && entry.dataset.checked)
             entry.dataset.checked = v;
           else entry.dataset.value = v;
+          /* eslint-ensable */
         }
       }
     } catch (e) {

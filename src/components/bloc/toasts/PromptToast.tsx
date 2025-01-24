@@ -37,7 +37,7 @@ export default function promptToast(
           pw.dataset.watching = "true";
         }
       };
-      window ? handleInput() : setTimeout(handleInput, 1000);
+      return window ? handleInput() : setTimeout(handleInput, 1000);
     } catch (e) {
       return;
     }

@@ -46,6 +46,7 @@ export default function RequirementForm({
   labels: ctxLabels,
 }: Readonly<{ labels: Map<"roleQuestions", any> }>) {
   const r = useRef<nlFm>(null),
+    cache = useRef<CacheProvider>(null),
     [namedSettled, setNames] = useState<boolean>(false),
     [idsSettled, setIds] = useState<boolean>(false),
     [role, setRole] = useState<roleType>("undefined"),
@@ -59,7 +60,6 @@ export default function RequirementForm({
       }),
       [role, setRole, ctxLabels, setTransition]
     );
-  let cache = null;
   useEffect(() => {
     DOMHandler.isPt();
     IOModel.setConstraintPatterns();
@@ -85,8 +85,8 @@ export default function RequirementForm({
     if (!(r.current instanceof HTMLFormElement)) return;
     IOModel.setLinks();
     IOModel.setSpellChecks();
-    cache = CacheProvider.construct(r.current);
-    cache.setup();
+    cache.current = CacheProvider.construct(r.current);
+    cache.current.setup();
     r.current.key = MathHandler.generateRandomKey(r.current.key, 255);
     setTimeout(IOModel.setPlaceholders, 500);
     if (!flags.indexed) {
@@ -98,9 +98,7 @@ export default function RequirementForm({
     }
     const role = sessionStorage.getItem("role");
     role && setRole(ContextValidator.isRoleType(role) ? role : "undefined");
-    setTimeout(() => {
-      new StyleProvider().setup();
-    }, 500);
+    setTimeout(() => new StyleProvider().setup(), 500);
     new LoggingHandler(r.current.id).logSubgroup(true, true);
   }, [r, idsSettled]);
   useEffect(() => {

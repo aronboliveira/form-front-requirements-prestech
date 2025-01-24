@@ -55,7 +55,11 @@ export default function Range(props: RangeInputBlock): JSX.Element {
           case "planning":
             return <Planning lvl={lvl} />;
           case "spreadSheets":
-            return <Spreadsheets lvl={lvl} />;
+            return (
+              <Spreadsheets
+              // lvl={lvl}
+              />
+            );
           default:
             return <></>;
         }
@@ -143,11 +147,13 @@ export default function Range(props: RangeInputBlock): JSX.Element {
             break;
           default:
             const parsed = MathHandler.parseNotNaN(el.value, 0, "int");
+            /* eslint-disable */
             parsed > 50
               ? update("greenMid", el.value)
               : parsed > 20
               ? update("orangeBasic", el.value)
               : update("grey", el.value);
+          /* eslint-enable */
         }
       }, 200);
       StyleHandler.updatePseudos({

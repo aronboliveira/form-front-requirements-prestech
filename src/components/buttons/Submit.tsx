@@ -6,10 +6,10 @@ import { classes, flags } from "@/lib/client/vars";
 import { FormRelated } from "@/lib/definitions/client/interfaces/components";
 import { IFormCtx } from "@/lib/definitions/client/interfaces/contexts";
 import { useRouter } from "next/navigation";
-import { RefObject, useCallback, useContext } from "react";
+import { RefObject, useCallback, useContext, useRef } from "react";
 import { toast } from "react-hot-toast";
 import { FormCtx } from "../forms/RequirementForm";
-import { disableableElement } from "@/lib/definitions/client/helpers";
+import { disableableElement, nlFm } from "@/lib/definitions/client/helpers";
 import promptToast from "../bloc/toasts/PromptToast";
 import DOMValidator from "@/lib/client/validators/DOMValidator";
 export default function Submit({ form }: FormRelated) {
@@ -32,7 +32,9 @@ export default function Submit({ form }: FormRelated) {
         if (DOMValidator.isDefaultDisableable(e)) e.disabled = false;
         else e.dataset.disabled = "false";
       }
+      /* eslint-disable */
       sessionStorage.getItem(cpt) && sessionStorage.removeItem(cpt);
+      /* eslint-enable */
     },
     handleClick = useCallback(
       (el: disableableElement): void => {
@@ -48,7 +50,9 @@ export default function Submit({ form }: FormRelated) {
         const form = el.form ?? el.closest("form");
         if (!form) return;
         SubmissionHandler.construct(form)
+          /* eslint-disable */
           .submit("sendRequirements")
+          /* eslint-enable */
           .then(({ ok, cause }) => {
             !ok
               ? (() => {
@@ -83,10 +87,11 @@ export default function Submit({ form }: FormRelated) {
           : toast(flags.pt ? `CAPTCHA falhou` : `CAPTCHA failed`, {
               icon: "📑",
             });
-        loopChanged(changed);
+        return loopChanged(changed);
       },
-      [flags.pt]
+      [flags.pt, handleClick]
     ),
+    currentForm = useRef<nlFm>(null),
     handleDisable = useCallback(
       (changed: string[]): void => {
         if (!form?.isConnected) {
@@ -94,7 +99,7 @@ export default function Submit({ form }: FormRelated) {
             r.current = document.getElementById(id) as HTMLButtonElement;
             if (!r.current) return;
           }
-          form = r.current.form ?? r.current.closest("form");
+          currentForm.current = r.current.form ?? r.current.closest("form");
         }
         if (!form?.isConnected) return;
         for (const e of form.elements) {

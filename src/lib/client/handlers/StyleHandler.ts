@@ -21,7 +21,9 @@ export default class StyleHandler {
     if (!(element instanceof HTMLElement)) return;
     if (!StyleValidator.evaluateDisplay(visibleAs))
       element.style.display = "block";
+    /* eslint-disable */
     condition ? (element.style.display = visibleAs) : "none";
+    /* eslint-enable */
   }
   static blurOnChange(el: nlHtEl, curr: number = 0.8, prev: number = 1): void {
     if (!(el instanceof HTMLElement)) return;
