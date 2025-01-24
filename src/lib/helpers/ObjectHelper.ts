@@ -15,4 +15,12 @@ export default class ObjectHelper {
       return "";
     }
   }
+  public static JSONSafeParse(data: any): any {
+    try {
+      return JSON.parse(data);
+    } catch (e) {
+      console.error(`Error parsing data:\n${(e as Error).message}`);
+      return null;
+    }
+  }
 }

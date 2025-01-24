@@ -3,6 +3,7 @@ import { Provider } from "@/lib/definitions/foundations";
 import DOMValidator from "../validators/DOMValidator";
 import DOMHandler from "../handlers/DOMHandler";
 import clickToast from "@/components/bloc/toasts/ClickToast";
+import ObjectHelper from "@/lib/helpers/ObjectHelper";
 export default class CacheProvider implements Provider {
   private static _instance: CacheProvider;
   static persisters: { [k: string]: string } = {};
@@ -189,14 +190,34 @@ export default class CacheProvider implements Provider {
             p[0].indexOf("__") || p[0].length
           )}`,
           clones = document.querySelectorAll(`#${clonableId}`);
-        console.log(clonableId);
         if (clones.length !== 1) return p;
-        const el = document.getElementById(clonableId);
+        const el = clones[0];
         if (!el) return p;
         if (el.id !== clonableId) el.id = clonableId;
+        const c = "shouldCleanUp";
+        if (!sessionStorage.getItem(c)) {
+          sessionStorage.setItem(c, "true");
+          setTimeout(() => {
+            if (!entries?.length) return;
+            const persisters = sessionStorage.getItem(idf);
+            if (!persisters) return;
+            const parsed = ObjectHelper.JSONSafeParse(
+              persisters
+            ) as typeof CacheProvider.persisters;
+            if (!parsed) return;
+            const toBeCleaned = [];
+            for (const [id] of entries) {
+              const e = DOMHandler.queryByUniqueName(id);
+              if (e?.isConnected) continue;
+              toBeCleaned.push(id);
+            }
+            for (const n of toBeCleaned) delete parsed[n];
+            sessionStorage.setItem(idf, JSON.stringify(parsed));
+            sessionStorage.removeItem(c);
+          }, 300_000);
+        }
         return [clonableId, p[1]];
       });
-      console.log(entries);
       for (let j = 0; j < entries.length; j++) {
         let el = document.getElementById(entries[j][0]);
         if (!el) el = DOMHandler.queryByUniqueName(entries[j][0]);

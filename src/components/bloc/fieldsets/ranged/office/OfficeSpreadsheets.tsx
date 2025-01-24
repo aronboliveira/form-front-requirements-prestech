@@ -10,7 +10,10 @@ export default function Spreadsheets({ lvl }: RangeCtxBlockProps) {
       className={`${classes.officeApps} ${s.fsRanged}`}
       ref={r}
     >
-      {lvl}
+      <div>
+        <label>Como esses aplicativos beneficam o seu trabalho?</label>
+        <textarea className='form-control'></textarea>
+      </div>
     </fieldset>
   );
 }

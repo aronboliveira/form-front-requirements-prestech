@@ -441,6 +441,10 @@ export const CtxLabels: roleQuestionsMap = new Map([
   ],
 ]);
 export const suggestionsDict: { [k: string]: string[] } = {};
+// export const suggestionsGroupsMap: Map<
+//   keyof typeof friendlyRoles,
+//   Map<keyof typeof AcronymsDefaults, string[]>
+// > = new Map([[]]);
 export const jsErrorsFriendlyNames: Readonly<{
   [k: string]: Map<string, string>;
 }> = ObjectHelper.deepFreeze({
