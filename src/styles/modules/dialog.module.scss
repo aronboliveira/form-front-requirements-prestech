@@ -1,6 +1,8 @@
 @use "../abstract/mixins.scss" as *;
 .modalContent {
   @include modal(90, 5, 900);
+  top: 10% !important;
+  left: 10% !important;
   scrollbar-width: thin;
   padding: 2%;
   &.defDp {
@@ -61,4 +63,18 @@
   padding: 2%;
   white-space: normal;
   width: fit-content;
+}
+.modalHeader {
+  border-bottom: var(--bs-modal-header-border-width) solid
+    var(--bs-modal-header-border-color);
+  width: 100%;
+  padding-bottom: 1.25rem;
+  text-align: center;
+}
+.modalFooter {
+  border-top: var(--bs-modal-footer-border-width) solid
+    var(--bs-modal-footer-border-color);
+  width: 100%;
+  padding-top: 1.5rem;
+  text-align: center;
 }

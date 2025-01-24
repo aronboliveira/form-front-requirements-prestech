@@ -28,6 +28,7 @@ export default function Watcher({ _case, d, v }: WatcherProps) {
       return;
     sessionStorage.setItem("timer", "3600000");
     const interv = setInterval(i => {
+      if (document.body.dataset.oncount === "false") return;
       const t = sessionStorage.getItem("timer");
       if (!t) {
         flags.failedTimeoutAttempts += 1;
@@ -40,11 +41,14 @@ export default function Watcher({ _case, d, v }: WatcherProps) {
       }
       const newTimer = tn - 1 - flags.failedTimeoutAttempts;
       flags.failedTimeoutAttempts = 0;
-      if (newTimer <= 0) {
+      if (newTimer <= 0 || /timeout\=open/g.test(location.search)) {
+        if (t !== "0" && t !== "1")
+          localStorage.setItem("bypassedTimer", "true");
         document.body.innerHTML = "";
         const Enhanced = withModalDispatch(TimeoutModal);
         createRoot(document.body).render(<Enhanced />);
         clearInterval(i);
+        document.body.dataset.oncount = "false";
         return;
       }
       sessionStorage.setItem("timer", newTimer.toString());

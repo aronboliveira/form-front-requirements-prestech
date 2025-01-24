@@ -1,4 +1,4 @@
-import { ClassesKey } from "../definitions/client/helpers";
+import { ClassesKey, RoleComplexities } from "../definitions/client/helpers";
 import {
   AiBlocks,
   OfficeBlocks,
@@ -50,7 +50,6 @@ export const flags: {
 };
 export const borderColors: { [k: string]: string } = {};
 export const fontColors: { [k: string]: string } = {};
-export type appGroups = "Tasks" | "Platforms";
 export enum friendlyRoles {
   executivoAdministrativo = "Executivo | Administrativo",
   financeiro = "Financeiro",
@@ -1123,11 +1122,37 @@ export const suggestionsGroupsMap: Readonly<
     ["undefined", new Map()],
   ])
 );
+export const defaultQuestionsDict: Readonly<{
+  beginner: {
+    df1: string;
+    df2: string;
+    df3: string;
+  };
+  intermediate: {
+    df4: string;
+    df5: string;
+  };
+  expert: {
+    df6: string;
+    df7: string;
+  };
+}> = ObjectHelper.deepFreeze({
+  beginner: {
+    df1: "O quanto você se considera iniciante em uso de ferramentas tecnológicas do dia a dia?",
+    df2: "Com que frequência você recorre a internet (tutoriais, vídeos) para resolver dúvidas simples?",
+    df3: "De que forma você organiza informações básicas em planilhas ou anotações?",
+  },
+  intermediate: {
+    df4: "Como você integra diferentes ferramentas (email, calendário, anotações) para maior eficiência?",
+    df5: "O quanto você domina uso de macros ou pequenos scripts para automação básica?",
+  },
+  expert: {
+    df6: "Descreva como você cria fluxos de trabalho complexos integrando múltiplas tecnologias:",
+    df7: "O quanto você planeja e gerencia soluções de TI em larga escala (várias equipes)?",
+  },
+});
 export const addQuestionsMap: Readonly<
-  Map<
-    keyof typeof friendlyRoles,
-    { [K in "beginner" | "intermediate" | "expert"]: { [k: string]: any } }
-  >
+  Map<keyof typeof friendlyRoles, RoleComplexities>
 > = ObjectHelper.deepFreeze(
   new Map([
     [
@@ -1414,13 +1439,13 @@ export const addQuestionsMap: Readonly<
       "undefined",
       {
         beginner: {
-          und: "Não há cargo definido. Como você avalia seu uso geral de tecnologias em nível básico?",
+          und: "",
         },
         intermediate: {
-          und: "Não há cargo definido. Qual sua experiência intermediária integrando ferramentas para resolver problemas?",
+          und: "",
         },
         expert: {
-          und: "Não há cargo definido. Você consegue lidar com projetos complexos de TI e automação avançada?",
+          und: "",
         },
       },
     ],

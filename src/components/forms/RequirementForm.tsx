@@ -61,6 +61,13 @@ export default function RequirementForm({
       [role, setRole, ctxLabels, setTransition]
     );
   useEffect(() => {
+    const f = "bypassedTimer",
+      bt = localStorage.getItem(f);
+    if (!bt) return;
+    history.pushState({}, "", "");
+    localStorage.removeItem(f);
+  }, []);
+  useEffect(() => {
     DOMHandler.isPt();
     IOModel.setConstraintPatterns();
     if (!(r.current instanceof HTMLFormElement)) return;

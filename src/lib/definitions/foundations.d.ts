@@ -87,6 +87,8 @@ export type AiBlocks = {
   video: string;
 };
 export type complexityLevel = 1 | 2 | 3 | 4 | 5;
+export type complexityLabel = "beginner" | "intermediate" | "expert";
+export type appGroups = "Tasks" | "Platforms";
 export type roleQuestionsMap = Map<
   officeTopicType,
   Map<Omit<roleType | "default", "undefined">, string>

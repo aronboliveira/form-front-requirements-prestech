@@ -1,37 +1,54 @@
 import { RefObject, useCallback, useEffect, useRef } from "react";
-import { nlDlg, rKbEv } from "@/lib/definitions/client/helpers";
-import { useRouter } from "next/navigation";
+import { nlDlg, rKbEv, rMouseEvent } from "@/lib/definitions/client/helpers";
 import { DlgProps } from "@/lib/definitions/client/interfaces/components";
+import DOMHandler from "../handlers/DOMHandler";
 export default function useDialog({
   state,
   dispatch,
+  id,
   param,
+  clickable,
+  escapable,
 }: DlgProps & { param: string }): {
   mainRef: RefObject<nlDlg>;
   handleKp: (kp: rKbEv) => void;
-  router: any;
 } {
+  clickable ||= false;
+  escapable ||= true;
   const mainRef = useRef<nlDlg>(null),
-    router = useRouter(),
     handleKp = useCallback(
       (kp: rKbEv): void => {
-        if (kp.key.toLowerCase() !== "escape") return;
+        if (!escapable || kp.key.toLowerCase() !== "escape") return;
         dispatch(!state);
         /* eslint-disable */
         !state && mainRef.current?.close();
         /* eslint-enable */
       },
       [state, dispatch]
+    ),
+    handleClick = useCallback(
+      (ev: rMouseEvent) => {
+        const dlg = document.getElementById(id);
+        if (
+          ev.currentTarget instanceof Node &&
+          dlg instanceof Element &&
+          DOMHandler.isClickOutside(ev, dlg).some(coord => coord === true)
+        ) {
+          if (dlg instanceof HTMLDialogElement) dlg.close();
+          dispatch(!state);
+        }
+      },
+      [dispatch]
     );
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     if (!urlParams.get(param)) {
       urlParams.set(param, "open");
-      router.push(`?${urlParams.toString()}`);
+      history.pushState({}, "", `?${urlParams.toString()}`);
     }
     return () => {
       urlParams.delete(param);
-      router.push(`?${urlParams.toString()}`);
+      history.pushState({}, "", `?${urlParams.toString()}`);
     };
     /* eslint-disable */
   }, [location.search, param]);
@@ -44,8 +61,12 @@ export default function useDialog({
     } catch (e) {
       return;
     }
-    addEventListener("keypress", handleKp);
-    return (): void => removeEventListener("keypress", handleKp);
+    escapable && addEventListener("keypress", handleKp);
+    clickable && document.body.addEventListener("click", handleClick);
+    return (): void => {
+      removeEventListener("keypress", handleKp);
+      document.body.removeEventListener("click", handleClick);
+    };
   }, [mainRef, handleKp, state]);
-  return { mainRef, router, handleKp };
+  return { mainRef, handleKp };
 }

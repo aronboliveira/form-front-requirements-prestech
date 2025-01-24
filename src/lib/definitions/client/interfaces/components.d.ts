@@ -3,6 +3,7 @@ import {
   ContextualizedTel,
   Identifiable,
   PseudoNum,
+  complexityLevel,
   roleType,
   techAppKey,
 } from "../../foundations";
@@ -54,6 +55,9 @@ export interface SpinnerComponentProps {
 export interface DlgProps {
   dispatch: React.Dispatch<React.SetStateAction<boolean>>;
   state: boolean;
+  id: string;
+  clickable?: boolean;
+  escapable?: boolean;
 }
 export interface CtxCbContainerProps {
   apps: techAppKey[];
@@ -74,6 +78,6 @@ export interface RangeInputBlock extends Omit<OptInput, "id"> {
   label?: string;
 }
 export interface RangeCtxBlockProps {
-  lvl: 1 | 2 | 3 | 4 | 5;
+  lvl: complexityLevel;
   controller: string;
 }

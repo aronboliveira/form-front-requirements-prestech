@@ -9,24 +9,8 @@ export default function Home() {
     <div>
       <Toaster position='top-center' />
       <main className={`container`} style={{ marginBlock: "2%" }}>
-        <div
-          style={{
-            display: "flex",
-            paddingInline: "1rem",
-            justifyContent: "space-between",
-            alignContent: "center",
-          }}
-        >
-          <h1
-            id='mainTitle'
-            style={{
-              border: "none",
-              boxShadow: "none",
-              marginBlock: "1rem 2rem",
-              fontSize: "1.3rem",
-              textAlign: "center",
-            }}
-          >
+        <div id='mainHeadingDiv'>
+          <h1 id='mainTitle'>
             Formulário de Levantamento de Requisitos — Nova Prestech
           </h1>
           <AutoCorrectSwitch />

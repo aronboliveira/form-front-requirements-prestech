@@ -1,10 +1,9 @@
 //primitives
 export type nlStr = string | null;
 export type voidish = undefined | null;
-//Elements
 export type nlEl = Element | null;
 export type queryableNode = Document | DocumentFragment | Element;
-export type ArrayLikeNotIterable = NamedNodeMap | DOMStringMap | TouchList; // .length and [], but no ... or for+of
+export type ArrayLikeNotIterable = NamedNodeMap | DOMStringMap | TouchList;
 export type Int8ArrayLike = Int8Array | Uint8Array | Uint8ClampedArray;
 export type Int16ArrayLike = Int16Array | Uint16Array;
 export type Int32ArrayLike = Int32Array | Uint32Array;
@@ -14,13 +13,14 @@ export type TypedArray =
   | Int16ArrayLike
   | Int32ArrayLike
   | FloatArrayLike;
-export type BaseArray = Array | TypedArray; // sharing many Array methods
-export type SizeableIterable = Map | Set; // .size
-export type SettableIterable = SizeableIterable | TypedArray; // .set()
-/* eslint-disable */
+export type BaseArray = Array | TypedArray;
+export type SizeableIterable = Map | Set;
+export type SettableIterable =
+  | SizeableIterable
+  | TypedArray; /* eslint-disable */
 export type BaseIterableNotIterator = BaseArray | SizeableIterable | String;
 /* eslint-enable */
-export type BaseIterable = BaseIterableNotIterator | Generator; // .next(): { done: boolean, value: any }
+export type BaseIterable = BaseIterableNotIterator | Generator;
 export type DOMIterable =
   | NodeList
   | HTMLCollection
@@ -31,9 +31,9 @@ export type IterableNotIterator = BaseIterableNotIterator | DOMIterable;
 export type SpecialHTMLCollection =
   | HTMLFormControlsCollection
   | HTMLOptionsCollection;
-export type SpecialNodeList = RadioNodeList; // .value()
+export type SpecialNodeList = RadioNodeList;
 export type SpecialDOMCollection = SpecialHTMLCollection | SpecialNodeList;
-export type IterableIterator = Generator; // .next() returns own object
+export type IterableIterator = Generator;
 export type ArrayLike =
   | ArrayLikeNotIterable
   | IterableNotIterator
@@ -74,7 +74,6 @@ export type FormControl =
   | HTMLDataListElement;
 export type rMouseEvent = MouseEvent | React.MouseEvent;
 export type rKbEv = KeyboardEvent | React.KeyboardEvent;
-//Values
 export type CSSDisplay =
   | "none"
   | "block"
@@ -120,3 +119,130 @@ export type ClassesKey =
   | "officePlatforms"
   | "officeApps"
   | "aiApps";
+export type BeginnerAcronyms =
+  | "org"
+  | "mtg"
+  | "frc"
+  | "frm"
+  | "dat"
+  | "fam"
+  | "frq"
+  | "ent"
+  | "tax"
+  | "est"
+  | "crm"
+  | "con"
+  | "seg"
+  | "rel"
+  | "sol"
+  | "met"
+  | "des"
+  | "os_"
+  | "net"
+  | "rep"
+  | "doc"
+  | "srv"
+  | "mon"
+  | "exc"
+  | "wrk"
+  | "sch"
+  | "stp"
+  | "mst"
+  | "git"
+  | "dbg"
+  | "cim"
+  | "df1"
+  | "df2"
+  | "df3"
+  | "und";
+export type IntermediateAcronyms =
+  | "wrk"
+  | "apt"
+  | "vsn"
+  | "mld"
+  | "sec"
+  | "cnb"
+  | "avc"
+  | "rpd"
+  | "prd"
+  | "saf"
+  | "mth"
+  | "mul"
+  | "adv"
+  | "ret"
+  | "col"
+  | "anl"
+  | "abt"
+  | "eml"
+  | "rtn"
+  | "cfg"
+  | "tkt"
+  | "prb"
+  | "rem"
+  | "sct"
+  | "vir"
+  | "rtp"
+  | "ext"
+  | "flw"
+  | "vms"
+  | "alr"
+  | "oop"
+  | "fra"
+  | "dbi"
+  | "cic"
+  | "tst"
+  | "kub"
+  | "iaa"
+  | "hlg"
+  | "scl"
+  | "df4"
+  | "df5"
+  | "und";
+export type ExpertAcronyms =
+  | "aut"
+  | "gov"
+  | "dsh"
+  | "lan"
+  | "mfa"
+  | "cmp"
+  | "aud"
+  | "ris"
+  | "opt"
+  | "seg"
+  | "exc"
+  | "cst"
+  | "net"
+  | "omc"
+  | "roa"
+  | "ai_"
+  | "dsp"
+  | "big"
+  | "spt"
+  | "sfc"
+  | "ext"
+  | "bak"
+  | "sec"
+  | "scl"
+  | "hgh"
+  | "dck"
+  | "mon"
+  | "prf"
+  | "inv"
+  | "pro"
+  | "dev"
+  | "drc"
+  | "arc"
+  | "cld"
+  | "adv"
+  | "hdm"
+  | "can"
+  | "pol"
+  | "obs"
+  | "df6"
+  | "df7"
+  | "und";
+export type RoleComplexities = {
+  beginner: Partial<Record<BeginnerAcronyms, any>>;
+  intermediate: Partial<Record<IntermediateAcronyms, any>>;
+  expert: Partial<Record<ExpertAcronyms, any>>;
+};
