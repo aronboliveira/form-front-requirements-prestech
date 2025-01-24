@@ -1,20 +1,13 @@
-import s from "@/styles/modules/rangeCtx.module.scss";
-// import { RangeCtxBlockProps } from "@/lib/definitions/client/interfaces/components";
-import useRangedCtxBlock from "@/lib/client/hooks/useRangedCtxBlock";
-import { classes } from "@/lib/client/vars";
-export default function Spreadsheets() {
-// { lvl }: RangeCtxBlockProps
-  const { r } = useRangedCtxBlock();
+import { RangeCtxBlockProps } from "@/lib/definitions/client/interfaces/components";
+import FsOfficeApp from "./FsOfficeApp";
+import { protoName } from "@/lib/helpers/ObjectHelper";
+export default function Spreadsheets(props: RangeCtxBlockProps) {
   return (
-    <fieldset
-      id='fsSpreadsheets'
-      className={`${classes.officeApps} ${s.fsRanged}`}
-      ref={r}
-    >
+    <FsOfficeApp id={protoName(Spreadsheets)} p={props}>
       <div>
         <label>Como esses aplicativos beneficam o seu trabalho?</label>
         <textarea className='form-control'></textarea>
       </div>
-    </fieldset>
+    </FsOfficeApp>
   );
 }

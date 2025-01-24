@@ -38,28 +38,24 @@ export default function Range(props: RangeInputBlock): JSX.Element {
       }
     },
     handleCtxComponent = useCallback(
-      (lvl: complexityLevel): JSX.Element => {
+      (lvl: complexityLevel, controller: string): JSX.Element => {
         switch (props.id as rangeCtxId) {
           case "businessInteligence":
-            return <Bi lvl={lvl} />;
+            return <Bi lvl={lvl} controller={controller} />;
           case "cloudStorage":
-            return <StoragePlatforms lvl={lvl} />;
+            return <StoragePlatforms lvl={lvl} controller={controller} />;
           case "Crms":
-            return <Crms lvl={lvl} />;
+            return <Crms lvl={lvl} controller={controller} />;
           case "docs":
-            return <Docs lvl={lvl} />;
+            return <Docs lvl={lvl} controller={controller} />;
           case "Erps":
-            return <Erps lvl={lvl} />;
+            return <Erps lvl={lvl} controller={controller} />;
           case "formBuilders":
-            return <FormBuilders lvl={lvl} />;
+            return <FormBuilders lvl={lvl} controller={controller} />;
           case "planning":
-            return <Planning lvl={lvl} />;
+            return <Planning lvl={lvl} controller={controller} />;
           case "spreadSheets":
-            return (
-              <Spreadsheets
-              // lvl={lvl}
-              />
-            );
+            return <Spreadsheets lvl={lvl} controller={controller} />;
           default:
             return <></>;
         }
@@ -190,7 +186,8 @@ export default function Range(props: RangeInputBlock): JSX.Element {
           )}
         </span>
       </div>
-      {ctxLevel >= 1 && handleCtxComponent(ctxLevel as complexityLevel)}
+      {ctxLevel >= 1 &&
+        handleCtxComponent(ctxLevel as complexityLevel, props.id)}
     </fieldset>
   );
 }

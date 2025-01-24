@@ -24,3 +24,6 @@ export default class ObjectHelper {
     }
   }
 }
+export function protoName(f: any): string {
+  return typeof f === "function" ? f.prototype.constructor.name : "";
+}

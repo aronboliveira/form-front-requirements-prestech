@@ -1,16 +1,11 @@
-import s from "@/styles/modules/rangeCtx.module.scss";
+// import s from "@/styles/modules/rangeCtx.module.scss";
 import { RangeCtxBlockProps } from "@/lib/definitions/client/interfaces/components";
-import useRangedCtxBlock from "@/lib/client/hooks/useRangedCtxBlock";
-import { classes } from "@/lib/client/vars";
-export default function AudioAis({ lvl }: RangeCtxBlockProps) {
-  const { r } = useRangedCtxBlock();
+import FsAi from "./FsAi";
+import { protoName } from "@/lib/helpers/ObjectHelper";
+export default function AudioAis(props: RangeCtxBlockProps) {
   return (
-    <fieldset
-      id='fsAudioAis'
-      className={`${classes.aiApps} ${s.fsRanged}`}
-      ref={r}
-    >
-      {lvl}
-    </fieldset>
+    <FsAi id={protoName(AudioAis)} p={props}>
+      {props.lvl}
+    </FsAi>
   );
 }

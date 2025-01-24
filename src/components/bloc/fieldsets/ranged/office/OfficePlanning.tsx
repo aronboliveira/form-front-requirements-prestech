@@ -1,16 +1,11 @@
-import s from "@/styles/modules/rangeCtx.module.scss";
+// import s from "@/styles/modules/rangeCtx.module.scss";
 import { RangeCtxBlockProps } from "@/lib/definitions/client/interfaces/components";
-import useRangedCtxBlock from "@/lib/client/hooks/useRangedCtxBlock";
-import { classes } from "@/lib/client/vars";
-export default function Planning({ lvl }: RangeCtxBlockProps) {
-  const { r } = useRangedCtxBlock();
+import FsOfficePlatforms from "./FsOfficePlatforms";
+import { protoName } from "@/lib/helpers/ObjectHelper";
+export default function Planning(props: RangeCtxBlockProps) {
   return (
-    <fieldset
-      id='fsPlanning'
-      className={`${classes.officePlatforms} ${s.fsRanged}`}
-      ref={r}
-    >
-      {lvl}
-    </fieldset>
+    <FsOfficePlatforms id={protoName(Planning)} p={props}>
+      {props.lvl}
+    </FsOfficePlatforms>
   );
 }
