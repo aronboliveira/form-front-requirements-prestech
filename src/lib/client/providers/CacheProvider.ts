@@ -56,7 +56,10 @@ export default class CacheProvider implements Provider {
             ? "Cache para campos do formulário detectado. Deseja preencher?"
             : "Cache for form fields detected. Do you want to fill them?"
         ).then(y => {
-          y && this.#fillPersisters(this.idf);
+          if (y) {
+            this.#fillPersisters(this.idf);
+            this.#fillDelayedPersisters();
+          }
           setTimeout(setPersist, 300);
         });
       }
@@ -151,6 +154,47 @@ export default class CacheProvider implements Provider {
       );
     }
   }
+  #fillDelayedPersisters(): void {
+    setTimeout(() => {
+      try {
+        const idf = "toBeDelayed";
+        const data = sessionStorage.getItem(idf);
+        if (!data) throw new ReferenceError(`Could not find element data`);
+        const parsed = Object.fromEntries<string>(
+          Object.entries(JSON.parse(data)).filter<[string, string]>(
+            (entry): entry is [string, string] => typeof entry[1] === "string"
+          )
+        );
+        if (!Object.keys(parsed).length)
+          throw new Error(`Parsed object has no keys`);
+        const els = Object.entries(parsed);
+        for (let i = 0; i < els.length; i++) {
+          const id = els[i][0];
+          let v = els[i][1];
+          if (!id) continue;
+          let entry = document.getElementById(id);
+          if (!entry) entry = DOMHandler.queryByUniqueName(id);
+          if (!entry) continue;
+          if (DOMValidator.isDefaultEntry(entry)) {
+            /* eslint-disable */
+            DOMValidator.isDefaultCheckable(entry)
+              ? (entry.checked = v === "true")
+              : (entry.value = v);
+          } else if (DOMValidator.isCustomEntry(entry)) {
+            if (DOMValidator.isCustomCheckable(entry) && entry.dataset.checked)
+              entry.dataset.checked = v;
+            else entry.dataset.value = v;
+            /* eslint-ensable */
+          }
+        }
+        sessionStorage.removeItem(idf);
+      } catch (e) {
+        console.error(
+          `Error filling persistent delayed entries:\n${(e as Error).message}`
+        );
+      }
+    }, 2_000);
+  }
   #setupPersisters(els: HTMLElement[]): void {
     if (!this.#element)
       throw new DOMException(
@@ -196,28 +240,6 @@ export default class CacheProvider implements Provider {
         const el = clones[0];
         if (!el) return p;
         if (el.id !== clonableId) el.id = clonableId;
-        const c = "shouldCleanUp";
-        if (!sessionStorage.getItem(c)) {
-          sessionStorage.setItem(c, "true");
-          setTimeout(() => {
-            if (!entries?.length) return;
-            const persisters = sessionStorage.getItem(idf);
-            if (!persisters) return;
-            const parsed = ObjectHelper.JSONSafeParse(
-              persisters
-            ) as typeof CacheProvider.persisters;
-            if (!parsed) return;
-            const toBeCleaned = [];
-            for (const [id] of entries) {
-              const e = DOMHandler.queryByUniqueName(id);
-              if (e?.isConnected) continue;
-              toBeCleaned.push(id);
-            }
-            for (const n of toBeCleaned) delete parsed[n];
-            sessionStorage.setItem(idf, JSON.stringify(parsed));
-            sessionStorage.removeItem(c);
-          }, 300_000);
-        }
         return [clonableId, p[1]];
       });
       for (let j = 0; j < entries.length; j++) {
@@ -227,6 +249,41 @@ export default class CacheProvider implements Provider {
         CacheProvider.persisters[entries[j][0]] = DOMHandler.extractValue(el);
       }
       sessionStorage.setItem(idf, JSON.stringify(CacheProvider.persisters));
+      const c = "shouldCleanUp";
+      if (addEntries.length) {
+        if (!sessionStorage.getItem(c)) sessionStorage.setItem(c, "true");
+        setTimeout(() => {
+          if (sessionStorage.getItem(c) !== "true" || !entries?.length) return;
+          const persisters = sessionStorage.getItem(idf);
+          if (!persisters) return;
+          const parsed = ObjectHelper.JSONSafeParse(
+            persisters
+          ) as typeof CacheProvider.persisters;
+          if (!parsed) return;
+          const toBeCleaned = [];
+          for (const [id] of entries) {
+            const e = DOMHandler.queryByUniqueName(id);
+            if (e?.isConnected) continue;
+            toBeCleaned.push(id);
+          }
+          for (const n of toBeCleaned) delete parsed[n];
+          sessionStorage.setItem(idf, JSON.stringify(parsed));
+          sessionStorage.removeItem(c);
+        }, 5_000);
+      }
+      setTimeout(() => {
+        const toBeDelayed = [];
+        for (const [id, v] of entries) {
+          const e = DOMHandler.queryByUniqueName(id);
+          if (!e?.isConnected) continue;
+          if (e instanceof HTMLInputElement && e.type === "range")
+            toBeDelayed.push([id, v]);
+        }
+        sessionStorage.setItem(
+          "toBeDelayed",
+          JSON.stringify(Object.fromEntries(toBeDelayed))
+        );
+      }, 1_000);
     };
     setInterval(cycle, 2000);
   }

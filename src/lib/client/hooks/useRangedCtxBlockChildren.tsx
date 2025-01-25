@@ -35,6 +35,5 @@ export default function useRangedCtxBlockChildren(lvl: complexityLevel): {
       if (!rqs) return defaultQuestionsDict[levelTitle || "beginner"];
       return rqs[levelTitle || "beginner"];
     })();
-  console.log(questions);
   return { roleRef, levelTitle, questions };
 }
