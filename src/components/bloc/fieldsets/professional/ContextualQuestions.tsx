@@ -6,13 +6,13 @@ import {
   Acronyms,
   AcronymsDefaults,
   CtxLabels,
-  appGroups,
   classes,
 } from "@/lib/client/vars";
 import { IFormCtx } from "@/lib/definitions/client/interfaces/contexts";
 import { officeTopicType, roleType } from "@/lib/definitions/foundations";
 import StringHelper from "@/lib/helpers/StringHelper";
 import { memo, useContext, useMemo, useState } from "react";
+import { appGroups } from "@/lib/definitions/foundations";
 const ContextualQuestions = memo(() => {
   let role: roleType = "undefined";
   const ctx = useContext<IFormCtx>(FormCtx);
