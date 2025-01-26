@@ -24,6 +24,10 @@ export default function Role() {
     if (!storageRole) return;
     sessionStorage.setItem("role", role);
   }, [role]);
+  useEffect(() => {
+    const ps = document.getElementById("pseudos");
+    ps && ps.remove();
+  }, [role]);
   return (
     <div className={`${classes.inpDivClasses} divRole`}>
       <label className={classes.inpLabClasses} htmlFor={id}>

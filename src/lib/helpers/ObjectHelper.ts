@@ -3,6 +3,7 @@ export default class ObjectHelper {
     Object.keys(obj).forEach(
       key =>
         typeof (obj as any)[key] === "object" &&
+        obj !== null &&
         ObjectHelper.deepFreeze((obj as any)[key])
     );
     return Object.freeze(obj);

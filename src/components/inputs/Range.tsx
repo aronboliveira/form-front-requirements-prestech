@@ -9,14 +9,14 @@ import StyleHandler from "@/lib/client/handlers/StyleHandler";
 import MathHandler from "@/lib/client/handlers/MathHandler";
 import StyleValidator from "@/lib/client/validators/StyleValidator";
 import { complexityLevel, rangeCtxId } from "@/lib/definitions/foundations";
-import Bi from "../bloc/fieldsets/ranged/office/OfficeBi";
-import StoragePlatforms from "../bloc/fieldsets/ranged/office/OfficeStorage";
-import Crms from "../bloc/fieldsets/ranged/office/OfficeCrms";
-import Docs from "../bloc/fieldsets/ranged/office/OfficeDocs";
-import Erps from "../bloc/fieldsets/ranged/office/OfficeErps";
-import FormBuilders from "../bloc/fieldsets/ranged/office/OfficeForms";
-import Planning from "../bloc/fieldsets/ranged/office/OfficePlanning";
-import Spreadsheets from "../bloc/fieldsets/ranged/office/OfficeSpreadsheets";
+import Bi from "../bloc/fieldsets/ranged/office/Bi";
+import StoragePlatforms from "../bloc/fieldsets/ranged/office/StoragePlatforms";
+import Crms from "../bloc/fieldsets/ranged/office/Crms";
+import Docs from "../bloc/fieldsets/ranged/office/Docs";
+import Erps from "../bloc/fieldsets/ranged/office/Erps";
+import FormBuilders from "../bloc/fieldsets/ranged/office/FormBuilders";
+import Planning from "../bloc/fieldsets/ranged/office/Planning";
+import Spreadsheets from "../bloc/fieldsets/ranged/office/Spreadsheets";
 import { JSX } from "react/jsx-runtime";
 export default function Range(props: RangeInputBlock): JSX.Element {
   const r = useRef<nlInp>(null),

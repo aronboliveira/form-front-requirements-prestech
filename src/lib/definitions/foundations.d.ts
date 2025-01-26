@@ -66,6 +66,21 @@ export type rangeCtxId =
   | "formBuilders"
   | "planning"
   | "spreadSheets";
+export type aiGroups = "audio" | "image" | "llms" | "video";
+export type addQuestionsKey = rangeCtxId | aiGroups;
+export type RangeCtxComponentNames =
+  | "AudioAis"
+  | "ImageAis"
+  | "Llms"
+  | "VideoAis"
+  | "Bi"
+  | "Crms"
+  | "Docs"
+  | "Erps"
+  | "FormBuilders"
+  | "Planning"
+  | "Spreadsheets"
+  | "StoragePlatforms";
 export type OfficeBlocks = {
   apps: {
     doc: string;
