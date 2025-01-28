@@ -212,16 +212,14 @@ export default class CacheProvider implements Provider {
     }
     sessionStorage.setItem(idf, JSON.stringify(CacheProvider.persisters));
     const cycle = (): void => {
-      let entries = [...Object.entries(CacheProvider.persisters)],
+      const entries: Set<[string, string]> = new Set([
+          ...Object.entries(CacheProvider.persisters),
+        ]),
         addEntries = [...document.querySelectorAll("*")]
           .filter(
             e =>
               DOMValidator.isEntry(e) &&
-              !entries.some(et => {
-                const idf = DOMHandler.getIdentifier(e);
-                if (!idf) return true;
-                return idf === et[0];
-              })
+              !new Set(...entries.keys()).has(DOMHandler.getIdentifier(e) ?? "")
           )
           .map(e => [
             DOMHandler.getIdentifier(e),
@@ -229,8 +227,7 @@ export default class CacheProvider implements Provider {
               ? e.value
               : (e as HTMLElement).dataset?.value || "",
           ]) as [string, string][];
-      entries.concat(addEntries);
-      entries = entries.map(p => {
+      const arrEntries = [...entries, ...addEntries].map(p => {
         const clonableId = `${p[0].slice(
             0,
             p[0].indexOf("__") || p[0].length
@@ -238,22 +235,23 @@ export default class CacheProvider implements Provider {
           clones = document.querySelectorAll(`#${clonableId}`);
         if (clones.length !== 1) return p;
         const el = clones[0];
-        if (!el) return p;
-        if (el.id !== clonableId) el.id = clonableId;
+        if (!el?.isConnected) return p;
         return [clonableId, p[1]];
       });
-      for (let j = 0; j < entries.length; j++) {
-        let el = document.getElementById(entries[j][0]);
-        if (!el) el = DOMHandler.queryByUniqueName(entries[j][0]);
+      for (let j = 0; j < arrEntries.length; j++) {
+        let el = document.getElementById(arrEntries[j][0]);
+        if (!el) el = DOMHandler.queryByUniqueName(arrEntries[j][0]);
         if (!el) continue;
-        CacheProvider.persisters[entries[j][0]] = DOMHandler.extractValue(el);
+        CacheProvider.persisters[arrEntries[j][0]] =
+          DOMHandler.extractValue(el);
       }
       sessionStorage.setItem(idf, JSON.stringify(CacheProvider.persisters));
       const c = "shouldCleanUp";
       if (addEntries.length) {
         if (!sessionStorage.getItem(c)) sessionStorage.setItem(c, "true");
         setTimeout(() => {
-          if (sessionStorage.getItem(c) !== "true" || !entries?.length) return;
+          if (sessionStorage.getItem(c) !== "true" || !arrEntries?.length)
+            return;
           const persisters = sessionStorage.getItem(idf);
           if (!persisters) return;
           const parsed = ObjectHelper.JSONSafeParse(
@@ -263,10 +261,12 @@ export default class CacheProvider implements Provider {
           const toBeCleaned = [];
           for (const [id] of entries) {
             const e = DOMHandler.queryByUniqueName(id);
-            if (e?.isConnected) continue;
+            if (!e) continue;
             toBeCleaned.push(id);
           }
-          for (const n of toBeCleaned) delete parsed[n];
+          for (const n of toBeCleaned) {
+            if (!document.getElementById(n)) delete parsed[n];
+          }
           sessionStorage.setItem(idf, JSON.stringify(parsed));
           sessionStorage.removeItem(c);
         }, 5_000);
@@ -276,8 +276,18 @@ export default class CacheProvider implements Provider {
         for (const [id, v] of entries) {
           const e = DOMHandler.queryByUniqueName(id);
           if (!e?.isConnected) continue;
-          if (e instanceof HTMLInputElement && e.type === "range")
+          if (
+            (e instanceof HTMLInputElement && e.type === "range") ||
+            (DOMValidator.isEntry(e) && e.closest(".fsRanged"))
+          ) {
             toBeDelayed.push([id, v]);
+            if (
+              e instanceof HTMLInputElement &&
+              e.type === "range" &&
+              !e.dataset.delayresolved
+            )
+              e.dataset.delayed = "true";
+          }
         }
         sessionStorage.setItem(
           "toBeDelayed",
@@ -285,7 +295,7 @@ export default class CacheProvider implements Provider {
         );
       }, 1_000);
     };
-    setInterval(cycle, 2000);
+    setInterval(cycle, 1000);
   }
   public verifyLinkBinding(id: string): boolean {
     const linkedTo = this.refCache?.links.get(id);

@@ -9,6 +9,8 @@ import CompabilityValidator from "../validators/CompabilityValidator";
 import DOMHandler from "./DOMHandler";
 import DOMValidator from "../validators/DOMValidator";
 import { borderColors, fontColors } from "../vars";
+import { PseudoNum } from "@/lib/definitions/foundations";
+import MathHandler from "./MathHandler";
 export const pseudos: Map<string, Map<string, Map<string, string>>> = new Map();
 export default class StyleHandler {
   static placeholderCounter = 0.7;
@@ -244,19 +246,74 @@ export default class StyleHandler {
       el.placeholder = prev;
     }, 3500);
   }
-  static tickFading(el: nlHtEl, timeout: number = 100): void {
+  static ticking: { [k: string]: boolean } = {};
+  static tickFading(
+    el: nlHtEl,
+    base: PseudoNum = "1",
+    limit: number = 1,
+    js?: boolean
+  ): void {
     if (!el) return;
-    const prev = getComputedStyle(el).opacity,
-      id = DOMHandler.getIdentifier(el);
-    el.style.opacity = "1";
-    setTimeout(() => {
-      if (prev === "0") return;
-      if (!el) {
-        if (!id) return;
-        el = DOMHandler.queryByUniqueName(id);
-      }
-      if (!el) return;
-      el.style.opacity = prev || "1";
-    }, timeout);
+    const transition = getComputedStyle(el).transition;
+    console.log(transition);
+    if (/opacity/gi.test(transition)) {
+      if (transition.includes(","))
+        el.style.transition = `${transition
+          .split(",")
+          .filter(r => !/opacity/gi.test(r))
+          .map(r => r.trim())
+          .join(", ")}`;
+      else el.style.transition = "";
+    }
+    let prev = getComputedStyle(el).opacity;
+    const id = DOMHandler.getIdentifier(el);
+    if (!id) return;
+    void el.offsetHeight;
+    StyleHandler.ticking[id] = true;
+    if (!js) {
+      el.style.opacity = "0";
+      setTimeout(() => {
+        let element = el;
+        if (!element?.isConnected) element = DOMHandler.queryByUniqueName(id);
+        if (!element?.isConnected) return;
+        element.style.opacity = "1";
+      }, 500);
+    } else {
+      let acc = 0;
+      const interv = setInterval(i => {
+        if (MathHandler.parseNotNaN(prev) >= limit) {
+          StyleHandler.ticking[id] = false;
+          clearInterval(i);
+          return;
+        }
+        if (!StyleHandler.ticking[id]) return;
+        if (prev === "0" && base === "1") return;
+        if (!el?.isConnected) {
+          if (!id) return;
+          el = DOMHandler.queryByUniqueName(id);
+        }
+        if (!el?.isConnected) return;
+        let newValue = MathHandler.parseNotNaN(
+          getComputedStyle(el).opacity,
+          MathHandler.parseNotNaN(prev)
+        );
+        if (!/^(?=.*\d)\d+(\.\d+)?$/.test(newValue.toString())) return;
+        const ft = 0.025;
+        if (!acc && newValue % ft !== 0) newValue = newValue - (newValue % ft);
+        newValue += ft;
+        if (newValue > limit) newValue = limit;
+        el.style.opacity = newValue.toString();
+        acc += 1;
+      }, 100);
+      setTimeout(() => {
+        clearInterval(interv);
+        const el = DOMHandler.queryByUniqueName(id);
+        if (!el) return;
+        if (StyleHandler.ticking[id]) {
+          el.style.opacity = limit.toString();
+          StyleHandler.ticking[id] = false;
+        }
+      }, 2000);
+    }
   }
 }

@@ -1,17 +1,9 @@
+"use client";
 import s from "@/styles/modules/rangeCtx.module.scss";
-import { RangeCtxBlockProps } from "@/lib/definitions/client/interfaces/components";
+import { FsRangedBlock } from "@/lib/definitions/client/interfaces/components";
 import useRangedCtxBlock from "@/lib/client/hooks/useRangedCtxBlock";
-import { ReactNode } from "react";
 import { classes } from "@/lib/client/vars";
-export default function FsOfficePlatforms({
-  p,
-  id,
-  children,
-}: {
-  p: RangeCtxBlockProps;
-  id: string;
-  children: ReactNode;
-}) {
+export default function FsOfficePlatforms({ p, id, children }: FsRangedBlock) {
   const { r } = useRangedCtxBlock(),
     { controller } = p;
   return (

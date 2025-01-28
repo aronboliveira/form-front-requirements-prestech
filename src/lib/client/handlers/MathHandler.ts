@@ -58,8 +58,8 @@ export default class MathHandler {
   static isValidHex(v: string): boolean {
     return /^#[0-9A-Fa-f]+$/g.test(v);
   }
-  static hexToDecimal(v: string): number {
-    if (!this.isValidHex(v)) return NaN;
+  static hexToDecimal(v: string, scape: number = NaN): number {
+    if (!this.isValidHex(v)) return scape;
     if (v.startsWith("#")) v = v.slice(1);
     return parseInt(v, 16);
   }

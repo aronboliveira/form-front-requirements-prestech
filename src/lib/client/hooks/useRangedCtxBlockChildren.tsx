@@ -6,14 +6,16 @@ import {
   complexityLevel,
   roleType,
 } from "@/lib/definitions/foundations";
-import { RefObject, useContext, useRef } from "react";
+import { RefObject, useContext, useRef, useEffect, useMemo } from "react";
 import { addQuestionsMap } from "../addQuestions";
-import { RoleComplexities } from "@/lib/definitions/client/helpers";
+import { RoleComplexities, nlHtEl } from "@/lib/definitions/client/helpers";
 import { appGroupsDict } from "../vars";
+import StyleHandler from "../handlers/StyleHandler";
 export default function useRangedCtxBlockChildren(
   lvl: complexityLevel,
   name: RangeCtxComponentNames
 ): {
+  r: RefObject<nlHtEl>;
   roleRef: RefObject<roleType>;
   levelTitle: complexityLabel;
   questions: RoleComplexities[keyof RoleComplexities] | null;
@@ -35,7 +37,8 @@ export default function useRangedCtxBlockChildren(
     roleRef = useRef<roleType>(
       ctx.role || sessionStorage.getItem("role") || "undefined"
     ),
-    questions = ((): { [k: string]: string } | null => {
+    r = useRef<nlHtEl>(null),
+    questions = useMemo(() => {
       if (roleRef.current === "undefined") return null;
       const rqs = addQuestionsMap.get(roleRef.current);
       if (!rqs) return null;
@@ -44,9 +47,18 @@ export default function useRangedCtxBlockChildren(
       const rgqs = rqs.get(k);
       if (!rgqs) return null;
       return rgqs[levelTitle] || null;
-    })(),
+    }, [roleRef.current, addQuestionsMap, appGroupsDict, name, levelTitle]),
     mappedQuestions = questions
       ? (Object.entries(questions) as [string, string][])
       : [];
-  return { roleRef, levelTitle, questions, mappedQuestions };
+  useEffect(() => {
+    StyleHandler.tickFading(r.current, "0.5");
+  }, [levelTitle]);
+  return {
+    r,
+    roleRef,
+    levelTitle: levelTitle,
+    questions,
+    mappedQuestions,
+  };
 }

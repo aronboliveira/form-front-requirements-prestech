@@ -241,6 +241,33 @@ export type ClassesKey =
   | "officePlatforms"
   | "officeApps"
   | "aiApps";
+export type EntryInputType =
+  | "checkbox"
+  | "color"
+  | "date"
+  | "datetime-local"
+  | "email"
+  | "file"
+  | "month"
+  | "number"
+  | "password"
+  | "radio"
+  | "range"
+  | "search"
+  | "tel"
+  | "text"
+  | "time"
+  | "url"
+  | "week";
+export type InputType =
+  | "button"
+  | "hidden"
+  | "image"
+  | "reset"
+  | "submit"
+  | EntryInputType;
+export type SelectTypes = "one" | "multiple";
+export type EntryTypes = EntryInputType | SelectTypes | "textarea";
 export type DocsBeginnerKeys =
   | keyof typeof eaDocKeys.beginner
   | keyof typeof fnDocKeys.beginner
@@ -685,128 +712,22 @@ export type LLMQuestionsKeys =
   | LLMBeginnerKeys
   | LLMIntermediateKeys
   | LLMExpertKeys;
-export type BeginnerAcronyms =
-  | "org"
-  | "mtg"
-  | "frc"
-  | "frm"
-  | "dat"
-  | "fam"
-  | "frq"
-  | "ent"
-  | "tax"
-  | "est"
-  | "crm"
-  | "con"
-  | "seg"
-  | "rel"
-  | "sol"
-  | "met"
-  | "des"
-  | "os_"
-  | "net"
-  | "rep"
-  | "doc"
-  | "srv"
-  | "mon"
-  | "exc"
-  | "wrk"
-  | "sch"
-  | "stp"
-  | "mst"
-  | "git"
-  | "dbg"
-  | "cim"
-  | "df1"
-  | "df2"
-  | "df3"
-  | "und";
-export type IntermediateAcronyms =
-  | "wrk"
-  | "apt"
-  | "vsn"
-  | "mld"
-  | "sec"
-  | "cnb"
-  | "avc"
-  | "rpd"
-  | "prd"
-  | "saf"
-  | "mth"
-  | "mul"
-  | "adv"
-  | "ret"
-  | "col"
-  | "anl"
-  | "abt"
-  | "eml"
-  | "rtn"
-  | "cfg"
-  | "tkt"
-  | "prb"
-  | "rem"
-  | "sct"
-  | "vir"
-  | "rtp"
-  | "ext"
-  | "flw"
-  | "vms"
-  | "alr"
-  | "oop"
-  | "fra"
-  | "dbi"
-  | "cic"
-  | "tst"
-  | "kub"
-  | "iaa"
-  | "hlg"
-  | "scl"
-  | "df4"
-  | "df5"
-  | "und";
-export type ExpertAcronyms =
-  | "aut"
-  | "gov"
-  | "dsh"
-  | "lan"
-  | "mfa"
-  | "cmp"
-  | "aud"
-  | "ris"
-  | "opt"
-  | "seg"
-  | "exc"
-  | "cst"
-  | "net"
-  | "omc"
-  | "roa"
-  | "ai_"
-  | "dsp"
-  | "big"
-  | "spt"
-  | "sfc"
-  | "ext"
-  | "bak"
-  | "sec"
-  | "scl"
-  | "hgh"
-  | "dck"
-  | "mon"
-  | "prf"
-  | "inv"
-  | "pro"
-  | "dev"
-  | "drc"
-  | "arc"
-  | "cld"
-  | "adv"
-  | "hdm"
-  | "can"
-  | "pol"
-  | "obs"
-  | "df6"
-  | "df7"
-  | "und";
+export type OfficeAppsKeys =
+  | DocsQuestionsKeys
+  | SpreasheetsQuestionsKeys
+  | FormBuilderQuestionsKeys
+  | CloudStorageQuestionsKeys;
+export type OfficePlatformsKeys =
+  | BiQuestionsKeys
+  | CrmQuestionsKeys
+  | ErpQuestionsKeys
+  | PlanningQuestionsKeys;
+export type AiKeys =
+  | AudioAiQuestionsKeys
+  | ImageAiQuestionsKeys
+  | VideoAiQuestionsKeys
+  | LLMQuestionsKeys;
+export type QuestionsKeys = OfficeAppsKeys | OfficePlatformsKeys | AiKeys;
 export type RoleComplexities = {
   beginner: Partial<Record<BeginnerAcronyms, any>>;
   intermediate: Partial<Record<IntermediateAcronyms, any>>;

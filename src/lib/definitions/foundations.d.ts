@@ -2,6 +2,24 @@ import { AxiosResponse } from "axios";
 import { TechApps } from "../client/vars";
 import { nlEl, nlStr } from "./client/helpers";
 import { ITelCtx } from "./client/interfaces/contexts";
+export type hexDigit =
+  | "0"
+  | "1"
+  | "2"
+  | "3"
+  | "4"
+  | "5"
+  | "6"
+  | "7"
+  | "8"
+  | "9"
+  | "A"
+  | "B"
+  | "C"
+  | "D"
+  | "E"
+  | "F";
+export type color = `#${string}`;
 export interface Identifiable {
   id?: string;
 }

@@ -1,8 +1,9 @@
-import { TelType, nlFm } from "../helpers";
+import { TelType, nlFm, nlHtEl } from "../helpers";
 import {
   ContextualizedTel,
   Identifiable,
   PseudoNum,
+  complexityLabel,
   complexityLevel,
   roleType,
   techAppKey,
@@ -10,6 +11,9 @@ import {
 import { ITelCtx } from "./contexts";
 import { SetStateAction } from "react";
 import { Acronyms } from "@/lib/client/vars";
+export interface HasChildren {
+  children: React.ReactNode | string;
+}
 export interface FormRelated {
   form?: nlFm;
 }
@@ -72,6 +76,12 @@ export interface WatcherProps {
   d?: React.Dispatch<SetStateAction<any>>;
   v?: any;
 }
+export interface FsRangedBlock extends HasChildren {
+  ref: RefObject<nlHtEl>;
+  p: RangeCtxBlockProps;
+  id: string;
+  level: complexityLabel;
+}
 export interface RangeInputBlock extends Omit<OptInput, "id"> {
   id: rangeCtxIds;
   required?: boolean;
@@ -80,4 +90,23 @@ export interface RangeInputBlock extends Omit<OptInput, "id"> {
 export interface RangeCtxBlockProps {
   lvl: complexityLevel;
   controller: string;
+}
+export interface Addable {
+  additional?: React.ReactNode;
+}
+export interface AddInputSubFieldset extends Addable {
+  prefix: string;
+  sufix: string;
+  questions: Array<[string, string]>;
+}
+export interface AddInputBlock
+  extends Partial<HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement>,
+    Addable,
+    Required<Identifiable> {
+  name: string;
+  descendants?: React.ReactNode;
+}
+export interface LimitedAddInputBlock extends AddInputBlock {
+  max?: number;
+  min?: number;
 }

@@ -2,7 +2,11 @@
  * @jest-environment jsdom
  */
 import IOHandler from "../../../../lib/client/handlers/IOHandler";
+import MathHandler from "../../../../lib/client/handlers/MathHandler";
 describe("IOHandler", () => {
+  jest.mock("@/lib/client/handlers/MathHandler", () => ({
+    hexToDecimal: jest.fn(v => parseInt(v.replace("#", ""), 16)),
+  }));
   describe("adjustTelCountryCode", () => {
     it("returns empty string if provided empty string", () =>
       expect(IOHandler.adjustTelCountryCode("")).toBe(""));
@@ -121,6 +125,81 @@ describe("IOHandler", () => {
       expect(parseInt(input.value, 10)).toBe(20);
       expect(input.dataset.sliding).toBe("false");
       document.body.removeChild(input);
+    });
+  });
+  describe("IOHandler.applyFieldConstraints", () => {
+    it("should return the same value if no element is provided", () => {
+      const result = IOHandler.applyFieldConstraints("test");
+      expect(result).toBe("test");
+    });
+    it("should return the same value if element is not a default entry", () => {
+      const mockElement = document.createElement("div");
+      const result = IOHandler.applyFieldConstraints("test", mockElement);
+      expect(result).toBe("test");
+    });
+    it("should trim the value if it exceeds maxLength", () => {
+      const mockElement = document.createElement("input");
+      mockElement.maxLength = 5;
+      const result = IOHandler.applyFieldConstraints(
+        "longerValue",
+        mockElement
+      );
+      expect(result).toBe("longe");
+    });
+    it("should return the value as is if it does not exceed maxLength", () => {
+      const mockElement = document.createElement("input");
+      mockElement.maxLength = 10;
+      const result = IOHandler.applyFieldConstraints("test", mockElement);
+      expect(result).toBe("test");
+    });
+  });
+  describe("IOHandler.applyTrueNumRules", () => {
+    it("should return 0 for non-finite values", () => {
+      const result = IOHandler.applyTrueNumRules({ v: Infinity });
+      expect(result).toBe(0);
+    });
+    it("should clamp the value to the minimum", () => {
+      const result = IOHandler.applyTrueNumRules({ v: -10, min: 0 });
+      expect(result).toBe(0);
+    });
+    it("should clamp the value to the maximum", () => {
+      const result = IOHandler.applyTrueNumRules({ v: 20, max: 10 });
+      expect(result).toBe(10);
+    });
+    it("should round the value for non-float types", () => {
+      const result = IOHandler.applyTrueNumRules({ v: 1.5, type: "whole" });
+      expect(result).toBe(2);
+    });
+    it("should make the value positive if positive is true", () => {
+      const result = IOHandler.applyTrueNumRules({ v: -5, positive: true });
+      expect(result).toBe(5);
+    });
+  });
+  describe("IOHandler.applyColorNumRules", () => {
+    it("should clamp the color to the minimum value", () => {
+      (MathHandler.hexToDecimal as any).mockReturnValueOnce(0x000000);
+      const result = IOHandler.applyColorNumRules({
+        v: "#000000",
+        min: "#333333",
+      });
+      expect(result).toBe("#333333");
+    });
+    it("should clamp the color to the maximum value", () => {
+      (MathHandler.hexToDecimal as any).mockReturnValueOnce(0xffffff);
+      const result = IOHandler.applyColorNumRules({
+        v: "#FFFFFF",
+        max: "#AAAAAA",
+      });
+      expect(result).toBe("#aaaaaa");
+    });
+    it("should return the original color if within range", () => {
+      (MathHandler.hexToDecimal as any).mockReturnValueOnce(0x555555);
+      const result = IOHandler.applyColorNumRules({
+        v: "#555555",
+        min: "#333333",
+        max: "#777777",
+      });
+      expect(result).toBe("#555555");
     });
   });
 });

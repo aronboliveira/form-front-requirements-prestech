@@ -7,11 +7,11 @@ import {
 import ObjectHelper from "../helpers/ObjectHelper";
 import {
   comercialAddQuestions,
-  defaultAddQeustions,
+  defaultAddQuestions,
   devAddQuestions,
   devOpsAddQuestions,
   executivoAdministrativoAddQuestions,
-  financeiroQuestionsAddQuestions,
+  financeiroAddQuestions,
   marketingAddQuestions,
   operatorioAddQuestions,
   suporteTecnicoN1AddQuestions,
@@ -31,6 +31,6 @@ export const addQuestionsMap: Map<
     operatorioAddQuestions,
     devAddQuestions,
     devOpsAddQuestions,
-    defaultAddQeustions,
+    defaultAddQuestions,
   ])
 );

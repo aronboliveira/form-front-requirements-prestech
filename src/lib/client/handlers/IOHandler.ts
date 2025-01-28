@@ -1,5 +1,10 @@
-import { entryElement, nlInp, nlTxtEl } from "@/lib/definitions/client/helpers";
-import { DDDPattern, TelType } from "@/lib/definitions/foundations";
+import {
+  entryElement,
+  inputLikeElement,
+  nlInp,
+  nlTxtEl,
+} from "@/lib/definitions/client/helpers";
+import { DDDPattern, TelType, color } from "@/lib/definitions/foundations";
 import MathHandler from "./MathHandler";
 import {
   AcronymsDefaults,
@@ -7,7 +12,17 @@ import {
   suggestionsDict,
   suggestionsGroupsMap,
 } from "../vars";
+import DOMValidator from "../validators/DOMValidator";
 export default class IOHandler {
+  static applyFieldConstraints(
+    v: string,
+    el?: inputLikeElement | null
+  ): string {
+    if (!el || (el && !DOMValidator.isDefaultEntry(el))) return v;
+    if (el.maxLength !== -1 && v.length > el.maxLength)
+      v = v.slice(0, el.maxLength);
+    return v;
+  }
   static adjustTelCountryCode(code: string): string {
     if (code === "") return code;
     if (code.length > 4) code = code.slice(0, 4);
@@ -85,6 +100,44 @@ export default class IOHandler {
     )
       v = max.toString();
     return v;
+  }
+  static applyTrueNumRules({
+    v,
+    min = Number.MIN_SAFE_INTEGER,
+    max = Number.MAX_SAFE_INTEGER,
+    type = "float",
+    positive = false,
+  }: {
+    v: number;
+    min?: number;
+    max?: number;
+    type?: "natural" | "float" | "whole";
+    positive?: boolean;
+  }): number {
+    if (!Number.isFinite(v)) return type === "whole" ? -1 : 0;
+    if (v < min) v = min;
+    if (v > max) v = max;
+    if (type !== "float") v = Math.round(v);
+    if (positive) v = Math.abs(v);
+    return v;
+  }
+  static applyColorNumRules({
+    v,
+    min = "#000000",
+    max = "#FFFFFF",
+  }: {
+    v: color;
+    min?: string;
+    max?: string;
+  }): color {
+    let nv = MathHandler.hexToDecimal(v),
+      nMin = MathHandler.hexToDecimal(min),
+      nMax = MathHandler.hexToDecimal(max);
+    if (nMin < 0) nMin = 0;
+    if (nMax > 16_777_215) nMax = 16_777_215;
+    if (nv < nMin) nv = nMin;
+    if (nv > nMax) nv = nMax;
+    return `#${nv.toString(16).padStart(6, "0")}`;
   }
   static applyEmailExtension(emailValue: string): string {
     if (emailValue !== "") {
@@ -181,7 +234,11 @@ export default class IOHandler {
     if (!limit) return;
     el.value.length >= limit && relEl.focus();
   }
-  static handleRangeSlide(el: nlInp, modulator: number = 20): void {
+  static handleRangeSlide(
+    el: nlInp,
+    modulator: number = 20,
+    setValue: boolean = true
+  ): void {
     if (!(el instanceof HTMLInputElement && el.type === "range")) return;
     if (el.dataset.sliding === "true") return;
     const id = el.id,
@@ -211,7 +268,7 @@ export default class IOHandler {
         for (let i = 0; i <= 100; i += modulator) steps.push(i);
         for (let s = 0; s < steps.length; s++)
           diffs.push(Math.abs(steps[s] - curr));
-        el.value = Math.min(...diffs).toString();
+        if (setValue) el.value = Math.min(...diffs).toString();
         el.dataset.sliding = "false";
         clearInterval(interv);
       }
