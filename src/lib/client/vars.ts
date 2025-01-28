@@ -1269,20 +1269,20 @@ export const eaSsKeys = ObjectHelper.deepFreeze({
     fil: "De que modo você filtra ou classifica dados de forma simples?",
     frz: "Como você congela linhas ou colunas em planilhas?",
     fmt: "Você já utilizou formatação condicional em planilhas simples?",
-    cpy: "Qual sua experiência com copiar/colar fórmulas e preservar referências absolutas?",
+    cpy: "Qual é o seu nível de experiência com copiar/colar fórmulas e preservar referências absolutas?",
     ins: "De que maneira você insere gráficos básicos para ilustrar dados?",
     shs: "Você trabalha frequentemente com abas múltiplas em planilhas?",
   },
   intermediate: {
     piv: "Como você utiliza tabelas dinâmicas para analisar grandes quantidades de dados?",
-    adv: "Você integra dados de outras fontes (CSV, BD) na planilha? (Sim / Não)",
+    adv: "Com que frequência você integra dados de outras fontes (CSV, BD) na planilha?",
     prc: "Em que frequência você cria fórmulas intermediárias (SE, PROCV, CONCAT) para automação?",
     cht: "Que tipos de gráficos você costuma gerar para visualização?",
     col: "Como você colabora com outros usuários simultaneamente (co-edit, proteções)?",
-    tbl: "Você já criou tabelas formatadas para facilitar análises e filtros?",
+    tbl: "Com que frequência voceê cria tabelas formatadas para facilitar análises e filtros?",
     spl: "Como você divide dados em colunas separadas (Texto para Colunas)?",
     lnk: "Qual sua experiência em vincular células entre diferentes planilhas?",
-    imp: "Você já importou dados de fontes online para análises em tempo real?",
+    imp: "Com que frequência você importa dados de fontes online para análises em tempo real?",
     aud: "De que forma você audita ou depura fórmulas para corrigir erros?",
   },
   expert: {
@@ -1290,12 +1290,12 @@ export const eaSsKeys = ObjectHelper.deepFreeze({
     big: "Com que frequência você se integra a BI ou dashboards externos (Power BI, Data Studio)?",
     arr: "De que forma você trabalha com fórmulas matriciais ou funções avançadas (ÍNDICE, CORRESP)?",
     dbi: "Descreva como você conecta planilhas a bancos de dados SQL ou APIs, se aplicável.",
-    prf: "Você faz tuning de performance em planilhas com dezenas de abas e fórmulas complexas?",
+    prf: "Com que frequência você faz tuning de performance em planilhas com dezenas de abas e fórmulas complexas?",
     sch: "Você já utilizou scripts para agendar atualizações automáticas de dados?",
     mlc: "Como você aplica aprendizado de máquina para prever ou categorizar dados?",
     api: "De que forma você utiliza APIs para buscar ou enviar dados automaticamente?",
     adv: "Que práticas avançadas você utiliza para validar e limpar grandes volumes de dados?",
-    rpt: "Como você cria relatórios interativos integrando gráficos e controles (ex.: slicers)?",
+    rpt: "Detalhe como você cria relatórios interativos integrando gráficos e controles (ex.: slicers)?",
   },
 });
 export const eaFmKeys = ObjectHelper.deepFreeze({
@@ -4211,3 +4211,281 @@ export const defaultAddQuestions = ObjectHelper.deepFreeze([
     ["llms", defLlmsKeys],
   ]),
 ]);
+export const ssEntryTypes = {
+  executivoAdministrativo: {
+    beginner: {
+      spreadSheets: {
+        sum: "range",
+        frq: "select-one",
+        col: "select-multiple",
+        spr: "radio",
+        fil: "select-multiple",
+        frz: "select-multiple",
+        fmt: "checkbox",
+        cpy: "range",
+        ins: "select-multiple",
+        shs: "checkbox",
+      },
+    },
+    intermediate: {
+      spreadSheets: {
+        piv: "select-multiple",
+        adv: "select-one",
+        prc: "select-one",
+        cht: "select-multiple",
+        col: "select-multiple",
+        tbl: "select-one",
+        spl: "select-multiple",
+        lnk: "range",
+        imp: "checkbox",
+        aud: "textarea",
+      },
+    },
+    expert: {
+      spreadSheets: {
+        mcr: "textarea",
+        big: "select-one",
+        arr: "select-multiple",
+        dbi: "textarea",
+        prf: "select-one",
+        sch: "checkbox",
+        mlc: "textarea",
+        api: "select-multiple",
+        adv: "select-multiple",
+        rpt: "textarea",
+      },
+    },
+  },
+  financeiro: {
+    beginner: {
+      spreadSheets: {
+        sum: "radio",
+        frq: "select-one",
+        col: "textarea",
+        cat: "textarea",
+        fil: "textarea",
+      },
+    },
+    intermediate: {
+      spreadSheets: {
+        tab: "checkbox",
+        adv: "textarea",
+        dev: "select-one",
+        cht: "textarea",
+        val: "textarea",
+      },
+    },
+    expert: {
+      spreadSheets: {
+        mcr: "textarea",
+        big: "select-one",
+        arr: "checkbox",
+        dbi: "textarea",
+        aud: "textarea",
+      },
+    },
+  },
+  comercial: {
+    beginner: {
+      spreadSheets: {
+        lis: "textarea",
+        pro: "textarea",
+        seg: "textarea",
+        col: "textarea",
+        sum: "select-one",
+      },
+    },
+    intermediate: {
+      spreadSheets: {
+        piv: "textarea",
+        adv: "checkbox",
+        for: "select-one",
+        cht: "textarea",
+        col: "textarea",
+      },
+    },
+    expert: {
+      spreadSheets: {
+        mac: "textarea",
+        big: "checkbox",
+        seg: "textarea",
+        dbi: "textarea",
+        cmp: "textarea",
+      },
+    },
+  },
+  marketing: {
+    beginner: {
+      spreadSheets: {
+        lis: "textarea",
+        gcl: "textarea",
+        cmp: "textarea",
+        fil: "textarea",
+        sum: "select-one",
+      },
+    },
+    intermediate: {
+      spreadSheets: {
+        piv: "textarea",
+        adv: "checkbox",
+        frq: "select-one",
+        cht: "textarea",
+        col: "textarea",
+      },
+    },
+    expert: {
+      spreadSheets: {
+        mcr: "textarea",
+        big: "select-one",
+        arr: "textarea",
+        dbi: "textarea",
+        prf: "textarea",
+      },
+    },
+  },
+  suporteTecnicoN1: {
+    beginner: {
+      spreadSheets: {
+        sum: "textarea",
+        frm: "textarea",
+        fil: "textarea",
+        cbt: "radio",
+        con: "checkbox",
+      },
+    },
+    intermediate: {
+      spreadSheets: {
+        piv: "textarea",
+        fml: "textarea",
+        cht: "textarea",
+        val: "checkbox",
+        net: "textarea",
+      },
+    },
+    expert: {
+      spreadSheets: {
+        mcr: "textarea",
+        sec: "checkbox",
+        prf: "checkbox",
+        idx: "textarea",
+        aud: "textarea",
+      },
+    },
+  },
+  suporteTecnicoN2: {
+    beginner: {
+      spreadSheets: {
+        net: "textarea",
+        fmz: "textarea",
+        cft: "textarea",
+        csd: "textarea",
+        bak: "checkbox",
+      },
+    },
+    intermediate: {
+      spreadSheets: {
+        piv: "textarea",
+        lnk: "textarea",
+        val: "checkbox",
+        scp: "textarea",
+        rep: "textarea",
+      },
+    },
+    expert: {
+      spreadSheets: {
+        arr: "textarea",
+        sec: "checkbox",
+        mcr: "textarea",
+        big: "select-one",
+        par: "textarea",
+      },
+    },
+  },
+  operatorio: {
+    beginner: {
+      spreadSheets: {
+        net: "textarea",
+        per: "checkbox",
+        cpy: "radio",
+        bkp: "checkbox",
+        col: "radio",
+      },
+    },
+    intermediate: {
+      spreadSheets: {
+        sec: "checkbox",
+        mac: "textarea",
+        scp: "textarea",
+        dmp: "textarea",
+        conf: "textarea",
+      },
+    },
+    expert: {
+      spreadSheets: {
+        adv: "textarea",
+        big: "textarea",
+        log: "textarea",
+        res: "textarea",
+        ref: "textarea",
+      },
+    },
+  },
+  desenvolvimento: {
+    beginner: {
+      spreadSheets: {
+        bug: "textarea",
+        cal: "textarea",
+        chg: "textarea",
+        env: "select-one",
+        col: "checkbox",
+      },
+    },
+    intermediate: {
+      spreadSheets: {
+        scr: "textarea",
+        mds: "textarea",
+        con: "textarea",
+        link: "textarea",
+        sec: "checkbox",
+      },
+    },
+    expert: {
+      spreadSheets: {
+        big: "select-one",
+        piv: "textarea",
+        spt: "textarea",
+        ref: "textarea",
+        adm: "textarea",
+      },
+    },
+  },
+  devOps: {
+    beginner: {
+      spreadSheets: {
+        pip: "textarea",
+        env: "select-one",
+        job: "textarea",
+        rep: "checkbox",
+        acc: "radio",
+      },
+    },
+    intermediate: {
+      spreadSheets: {
+        int: "textarea",
+        scp: "textarea",
+        das: "textarea",
+        col: "textarea",
+        seg: "checkbox",
+      },
+    },
+    expert: {
+      spreadSheets: {
+        big: "select-one",
+        aut: "textarea",
+        adv: "textarea",
+        ver: "textarea",
+        aud: "textarea",
+      },
+    },
+  },
+};
