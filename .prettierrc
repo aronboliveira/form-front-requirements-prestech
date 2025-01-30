@@ -1,1 +1,1 @@
-{ "arrowParens": "avoid", "jsxSingleQuote": true }
+{ "arrowParens": "avoid", "jsxSingleQuote": true, "printWidth": 60 }

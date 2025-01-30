@@ -24,24 +24,25 @@ const inps = `form-control`,
   texts = `${inps} form-text-area`,
   btn = `btn`,
   officeRangeds = `fsRanged fsOffice`;
-export const classes: Readonly<Record<ClassesKey, string>> = Object.seal({
-  inpDivClasses: `mb-3 inpDivClasses`,
-  inpLabClasses: `form-label`,
-  inpClasses: `${inps}`,
-  textClasses: `${texts}`,
-  contextualTextClasses: `${texts} contextualText`,
-  ccClasses: `${inps} cc linked`,
-  dddClasses: `${inps} ddd linked`,
-  telClasses: `${inps} tel`,
-  selectClasses: `form-select`,
-  btnSec: `${btn} btn-secondary`,
-  btnPrim: `${btn} btn-primary`,
-  mainFsClasses: `border p-4 mb-3 formMainFs`,
-  mainFsLegClasses: `legMainFs bold`,
-  officePlatforms: `${officeRangeds} fsOfficePlatforms`,
-  officeApps: `${officeRangeds} fsOfficeApps`,
-  aiApps: `fsRanged fsAis`,
-});
+export const classes: Readonly<Record<ClassesKey, string>> =
+  Object.seal({
+    inpDivClasses: `mb-3 inpDivClasses`,
+    inpLabClasses: `form-label`,
+    inpClasses: `${inps}`,
+    textClasses: `${texts}`,
+    contextualTextClasses: `${texts} contextualText`,
+    ccClasses: `${inps} cc linked`,
+    dddClasses: `${inps} ddd linked`,
+    telClasses: `${inps} tel`,
+    selectClasses: `form-select`,
+    btnSec: `${btn} btn-secondary`,
+    btnPrim: `${btn} btn-primary`,
+    mainFsClasses: `border p-4 mb-3 formMainFs`,
+    mainFsLegClasses: `legMainFs bold`,
+    officePlatforms: `${officeRangeds} fsOfficePlatforms`,
+    officeApps: `${officeRangeds} fsOfficeApps`,
+    aiApps: `fsRanged fsAis`,
+  });
 export enum colors {
   grey = "#8a8888",
   orangeRed = "#ff4d4d",
@@ -84,14 +85,20 @@ export const jsErrorsFriendlyNames: Readonly<{
     ["NotFoundError", "Not Found Error"],
     ["NetworkError", "Network Error"],
     ["URLMismatchError", "URL Mismatch Error"],
-    ["TransactionInactiveError", "Transaction Inactive Error"],
+    [
+      "TransactionInactiveError",
+      "Transaction Inactive Error",
+    ],
     ["QuotaExceededError", "Quota Exceeded Error"],
     ["TimeoutError", "Timeout Error"],
     ["AbortError", "Abort Error"],
     ["VersionError", "Version Error"],
     ["NotSupportedError", "Not Supported Error"],
     ["InvalidStateError", "Invalid State Error"],
-    ["InvalidModificationError", "Invalid Modification Error"],
+    [
+      "InvalidModificationError",
+      "Invalid Modification Error",
+    ],
     ["InvalidCharacterError", "Invalid Character Error"],
     ["TypeMismatchError", "Type Mismatch Error"],
     ["DataCloneError", "Data Clone Error"],
@@ -110,7 +117,10 @@ export const jsErrorsFriendlyNames: Readonly<{
     ["RangeError", "Erro de Intervalo"],
     ["URIError", "Erro de URI"],
     ["IndexSizeError", "Erro de Tamanho do Índice"],
-    ["HierarchyRequestError", "Erro de Requisição de Hierarquia"],
+    [
+      "HierarchyRequestError",
+      "Erro de Requisição de Hierarquia",
+    ],
     ["EncodingError", "Erro de Codificação"],
     ["NamespaceError", "Erro de Namespace"],
     ["SyntaxError", "Erro de Sintaxe"],
@@ -119,17 +129,29 @@ export const jsErrorsFriendlyNames: Readonly<{
     ["WrongDocumentError", "Erro de Documento Errado"],
     ["NotFoundError", "Erro de Não Encontrado"],
     ["NetworkError", "Erro de Rede"],
-    ["URLMismatchError", "Erro de Incompatibilidade de URL"],
-    ["TransactionInactiveError", "Erro de Transação Inativa"],
+    [
+      "URLMismatchError",
+      "Erro de Incompatibilidade de URL",
+    ],
+    [
+      "TransactionInactiveError",
+      "Erro de Transação Inativa",
+    ],
     ["QuotaExceededError", "Erro de Cota Excedida"],
     ["TimeoutError", "Erro de Tempo Esgotado"],
     ["AbortError", "Erro de Aborto"],
     ["VersionError", "Erro de Versão"],
     ["NotSupportedError", "Erro de Não Suportado"],
     ["InvalidStateError", "Erro de Estado Inválido"],
-    ["InvalidModificationError", "Erro de Modificação Inválida"],
+    [
+      "InvalidModificationError",
+      "Erro de Modificação Inválida",
+    ],
     ["InvalidCharacterError", "Erro de Caractere Inválido"],
-    ["TypeMismatchError", "Erro de Incompatibilidade de Tipo"],
+    [
+      "TypeMismatchError",
+      "Erro de Incompatibilidade de Tipo",
+    ],
     ["DataCloneError", "Erro de Clone de Dados"],
     ["NotReadableError", "Erro de Não Legível"],
     ["ConstraintError", "Erro de Restrição"],
@@ -253,7 +275,8 @@ export const TechApps = {
   chromeOs: "Chrome OS",
   ios: "iOS",
   android: "Android",
-  ferramentasRedeBasicas: "Ferramentas de Rede Básicas (Ping, Tracert)",
+  ferramentasRedeBasicas:
+    "Ferramentas de Rede Básicas (Ping, Tracert)",
   sistemasTicketBasicos: "Sistemas de Ticket Básicos",
   windowsServer: "Windows Server",
   linuxServer: "Linux Server",
@@ -266,9 +289,11 @@ export const TechApps = {
   firewallFortinet: "Firewall Fortinet",
   wireshark: "Wireshark",
   scripting: "Scripting (PowerShell/Bash)",
-  monitoramento: "Ferramentas de Monitoramento (Zabbix, Nagios)",
+  monitoramento:
+    "Ferramentas de Monitoramento (Zabbix, Nagios)",
   endpointManagement: "Endpoint Management (SCCM)",
-  antimalwareEnterpriseTools: "AntiMalware Enterprise Tools",
+  antimalwareEnterpriseTools:
+    "AntiMalware Enterprise Tools",
   backupRestoreAvancado: "Backup e Restore Avançado",
   totvs: "TOTVS",
   sapEcc: "SAP ECC",
@@ -327,68 +352,134 @@ export const dictLabelsRange: {
     video: friendlyAiName.video,
   },
 };
-export const groupedApps: Readonly<Record<roleType, Array<techAppKey[]>>> =
-  ObjectHelper.deepFreeze({
-    executivoAdministrativo: [
-      ["office365", "outlook", "slack", "googleDrive"],
-      ["zoom", "trello", "sapErp", "msDynamicsCrm"],
-      ["msTeams", "sharePoint", "powerBi", "yammer"],
-      ["asana", "box", "oneDrive", "sapFico"],
+export const groupedApps: Readonly<
+  Record<roleType, Array<techAppKey[]>>
+> = ObjectHelper.deepFreeze({
+  executivoAdministrativo: [
+    ["office365", "outlook", "slack", "googleDrive"],
+    ["zoom", "trello", "sapErp", "msDynamicsCrm"],
+    ["msTeams", "sharePoint", "powerBi", "yammer"],
+    ["asana", "box", "oneDrive", "sapFico"],
+  ],
+  financeiro: [
+    [
+      "oracleFinance",
+      "msExcel",
+      "quickBooks",
+      "totvsProtheus",
     ],
-    financeiro: [
-      ["oracleFinance", "msExcel", "quickBooks", "totvsProtheus"],
-      ["netSuite", "xero", "tableau", "sql"],
-      ["python", "googleFinance", "eikonReuters", "bloombergTerminal"],
-      ["freshBooks", "salesforce", "msDynamics365", "pipedrive"],
+    ["netSuite", "xero", "tableau", "sql"],
+    [
+      "python",
+      "googleFinance",
+      "eikonReuters",
+      "bloombergTerminal",
     ],
-    comercial: [
-      ["hubspot", "linkedInSalesNavigator", "mailchimp", "zoomInfo"],
-      ["googleWorkspace", "excel", "whatsAppBusiness", "twilio"],
-      ["googleAds", "facebookAds", "instagramAds", "googleAnalytics"],
-      ["semRush", "rdStation", "canva", "wordpress"],
+    [
+      "freshBooks",
+      "salesforce",
+      "msDynamics365",
+      "pipedrive",
     ],
-    marketing: [
-      ["hootsuite", "buffer", "linkedInCampaignManager", "adobeIllustrator"],
-      ["adobePhotoshop", "windows10_11", "macOs", "activeDirectoryBasic"],
-      ["remoteDesktop", "ferramentasAntivirus", "zendesk", "chromeOs"],
-      ["ios", "android", "ferramentasRedeBasicas", "sistemasTicketBasicos"],
+  ],
+  comercial: [
+    [
+      "hubspot",
+      "linkedInSalesNavigator",
+      "mailchimp",
+      "zoomInfo",
     ],
-    suporteTecnicoN1: [
-      ["windowsServer", "linuxServer", "activeDirectoryAdvanced", "exchange"],
-      ["serviceNow", "itilTools", "vmwareVirtualBox", "cisco"],
-      ["firewallFortinet", "wireshark", "scripting", "monitoramento"],
-      [
-        "endpointManagement",
-        "antimalwareEnterpriseTools",
-        "backupRestoreAvancado",
-        "totvs",
-      ],
+    [
+      "googleWorkspace",
+      "excel",
+      "whatsAppBusiness",
+      "twilio",
     ],
-    suporteTecnicoN2: [
-      ["sapEcc", "jira", "docker", "oracleDatabase"],
-      ["postgreSql", "mySql", "linuxBash", "git"],
-      ["jenkins", "grafana", "java", "javaScript"],
-      ["csharp", "nodeJs", "react", "angular"],
+    [
+      "googleAds",
+      "facebookAds",
+      "instagramAds",
+      "googleAnalytics",
     ],
-    operatorio: [
-      ["sapEcc", "jira", "docker", "oracleDatabase"],
-      ["postgreSql", "mySql", "linuxBash", "git"],
-      ["jenkins", "grafana", "java", "javaScript"],
-      ["csharp", "nodeJs", "react", "angular"],
+    ["semRush", "rdStation", "canva", "wordpress"],
+  ],
+  marketing: [
+    [
+      "hootsuite",
+      "buffer",
+      "linkedInCampaignManager",
+      "adobeIllustrator",
     ],
-    desenvolvimento: [
-      ["sapEcc", "jira", "docker", "oracleDatabase"],
-      ["postgreSql", "mySql", "linuxBash", "git"],
-      ["jenkins", "grafana", "java", "javaScript"],
-      ["csharp", "nodeJs", "react", "angular"],
+    [
+      "adobePhotoshop",
+      "windows10_11",
+      "macOs",
+      "activeDirectoryBasic",
     ],
-    devOps: [
-      ["gitHub", "sqlDatabases", "noSql", "aws"],
-      ["azure", "kubernetes", "gitLabCiCd", "terraform"],
-      ["ansible", "chef", "puppet", "prometheus"],
+    [
+      "remoteDesktop",
+      "ferramentasAntivirus",
+      "zendesk",
+      "chromeOs",
     ],
-    undefined: [[]],
-  });
+    [
+      "ios",
+      "android",
+      "ferramentasRedeBasicas",
+      "sistemasTicketBasicos",
+    ],
+  ],
+  suporteTecnicoN1: [
+    [
+      "windowsServer",
+      "linuxServer",
+      "activeDirectoryAdvanced",
+      "exchange",
+    ],
+    [
+      "serviceNow",
+      "itilTools",
+      "vmwareVirtualBox",
+      "cisco",
+    ],
+    [
+      "firewallFortinet",
+      "wireshark",
+      "scripting",
+      "monitoramento",
+    ],
+    [
+      "endpointManagement",
+      "antimalwareEnterpriseTools",
+      "backupRestoreAvancado",
+      "totvs",
+    ],
+  ],
+  suporteTecnicoN2: [
+    ["sapEcc", "jira", "docker", "oracleDatabase"],
+    ["postgreSql", "mySql", "linuxBash", "git"],
+    ["jenkins", "grafana", "java", "javaScript"],
+    ["csharp", "nodeJs", "react", "angular"],
+  ],
+  operatorio: [
+    ["sapEcc", "jira", "docker", "oracleDatabase"],
+    ["postgreSql", "mySql", "linuxBash", "git"],
+    ["jenkins", "grafana", "java", "javaScript"],
+    ["csharp", "nodeJs", "react", "angular"],
+  ],
+  desenvolvimento: [
+    ["sapEcc", "jira", "docker", "oracleDatabase"],
+    ["postgreSql", "mySql", "linuxBash", "git"],
+    ["jenkins", "grafana", "java", "javaScript"],
+    ["csharp", "nodeJs", "react", "angular"],
+  ],
+  devOps: [
+    ["gitHub", "sqlDatabases", "noSql", "aws"],
+    ["azure", "kubernetes", "gitLabCiCd", "terraform"],
+    ["ansible", "chef", "puppet", "prometheus"],
+  ],
+  undefined: [[]],
+});
 export const CtxLabels: roleQuestionsMap = Object.seal(
   new Map([
     [
@@ -403,7 +494,10 @@ export const CtxLabels: roleQuestionsMap = Object.seal(
         ["operatorio", ""],
         ["desenvolvimento", ""],
         ["devOps", ""],
-        ["default", "Quais são suas principais tarefas diárias?"],
+        [
+          "default",
+          "Quais são suas principais tarefas diárias?",
+        ],
       ]),
     ],
     [
@@ -535,9 +629,13 @@ export const CtxLabels: roleQuestionsMap = Object.seal(
   ])
 );
 // Suggestions for autocomplete
-export const suggestionsDict: { [k: string]: string[] } = {};
+export const suggestionsDict: { [k: string]: string[] } =
+  {};
 export const suggestionsGroupsMap: Readonly<
-  Map<keyof typeof friendlyRoles, Map<keyof typeof AcronymsDefaults, string[]>>
+  Map<
+    keyof typeof friendlyRoles,
+    Map<keyof typeof AcronymsDefaults, string[]>
+  >
 > = ObjectHelper.deepFreeze(
   new Map([
     [
@@ -565,9 +663,24 @@ export const suggestionsGroupsMap: Readonly<
         ],
         [
           "ms",
-          ["Google Workspace", "Microsoft Teams", "Zoom", "Trello", "Asana"],
+          [
+            "Google Workspace",
+            "Microsoft Teams",
+            "Zoom",
+            "Trello",
+            "Asana",
+          ],
         ],
-        ["as", ["DocuSign", "Jira", "Tableau", "Notion", "ClickUp"]],
+        [
+          "as",
+          [
+            "DocuSign",
+            "Jira",
+            "Tableau",
+            "Notion",
+            "ClickUp",
+          ],
+        ],
         [
           "pr",
           [
@@ -635,9 +748,24 @@ export const suggestionsGroupsMap: Readonly<
         ],
         [
           "ms",
-          ["SAP", "Totvs", "QuickBooks", "Oracle Financials", "Conta Azul"],
+          [
+            "SAP",
+            "Totvs",
+            "QuickBooks",
+            "Oracle Financials",
+            "Conta Azul",
+          ],
         ],
-        ["as", ["FreshBooks", "NetSuite", "Wave", "GnuCash", "Budgeto"]],
+        [
+          "as",
+          [
+            "FreshBooks",
+            "NetSuite",
+            "Wave",
+            "GnuCash",
+            "Budgeto",
+          ],
+        ],
         [
           "pr",
           [
@@ -705,7 +833,13 @@ export const suggestionsGroupsMap: Readonly<
         ],
         [
           "ms",
-          ["Salesforce", "HubSpot", "Pipedrive", "Zoho CRM", "RD Station"],
+          [
+            "Salesforce",
+            "HubSpot",
+            "Pipedrive",
+            "Zoho CRM",
+            "RD Station",
+          ],
         ],
         [
           "as",
@@ -784,11 +918,23 @@ export const suggestionsGroupsMap: Readonly<
         ],
         [
           "ms",
-          ["Google Analytics", "HubSpot", "Canva", "Hootsuite", "SEMRush"],
+          [
+            "Google Analytics",
+            "HubSpot",
+            "Canva",
+            "Hootsuite",
+            "SEMRush",
+          ],
         ],
         [
           "as",
-          ["Mailchimp", "Buffer", "Adobe Photoshop", "Trello", "Monday.com"],
+          [
+            "Mailchimp",
+            "Buffer",
+            "Adobe Photoshop",
+            "Trello",
+            "Monday.com",
+          ],
         ],
         [
           "pr",
@@ -940,10 +1086,25 @@ export const suggestionsGroupsMap: Readonly<
             "Monitoramento de sistemas críticos",
           ],
         ],
-        ["ms", ["Splunk", "Nagios", "Zabbix", "New Relic", "Dynatrace"]],
+        [
+          "ms",
+          [
+            "Splunk",
+            "Nagios",
+            "Zabbix",
+            "New Relic",
+            "Dynatrace",
+          ],
+        ],
         [
           "as",
-          ["Datadog", "Prometheus", "SolarWinds", "PagerDuty", "OpsGenie"],
+          [
+            "Datadog",
+            "Prometheus",
+            "SolarWinds",
+            "PagerDuty",
+            "OpsGenie",
+          ],
         ],
         [
           "pr",
@@ -1095,10 +1256,25 @@ export const suggestionsGroupsMap: Readonly<
             "Acompanhamento de métricas de código",
           ],
         ],
-        ["ms", ["GitHub", "GitLab", "Jenkins", "SonarQube", "VS Code"]],
+        [
+          "ms",
+          [
+            "GitHub",
+            "GitLab",
+            "Jenkins",
+            "SonarQube",
+            "VS Code",
+          ],
+        ],
         [
           "as",
-          ["Bitbucket", "CircleCI", "Eclipse", "NetBeans", "IntelliJ IDEA"],
+          [
+            "Bitbucket",
+            "CircleCI",
+            "Eclipse",
+            "NetBeans",
+            "IntelliJ IDEA",
+          ],
         ],
         [
           "pr",
@@ -1165,10 +1341,25 @@ export const suggestionsGroupsMap: Readonly<
             "Otimização de custos na nuvem",
           ],
         ],
-        ["ms", ["Docker", "Kubernetes", "AWS", "Azure DevOps", "Terraform"]],
+        [
+          "ms",
+          [
+            "Docker",
+            "Kubernetes",
+            "AWS",
+            "Azure DevOps",
+            "Terraform",
+          ],
+        ],
         [
           "as",
-          ["Google Cloud Platform", "Ansible", "Puppet", "Chef", "Datadog"],
+          [
+            "Google Cloud Platform",
+            "Ansible",
+            "Puppet",
+            "Chef",
+            "Datadog",
+          ],
         ],
         [
           "pr",
@@ -1217,23 +1408,32 @@ export const suggestionsGroupsMap: Readonly<
   ])
 );
 // Related to range inputs
-export const appGroupsDict: Record<RangeCtxComponentNames, addQuestionsKey> =
-  ObjectHelper.deepFreeze({
-    AudioAis: "audio",
-    ImageAis: "image",
-    Llms: "llms",
-    VideoAis: "video",
-    Bi: "businessInteligence",
-    Crms: "Crms",
-    Docs: "docs",
-    Erps: "Erps",
-    FormBuilders: "formBuilders",
-    Planning: "planning",
-    Spreadsheets: "spreadSheets",
-    StoragePlatforms: "cloudStorage",
-  });
+export const appGroupsDict: Record<
+  RangeCtxComponentNames,
+  addQuestionsKey
+> = ObjectHelper.deepFreeze({
+  AudioAis: "audio",
+  ImageAis: "image",
+  Llms: "llms",
+  VideoAis: "video",
+  Bi: "businessInteligence",
+  Crms: "Crms",
+  Docs: "docs",
+  Erps: "Erps",
+  FormBuilders: "formBuilders",
+  Planning: "planning",
+  Spreadsheets: "spreadSheets",
+  StoragePlatforms: "cloudStorage",
+});
 export const repeated: {
-  [K in "fmt" | "sum" | "tmp" | "mcr" | "big" | "arr" | "tbd"]: string;
+  [K in
+    | "fmt"
+    | "sum"
+    | "tmp"
+    | "mcr"
+    | "big"
+    | "arr"
+    | "tbd"]: string;
 } = ObjectHelper.deepFreeze({
   fmt: "Qual é sua familiaridade com formatações simples (negrito, itálico, cabeçalho)?",
   sum: "Qual é sua familiaridade com funções matemáticas básicas (ex.: SOMA, MÉDIA, SOMASE)?",
@@ -1319,27 +1519,34 @@ export const eaSsKeys = ObjectHelper.deepFreeze({
     rpt: "Detalhe como você cria relatórios interativos integrando gráficos e controles (ex.: slicers)?",
   },
 });
-export const eaFmKeys = ObjectHelper.deepFreeze({
+export const fmGeneralKeys = ObjectHelper.deepFreeze({
+  tpl: "Com que frequência você utiliza templates prontos para elaborar questionários?",
+  rsp: "Quais são suas formas preferenciais de salvar dados de um formulário?",
+  emb: "Quais destas técnicas você utiliza com mais frequência para analisar resultados aglomerados por diversas submissões de um formulário?",
+  plt: "Quais destas ferramentas você utiliza para construção de formulários?",
+  slc: "Descreva livremente seu critério para escolher entre múltipla escolha (dropdowns, rádios, checkboxes) ou respostas paragrafadas",
+});
+export const fmBeginnerKeys = ObjectHelper.deepFreeze({
   beginner: {
-    crt: "Qual é sua experiência básica em criar formulários para coleta de dados simples?",
-    tpl: "Você já utilizou templates prontos para formular pesquisas ou questionários?",
-    slc: "Como você escolhe entre perguntas de múltipla escolha, texto ou classificações?",
-    rsp: "Com que frequência você coleta respostas para análises simples?",
-    emb: "Você já incorporou formulários em sites ou plataformas externas?",
+    crt: "Qual é o seu nível de experiência criando formulários para coleta de dados?",
+    ...fmGeneralKeys,
   },
-  intermediate: {
-    aut: "Como você configura automações para envio de notificações ou respostas?",
-    exp: "Qual sua experiência em exportar respostas para planilhas ou sistemas externos?",
-    api: "Você já integrou formulários a APIs para coleta ou envio de dados?",
-    val: "De que forma você aplica validações para garantir respostas corretas (ex.: regex)?",
-    rpt: "Como você gera relatórios com base nas respostas coletadas?",
-  },
+});
+export const fmIntermediateKeys = ObjectHelper.deepFreeze({
+  ...fmGeneralKeys,
+  aut: "Como você configura para envio de notificações ou respostas?",
+  api: "Com que frequência você integra formulários a APIs para coleta ou envio de dados?",
+});
+export const fmExpertKeys = ObjectHelper.deepFreeze({
+  ...fmGeneralKeys,
+  dsh: "Como você conecta formulários a dashboards para relatórios em tempo real?",
+});
+export const eaFmKeys = ObjectHelper.deepFreeze({
+  beginner: fmBeginnerKeys,
+  intermediate: fmIntermediateKeys,
   expert: {
-    adv: "Quais práticas avançadas você utiliza para integrar formulários a CRMs ou bancos de dados?",
-    cus: "Qual é a sua familiaridade na edição customizada de formulários com HTML, CSS ou JavaScript?",
-    sec: "Que medidas de segurança você implementa para proteger dados sensíveis?",
-    mlc: "De que maneira você aplica inteligência artificial para análise de respostas?",
-    dsh: "Como você conecta formulários a dashboards para relatórios em tempo real?",
+    ...fmExpertKeys,
+    adv: "Descreva de forma geral as suas políticas de segurança para o tráfego de informação aglomeradas por formulários",
   },
 });
 export const eaCsKeys = ObjectHelper.deepFreeze({
@@ -1549,23 +1756,24 @@ export const eaLlmKeys = ObjectHelper.deepFreeze({
     pol: "Qual sua política para governança (LGPD, compliance) e exclusão de dados sensíveis enviados à IA?",
   },
 });
-export const executivoAdministrativoAddQuestions = ObjectHelper.deepFreeze([
-  "executivoAdministrativo",
-  new Map([
-    ["docs", eaDocsKeys as any],
-    ["spreadSheets", eaSsKeys],
-    ["formBuilders", eaFmKeys],
-    ["cloudStorage", eaCsKeys],
-    ["businessInteligence", eaBiKeys],
-    ["Crms", eaCrmKeys],
-    ["Erps", eaErpKeys],
-    ["planning", eaPlnKeys],
-    ["audio", eaAiAdKeys],
-    ["image", eaAiImgKeys],
-    ["video", eaAiVdKeys],
-    ["llms", eaLlmKeys],
-  ]),
-]);
+export const executivoAdministrativoAddQuestions =
+  ObjectHelper.deepFreeze([
+    "executivoAdministrativo",
+    new Map([
+      ["docs", eaDocsKeys as any],
+      ["spreadSheets", eaSsKeys],
+      ["formBuilders", eaFmKeys],
+      ["cloudStorage", eaCsKeys],
+      ["businessInteligence", eaBiKeys],
+      ["Crms", eaCrmKeys],
+      ["Erps", eaErpKeys],
+      ["planning", eaPlnKeys],
+      ["audio", eaAiAdKeys],
+      ["image", eaAiImgKeys],
+      ["video", eaAiVdKeys],
+      ["llms", eaLlmKeys],
+    ]),
+  ]);
 export const fnDocsKeys = ObjectHelper.deepFreeze({
   beginner: {
     frm: "Como você elabora documentos financeiros simples (propostas, orçamentos) e formata texto básico?",
@@ -1842,23 +2050,24 @@ export const fnLlmKeys = ObjectHelper.deepFreeze({
     sec: "Qual é sua prática de segurança (criptografia, limpeza de dados) ao enviar informações estratégicas para IA?",
   },
 });
-export const financeiroAddQuestions = ObjectHelper.deepFreeze([
-  "financeiro",
-  new Map([
-    ["docs", fnDocsKeys as any],
-    ["spreadSheets", fnSsKeys],
-    ["formBuilders", fnFmKeys],
-    ["cloudStorage", fnCsKeys],
-    ["businessInteligence", fnBiKeys],
-    ["Crms", fnCrmKeys],
-    ["Erps", fnErpKeys],
-    ["planning", fnPlnKeys],
-    ["audio", fnAiAdKeys],
-    ["image", fnAiImgKeys],
-    ["video", fnAiVdKeys],
-    ["llms", fnLlmKeys],
-  ]),
-]);
+export const financeiroAddQuestions =
+  ObjectHelper.deepFreeze([
+    "financeiro",
+    new Map([
+      ["docs", fnDocsKeys as any],
+      ["spreadSheets", fnSsKeys],
+      ["formBuilders", fnFmKeys],
+      ["cloudStorage", fnCsKeys],
+      ["businessInteligence", fnBiKeys],
+      ["Crms", fnCrmKeys],
+      ["Erps", fnErpKeys],
+      ["planning", fnPlnKeys],
+      ["audio", fnAiAdKeys],
+      ["image", fnAiImgKeys],
+      ["video", fnAiVdKeys],
+      ["llms", fnLlmKeys],
+    ]),
+  ]);
 export const cmDocsKeys = ObjectHelper.deepFreeze({
   beginner: {
     rfp: "Quais técnicas de formatação você prioriza no design gráficos de documentos para propostas comerciais?",
@@ -2135,23 +2344,24 @@ export const cmLlmsKeys = ObjectHelper.deepFreeze({
     sec: "Qual é sua prática de segurança (criptografia, limpeza de dados) ao enviar informações estratégicas para IA?",
   },
 });
-export const comercialAddQuestions = ObjectHelper.deepFreeze([
-  "comercial",
-  new Map([
-    ["docs", cmDocsKeys as any],
-    ["spreadSheets", cmSsKeys],
-    ["formBuilders", cmFmKeys],
-    ["cloudStorage", cmCsKeys],
-    ["businessInteligence", cmBiKeys],
-    ["Crms", cmCrmKeys],
-    ["Erps", cmErpKeys],
-    ["planning", cmPlnKeys],
-    ["audio", cmAiAdKeys],
-    ["image", cmAiImgKeys],
-    ["video", cmAiVdKeys],
-    ["llms", cmLlmsKeys],
-  ]),
-]);
+export const comercialAddQuestions =
+  ObjectHelper.deepFreeze([
+    "comercial",
+    new Map([
+      ["docs", cmDocsKeys as any],
+      ["spreadSheets", cmSsKeys],
+      ["formBuilders", cmFmKeys],
+      ["cloudStorage", cmCsKeys],
+      ["businessInteligence", cmBiKeys],
+      ["Crms", cmCrmKeys],
+      ["Erps", cmErpKeys],
+      ["planning", cmPlnKeys],
+      ["audio", cmAiAdKeys],
+      ["image", cmAiImgKeys],
+      ["video", cmAiVdKeys],
+      ["llms", cmLlmsKeys],
+    ]),
+  ]);
 export const mktDocsKeys = ObjectHelper.deepFreeze({
   beginner: {
     mch: "Como você redige materiais de marketing básicos (flyers, comunicados) com formatação simples?",
@@ -2428,23 +2638,24 @@ export const mktLlmsKeys = ObjectHelper.deepFreeze({
     sec: "Qual sua prática de criptografia ou sanitização de dados antes de enviar prompts com informações estratégicas?",
   },
 });
-export const marketingAddQuestions = ObjectHelper.deepFreeze([
-  "marketing",
-  new Map([
-    ["docs", mktDocsKeys as any],
-    ["spreadSheets", mktSsKeys],
-    ["formBuilders", mktFmKeys],
-    ["cloudStorage", mktCsKeys],
-    ["businessInteligence", mktBiKeys],
-    ["Crms", mktCrmKeys],
-    ["Erps", mktErpsKeys],
-    ["planning", mktPlnKeys],
-    ["audio", mktAiAdKeys],
-    ["image", mktAiImgKeys],
-    ["video", mktAiVdKeys],
-    ["llms", mktLlmsKeys],
-  ]),
-]);
+export const marketingAddQuestions =
+  ObjectHelper.deepFreeze([
+    "marketing",
+    new Map([
+      ["docs", mktDocsKeys as any],
+      ["spreadSheets", mktSsKeys],
+      ["formBuilders", mktFmKeys],
+      ["cloudStorage", mktCsKeys],
+      ["businessInteligence", mktBiKeys],
+      ["Crms", mktCrmKeys],
+      ["Erps", mktErpsKeys],
+      ["planning", mktPlnKeys],
+      ["audio", mktAiAdKeys],
+      ["image", mktAiImgKeys],
+      ["video", mktAiVdKeys],
+      ["llms", mktLlmsKeys],
+    ]),
+  ]);
 export const stN1DocsKeys = ObjectHelper.deepFreeze({
   beginner: {
     fmt: repeated.fmt,
@@ -2721,23 +2932,24 @@ export const stN1LlmsKeys = ObjectHelper.deepFreeze({
     prg: "Você integra LLM com pipelines DevOps (CI/CD) ou workflows de alto nível? Descreva brevemente.",
   },
 });
-export const suporteTecnicoN1AddQuestions = ObjectHelper.deepFreeze([
-  "suporteTecnicoN1",
-  new Map([
-    ["docs", stN1DocsKeys as any],
-    ["spreadSheets", stN1SsKeys],
-    ["formBuilders", stN1FmKeys],
-    ["cloudStorage", stN1CsKeys],
-    ["businessInteligence", stN1BiKeys],
-    ["Crms", stN1CrmsKeys],
-    ["Erps", stN1ErpsKeys],
-    ["planning", stN1PlnKeys],
-    ["audio", stN1AiAdKeys],
-    ["image", stN1AiImgKeys],
-    ["video", stN1AiVdKeys],
-    ["llms", stN1LlmsKeys],
-  ]),
-]);
+export const suporteTecnicoN1AddQuestions =
+  ObjectHelper.deepFreeze([
+    "suporteTecnicoN1",
+    new Map([
+      ["docs", stN1DocsKeys as any],
+      ["spreadSheets", stN1SsKeys],
+      ["formBuilders", stN1FmKeys],
+      ["cloudStorage", stN1CsKeys],
+      ["businessInteligence", stN1BiKeys],
+      ["Crms", stN1CrmsKeys],
+      ["Erps", stN1ErpsKeys],
+      ["planning", stN1PlnKeys],
+      ["audio", stN1AiAdKeys],
+      ["image", stN1AiImgKeys],
+      ["video", stN1AiVdKeys],
+      ["llms", stN1LlmsKeys],
+    ]),
+  ]);
 export const stN2DocsKeys = ObjectHelper.deepFreeze({
   beginner: {
     syn: "Quais destas ferramentas você utiliza para a sincronização de arquivos .doc entre servidores ou ferramentas na nuvem?",
@@ -3014,23 +3226,24 @@ export const stN2LlmsKeys = ObjectHelper.deepFreeze({
     mig: "Em que frequência você migra prompts ou dados de uma LLM para outra, evitando perda de contexto?",
   },
 });
-export const suporteTecnicoN2AddQuestions = ObjectHelper.deepFreeze([
-  "suporteTecnicoN2",
-  new Map([
-    ["docs", stN2DocsKeys as any],
-    ["spreadSheets", stN2SsKeys],
-    ["formBuilders", stN2FmKeys],
-    ["cloudStorage", stN2CsKeys],
-    ["businessInteligence", stN2BiKeys],
-    ["Crms", stN2CrmsKeys],
-    ["Erps", stN2ErpsKeys],
-    ["planning", stN2PlnKeys],
-    ["audio", stN2AiAdKeys],
-    ["image", stN2AiImgKeys],
-    ["video", stN2AiVdKeys],
-    ["llms", stN2LlmsKeys],
-  ]),
-]);
+export const suporteTecnicoN2AddQuestions =
+  ObjectHelper.deepFreeze([
+    "suporteTecnicoN2",
+    new Map([
+      ["docs", stN2DocsKeys as any],
+      ["spreadSheets", stN2SsKeys],
+      ["formBuilders", stN2FmKeys],
+      ["cloudStorage", stN2CsKeys],
+      ["businessInteligence", stN2BiKeys],
+      ["Crms", stN2CrmsKeys],
+      ["Erps", stN2ErpsKeys],
+      ["planning", stN2PlnKeys],
+      ["audio", stN2AiAdKeys],
+      ["image", stN2AiImgKeys],
+      ["video", stN2AiVdKeys],
+      ["llms", stN2LlmsKeys],
+    ]),
+  ]);
 export const opDocsKeys = ObjectHelper.deepFreeze({
   beginner: {
     net: "Como você configura as permissões básicas de rede para que os usuários acessem um editor de texto?",
@@ -3307,23 +3520,24 @@ export const opLlmsKeys = ObjectHelper.deepFreeze({
     cus: "Com que frequência manipula modelos custom (fine-tuning local) e distribui para equipes especializadas?",
   },
 });
-export const operatorioAddQuestions = ObjectHelper.deepFreeze([
-  "operatorio",
-  new Map([
-    ["docs", opDocsKeys as any],
-    ["spreadSheets", opSsKeys],
-    ["formBuilders", opFmKeys],
-    ["cloudStorage", opCsKeys],
-    ["businessInteligence", opBiKeys],
-    ["Crms", opCrmsKeys],
-    ["Erps", opErpsKeys],
-    ["planning", opPlnKeys],
-    ["audio", opAiAdKeys],
-    ["image", opAiImgKeys],
-    ["video", opAiVdKeys],
-    ["llms", opLlmsKeys],
-  ]),
-]);
+export const operatorioAddQuestions =
+  ObjectHelper.deepFreeze([
+    "operatorio",
+    new Map([
+      ["docs", opDocsKeys as any],
+      ["spreadSheets", opSsKeys],
+      ["formBuilders", opFmKeys],
+      ["cloudStorage", opCsKeys],
+      ["businessInteligence", opBiKeys],
+      ["Crms", opCrmsKeys],
+      ["Erps", opErpsKeys],
+      ["planning", opPlnKeys],
+      ["audio", opAiAdKeys],
+      ["image", opAiImgKeys],
+      ["video", opAiVdKeys],
+      ["llms", opLlmsKeys],
+    ]),
+  ]);
 export const devDocsKeys = ObjectHelper.deepFreeze({
   beginner: {
     api: "Como você costuma documentar APIs ou funções simples diretamente no código ou em arquivos de texto?",
@@ -4232,6 +4446,14 @@ export const defaultAddQuestions = ObjectHelper.deepFreeze([
     ["llms", defLlmsKeys],
   ]),
 ]);
+type roleDefined = Exclude<roleType, "undefined">;
+type FieldDescription =
+  | TextFieldDescription
+  | OptionFieldDescription;
+type KeysRecords<T extends string> = Partial<
+  Record<T, FieldDescription>
+>;
+type fmBaseKeys = "tpl" | "rsp" | "emb" | "slc";
 export const repeatedDefinitions: {
   [K in
     | "sum"
@@ -4247,7 +4469,7 @@ export const repeatedDefinitions: {
     | "sec"
     | "tmp"
     | "ast"
-    | "docp"]: TextFieldDescription | OptionFieldDescription;
+    | "docp"]: FieldDescription;
 } = ObjectHelper.deepFreeze({
   sum: {
     // "Você aplica SOMA, MÉDIA para ver resultados gerais de vendas em uma planilha?"
@@ -4285,7 +4507,12 @@ export const repeatedDefinitions: {
   frq: {
     // "Com que frequência ...?"
     type: "select-one",
-    options: ["Nunca", "Raramente", "Ocasionalmente", "Frequentemente"],
+    options: [
+      "Nunca",
+      "Raramente",
+      "Ocasionalmente",
+      "Frequentemente",
+    ],
     required: false,
   },
   cht: {
@@ -4379,7 +4606,7 @@ export const repeatedDefinitions: {
       "Faço download de templates online",
       "Mantenho um repositório interno de modelos",
       "Personalizo templates conforme a identidade visual",
-      "Automatizo a criação de docs a partir de templates (macros/scripts)",
+      "Automatizo a criação a partir de templates (macros/scripts)",
     ],
     required: true,
   },
@@ -4406,11 +4633,98 @@ export const repeatedDefinitions: {
     ],
     required: true,
   },
+  fmGeneralDefinitions: {},
 });
-type roleDefined = Exclude<roleType, "undefined">;
-type KeysRecords<T extends string> = Partial<
-  Record<T, TextFieldDescription | OptionFieldDescription>
->;
+export const fmDefinitions: {
+  [K in fmBaseKeys]: FieldDescription;
+} = ObjectHelper.deepFreeze({
+  tpl: repeatedDefinitions.frq,
+  rsp: {
+    // "Quais são suas formas preferenciais de salvar dados de um formulário?"
+    type: "select-multiple",
+    options: [
+      "Formatos de processamento tabular (.xls, .csv, etc.)",
+      "JSON",
+      "HTML",
+      "Banco de dados relacionais",
+      "Texto processado diretamente (.txt, .doc)",
+    ],
+    required: true,
+  },
+  emb: {
+    //"Quais destas técnicas você utiliza com mais frequência para analisar resultados aglomerados por diversas submissões de um formulário?"
+    type: "select-multiple",
+    options: [
+      "Observação e análise direta",
+      "Processamento por Scripts",
+      "Sumarização com Inteligências Artificias",
+      "Planilhamento de funções",
+      "Delegação para plataformas de BI",
+    ],
+  },
+  plt: {
+    //"Quais destas ferramentas você utiliza para construção de formulários?"
+    type: "select-multiple",
+    options: [
+      "Google Forms",
+      "Microsoft Forms",
+      "Typeform",
+      "JotForm",
+      "SurveyMonkey",
+      "Formstack",
+      "Zoho Forms",
+      "HubSpot Forms",
+      "CMSs (como WordPress e Drupal)",
+      "Linguagens de Programação",
+    ],
+    required: true,
+  },
+  slc: {
+    type: "textarea",
+    maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+    required: true,
+  },
+});
+export const fmBeginnerDefinitions: {
+  [K in fmBaseKeys & "crt"]: FieldDescription;
+} = ObjectHelper.deepFreeze({
+  crt: repeatedDefinitions.exp,
+  ...fmDefinitions,
+});
+export const fmIntermediateDefinitions: {
+  [K in (fmBaseKeys & "aut") | "api"]: FieldDescription;
+} = ObjectHelper.deepFreeze({
+  ...fmDefinitions,
+  aut: {
+    type: "select-multiple",
+    options: [
+      "Não configuro automações de mensageria",
+      "Notificações por e-mail via Google Apps Script",
+      "Integração com Slack/Microsoft Teams",
+      "Webhooks para sistemas internos",
+    ],
+    required: true,
+  },
+  api: repeatedDefinitions.frq,
+});
+export const fmExpertDefinitions: {
+  [K in fmBaseKeys & "dsh"]: FieldDescription;
+} = ObjectHelper.deepFreeze({
+  ...fmDefinitions,
+  dsh: {
+    //"Como você conecta formulários a dashboards para relatórios em tempo real?"
+    type: "select-multiple",
+    options: [
+      "Uso de integração direta via API (Google Sheets, Power BI, Tableau)",
+      "Exportação manual de dados para o BI",
+      "Automação de importação de dados via scripts (Python, Apps Script, VBA)",
+      "Uso de conectores nativos em ferramentas como Google Data Studio",
+      "Dashboards embutidos diretamente nos formulários para feedback imediato",
+      "Não conecto formulários a dashboards",
+    ],
+    required: true,
+  },
+});
 export const ssEntryTypes: {
   [K in roleDefined]: {
     [L in complexityLabel]: {
@@ -4427,7 +4741,11 @@ export const ssEntryTypes: {
         spr: {
           // "Você prefere responder perguntas por meio de seletores (radio, select) ou textos longos?"
           type: "radio",
-          options: ["Prefiro seletores", "Prefiro texto livre", "Tanto faz"],
+          options: [
+            "Prefiro seletores",
+            "Prefiro texto livre",
+            "Tanto faz",
+          ],
           required: true,
         },
         fil: repeatedDefinitions.fil,
@@ -4497,7 +4815,8 @@ export const ssEntryTypes: {
         aud: {
           // "De que forma você audita ou depura fórmulas para corrigir erros?"
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           writingSuggestions: true,
           spellCheck: true,
@@ -4535,7 +4854,8 @@ export const ssEntryTypes: {
         rpt: {
           // "Detalhe como você cria relatórios interativos integrando gráficos e controles (ex.: slicers)?"
           type: "textarea",
-          maxLength: limits.small.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.small.MAX_UTF_16_SIGNED_SURROGATE,
           required: false,
           writingSuggestions: true,
           spellCheck: true,
@@ -4543,7 +4863,8 @@ export const ssEntryTypes: {
         dbi: {
           // "Descreva como você conecta planilhas a bancos de dados SQL ou APIs, se aplicável."
           type: "textarea",
-          maxLength: limits.small.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.small.MAX_UTF_16_SIGNED_SURROGATE,
           required: false,
           writingSuggestions: true,
           spellCheck: true,
@@ -4645,7 +4966,8 @@ export const ssEntryTypes: {
         col: {
           // "Como você colabora com outros vendedores...?"
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           writingSuggestions: true,
           spellCheck: true,
@@ -4661,7 +4983,8 @@ export const ssEntryTypes: {
         cmp: {
           // "Como você compara previsões e resultados reais em planilhas complexas...?"
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           writingSuggestions: true,
           spellCheck: true,
@@ -4718,7 +5041,8 @@ export const ssEntryTypes: {
         col: {
           // "Como você colabora com outros analistas para consolidar dados de marketing?"
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           writingSuggestions: true,
           spellCheck: true,
@@ -4743,7 +5067,8 @@ export const ssEntryTypes: {
         prf: {
           // "Descreva como você faz otimizações de performance em planilhas grandes de marketing?"
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           writingSuggestions: true,
           spellCheck: true,
@@ -4830,7 +5155,8 @@ export const ssEntryTypes: {
         idx: {
           // "Com quais serviços externos você integra as suas planilhas?"
           type: "text",
-          maxLength: limits.small.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.small.MAX_UTF_16_SIGNED_SURROGATE,
           required: false,
           writingSuggestions: true,
           spellCheck: true,
@@ -4838,7 +5164,8 @@ export const ssEntryTypes: {
         aud: {
           // "De que forma você efetua auditoria em planilhas complexas para rastrear erros ou mudanças não autorizadas?"
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           writingSuggestions: true,
           spellCheck: true,
@@ -4936,7 +5263,8 @@ export const ssEntryTypes: {
         rep: {
           // "Como você gera relatórios regulares de problemas resolvidos?"
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
         },
       },
@@ -4969,7 +5297,8 @@ export const ssEntryTypes: {
         par: {
           // "Descreva técnicas que você utiliza para tuning de performance em planilhas muito grandes (milhares de linhas ou abas)."
           type: "textarea",
-          maxLength: limits.small.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.small.MAX_UTF_16_SIGNED_SURROGATE,
           required: false,
         },
       },
@@ -5145,7 +5474,8 @@ export const ssEntryTypes: {
         piv: {
           // Como você utiliza planilhas para correlações ou pivot complexos de logs do sistema?"
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: false,
           writingSuggestions: true,
           spellCheck: true,
@@ -5167,7 +5497,8 @@ export const ssEntryTypes: {
         },
         ref: {
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
         },
       },
@@ -5181,7 +5512,8 @@ export const ssEntryTypes: {
         job: {
           // "Que jobs ou tarefas você descreve na planilha?"
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           writingSuggestions: true,
           spellCheck: true,
@@ -5211,7 +5543,8 @@ export const ssEntryTypes: {
         das: {
           // "Como documenta dashboards de monitoramento?"
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: false,
           writingSuggestions: true,
           spellCheck: true,
@@ -5386,7 +5719,8 @@ export const docEntryTypes: {
         stl: {
           // "Descreva como você gerencia estilos de parágrafo, índice remissivo e formatação de layout altamente customizada."
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           writingSuggestions: true,
           spellCheck: true,
@@ -5638,7 +5972,8 @@ export const docEntryTypes: {
         prb: {
           // "Qual é sua abordagem ao diagnosticar problemas intermediários de layout ou formatação avançada?"
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: false,
           writingSuggestions: true,
           spellCheck: true,
@@ -5774,7 +6109,8 @@ export const docEntryTypes: {
         srv: {
           // "Descreva como você configura servidores de documentos (ex.: SharePoint)..."
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: false,
           writingSuggestions: true,
           spellCheck: true,
@@ -5951,7 +6287,8 @@ export const docEntryTypes: {
         sty: {
           // "De que forma você padroniza estilos de anotações nos arquivos?"
           type: "select-multiple",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
         },
       },
@@ -6019,7 +6356,8 @@ export const docEntryTypes: {
         int: repeatedDefinitions.frq,
         pol: {
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
         },
       },
@@ -6063,7 +6401,8 @@ export const docEntryTypes: {
         aut: {
           // "Você descreve automações (hooks, triggers) e como elas funcionam para integrantes novos?"
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
         },
       },
@@ -6133,75 +6472,28 @@ export const fmEntryTypes: {
 } = ObjectHelper.deepFreeze({
   executivoAdministrativo: {
     beginner: {
-      formBuilder: {
-        crt: repeatedDefinitions.exp,
-        tpl: repeatedDefinitions.yn,
-        slc: {
-          type: "select-multiple",
-          options: [
-            "Baseio no tipo de dados necessário",
-            "Uso múltipla escolha para opções pré-definidas",
-            "Texto livre para comentários",
-            "Classificação por estrelas/notas",
-          ],
-          required: true,
-        },
-        rsp: repeatedDefinitions.frq,
-        emb: repeatedDefinitions.yn,
-      },
+      formBuilder: fmBeginnerDefinitions,
     },
     intermediate: {
-      formBuilder: {
-        aut: {
-          type: "select-multiple",
-          options: [
-            "Notificações por e-mail via Google Apps Script",
-            "Integração com Slack/Microsoft Teams",
-            "Webhooks para sistemas internos",
-            "Não configuro automações",
-          ],
-          required: true,
-        },
-        exp: repeatedDefinitions.exp,
-        api: repeatedDefinitions.yn,
-        val: {
-          type: "select-multiple",
-          options: [
-            "Validação de formato de e-mail",
-            "Regex para padrões específicos",
-            "Verificação de números de telefone",
-            "Validação de datas em intervalos",
-          ],
-          required: true,
-        },
-        rpt: repeatedDefinitions.frq,
-      },
+      formBuilder: fmIntermediateDefinitions,
     },
     expert: {
       formBuilder: {
+        ...fmExpertDefinitions,
         adv: {
+          //"Descreva de forma geral as suas políticas de segurança para o tráfego de informação aglomeradas por formulários"
           type: "select-multiple",
           options: [
-            "Integração com Salesforce via API",
-            "Conexão direta com MySQL/PostgreSQL",
-            "Sincronização em tempo real via Zapier",
-            "Webhooks customizados",
+            "Criptografia dos dados em repouso e em trânsito",
+            "Autenticação multifator para acesso aos relatórios",
+            "Permissões baseadas em função (RBAC) para visualização e edição",
+            "Uso de logs de auditoria para rastrear acessos e alterações",
+            "Anonimização ou pseudonimização de dados sensíveis",
+            "Restrição de IPs para limitar acessos externos",
+            "Não aplico políticas de segurança específicas",
           ],
           required: true,
         },
-        cus: repeatedDefinitions.scp,
-        sec: repeatedDefinitions.sec,
-        mlc: {
-          type: "select-multiple",
-          options: [
-            "Análise de sentimento com NLP",
-            "Classificação automática de respostas",
-            "Detecção de padrões em dados abertos",
-            "Não utilizo IA",
-          ],
-          required: true,
-        },
-        dsh: repeatedDefinitions.yn,
       },
     },
   },
@@ -6529,7 +6821,8 @@ export const fmEntryTypes: {
       formBuilder: {
         api: {
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           writingSuggestions: true,
           spellCheck: true,
@@ -6559,7 +6852,8 @@ export const fmEntryTypes: {
         mul: repeatedDefinitions.yn,
         adv: {
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: false,
           writingSuggestions: true,
         },
@@ -6629,7 +6923,8 @@ export const fmEntryTypes: {
       formBuilder: {
         adv: {
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           spellCheck: true,
         },
@@ -6724,7 +7019,8 @@ export const fmEntryTypes: {
         },
         doc: {
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           writingSuggestions: true,
         },
@@ -6818,7 +7114,8 @@ export const fmEntryTypes: {
         },
         wfh: {
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           spellCheck: true,
         },
@@ -6934,7 +7231,8 @@ export const csEntryTypes: {
         mig: repeatedDefinitions.yn,
         rpt: {
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           writingSuggestions: true,
           spellCheck: true,
@@ -7029,7 +7327,8 @@ export const csEntryTypes: {
         mid: repeatedDefinitions.yn,
         drs: {
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           writingSuggestions: true,
         },
@@ -7113,7 +7412,8 @@ export const csEntryTypes: {
         mig: repeatedDefinitions.yn,
         inc: {
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           spellCheck: true,
         },
@@ -7197,7 +7497,8 @@ export const csEntryTypes: {
         mid: repeatedDefinitions.yn,
         drs: {
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           writingSuggestions: true,
         },
@@ -7277,7 +7578,8 @@ export const csEntryTypes: {
       cloudStorage: {
         api: {
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           writingSuggestions: true,
         },
@@ -7413,7 +7715,8 @@ export const csEntryTypes: {
         },
         adv: {
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           writingSuggestions: true,
         },
@@ -7547,7 +7850,8 @@ export const csEntryTypes: {
         },
         aut: {
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           spellCheck: true,
         },
@@ -7660,7 +7964,8 @@ export const csEntryTypes: {
         },
         hgh: {
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           writingSuggestions: true,
         },
@@ -7774,7 +8079,8 @@ export const csEntryTypes: {
         },
         big: {
           type: "textarea",
-          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          maxLength:
+            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
           required: true,
           spellCheck: true,
         },
