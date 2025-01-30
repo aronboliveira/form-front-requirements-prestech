@@ -119,6 +119,13 @@ export type AiBlocks = {
   llms: string;
   video: string;
 };
+export interface EntryElementsDict<G, T> {
+  [K in Exclude<roleType, "undefined">]: {
+    [L in complexityLabel]: {
+      [G in addQuestionsKey]: Partial<Record<SpreadsheetsQuestionsKeys, T>>;
+    };
+  };
+}
 export type complexityLevel = 1 | 2 | 3 | 4 | 5;
 export type complexityLabel = "beginner" | "intermediate" | "expert";
 export type appGroups = "Tasks" | "Platforms";

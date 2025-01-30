@@ -22,7 +22,6 @@ import {
   defFmQuestions,
   defLlmsKeys,
   defPlnKeys,
-  defSsQuestions,
   devAiAdKeys,
   devAiImgKeys,
   devAiVdKeys,
@@ -53,7 +52,7 @@ import {
   eaBiKeys,
   eaCrmKeys,
   eaCsKeys,
-  eaDocKeys,
+  eaDocsKeys,
   eaErpKeys,
   eaFmKeys,
   eaLlmKeys,
@@ -66,7 +65,7 @@ import {
   fnBiKeys,
   fnCrmKeys,
   fnCsKeys,
-  fnDocKeys,
+  fnDocsKeys,
   fnErpKeys,
   fnFmKeys,
   fnLlmKeys,
@@ -102,7 +101,7 @@ import {
   stN1BiKeys,
   stN1CrmsKeys,
   stN1CsKeys,
-  stN1DocKeys,
+  stN1DocsKeys,
   stN1ErpsKeys,
   stN1FmKeys,
   stN1LlmsKeys,
@@ -120,7 +119,8 @@ import {
   stN2LlmsKeys,
   stN2PlnKeys,
   stN2SsKeys,
-} from "@/lib/client/vars"; //primitives
+} from "@/lib/client/vars";
+//primitives
 export type nlStr = string | null;
 export type voidish = undefined | null;
 export type nlEl = Element | null;
@@ -268,39 +268,56 @@ export type InputType =
   | EntryInputType;
 export type SelectTypes = "one" | "multiple";
 export type EntryTypes = EntryInputType | SelectTypes | "textarea";
+export type VerboseEntryTypes =
+  | EntryInputType
+  | "select-one"
+  | "select-multiple"
+  | "textarea";
+export interface DefaultFieldDescription {
+  type: VerboseEntryTypes;
+  required?: boolean;
+}
+export interface TextFieldDescription extends DefaultFieldDescription {
+  minLength?: number;
+  maxLength?: number;
+  min?: number;
+  max?: number;
+  spellCheck?: boolean;
+  writingSuggestions?: boolean;
+}
+export interface OptionFieldDescription extends DefaultFieldDescription {
+  options?: string[];
+}
 export type DocsBeginnerKeys =
-  | keyof typeof eaDocKeys.beginner
-  | keyof typeof fnDocKeys.beginner
+  | keyof typeof eaDocsKeys.beginner
+  | keyof typeof fnDocsKeys.beginner
   | keyof typeof cmDocsKeys.beginner
   | keyof typeof mktDocsKeys.beginner
-  | keyof typeof stN1DocKeys.beginner
+  | keyof typeof stN1DocsKeys.beginner
   | keyof typeof stN2DocsKeys.beginner
   | keyof typeof opDocsKeys.beginner
   | keyof typeof devDocsKeys.beginner
-  | keyof typeof devOpsDocsKeys.beginner
-  | keyof typeof defDocsQuestions.beginner;
+  | keyof typeof devOpsDocsKeys.beginner;
 export type DocsIntermediateKeys =
-  | keyof typeof eaDocKeys.intermediate
-  | keyof typeof fnDocKeys.intermediate
+  | keyof typeof eaDocsKeys.intermediate
+  | keyof typeof fnDocsKeys.intermediate
   | keyof typeof cmDocsKeys.intermediate
   | keyof typeof mktDocsKeys.intermediate
-  | keyof typeof stN1DocKeys.intermediate
+  | keyof typeof stN1DocsKeys.intermediate
   | keyof typeof stN2DocsKeys.intermediate
   | keyof typeof opDocsKeys.intermediate
   | keyof typeof devDocsKeys.intermediate
-  | keyof typeof devOpsDocsKeys.intermediate
-  | keyof typeof defDocsQuestions.intermediate;
+  | keyof typeof devOpsDocsKeys.intermediate;
 export type DocsExpertKeys =
-  | keyof typeof eaDocKeys.expert
-  | keyof typeof fnDocKeys.expert
+  | keyof typeof eaDocsKeys.expert
+  | keyof typeof fnDocsKeys.expert
   | keyof typeof cmDocsKeys.expert
   | keyof typeof mktDocsKeys.expert
-  | keyof typeof stN1DocKeys.expert
+  | keyof typeof stN1DocsKeys.expert
   | keyof typeof stN2DocsKeys.expert
   | keyof typeof opDocsKeys.expert
   | keyof typeof devDocsKeys.expert
-  | keyof typeof devOpsDocsKeys.expert
-  | keyof typeof defDocsQuestions.expert;
+  | keyof typeof devOpsDocsKeys.expert;
 export type DocsQuestionsKeys =
   | DocsBeginnerKeys
   | DocsIntermediateKeys
@@ -314,8 +331,7 @@ export type SpreadsheetsBeginnerKeys =
   | keyof typeof stN2SsKeys.beginner
   | keyof typeof opSsKeys.beginner
   | keyof typeof devSsKeys.beginner
-  | keyof typeof devOpsSsKeys.beginner
-  | keyof typeof defSsQuestions.beginner;
+  | keyof typeof devOpsSsKeys.beginner;
 export type SpreadsheetsIntermediateKeys =
   | keyof typeof eaSsKeys.intermediate
   | keyof typeof fnSsKeys.intermediate
@@ -325,8 +341,7 @@ export type SpreadsheetsIntermediateKeys =
   | keyof typeof stN2SsKeys.intermediate
   | keyof typeof opSsKeys.intermediate
   | keyof typeof devSsKeys.intermediate
-  | keyof typeof devOpsSsKeys.intermediate
-  | keyof typeof defSsQuestions.intermediate;
+  | keyof typeof devOpsSsKeys.intermediate;
 export type SpreadsheetsExpertKeys =
   | keyof typeof eaSsKeys.expert
   | keyof typeof fnSsKeys.expert
@@ -336,9 +351,8 @@ export type SpreadsheetsExpertKeys =
   | keyof typeof stN2SsKeys.expert
   | keyof typeof opSsKeys.expert
   | keyof typeof devSsKeys.expert
-  | keyof typeof devOpsSsKeys.expert
-  | keyof typeof defSsQuestions.expert;
-export type SpreasheetsQuestionsKeys =
+  | keyof typeof devOpsSsKeys.expert;
+export type SpreadsheetsQuestionsKeys =
   | SpreadsheetsBeginnerKeys
   | SpreadsheetsIntermediateKeys
   | SpreadsheetsExpertKeys;
@@ -351,8 +365,7 @@ export type FormBuildersBeginnerKeys =
   | keyof typeof stN2FmKeys.beginner
   | keyof typeof opFmKeys.beginner
   | keyof typeof devFmKeys.beginner
-  | keyof typeof devOpsFmKeys.beginner
-  | keyof typeof defFmQuestions.beginner;
+  | keyof typeof devOpsFmKeys.beginner;
 export type FormBuilderIntermediateKeys =
   | keyof typeof eaFmKeys.intermediate
   | keyof typeof fnFmKeys.intermediate
@@ -362,8 +375,7 @@ export type FormBuilderIntermediateKeys =
   | keyof typeof stN2FmKeys.intermediate
   | keyof typeof opFmKeys.intermediate
   | keyof typeof devFmKeys.intermediate
-  | keyof typeof devOpsFmKeys.intermediate
-  | keyof typeof defSsQuestions.intermediate;
+  | keyof typeof devOpsFmKeys.intermediate;
 export type FormBuilderExpertKeys =
   | keyof typeof eaFmKeys.expert
   | keyof typeof fnFmKeys.expert
@@ -373,8 +385,7 @@ export type FormBuilderExpertKeys =
   | keyof typeof stN2FmKeys.expert
   | keyof typeof opFmKeys.expert
   | keyof typeof devFmKeys.expert
-  | keyof typeof devOpsFmKeys.expert
-  | keyof typeof defSsQuestions.expert;
+  | keyof typeof devOpsFmKeys.expert;
 export type FormBuilderQuestionsKeys =
   | FormBuildersBeginnerKeys
   | FormBuilderIntermediateKeys
@@ -388,8 +399,7 @@ export type CloudStorageBeginnerKeys =
   | keyof typeof stN2CsKeys.beginner
   | keyof typeof opCsKeys.beginner
   | keyof typeof devCsKeys.beginner
-  | keyof typeof devOpsCsKeys.beginner
-  | keyof typeof defCsQuestions.beginner;
+  | keyof typeof devOpsCsKeys.beginner;
 export type CloudStorageIntermediateKeys =
   | keyof typeof eaCsKeys.intermediate
   | keyof typeof fnCsKeys.intermediate
@@ -399,8 +409,7 @@ export type CloudStorageIntermediateKeys =
   | keyof typeof stN2CsKeys.intermediate
   | keyof typeof opCsKeys.intermediate
   | keyof typeof devCsKeys.intermediate
-  | keyof typeof devOpsCsKeys.intermediate
-  | keyof typeof defCsQuestions.intermediate;
+  | keyof typeof devOpsCsKeys.intermediate;
 export type CloudStorageExpertKeys =
   | keyof typeof eaCsKeys.expert
   | keyof typeof fnCsKeys.expert
@@ -410,8 +419,7 @@ export type CloudStorageExpertKeys =
   | keyof typeof stN2CsKeys.expert
   | keyof typeof opCsKeys.expert
   | keyof typeof devCsKeys.expert
-  | keyof typeof devOpsCsKeys.expert
-  | keyof typeof defCsQuestions.expert;
+  | keyof typeof devOpsCsKeys.expert;
 export type CloudStorageQuestionsKeys =
   | CloudStorageBeginnerKeys
   | CloudStorageIntermediateKeys
@@ -714,7 +722,7 @@ export type LLMQuestionsKeys =
   | LLMExpertKeys;
 export type OfficeAppsKeys =
   | DocsQuestionsKeys
-  | SpreasheetsQuestionsKeys
+  | SpreadsheetsQuestionsKeys
   | FormBuilderQuestionsKeys
   | CloudStorageQuestionsKeys;
 export type OfficePlatformsKeys =

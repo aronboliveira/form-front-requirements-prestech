@@ -1,14 +1,24 @@
-import { ClassesKey } from "../definitions/client/helpers";
+import {
+  ClassesKey,
+  CloudStorageQuestionsKeys,
+  DocsQuestionsKeys,
+  FormBuilderQuestionsKeys,
+  OptionFieldDescription,
+  SpreadsheetsQuestionsKeys,
+  TextFieldDescription,
+} from "../definitions/client/helpers";
 import {
   AiBlocks,
   OfficeBlocks,
   RangeCtxComponentNames,
   addQuestionsKey,
+  complexityLabel,
   roleQuestionsMap,
   roleType,
   techAppKey,
 } from "../definitions/foundations";
 import ObjectHelper from "../helpers/ObjectHelper";
+import { limits } from "../vars";
 //direct attributes and styles
 const inps = `form-control`,
   texts = `${inps} form-text-area`,
@@ -1222,47 +1232,58 @@ export const appGroupsDict: Record<RangeCtxComponentNames, addQuestionsKey> =
     Spreadsheets: "spreadSheets",
     StoragePlatforms: "cloudStorage",
   });
-export const eaDocKeys = ObjectHelper.deepFreeze({
+export const repeated: {
+  [K in "fmt" | "sum" | "tmp" | "mcr" | "big" | "arr" | "tbd"]: string;
+} = ObjectHelper.deepFreeze({
+  fmt: "Qual é sua familiaridade com formatações simples (negrito, itálico, cabeçalho)?",
+  sum: "Qual é sua familiaridade com funções matemáticas básicas (ex.: SOMA, MÉDIA, SOMASE)?",
+  tmp: "De que forma você aproveita modelos (templates) prontos para criar documentos básicos?",
+  mcr: "Que estratégias de scripts (VBA, AppScript, Python) você utiliza para automatizar tarefas repetitivas?",
+  big: "Com que frequência você integra ou exporta dados para ferramentas de BI (ex.: Power BI, Data Studio)?",
+  arr: "Você domina ou utiliza fórmulas matriciais (ex.: ÍNDICE, CORRESP) para cálculos avançados?",
+  tbd: "Como você utiliza tabelas dinâmicas para analisar grandes quantidades de dados?",
+});
+export const eaDocsKeys = ObjectHelper.deepFreeze({
   beginner: {
-    fmt: "Qual é sua familiaridade com formatações simples (negrito, itálico, cabeçalho)?",
-    cbb: "Como você utiliza comentários ou revisões em documentos colaborativos?",
+    fmt: repeated.fmt,
+    tmp: repeated.tmp,
+    cbb: "Como você gerencia a colaboração de documentos entre membros de equipes?",
     frq: "Com que frequência você compartilha documentos para edição com colegas?",
-    tmp: "De que forma você aproveita modelos (templates) prontos para criar documentos básicos?",
-    rdo: "O quanto você prefere responder com radio groups ou seleções rápidas?",
+    rdo: "Qual forma de resposta em formulário você tem preferência?",
     exp: "O quanto você é familizariado com exportações em diferentes formatos, como .pdf ou .txt?",
     prt: "Qual sua experiência em configurar documentos para impressão?",
     spl: "Como você separa seções ou capítulos em documentos longos?",
-    edt: "Você edita documentos colaborativos online ou offline?",
+    edt: "Você prefe edições de documentos online ou offline?",
     syn: "De que forma você sincroniza documentos em diferentes dispositivos?",
   },
   intermediate: {
     tpl: "Como você cria sumários automáticos ou referências cruzadas em documentos extensos?",
     rev: "De que maneira você controla alterações e histórico de versões para múltiplos revisores?",
-    mac: "Você utiliza macros ou automações para padronizar relatórios?",
-    sgn: "Qual é sua experiência em assinar documentos digitalmente?",
+    mac: "Quais tecnologias você utiliza parar criar macros ou automações para padronizar relatórios?",
+    sgn: "Com que frequência você assina documentos digitalmente?",
     stt: "Que tipo de estratégia e ferramentas você utiliza para formatação do layout de edição?",
     idx: "Qual é a sua familaridade gerando índices remissivos automaticamente?",
     fmt: "De que maneira você utiliza estilos personalizados para padronizar relatórios?",
     crt: "Com que frequência você edita documentos colaborativos com permissões restritas por usuário?",
     exp: "Qual sua experiência em exportar documentos com configurações avançadas (marcas d’água, proteção)?",
-    api: "Você já integrou editores de texto com APIs externas (ex.: para preenchimento automático)?",
+    api: "Com que frequência você integra editores de texto com APIs externas (ex.: para preenchimento automático)?",
   },
   expert: {
-    vba: "Como você desenvolve scripts VBA ou similares para automatizar processos complexos no editor de texto?",
-    sec: "O quanto você lida com permissões avançadas, criptografia ou restrições de edição?",
+    vba: repeated.mcr,
+    sec: "Com que frequência você lida com permissões avançadas, criptografia ou restrições de edição?",
     stl: "Descreva como você gerencia estilos de parágrafo, índice remissivo e formatação de layout altamente customizada.",
     big: "Com que frequência você integra editores de texto a sistemas externos (APIs, bancos de dados)?",
     adv: "Que técnicas avançadas (campos dinâmicos, mala direta) você utiliza em documentos corporativos?",
     mlc: "Você já aplicou aprendizado de máquina para gerar ou analisar texto automaticamente?",
-    int: "Como você utiliza integração com plataformas como SharePoint ou OneDrive para gerenciamento de documentos?",
-    tem: "Você gerencia templates corporativos com restrições para diferentes departamentos?",
+    int: "Com que frequência integração com plataformas como SharePoint, OneDrive ou GitHub para gerenciamento de documentos?",
+    tem: "Com que frequência você gerencia templates corporativos com restrições para diferentes departamentos?",
     dig: "De que forma você implementa processos de assinatura digital ou certificação de documentos?",
     rpt: "Qual sua experiência em gerar relatórios analíticos automatizados com base em texto estruturado?",
   },
 });
 export const eaSsKeys = ObjectHelper.deepFreeze({
   beginner: {
-    sum: "Qual é sua familiaridade com funções básicas (SOMA, MÉDIA) e formatação de células?",
+    sum: repeated.sum,
     frq: "Com que frequência você configura planilhas para controle de dados simples?",
     col: "Como você colore ou categoriza células para destacar informações importantes?",
     spr: "Você prefere responder perguntas por meio de seletores (radio, select) ou textos longos?",
@@ -1274,7 +1295,7 @@ export const eaSsKeys = ObjectHelper.deepFreeze({
     shs: "Você trabalha frequentemente com abas múltiplas em planilhas?",
   },
   intermediate: {
-    piv: "Como você utiliza tabelas dinâmicas para analisar grandes quantidades de dados?",
+    piv: repeated.tbd,
     adv: "Com que frequência você integra dados de outras fontes (CSV, BD) na planilha?",
     prc: "Em que frequência você cria fórmulas intermediárias (SE, PROCV, CONCAT) para automação?",
     cht: "Que tipos de gráficos você costuma gerar para visualização?",
@@ -1286,13 +1307,13 @@ export const eaSsKeys = ObjectHelper.deepFreeze({
     aud: "De que forma você audita ou depura fórmulas para corrigir erros?",
   },
   expert: {
-    mcr: "Que estratégias de macros (VBA, AppScript) você utiliza para automatizar tarefas repetitivas?",
-    big: "Com que frequência você se integra a BI ou dashboards externos (Power BI, Data Studio)?",
-    arr: "De que forma você trabalha com fórmulas matriciais ou funções avançadas (ÍNDICE, CORRESP)?",
+    mcr: repeated.mcr,
+    big: repeated.big,
+    arr: repeated.arr,
     dbi: "Descreva como você conecta planilhas a bancos de dados SQL ou APIs, se aplicável.",
     prf: "Com que frequência você faz tuning de performance em planilhas com dezenas de abas e fórmulas complexas?",
-    sch: "Você já utilizou scripts para agendar atualizações automáticas de dados?",
-    mlc: "Como você aplica aprendizado de máquina para prever ou categorizar dados?",
+    sch: "Com que frequência você utiliza scripts para agendar atualizações automáticas de dados?",
+    mlc: "Você utiliza Aprendizado de máquina para prever ou categorizar dados?",
     api: "De que forma você utiliza APIs para buscar ou enviar dados automaticamente?",
     adv: "Que práticas avançadas você utiliza para validar e limpar grandes volumes de dados?",
     rpt: "Detalhe como você cria relatórios interativos integrando gráficos e controles (ex.: slicers)?",
@@ -1531,7 +1552,7 @@ export const eaLlmKeys = ObjectHelper.deepFreeze({
 export const executivoAdministrativoAddQuestions = ObjectHelper.deepFreeze([
   "executivoAdministrativo",
   new Map([
-    ["docs", eaDocKeys as any],
+    ["docs", eaDocsKeys as any],
     ["spreadSheets", eaSsKeys],
     ["formBuilders", eaFmKeys],
     ["cloudStorage", eaCsKeys],
@@ -1545,23 +1566,23 @@ export const executivoAdministrativoAddQuestions = ObjectHelper.deepFreeze([
     ["llms", eaLlmKeys],
   ]),
 ]);
-export const fnDocKeys = ObjectHelper.deepFreeze({
+export const fnDocsKeys = ObjectHelper.deepFreeze({
   beginner: {
     frm: "Como você elabora documentos financeiros simples (propostas, orçamentos) e formata texto básico?",
     ref: "De que forma você insere referências internas ou notas explicativas em documentos?",
     rev: "Com que frequência você revisa contratos ou relatórios de texto para ver se há erros de digitação ou valores trocados?",
-    upg: "Você já atualizou versões de documentos financeiros de um mês para outro? (ex.: relatório de fechamento)",
-    cmt: "Como você adiciona comentários para o time de finanças em relatórios ou documentos?",
+    upg: "Quais destas ferramentas você utiliza para gerenciar versões de documentos e relatórios?",
+    cmt: "Quais recursos você utiliza para comentar e fazer sugestões em documentos e relatórios?",
   },
   intermediate: {
-    stl: "Qual é sua prática para padronizar estilos (cabeçalho, corpo, rodapé) em relatórios financeiros intermediários?",
+    stl: "Quais são as suas práticas para padronizar estilos (cabeçalho, corpo, rodapé) em relatórios financeiros intermediários?",
     trc: "Como você controla versões quando várias pessoas revisam o mesmo documento simultaneamente?",
-    ass: "Você já configurou assinatura digital em relatórios financeiros? Como?",
+    ast: "Você já configurou assinatura digital em relatórios financeiros? Como?",
     dbl: "De que maneira você integra dados de planilhas ou bancos de dados em documentos de texto?",
     alt: "Você faz uso de texto alternativo ou marcações adicionais para facilitar auditorias? (Sim/Não)",
   },
   expert: {
-    mac: "Você utiliza macros ou scripts avançados (VBA, Python) para gerar relatórios financeiros automaticamente?",
+    mac: repeated.mcr,
     cmp: "Como você compara documentos de versões diferentes para identificar mudanças? (ex.: diferenças de datas, valores)",
     rpt: "De que forma você cria relatórios consolidados extensos (ex.: de desempenho financeiro anual) com sumário, índice e seções detalhadas?",
     seg: "Você implementa permissões avançadas ou encriptação para relatórios confidenciais?",
@@ -1570,23 +1591,23 @@ export const fnDocKeys = ObjectHelper.deepFreeze({
 });
 export const fnSsKeys = ObjectHelper.deepFreeze({
   beginner: {
-    sum: "Qual é sua familiaridade com funções financeiras básicas (ex.: SOMA, MÉDIA, SOMASE)?",
+    sum: repeated.sum,
     frq: "Com que frequência você configura planilhas para registrar receitas e despesas?",
     col: "Como você marca células com cores para diferenciar gastos fixos de variáveis?",
     cat: "De que modo você categoriza transações (alimentação, transporte, etc.) de forma simples?",
     fil: "Como você utiliza filtros básicos para visualizar apenas certos períodos ou tipos de despesas?",
   },
   intermediate: {
-    tab: "Você costuma criar Tabelas Dinâmicas para análise de custos ou receitas mensais/anuais?",
-    adv: "Como você integra planilhas financeiras a outras fontes de dados, como extratos bancários (CSV)?",
-    dev: "Em que frequência você usa fórmulas intermediárias (PROCV, SE, TIR) para simulações financeiras?",
-    cht: "Que tipos de gráficos (pizza, barras) você gera para ilustrar resultados financeiros?",
-    val: "Como você valida dados de entrada (ex.: datas, valores > 0) para evitar erros em análises financeiras?",
+    tab: repeated.tbd,
+    adv: "Como você integra planilhas financeiras a outras fontes de dados, como extratos bancários?",
+    dev: "Com que frequência você usa fórmulas intermediárias (PROCV, SE, TIR) para simulações financeiras?",
+    cht: "Que tipos de gráficos você gera para ilustrar resultados financeiros?",
+    val: "Quais dessa técnicas você utilizar para validar dados de entrada para evitar erros em análises financeiras?",
   },
   expert: {
-    mcr: "Quais macros ou scripts avançados você desenvolve para automatizar consolidação de múltiplas abas?",
-    big: "Com que frequência você exporta dados para BI ou ferramentas de previsão de fluxo de caixa?",
-    arr: "Você domina fórmulas matriciais (ex.: ÍNDICE e CORRESP para localizar valores complexos)?",
+    big: repeated.big,
+    arr: repeated.arr,
+    mcr: repeated.mcr,
     dbi: "De que forma você conecta planilhas a bancos de dados ou APIs para buscar cotações ou indicadores?",
     aud: "Como você audita fórmulas e checa consistência de resultados em planilhas de grande porte?",
   },
@@ -1824,7 +1845,7 @@ export const fnLlmKeys = ObjectHelper.deepFreeze({
 export const financeiroAddQuestions = ObjectHelper.deepFreeze([
   "financeiro",
   new Map([
-    ["docs", fnDocKeys as any],
+    ["docs", fnDocsKeys as any],
     ["spreadSheets", fnSsKeys],
     ["formBuilders", fnFmKeys],
     ["cloudStorage", fnCsKeys],
@@ -1840,10 +1861,10 @@ export const financeiroAddQuestions = ObjectHelper.deepFreeze([
 ]);
 export const cmDocsKeys = ObjectHelper.deepFreeze({
   beginner: {
-    rfp: "Como você elabora propostas comerciais simples (ex.: orçamentos, RFP) e formata o texto?",
+    rfp: "Quais técnicas de formatação você prioriza no design gráficos de documentos para propostas comerciais?",
     cpl: "Com que frequência você compila dados de vendas ou contatos em documentos textuais?",
-    lbl: "Você utiliza marcadores, tabelas ou seções para organizar informações de leads e produtos?",
-    sig: "Você já inseriu assinaturas digitais ou eletrônicas em contratos comerciais básicos?",
+    lbl: "Quais destas técnicas você utiliza para realçar segmentos de textos?",
+    sig: "Com que frequência você utiliza assinaturas digitais?",
     hst: "De que forma você mantém histórico de versões de ofertas enviadas a clientes?",
   },
   intermediate: {
@@ -1851,36 +1872,36 @@ export const cmDocsKeys = ObjectHelper.deepFreeze({
     rev: "De que modo você controla comentários e revisões quando vários vendedores atualizam o mesmo arquivo?",
     mac: "Você utiliza macros ou scripts para preencher automaticamente dados de clientes em contratos?",
     sty: "Qual sua prática para padronizar estilos e layout em documentos de ofertas comerciais?",
-    adv: "Você já exporta esses documentos para PDFs com senhas ou permissões restritas?",
+    adv: "Com que frequência você exporta os documentos em formato PDF?",
   },
   expert: {
     api: "De que forma você integra editores de texto a sistemas comerciais (ex.: CRM) para geração automática de contratos?",
     cnd: "Como você lida com campos dinâmicos e mala direta para dezenas de clientes simultaneamente?",
-    sec: "O quanto você aplica criptografia ou permissões avançadas em documentos de alto valor (grandes contratos)?",
+    sec: "Com que frequência você aplica criptografia ou permissões avançadas em documentos de alto valor?",
     cmp: "Você faz comparação de versões para destacar alterações críticas em propostas?",
     mlc: "Já aplicou IA para redigir ou revisar cláusulas de documentos complexos (com várias condições)?",
   },
 });
 export const cmSsKeys = ObjectHelper.deepFreeze({
   beginner: {
-    lis: "Como você mantém listas de leads ou clientes em planilhas simples?",
+    sum: repeated.sum,
+    lis: "Quais destas técnicas você utiliza para manter listas de leads ou clientes em planilhas simples?",
     pro: "Você usa planilhas para projeções básicas de vendas mensais?",
-    seg: "Como você segmenta clientes (ex.: região, setor) usando filtros básicos?",
+    seg: "Quais estratégia você usa para filtrar e segmentar clientes?",
     col: "De que modo você realça linhas ou colunas importantes (ex.: cliente prioritário)?",
-    sum: "Você aplica SOMA, MÉDIA para ver resultados gerais de vendas em uma planilha?",
   },
   intermediate: {
-    piv: "Qual sua experiência em criar Tabelas Dinâmicas para análise de pipeline e funil de vendas?",
+    piv: repeated.tbd,
     adv: "Você integra planilhas com CRM ou outras fontes para atualizar dados de vendas (Sim/Não)?",
     for: "Com que frequência você utiliza fórmulas intermediárias (PROCV, SE, SOMASE) para acompanhamento de metas?",
     cht: "Que gráficos você gera para ilustrar desempenho comercial ou comparação de metas?",
     col: "Como você colabora com outros vendedores ou gerentes numa única planilha, sem sobrescrever dados?",
   },
   expert: {
-    mac: "Você desenvolve macros ou scripts para automatizar consolidação de vários relatórios de vendas?",
-    big: "Em que frequência você envia dados para ferramentas de BI ou recebe deles?",
+    mac: repeated.mcr,
+    big: repeated.big,
     seg: "Você cria segmentações avançadas e dashboards usando planilhas?",
-    dbi: "De que maneira você puxa informações de bancos de dados ou APIs (ex.: taxas de câmbio, cotações)?",
+    dbi: "De que maneira você obtém informações de bancos de dados ou APIs (ex.: taxas de câmbio, cotações)?",
     cmp: "Como você compara previsões e resultados reais em planilhas complexas, envolvendo vários times?",
   },
 });
@@ -2136,14 +2157,14 @@ export const mktDocsKeys = ObjectHelper.deepFreeze({
     mch: "Como você redige materiais de marketing básicos (flyers, comunicados) com formatação simples?",
     chk: "Você utiliza checklists para revisar ortografia, imagens e coerência nos textos de marketing?",
     pln: "Com que frequência você planeja conteúdo textual (ex.: posts) e compila num doc colaborativo?",
-    cmd: "De que modo você adiciona comentários para equipe aprovar ou ajustar slogans e copy?",
-    ext: "Você exporta esses documentos para PDF ou outros formatos para distribuição?",
+    cmd: "De que modo você adiciona comentários, sugestões e versões para aprovação?",
+    ext: "Com que frequência você exporta documentos no formato PDF?",
   },
   intermediate: {
     mac: "Você criou macros ou modelos padronizados (layout, sumário) para relatórios de campanha?",
     rev: "De que forma você gerencia revisões vindas de gestores, designers e redatores ao mesmo tempo?",
-    stl: "Você padroniza estilos (ex.: heading para títulos, citação para depoimentos) em documentos de marketing?",
-    mlt: "Você já usou mala direta (ex.: para e-mails de campanha em massa)?",
+    stl: "Quais destes recursos gráficos você utiliza para destacar dados em documentos?",
+    mlt: "Com que frequência você utiliza mala direta (ex.: para e-mails de campanha em massa)?",
     doc: "Como você vincula partes do texto a dados externos (ex.: planilhas de resultados)?",
   },
   expert: {
@@ -2156,23 +2177,23 @@ export const mktDocsKeys = ObjectHelper.deepFreeze({
 });
 export const mktSsKeys = ObjectHelper.deepFreeze({
   beginner: {
-    lis: "Como você organiza listas de leads ou segmentos de público em planilhas simples?",
+    sum: repeated.sum,
+    lis: "Quais técnicas você utiliza para organizar listas de leads ou segmentos de público em planilhas simples?",
     gcl: "Você registra gastos de campanhas (ex.: Google Ads) em planilhas para acompanhar budget básico?",
+    fil: "Quais desses recursos você utiliza para separar realçar dados de diferentes campanhas?",
     cmp: "De que forma você compara métricas (cliques, impressões) manualmente em células?",
-    fil: "Você utiliza filtros e cores para separar dados de diferentes campanhas ou datas?",
-    sum: "Qual é sua experiência com SOMA, MÉDIA para analisar resultados iniciais?",
   },
   intermediate: {
-    piv: "Você usa Tabelas Dinâmicas para ver performance por canal (ex.: Facebook, Instagram)?",
-    adv: "Como você integra a planilha com outras fontes (CSV exportado de plataformas de ads)?",
+    piv: repeated.tbd,
     frq: "Você faz fórmulas para calcular CPC (custo por clique), CPA (custo por aquisição) e CTR (taxa de cliques)?",
     cht: "Que gráficos você gera para mostrar crescimento de engajamento ou leads?",
-    col: "Como você colabora com a equipe (ex.: cada um edita uma aba) evitando conflitos?",
+    adv: "Como você integra a planilha com outras fontes (CSV exportado de plataformas de ads)?",
+    col: "Como você colabora com a equipe evitando conflitos de edição?",
   },
   expert: {
-    mcr: "Você desenvolve macros para consolidar dados de múltiplas campanhas em uma aba principal?",
-    big: "Em que frequência você exporta resultados para ferramentas de BI (ex.: Data Studio, Power BI)?",
-    arr: "Como você utiliza funções avançadas (ÍNDICE, CORRESP) para cruzar resultados de diversos relatórios?",
+    mcr: repeated.mcr,
+    big: repeated.big,
+    arr: repeated.arr,
     dbi: "Você conecta planilhas a bancos de dados (ex.: MySQL, BigQuery) para analisar performance de marketing?",
     prf: "De que forma você faz tuning em planilhas gigantes (milhares de linhas de keywords)?",
   },
@@ -2424,24 +2445,24 @@ export const marketingAddQuestions = ObjectHelper.deepFreeze([
     ["llms", mktLlmsKeys],
   ]),
 ]);
-export const stN1DocKeys = ObjectHelper.deepFreeze({
+export const stN1DocsKeys = ObjectHelper.deepFreeze({
   beginner: {
-    fmt: "Como você orienta usuários sobre formatações básicas (negrito, itálico) em editores de texto?",
+    fmt: repeated.fmt,
     syn: "De que forma você ensina a sincronizar documentos na nuvem ou em rede local?",
     cpt: "Com que frequência você auxilia na compatibilidade de arquivos entre diferentes versões do software?",
     tmp: "Você recomenda modelos prontos para usuários inexperientes em edição de texto? (Sim/Não)",
-    col: "Como você demonstra a colaboração simultânea (multiusuário) em um mesmo documento?",
+    col: "Como você analisa a colaboração simultânea (multiusuário) em um mesmo documento?",
   },
   intermediate: {
-    mac: "Em que nível você utiliza macros ou automações simples para padronizar documentos?",
+    mac: repeated.mcr,
     rev: "Que estratégias você adota para controlar revisões e histórico de versões com equipes maiores?",
     sec: "Como você lida com a proteção de documentos via senhas ou restrição de edição?",
-    stl: "Você auxilia na configuração de estilos de texto (títulos, cabeçalhos) e sumários automáticos?",
+    stl: "Quais ferramentas de estilo você apresenta para a configuração de estilos de texto (títulos, cabeçalhos) e sumários automáticos?",
     prb: "Qual é sua abordagem ao diagnosticar problemas intermediários de layout ou formatação avançada?",
   },
   expert: {
-    scr: "Como você cria ou mantém scripts (VBA, por exemplo) para automatizar tarefas complexas em documentos?",
-    cpy: "Você gerencia integrações com outras ferramentas (ex.: software de conferência)? Explique um caso.",
+    scr: repeated.mcr,
+    cpy: "Quais destas ferramentas você instrui para o controle de versão dos documentos colaborativos?",
     idx: "Como você instrui usuários a criarem índices remissivos ou seções avançadas em documentos extensos?",
     adv: "De que forma você soluciona conflitos de permissões avançadas e restrições de edição em rede?",
     dbi: "Com que frequência você integra documentos a bancos de dados ou APIs (ex.: mail merge massivo)?",
@@ -2449,24 +2470,24 @@ export const stN1DocKeys = ObjectHelper.deepFreeze({
 });
 export const stN1SsKeys = ObjectHelper.deepFreeze({
   beginner: {
-    sum: "Como você auxilia usuários na criação de funções básicas (SOMA, MÉDIA) em planilhas?",
-    frm: "Em que nível você explica a formatação de células (cores, bordas) para destacar dados?",
-    fil: "De que forma você ensina a filtrar ou classificar dados de modo simples?",
-    cbt: "Você costuma configurar proteções básicas de célula para evitar alterações indevidas? (Sim/Não)",
+    sum: repeated.sum,
+    frm: "Quais destas técnicas de layout de formatação de células você recomendaria a um usuário para destacar dados?",
+    fil: "Quais destas técnicas você recomendaria a um usuário para filtrar ou classificar dados de modo simples?",
+    cbt: "Quais destes recursos você utiliza para configurar proteções básicas de célula para evitar alterações indevidas?",
     con: "Como você orienta a colaboração simultânea em uma planilha (ex.: várias pessoas editando)?",
   },
   intermediate: {
     piv: "Qual é sua abordagem para ajudar usuários a criarem tabelas dinâmicas de complexidade média?",
-    fml: "Como você instrui sobre funções intermediárias (SE, PROCV) para automação de cálculos?",
+    fml: "Qual é a sua familiaridade com funções (SE, PROCV) para automação de cálculos multidimensionais e lógica?",
     cht: "Que tipos de gráficos você recomenda para análises em planilhas de nível intermediário?",
-    val: "Você configura validações de dados (listas, restrições) para evitar entradas incorretas?",
+    val: "Quais destas técnicas você recomenda para configurar validações de dados e evitar entradas incorretas?",
     net: "De que forma você gerencia possíveis conflitos de versão ao trabalhar via rede ou nuvem?",
   },
   expert: {
-    mcr: "Como você soluciona problemas avançados de macros (VBA/AppScript) e automatizações grandes?",
+    mcr: repeated.mcr,
     sec: "Qual sua experiência em configurar permissões avançadas em planilhas compartilhadas (ex.: range locking)?",
-    prf: "O que você faz para otimizar performance em planilhas extensas com dezenas de abas e fórmulas aninhadas?",
-    idx: "Você integra planilhas com sistemas externos (ex.: consultas SQL, scripts Python)? Explique brevemente.",
+    prf: "Quais destas técnicas você utiliza para otimizar performance em planilhas extensas com dezenas de abas e fórmulas aninhadas?",
+    idx: "Com quais serviços externos você integra as suas planilhas?",
     aud: "De que forma você efetua auditoria em planilhas complexas para rastrear erros ou mudanças não autorizadas?",
   },
 });
@@ -2703,7 +2724,7 @@ export const stN1LlmsKeys = ObjectHelper.deepFreeze({
 export const suporteTecnicoN1AddQuestions = ObjectHelper.deepFreeze([
   "suporteTecnicoN1",
   new Map([
-    ["docs", stN1DocKeys as any],
+    ["docs", stN1DocsKeys as any],
     ["spreadSheets", stN1SsKeys],
     ["formBuilders", stN1FmKeys],
     ["cloudStorage", stN1CsKeys],
@@ -2719,48 +2740,48 @@ export const suporteTecnicoN1AddQuestions = ObjectHelper.deepFreeze([
 ]);
 export const stN2DocsKeys = ObjectHelper.deepFreeze({
   beginner: {
-    syn: "Como você auxilia na sincronização de arquivos .doc entre servidores ou ferramentas na nuvem?",
-    cmp: "Você orienta sobre compatibilidade de versões (DOCX vs. versões antigas) em um nível básico?",
-    plg: "Com que frequência você instala ou configura plugins básicos de formatação para usuários?",
-    pmt: "Você consegue intervir em problemas de permissão (arquivos bloqueados, somente leitura) em rede?",
+    syn: "Quais destas ferramentas você utiliza para a sincronização de arquivos .doc entre servidores ou ferramentas na nuvem?",
+    cmp: "Quais destas ferramentas de conversão de formatos de documentos você recomendaria para um usuário?",
+    plg: "Com que frequência você instala ou configura plugins básicos de formatação de documentos para usuários?",
+    pmt: "Quais ferramentas você utiliza para intervir em problemas de permissão (arquivos bloqueados, somente leitura) em rede?",
     ori: "Que orientações básicas você dá quando o documento é corrompido ou não abre corretamente?",
   },
   intermediate: {
-    mac: "De que forma você implementa macros intermediárias (VBA, scripts) para customizações em DOC?",
+    mac: repeated.mcr,
     lay: "Como você soluciona problemas de layout avançado (sumário, seções) quando afeta o fluxo do documento?",
-    col: "Você gerencia permissões de colaboração (rastreamento de alterações, edições simultâneas) em ambientes corporativos?",
+    col: "Como você recomenda gerenciar a colaboração (rastreamento de alterações, edições simultâneas) em ambientes corporativos?",
     idx: "Como você orienta a criação de índices remissivos ou referências cruzadas para documentos extensos?",
     adv: "Qual sua abordagem para logs ou trilhas de auditoria em edição de documentos compartilhados?",
   },
   expert: {
-    vba: "Como você desenvolve e mantém rotinas VBA complexas para automação de processos de texto?",
+    vba: repeated.mcr,
     enc: "Em que nível você lida com criptografia avançada de documentos e permissões de usuários distintos?",
-    srv: "Descreva como você configura servidores de documentos (ex.: SharePoint) para edição simultânea sem conflito.",
-    api: "Você integra APIs ou complementos externos (ex.: Scripts com Python) para manipular documentos massivamente?",
-    mig: "Qual sua estratégia ao migrar docs de um sistema legado (ex.: Lotus) para plataformas atuais, mantendo formatação?",
+    srv: "Descreva pontos críticos na configuração de servidores especializados em persistência de documentos (ex.: SharePoint), proporcionando edição simultânea sem conflito.",
+    api: "Qual é a sua familiaridade na integração com APIs ou complementos externos (ex.: Scripts com Python) para manipular documentos massivamente?",
+    mig: "Qual sua estratégia ao migrar docs de um sistema legado para plataformas atuais, mantendo formatação?",
   },
 });
 export const stN2SsKeys = ObjectHelper.deepFreeze({
   beginner: {
-    net: "Como você orienta a configuração de planilhas em rede local ou via ferramentas de compartilhamento (Drive, OneDrive)?",
-    fmz: "Você ajusta formatações que podem quebrar fórmulas ao abrir planilhas em versões distintas?",
-    cft: "Como você faz conferência de dados em planilhas compartilhadas, resolvendo conflitos básicos de edição?",
+    net: "Quais destas técnicas você orienta a configuração de planilhas em rede local ou via ferramentas de compartilhamento (Drive, OneDrive)?",
+    fmz: "Quais destas técnicas você usa para evitar formatações que podem quebrar fórmulas ao abrir planilhas em versões distintas?",
+    cft: "Quais destas técnicas você recomenda para fazer a conferência de dados em planilhas compartilhadas, resolvendo conflitos básicos de edição?",
     csd: "Em que frequência você lida com consultas simples (ex.: importação CSV) para dados de planilha?",
-    bak: "Qual a prática recomendada para backups diários de planilhas importantes em N2?",
+    bak: "Quais destas práticas você recomenda para backups diários de planilhas importantes?",
   },
   intermediate: {
-    piv: "Você intervém na criação ou troubleshooting de Tabelas Dinâmicas com múltiplas fontes de dados?",
-    lnk: "Como você soluciona problemas em planilhas que importam/ligam dados de outras pastas de trabalho?",
-    val: "Você configura validações e restrições (listas suspensas, intervalos bloqueados) para prevenir erros?",
-    scp: "De que forma você utiliza scripts (Apps Script, macros intermediárias) para integrações pontuais?",
+    piv: "Quais destas técnicas você utiliza para intervir na criação ou troubleshooting de Tabelas Dinâmicas com múltiplas fontes de dados?",
+    lnk: "Quais destas técnicas você utiliza para solucionar problemas em planilhas que importam/ligam dados de outras pastas de trabalho?",
+    val: "Quais destas técnicas você usa para configurar validações e restrições para prevenir erros em planilhas?",
+    scp: "Quais formatos de scripts você usa para integrações pontuais em planilhas?",
     rep: "Como você gera relatórios semestrais ou consolida planilhas vindas de diferentes setores (ex.: contábil, vendas)?",
   },
   expert: {
-    arr: "Você trabalha com funções matriciais avançadas (ex.: MATRIZDINAMICA, FÓRMULAS aninhadas complexas)?",
+    arr: "Qual é o seu nível de familiaridade com funções matriciais avançadas (ex.: MATRIZDINAMICA, Fórmulas aninhadas complexas)?",
     sec: "Qual é sua prática ao configurar segurança (proteção de intervalos, permissões de usuário) em grandes planilhas de rede?",
-    mcr: "Como você depura macros avançadas (VBA) que causam lentidão ou bloqueiam recursos compartilhados?",
+    mcr: "Quais destas técnicas para depurar macros avançadas (VBA) que causam lentidão ou bloqueiam recursos compartilhados?",
     big: "Com que frequência você conecta planilhas a bancos de dados corporativos via ODBC/SQL e soluciona problemas de acesso?",
-    par: "Descreva um caso em que você realizou tuning de performance em planilhas gigantes (milhares de linhas ou abas).",
+    par: "Descreva técnicas que você utiliza para tuning de performance em planilhas muito grandes (milhares de linhas ou abas).",
   },
 });
 export const stN2FmKeys = ObjectHelper.deepFreeze({
@@ -3019,32 +3040,32 @@ export const opDocsKeys = ObjectHelper.deepFreeze({
     pat: "Qual sua prática para padronizar caminhos de salvamento (servidor/nuvem) e definir permissões de pasta?",
   },
   intermediate: {
-    gpo: "Você aplica GPOs ou scripts avançados para automatizar configurações de editores de texto?",
+    gpo: "Quais destas ferramentas você utiliza para automatizar configurações de editores de texto?",
     tro: "Como você soluciona problemas de lentidão ao abrir documentos via rede (latência, DNS, compartilhamentos)?",
     vrs: "Você gerencia versionamento centralizado (ex.: SharePoint) e resolve conflitos de check-in/out?",
     scr: "De que forma você monitora logs de acesso e edição para auditoria de compliance em documentos?",
     pol: "Como você define políticas de backup e snapshot para evitar perdas de dados em arquivos críticos?",
   },
   expert: {
-    scc: "Você customiza instalações em larga escala (SCCM) de editores de texto? Descreva brevemente.",
-    dlp: "Como você integra soluções de DLP (Data Loss Prevention) para docs sensíveis na rede corporativa?",
+    scc: "Quais destas técnicas e ferramentas você utiliza nas instalações em larga escala (SCCM) de editores de texto?.",
+    dlp: "Como você integra soluções de DLP para docs sensíveis na rede corporativa?",
     dfs: "Qual sua abordagem para replicação DFS entre múltiplos sites, evitando corrupção de documentos?",
-    off: "Você gerencia merges offline/online e problemas de credenciais em cenários desconectados?",
+    off: "Como você gerencia merges offline/online e problemas de credenciais em cenários desconectados?",
     iso: "De que forma você garante conformidade (ISO, PCI) para manipulação segura de documentos corporativos?",
   },
 });
 export const opSsKeys = ObjectHelper.deepFreeze({
   beginner: {
-    net: "Como você habilita o acesso a planilhas compartilhadas via rede local para a equipe?",
-    per: "De que forma você configura permissões de pastas compartilhadas, assegurando acesso controlado às planilhas?",
-    cpy: "Você orienta criação de cópias de planilhas para backup rápido no dia a dia? (Sim/Não)",
-    bkp: "Qual é sua prática de backup simples para evitar perda em planilhas armazenadas em rede?",
+    net: "Quais técnicas você usa para habilitar o acesso a planilhas compartilhadas via rede local para a equipe?",
+    per: "De que forma você configura permissões de pastas e arquivos compartilhados, assegurando acesso controlado às planilhas?",
+    cpy: "Quais técnicas você recomenda para orientar a criação de cópias de planilhas para backup rápido no dia a dia?",
+    bkp: "Quais práticas de backup simples você aplica para evitar perda em planilhas armazenadas em rede?",
     col: "Com que frequência você ensina colaboração simultânea (co-edit) em Excel/Sheets via servidor ou Drive?",
   },
   intermediate: {
-    sec: "Como você implementa senhas ou criptografia de arquivos e resolve falhas de abertura em rede?",
-    mac: "Você soluciona macros de nível intermediário e define locais confiáveis para não bloquear conteúdo?",
-    scp: "Em que forma você utiliza scripts (GPO, etc.) para instalar complementos de planilha nos computadores do setor?",
+    sec: "Quais recursos você usa para implementar senhas ou criptografia de arquivos relacionados a redes?",
+    mac: "Quais técnicas você utiliza para depurar macros de nível intermediário?",
+    scp: "Em que forma você utiliza scripts para instalar complementos de planilha nos computadores do setor?",
     dmp: "Você já realizou dump de dados de um BD para planilhas e gerenciou performance no processo?",
     conf: "Qual sua abordagem ao resolver conflitos de versão quando vários usuários salvam simultaneamente?",
   },
@@ -3052,8 +3073,8 @@ export const opSsKeys = ObjectHelper.deepFreeze({
     adv: "Como você automatiza instalações em larga escala (SCCM) de pacotes de planilha e gerencia atualizações?",
     big: "Você integra planilhas com fontes massivas de dados (BI, data warehouse) resolvendo latência e caches?",
     log: "De que forma você audita logs de acesso ou macros para cumprir normas de compliance em planilhas críticas?",
-    res: "Você gerencia restauração de planilhas corrompidas? Dê um exemplo complexo e como resolveu.",
-    ref: "Como você lida com referências externas e macros avançadas, evitando loops ou travamentos na rede?",
+    res: "Quais técnicas você usa para gerenciar a restauração de planilhas corrompidas?",
+    ref: "Quais técnicas você usa para tratar referências externas e macros avançadas causando loops ou travamentos na rede?",
   },
 });
 export const opFmKeys = ObjectHelper.deepFreeze({
@@ -3306,15 +3327,15 @@ export const operatorioAddQuestions = ObjectHelper.deepFreeze([
 export const devDocsKeys = ObjectHelper.deepFreeze({
   beginner: {
     api: "Como você costuma documentar APIs ou funções simples diretamente no código ou em arquivos de texto?",
-    pat: "Você segue algum padrão (ex.: Markdown) para registrar instruções de compilação ou uso?",
-    col: "Em que frequência você colabora em tempo real no mesmo documento (Google Docs, etc.) com sua equipe?",
+    pat: "Quais destes formatos você utiliza para registrar instruções de compilação ou uso?",
+    col: "Qual é o seu nível de experiência em compartilhamento de arquivos e versões de trabalhos?",
     ver: "Como você mantém histórico básico (versionamento) de documentos relacionados ao projeto?",
-    sty: "De que forma você padroniza estilos de anotações (ex.: convenções de code style) no doc?",
+    sty: "De que forma você padroniza estilos de anotações nos arquivos?",
   },
   intermediate: {
-    rfc: "Você costuma criar RFCs (Request for Comments) ou especificações técnicas intermediárias?",
-    sum: "Em que nível você gera sumários automáticos e referências cruzadas para guias técnicos maiores?",
-    dev: "Você automatiza ou gera relatórios de Doxygen/JSDoc para documentação de funções/classes?",
+    rfc: "Com que frequência você costuma criar RFCs (Request for Comments) ou especificações técnicas intermediárias?",
+    sum: "Quais ferramentas você utiliza para gerar sumários automáticos e referências cruzadas para guias técnicos maiores?",
+    dev: "Qual é o seu nível de experiência com bibliotecas de testes automáticos?",
     rev: "Como você lida com revisões colaborativas, incluindo comentários e sugestões de colegas?",
     pbl: "De que forma você publica ou disponibiliza esses documentos para equipes de QA, Ops?",
   },
@@ -3322,31 +3343,31 @@ export const devDocsKeys = ObjectHelper.deepFreeze({
     scp: "Você integra scripts que convertem doc em wiki/HTML/PDF automaticamente para distribuições?",
     col: "Como você mantém controle rigoroso de alterações em docs extensos (manual de arquitetura) via Git?",
     arc: "De que maneira você descreve arquitetura de software avançada (ex.: diagramas UML) em docs e versiona?",
-    int: "Você faz integração com ferramentas de doc automatizada (ex.: MkDocs, Sphinx) e resolve conflitos de merge?",
-    pol: "Qual sua estratégia para politicar normas de doc (ex.: doc coverage) e garantir conformidade do time?",
+    int: "Com que frequência você faz a integração com ferramentas de doc automatizada (ex.: MkDocs, Sphinx)?",
+    pol: "Descreva livremente as suas políticas e padrões de documentação para lidar com conflitos de merge e pull requests",
   },
 });
 export const devSsKeys = ObjectHelper.deepFreeze({
   beginner: {
     bug: "Você utiliza planilhas para rastrear bugs ou features simples, antes de migrar a um sistema de issue tracking?",
-    cal: "Como você faz cálculos de estimativas (ex.: datas de entrega) em planilhas básicas?",
+    cal: "Quais técnicas você utiliza para fazer cálculos de estimativas (ex.: datas de entrega) em planilhas básicas?",
     chg: "Em que frequência você registra changelogs rápidos (ex.: build versions) em uma planilha colaborativa?",
-    env: "Você mantém configurações de ambiente (URLs, credenciais) em planilhas ou recomenda outro local?",
-    col: "De que forma você permite que a equipe modifique simultaneamente tabelas de requisitos?",
+    env: "Você mantém configurações de ambiente (URLs, credenciais) em planilhas?",
+    col: "Que ferramentas você utiliza para controlar a colaboração em tabelas?",
   },
   intermediate: {
-    scr: "Como você cria ou mantém scripts (ex.: Google Apps Script) para automatizar relatórios sobre builds?",
+    scr: "Quais tecnologias você utiliza para automatizar relatórios sobre builds?",
     mds: "Você usa planilhas de métricas (ex.: cobertura de testes, performance) para acompanhamento intermediário?",
     con: "Com que frequência você consolida dados de múltiplos projetos numa planilha central e faz dashboards?",
     link: "Você vincula planilhas a sistemas de CI/CD ou repositórios para atualizar informações de release?",
-    sec: "Como você controla permissões, evitando que informações sensíveis (ex.: keys) fiquem expostas?",
+    sec: "Como você controla permissões, evitando que informações sensíveis fiquem expostas?",
   },
   expert: {
-    big: "Você manipula grandes volumes de dados (logs de build, telemetria) em planilhas e otimiza performance?",
+    big: "Você manipula grandes volumes de dados (logs de build, telemetria) em planilhas buscando estudar otimizações de performance?",
     piv: "Como você gera tabelas dinâmicas para agrupar estatísticas de commits, bugs, etc. em software grande?",
-    spt: "Você automatiza import/export de dados (CSV, JSON) com scripts avançados para planilhas?",
+    spt: "Quais dessas tecnologias você utiliza para automatizar importações e exportação de dados (CSV, JSON, etc.) com scripts avançados para planilhas?",
+    adm: "Quais destas práticas de auditoria (histórico, logs) para rastrear quem alterou métricas críticas?",
     ref: "De que forma você referencia macros ou integra planilhas com bancos de dados corporativos?",
-    adm: "Você segue práticas de auditoria (histórico, logs) para rastrear quem alterou métricas críticas?",
   },
 });
 export const devFmKeys = ObjectHelper.deepFreeze({
@@ -3599,47 +3620,47 @@ export const devAddQuestions = ObjectHelper.deepFreeze([
 export const devOpsDocsKeys = ObjectHelper.deepFreeze({
   beginner: {
     sdr: "Como você documenta os passos de build ou scripts simples (Markdown, README) para que todos entendam?",
-    cco: "Você adiciona comentários sobre configurações de CI/CD nos arquivos de doc? (Sim/Não)",
+    cco: "Com que frequência você adiciona comentários sobre configurações de CI/CD nos arquivos de doc?",
     vrs: "Em que frequência você versiona a documentação junto com o código em repositórios Git?",
     col: "De que forma você permite que vários membros do time editem simultaneamente o mesmo doc?",
-    cli: "Você cria doc CLI (ex.: uso de scripts shell) para que devs executem builds localmente?",
+    cli: "Qual é o seu nível de experiência criando CLIs para que devs executem builds localmente?",
   },
   intermediate: {
     arc: "Como você registra arquitetura de pipelines (desenhos, YAML samples) em docs de referência?",
-    aut: "Você descreve automações (hooks, triggers) e como elas funcionam para integrantes novos?",
-    sec: "De que forma você documenta práticas de segurança (senhas, tokens) no pipeline sem expor dados?",
-    pol: "Você insere políticas de commits, branch naming e merges em um documento de convenções?",
-    ver: "Em que frequência você atualiza doc de migração de versão (ex.: v1 -> v2) e passos de rollback?",
+    sec: "Quais destas práticas de segurança você documenta em detalhes para suas pipelines?",
+    pol: "Quais são suas ferramentas preferenciais para descrever políticas de commits, branch naming e merges em um documento de convenções?",
+    ver: "Qual é o seu nível de experiência com automação de múltiplos containers?",
+    aut: "Descreva livremente como você apresentaria automações básicas (hooks, triggers) em pipelines para uma equipe de desenvolvimento",
   },
   expert: {
     smk: "Você utiliza smokes ou specs em doc para QA e DevOps (ex.: BDD) e versiona junto do pipeline?",
     gen: "Como você gera documentação automatizada (ex.: swagger de microserviços) e vincula a um repositório doc?",
-    ext: "De que forma você integra doc com wikis corporativas (SharePoint, Confluence) e mantém sincronizado?",
+    ext: "De que forma você integra doc com wikis corporativas (SharePoint, Confluence) a fim de manter sincronizações?",
     adv: "Qual é seu procedimento para diagramar pipelines DevOps complexos (multi-stage, multi-cloud) e revisar periodicamente?",
-    pol: "Você audita conformidade (ISO, PCI) e descreve em doc cada controle ou verificação no pipeline?",
+    pol: "Quais destas técnicas você aplica para auditar seguindo normas de conformidade (ISO, PCI)?",
   },
 });
 export const devOpsSsKeys = ObjectHelper.deepFreeze({
   beginner: {
-    pip: "Como você lista as etapas básicas do pipeline (build, test, deploy) em planilhas, antes de codificar YAML?",
-    env: "Você registra variáveis de ambiente (ex.: URLs, keys) em uma planilha? Qual sua frequência?",
-    job: "De que modo você orienta a equipe a adicionar novas 'jobs' ou scripts no pipeline via planilha colaborativa?",
+    pip: "Você utiliza planilhas para documentar as etapas de pipeline implementadas?",
+    env: "Com que frequência você registra variáveis de ambiente (ex.: URLs, keys) em uma planilha?",
+    job: "De que forma planilhas participam do desenvolvimento da sua pipeline?",
     rep: "Em que frequência você gera relatórios em planilha sobre falhas e sucessos de build?",
-    acc: "Você controla acesso (só leitura ou edição) a essa planilha de fluxo DevOps? (Sim/Não)",
+    acc: "Quais técnicas você utiliza para integrar planilhas diretamente no fluxo de fluxo DevOps?",
   },
   intermediate: {
     int: "Você integra a planilha de métricas (ex.: tempo de build) com scripts que atualizam células via API?",
-    scp: "Como você realiza scripts de consolidação (ex.: planilha => arquivo de config .yml)?",
-    das: "Você cria gráficos intermediários (tempo médio de build, rate de falhas) para análise do time?",
+    scp: "Quais formatos de script você usa para realizar consolidações de configuração (ex.: planilha => arquivo de config .yml)?",
     col: "De que forma você gerencia colaboração simultânea e resolve conflitos de edição nessa planilha?",
-    seg: "Você protege abas sensíveis (chaves, tokens) com senhas ou permissões mais restritas?",
+    seg: "Que tecnologias de segurança você utiliza para proteger abas de acessos indevidos?",
+    das: "Como você documenta dashboards de monitoramento?",
   },
   expert: {
     big: "Como você lida com volumosas métricas (ex.: histórico de builds de meses/anos) e performance na planilha?",
-    aut: "Você automatiza export ou import (CI/CD => planilha => CI/CD) e faz merges sem corromper dados?",
-    adv: "Em que frequência você gera dashboards complexos, cruzando dados de repositórios, monitoramento e falhas?",
-    ver: "De que modo versiona planilhas importantes (via script, git-crypt) para não perder histórico?",
-    aud: "Você audita quem alterou scripts ou parâmetros críticos (ex.: pipeline delay) armazenados em planilha?",
+    aut: "Que tipo de resultos e links de automação você registra em planilhas (scripts de rollback, escalonamento)?",
+    adv: "Com que frequência você gera dashboards complexos, cruzando dados de repositórios, monitoramento e falhas?",
+    ver: "De que modo versiona planilhas importantes para não perder histórico?",
+    aud: "Como você audita logs ou histórico de builds dentro de planilhas?",
   },
 });
 export const devOpsFmKeys = ObjectHelper.deepFreeze({
@@ -3920,10 +3941,10 @@ export const defaultQuestionsDict: Readonly<{
 });
 export const defDocsKeys = ObjectHelper.deepFreeze({
   beginner: {
+    fmt: repeated.fmt,
+    tem: repeated.tmp,
     use: "Com que frequência você escreve textos simples (relatórios, anotações) em um editor de texto básico?",
-    fmt: "Você sabe aplicar formatações essenciais (negrito, itálico, cabeçalho) em seus documentos?",
     col: "Como você compartilha ou colabora em documentos com outras pessoas? (Ex.: link, e-mail)",
-    tem: "Você utiliza modelos (templates) prontos para padronizar relatórios? (Sim/Não)",
     exp: "Qual é seu nível de experiência em exportar documentos para PDF ou outros formatos?",
   },
   intermediate: {
@@ -3934,9 +3955,9 @@ export const defDocsKeys = ObjectHelper.deepFreeze({
     per: "Qual é sua prática para proteger documentos com senha ou restrição de edição?",
   },
   expert: {
+    vba: repeated.mcr,
     idx: "Você já criou índices remissivos, estilos de parágrafo avançados ou capítulos em docs complexos?",
     sec: "O quanto você manipula permissões avançadas, criptografia e controle de acesso em um editor de texto?",
-    vba: "Você desenvolve scripts/macros extensos (VBA, etc.) para automatizar fluxos em editores?",
     api: "Como você integra APIs ou plugins externos para enriquecer a edição (ex.: checagem gramatical)?",
     adv: "De que modo você gerencia documentos de alto volume (100+ páginas), mantendo consistência e performance?",
   },
@@ -3950,7 +3971,7 @@ export const defSsKeys = ObjectHelper.deepFreeze({
     bar: "Você cria gráficos básicos (barra, pizza) para ilustrar resultados ou tendências?",
   },
   intermediate: {
-    piv: "Como você utiliza tabelas dinâmicas para analisar grandes conjuntos de dados?",
+    piv: repeated.tbd,
     fml: "Você domina funções intermediárias (SE, PROCV, CONCAT) para automatizar cálculos mais complexos?",
     val: "Em que frequência você aplica validações de dados (listas suspensas, restrições de valor) nas células?",
     net: "Você integra ou importa dados externos (ex.: planilhas online, CSV) para comparar informações?",
@@ -4211,281 +4232,3584 @@ export const defaultAddQuestions = ObjectHelper.deepFreeze([
     ["llms", defLlmsKeys],
   ]),
 ]);
-export const ssEntryTypes = {
+export const repeatedDefinitions: {
+  [K in
+    | "sum"
+    | "col"
+    | "exp"
+    | "fil"
+    | "frq"
+    | "cht"
+    | "scp"
+    | "yn"
+    | "dbi"
+    | "colab"
+    | "sec"
+    | "tmp"
+    | "ast"
+    | "docp"]: TextFieldDescription | OptionFieldDescription;
+} = ObjectHelper.deepFreeze({
+  sum: {
+    // "Você aplica SOMA, MÉDIA para ver resultados gerais de vendas em uma planilha?"
+    type: "select-one",
+    options: [
+      "Não aplico funções",
+      "Aplico funções básicas, como SOMA e MÉDIA",
+      "Utilizo funções avançadas, como PROCV, Funções de matriz e Compostas",
+    ],
+    required: false,
+  },
+  col: {
+    // "Como você colore ou categoriza células para destacar informações importantes?"
+    type: "select-multiple",
+    options: [
+      "Cor de preenchimento manual",
+      "Formatação condicional",
+      "Aumento de Peso de Fonte",
+      "Mudança de Estilo de Fonte",
+      "Mudanças de Borda",
+      "Reorientação vertical e horizontal",
+    ],
+    required: false,
+  },
+  exp: {
+    type: "select-one",
+    options: [
+      "Não tenho conhecimento | familiaridade",
+      "Básico",
+      "Intermediário",
+      "Avançado",
+    ],
+    required: false,
+  },
+  frq: {
+    // "Com que frequência ...?"
+    type: "select-one",
+    options: ["Nunca", "Raramente", "Ocasionalmente", "Frequentemente"],
+    required: false,
+  },
+  cht: {
+    // "Que tipos de gráficos você costuma gerar para visualização?"
+    type: "select-multiple",
+    options: [
+      "Gráficos de colunas/barras",
+      "Gráficos de pizza/linha",
+      "Gráficos de distribuição",
+      "Gráficos dinâmicos avançados",
+    ],
+    required: true,
+  },
+  scp: {
+    type: "select-multiple",
+    options: [
+      "Python",
+      "C#",
+      "Java",
+      "JavaScript",
+      "R",
+      "VBA",
+      "Macro",
+      "Google App Scripts",
+      "Bash",
+      "PowerShell",
+    ],
+    required: true,
+  },
+  yn: {
+    type: "radio",
+    options: ["Sim", "Não"],
+    required: true,
+  },
+  fil: {
+    type: "select-multiple",
+    options: [
+      "Não uso filtros",
+      "Filtros de String diretas",
+      "Filtros Case Insensitive",
+      "Filtros de Intervalo",
+      "Filtros de Cor",
+      "Filtros de Expressão Regular",
+    ],
+    required: true,
+  },
+  dbi: {
+    // "De que maneira você puxa informações de bancos de dados ou APIs...?"
+    type: "select-multiple",
+    options: [
+      "Conexão manual (copiar/colar dados)",
+      "Utilizo scripts de integração (ETL)",
+      "Ferramentas de Data Sync (Zapier, Integromat)",
+      "Não puxo dados externos",
+    ],
+    required: false,
+  },
+  colab: {
+    //Como você orienta a colaboração simultânea
+    type: "select-multiple",
+    options: [
+      "Uso comentários no documento",
+      "Uso ferramentas de controle de alterações",
+      "Uso edições em nuvem de arquivos",
+      "Salvo arquivos e rascunhos em e-mail",
+      "Uso validações por scripts",
+      "Crio versões diferentes em um mesmo repositório",
+      "Uso softwares especializados em colaboração corporativa, como CRMs",
+      "Uso softwares e plataformas online de versionamento",
+    ],
+    required: true,
+  },
+  sec: {
+    // "Que tecnologias de segurança você utiliza para proteger abas de planilhas de acessos indevidos?"
+    type: "select-multiple",
+    options: [
+      "Proteção de aba com senha",
+      "Controle de permissões por usuário",
+      "Criptografia de arquivos de planilha",
+      "Acesso restrito via autenticação corporativa (SSO)",
+      "Registro de logs de acesso",
+      "Bloqueio de edição em células específicas",
+    ],
+    required: true,
+  },
+  tmp: {
+    // "De que forma você aproveita modelos (templates) prontos para criar documentos básicos?"
+    type: "select-multiple",
+    options: [
+      "Não uso templates prontos",
+      "Faço download de templates online",
+      "Mantenho um repositório interno de modelos",
+      "Personalizo templates conforme a identidade visual",
+      "Automatizo a criação de docs a partir de templates (macros/scripts)",
+    ],
+    required: true,
+  },
+  ast: {
+    // "De que forma você implementa processos de assinatura digital ou certificação de documentos?"
+    type: "select-multiple",
+    options: [
+      "Não utilizo assinaturas digitais",
+      "Assinatura eletrônica simples (PDF sign)",
+      "Certificado digital (ICP-Brasil, etc.)",
+      "Sistema corporativo de assinatura (DocuSign, etc.)",
+    ],
+    required: true,
+  },
+  docp: {
+    // "Como você costuma documentar ...?"
+    type: "select-multiple",
+    options: [
+      "Comentários no próprio código",
+      "Markdown/README no repositório",
+      "Ferramentas automáticas (JSDoc, etc.)",
+      "Descrições de Testes Unitários e Integrados",
+      "Esquemas em UML e Fluxogramas",
+    ],
+    required: true,
+  },
+});
+type roleDefined = Exclude<roleType, "undefined">;
+type KeysRecords<T extends string> = Partial<
+  Record<T, TextFieldDescription | OptionFieldDescription>
+>;
+export const ssEntryTypes: {
+  [K in roleDefined]: {
+    [L in complexityLabel]: {
+      spreadSheets: KeysRecords<SpreadsheetsQuestionsKeys>;
+    };
+  };
+} = ObjectHelper.deepFreeze({
   executivoAdministrativo: {
     beginner: {
       spreadSheets: {
-        sum: "range",
-        frq: "select-one",
-        col: "select-multiple",
-        spr: "radio",
-        fil: "select-multiple",
-        frz: "select-multiple",
-        fmt: "checkbox",
-        cpy: "range",
-        ins: "select-multiple",
-        shs: "checkbox",
+        sum: repeatedDefinitions.sum,
+        frq: repeatedDefinitions.frq,
+        col: repeatedDefinitions.col,
+        spr: {
+          // "Você prefere responder perguntas por meio de seletores (radio, select) ou textos longos?"
+          type: "radio",
+          options: ["Prefiro seletores", "Prefiro texto livre", "Tanto faz"],
+          required: true,
+        },
+        fil: repeatedDefinitions.fil,
+        frz: {
+          // "Como você congela linhas ou colunas em planilhas?"
+          type: "select-multiple",
+          options: [
+            "Nunca usei congelar",
+            "Congelo a linha superior",
+            "Congelo colunas e linhas",
+          ],
+          required: true,
+        },
+        fmt: repeatedDefinitions.frq,
+        cpy: repeatedDefinitions.exp,
+        ins: {
+          // "De que maneira você insere gráficos básicos para ilustrar dados?"
+          type: "select-multiple",
+          options: [
+            "Não insiro gráficos",
+            "Insiro gráficos simples",
+            "Personalizo meus gráficos",
+          ],
+          required: true,
+        },
+        shs: {
+          // "Você trabalha frequentemente com abas múltiplas em planilhas?"
+          type: "radio",
+          options: [
+            "Não uso várias abas",
+            "Uso poucas abas",
+            "Sempre organizo em várias abas",
+          ],
+          required: true,
+        },
       },
     },
     intermediate: {
       spreadSheets: {
-        piv: "select-multiple",
-        adv: "select-one",
-        prc: "select-one",
-        cht: "select-multiple",
-        col: "select-multiple",
-        tbl: "select-one",
-        spl: "select-multiple",
-        lnk: "range",
-        imp: "checkbox",
-        aud: "textarea",
+        piv: {
+          // "Como você utiliza tabelas dinâmicas para analisar grandes quantidades de dados?"
+          type: "select-multiple",
+          options: [
+            "Nunca usei Tabelas Dinâmicas",
+            "Uso para análises pontuais",
+            "Uso para análises complexas",
+          ],
+          required: true,
+        },
+        adv: repeatedDefinitions.frq,
+        prc: repeatedDefinitions.frq,
+        cht: repeatedDefinitions.cht,
+        col: repeatedDefinitions.colab,
+        tbl: repeatedDefinitions.frq,
+        spl: {
+          // "Como você divide dados em colunas separadas (Texto para Colunas)?"
+          type: "select-multiple",
+          options: [
+            "Nunca usei Texto para Colunas",
+            "Uso para dividir dados pontualmente",
+            "Uso frequentemente para limpeza de dados",
+          ],
+          required: true,
+        },
+        lnk: repeatedDefinitions.exp,
+        imp: repeatedDefinitions.frq,
+        aud: {
+          // "De que forma você audita ou depura fórmulas para corrigir erros?"
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          writingSuggestions: true,
+          spellCheck: true,
+        },
       },
     },
     expert: {
       spreadSheets: {
-        mcr: "textarea",
-        big: "select-one",
-        arr: "select-multiple",
-        dbi: "textarea",
-        prf: "select-one",
-        sch: "checkbox",
-        mlc: "textarea",
-        api: "select-multiple",
-        adv: "select-multiple",
-        rpt: "textarea",
+        mcr: repeatedDefinitions.scp,
+        big: repeatedDefinitions.frq,
+        arr: repeatedDefinitions.frq,
+        prf: repeatedDefinitions.frq,
+        sch: repeatedDefinitions.frq,
+        mlc: repeatedDefinitions.yn,
+        api: {
+          // "De que forma você utiliza APIs para buscar ou enviar dados automaticamente?"
+          type: "select-multiple",
+          options: [
+            "Nunca usei APIs",
+            "Uso APIs de forma pontual",
+            "Integrado a múltiplas APIs",
+          ],
+          required: true,
+        },
+        adv: {
+          // "Que práticas avançadas você utiliza para validar e limpar grandes volumes de dados?"
+          type: "select-multiple",
+          options: [
+            "Não faço limpeza avançada",
+            "Uso filtros e fórmulas de limpeza",
+            "Uso scripts e ferramentas de ETL",
+          ],
+          required: true,
+        },
+        rpt: {
+          // "Detalhe como você cria relatórios interativos integrando gráficos e controles (ex.: slicers)?"
+          type: "textarea",
+          maxLength: limits.small.MAX_UTF_16_SIGNED_SURROGATE,
+          required: false,
+          writingSuggestions: true,
+          spellCheck: true,
+        },
+        dbi: {
+          // "Descreva como você conecta planilhas a bancos de dados SQL ou APIs, se aplicável."
+          type: "textarea",
+          maxLength: limits.small.MAX_UTF_16_SIGNED_SURROGATE,
+          required: false,
+          writingSuggestions: true,
+          spellCheck: true,
+        },
       },
     },
   },
   financeiro: {
     beginner: {
       spreadSheets: {
-        sum: "radio",
-        frq: "select-one",
-        col: "textarea",
-        cat: "textarea",
-        fil: "textarea",
+        sum: repeatedDefinitions.sum,
+        frq: repeatedDefinitions.frq,
+        col: repeatedDefinitions.col,
+        cat: {
+          // "De que modo você categoriza transações... de forma simples?"
+          type: "select-multiple",
+          options: [
+            "Sem categorização",
+            "Listas suspensas",
+            "Classificação manual",
+          ],
+          required: true,
+        },
+        fil: repeatedDefinitions.fil,
       },
     },
     intermediate: {
       spreadSheets: {
-        tab: "checkbox",
-        adv: "textarea",
-        dev: "select-one",
-        cht: "textarea",
-        val: "textarea",
+        tab: repeatedDefinitions.frq,
+        adv: {
+          // "Como você integra planilhas financeiras a outras fontes de dados, como extratos bancários (CSV)?"
+          type: "select-multiple",
+          options: [
+            "Não integro extratos",
+            "Importo CSV manualmente",
+            "Integro várias fontes regularmente",
+          ],
+          required: true,
+        },
+        dev: repeatedDefinitions.frq,
+        cht: repeatedDefinitions.cht,
+        val: {
+          // "Quais dessas técnicas você utiliza para validar dados de entrada...?"
+          type: "select-multiple",
+          options: [
+            "Não valido dados",
+            "Validação de lista (drop-down)",
+            "Regras de erro e restrições avançadas",
+          ],
+          required: true,
+        },
       },
     },
     expert: {
       spreadSheets: {
-        mcr: "textarea",
-        big: "select-one",
-        arr: "checkbox",
-        dbi: "textarea",
-        aud: "textarea",
+        big: repeatedDefinitions.frq,
+        arr: repeatedDefinitions.frq,
+        dbi: repeatedDefinitions.dbi,
+        aud: {
+          // "Como você audita fórmulas e checa consistência de resultados em planilhas de grande porte?"
+          type: "select-multiple",
+          options: [
+            "Não audito ativamente",
+            "Uso rastreamento de precedentes/erros",
+            "Ferramentas externas (Add-ins) e scripts",
+          ],
+          required: true,
+        },
+        mcr: repeatedDefinitions.scp,
       },
     },
   },
   comercial: {
     beginner: {
       spreadSheets: {
-        lis: "textarea",
-        pro: "textarea",
-        seg: "textarea",
-        col: "textarea",
-        sum: "select-one",
+        lis: {
+          // "Quais destas técnicas você utiliza para manter listas de leads ou clientes...?"
+          type: "select-multiple",
+          options: [
+            "Planilhas simples (Excel, Google Sheets)",
+            "Ferramentas de CRM básico (ex.: HubSpot)",
+            "Sistemas próprios ou caseiros",
+            "Não utilizo listas",
+          ],
+          required: true,
+        },
+        pro: repeatedDefinitions.yn,
+        seg: repeatedDefinitions.fil,
+        col: repeatedDefinitions.fil,
+        sum: repeatedDefinitions.sum,
       },
     },
     intermediate: {
       spreadSheets: {
-        piv: "textarea",
-        adv: "checkbox",
-        for: "select-one",
-        cht: "textarea",
-        col: "textarea",
+        piv: repeatedDefinitions.frq,
+        adv: repeatedDefinitions.yn,
+        for: repeatedDefinitions.frq,
+        cht: repeatedDefinitions.cht,
+        col: {
+          // "Como você colabora com outros vendedores...?"
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          writingSuggestions: true,
+          spellCheck: true,
+        },
       },
     },
     expert: {
       spreadSheets: {
-        mac: "textarea",
-        big: "checkbox",
-        seg: "textarea",
-        dbi: "textarea",
-        cmp: "textarea",
+        mac: repeatedDefinitions.scp,
+        big: repeatedDefinitions.frq,
+        seg: repeatedDefinitions.yn,
+        dbi: repeatedDefinitions.dbi,
+        cmp: {
+          // "Como você compara previsões e resultados reais em planilhas complexas...?"
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          writingSuggestions: true,
+          spellCheck: true,
+        },
       },
     },
   },
   marketing: {
     beginner: {
       spreadSheets: {
-        lis: "textarea",
-        gcl: "textarea",
-        cmp: "textarea",
-        fil: "textarea",
-        sum: "select-one",
+        lis: {
+          // "Quais destas técnicas você utiliza para manter listas de leads ou clientes...?"
+          type: "select-multiple",
+          options: [
+            "Planilhas simples (Excel, Google Sheets)",
+            "CRM básico (HubSpot, Zoho)",
+            "Ferramenta interna ou caseira",
+            "Não mantenho listas",
+          ],
+          required: true,
+        },
+        gcl: repeatedDefinitions.yn,
+        cmp: {
+          // "Como você organiza a comparação de diferentes campanhas ou canais?"
+          type: "select-multiple",
+          options: [
+            "Comparação manual (planilhas)",
+            "Ferramentas de relatórios (Data Studio, Power BI)",
+            "Dashboards de marketing (Facebook, Google Ads)",
+            "Não comparo campanhas",
+          ],
+          required: true,
+        },
+        fil: repeatedDefinitions.fil,
+        sum: repeatedDefinitions.sum,
       },
     },
     intermediate: {
       spreadSheets: {
-        piv: "textarea",
-        adv: "checkbox",
-        frq: "select-one",
-        cht: "textarea",
-        col: "textarea",
+        adv: repeatedDefinitions.yn,
+        frq: repeatedDefinitions.frq,
+        cht: repeatedDefinitions.cht,
+        piv: {
+          // "Como você cria tabelas dinâmicas para segmentar resultados de marketing?"
+          type: "select-multiple",
+          options: [
+            "Não crio tabelas dinâmicas",
+            "Recursos básicos de tabela dinâmica no Excel/Sheets",
+            "Uso macros/scripts para pivotar dados",
+            "Ferramentas externas (Power Pivot, Add-ins de marketing)",
+          ],
+          required: false,
+        },
+        col: {
+          // "Como você colabora com outros analistas para consolidar dados de marketing?"
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          writingSuggestions: true,
+          spellCheck: true,
+        },
       },
     },
     expert: {
       spreadSheets: {
-        mcr: "textarea",
-        big: "select-one",
-        arr: "textarea",
-        dbi: "textarea",
-        prf: "textarea",
+        mcr: repeatedDefinitions.scp,
+        big: {
+          // "Você conecta planilhas a soluções de Big Data ou Data Warehouse?"
+          type: "select-one",
+          options: [
+            "Não conecto a Big Data",
+            "Conexão limitada (planilhas exportadas)",
+            "Integração completa (BigQuery, etc.)",
+          ],
+          required: true,
+        },
+        arr: repeatedDefinitions.exp,
+        dbi: repeatedDefinitions.dbi,
+        prf: {
+          // "Descreva como você faz otimizações de performance em planilhas grandes de marketing?"
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          writingSuggestions: true,
+          spellCheck: true,
+        },
       },
     },
   },
   suporteTecnicoN1: {
     beginner: {
       spreadSheets: {
-        sum: "textarea",
-        frm: "textarea",
-        fil: "textarea",
-        cbt: "radio",
-        con: "checkbox",
+        sum: repeatedDefinitions.sum,
+        frm: repeatedDefinitions.col,
+        fil: repeatedDefinitions.fil,
+        cbt: {
+          // "Quais destes recursos você utiliza para configurar proteções básicas de célula para evitar alterações indevidas?"
+          type: "radio",
+          options: [
+            "Proteção de células bloqueadas no Excel/Google Sheets",
+            "Restrição de edição por usuário ou grupo",
+            "Uso de permissões em planilhas compartilhadas",
+            "Validação de dados para evitar edições incorretas",
+            "Uso de macros para impedir alterações não autorizadas",
+            "Não utilizo proteções específicas para células",
+          ],
+          required: true,
+        },
+        con: {
+          // "Como você orienta a colaboração simultânea em uma planilha (ex.: várias pessoas editando)?"
+          type: "select-multiple",
+          options: [
+            "Ensino co-edição no Google Sheets",
+            "Ensino co-edição no OneDrive e Microsoft Excel Online",
+            "Aplicando Proteções e Permissões em rede local",
+            "Sugerindo Padrões de Comentários",
+            "Ensino sobre ferramentas de Controle de Edição",
+            "Ensino versionamento",
+          ],
+          required: true,
+        },
       },
     },
     intermediate: {
       spreadSheets: {
-        piv: "textarea",
-        fml: "textarea",
-        cht: "textarea",
-        val: "checkbox",
-        net: "textarea",
+        piv: {
+          // "Qual é sua abordagem para ajudar usuários a criarem tabelas dinâmicas de complexidade média?"
+          type: "select-multiple",
+          options: [
+            "Não oriento com Tabelas Dinâmicas",
+            "Crio TDs básicas pontualmente",
+            "Crio TDs em relatórios mensais",
+            "Domino Tabelas Dinâmicas complexas",
+          ],
+          required: true,
+        },
+        fml: repeatedDefinitions.exp,
+        cht: repeatedDefinitions.cht,
+        val: repeatedDefinitions.fil,
+        net: {
+          // "De que forma você gerencia possíveis conflitos de versão ao trabalhar via rede ou nuvem?"
+          type: "select-multiple",
+          options: [
+            "Faço backups manuais",
+            "Uso controle de versão em nuvem",
+            "Verifico histórico de edições",
+          ],
+          required: true,
+        },
       },
     },
     expert: {
       spreadSheets: {
-        mcr: "textarea",
-        sec: "checkbox",
-        prf: "checkbox",
-        idx: "textarea",
-        aud: "textarea",
+        mcr: repeatedDefinitions.scp,
+        sec: repeatedDefinitions.exp,
+        prf: {
+          // "Quais destas técnicas você utiliza para otimizar performance em planilhas extensas..."
+          type: "select-multiple",
+          options: [
+            "Não faço tuning",
+            "Separo abas e limito fórmulas complexas",
+            "Uso macros ou scripts para otimização avançada",
+          ],
+          required: true,
+        },
+        idx: {
+          // "Com quais serviços externos você integra as suas planilhas?"
+          type: "text",
+          maxLength: limits.small.MAX_UTF_16_SIGNED_SURROGATE,
+          required: false,
+          writingSuggestions: true,
+          spellCheck: true,
+        },
+        aud: {
+          // "De que forma você efetua auditoria em planilhas complexas para rastrear erros ou mudanças não autorizadas?"
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          writingSuggestions: true,
+          spellCheck: true,
+        },
       },
     },
   },
   suporteTecnicoN2: {
     beginner: {
       spreadSheets: {
-        net: "textarea",
-        fmz: "textarea",
-        cft: "textarea",
-        csd: "textarea",
-        bak: "checkbox",
+        net: {
+          // "Quais destas técnicas você orienta a configuração de planilhas em rede local ou via ferramentas de compartilhamento (Drive, OneDrive)?"
+          type: "select-multiple",
+          options: [
+            "Acesso via compartilhamento direto",
+            "Uso de permissões específicas",
+            "Sincronização automática",
+            "Histórico de versões",
+          ],
+          required: true,
+        },
+        fmz: {
+          // "Quais destas técnicas você usa para evitar formatações que podem quebrar fórmulas ao abrir planilhas em versões distintas?"
+          type: "select-multiple",
+          options: [
+            "Formatos padronizados (ex.: .xlsx)",
+            "Evito formatação condicional excessiva",
+            "Desabilito atualização automática de links",
+            "Recomendo conversão para CSV antes de migração",
+          ],
+          required: true,
+        },
+        cft: {
+          // "Quais destas técnicas você recomenda para fazer a conferência de dados em planilhas compartilhadas, resolvendo conflitos básicos de edição?"
+          type: "select-multiple",
+          options: [
+            "Uso de controle de versão e histórico",
+            "Bloqueio de células editáveis",
+            "Automação para checagem de inconsistências",
+            "Processo manual de revisão",
+          ],
+          required: true,
+        },
+        csd: repeatedDefinitions.frq,
+        bak: {
+          // "Quais destas práticas você recomenda para backups diários de planilhas importantes?"
+          type: "select-multiple",
+          options: [
+            "Backup manual periódico",
+            "Backup automático via Drive/OneDrive",
+            "Uso de versionamento em Git",
+            "Exportação para formatos alternativos (CSV, PDF)",
+          ],
+          required: true,
+        },
       },
     },
     intermediate: {
       spreadSheets: {
-        piv: "textarea",
-        lnk: "textarea",
-        val: "checkbox",
-        scp: "textarea",
-        rep: "textarea",
+        piv: {
+          // "Quais destas técnicas você utiliza para intervir na criação ou troubleshooting de Tabelas Dinâmicas com múltiplas fontes de dados?"
+          type: "select-multiple",
+          options: [
+            "Não utilizo Tabelas Dinâmicas",
+            "Validação de relações entre tabelas",
+            "Configuração de filtros avançados",
+            "Correção de referências quebradas",
+            "Otimização de desempenho via cache",
+          ],
+          required: true,
+        },
+        lnk: {
+          // "Quais destas técnicas você utiliza para solucionar problemas em planilhas que importam/ligam dados de outras pastas de trabalho?"
+          type: "select-multiple",
+          options: [
+            "Ajuste de caminhos de arquivos vinculados",
+            "Uso de referências absolutas",
+            "Criação de macros para atualização automática",
+            "Desativação de cálculos automáticos temporariamente",
+          ],
+          required: true,
+        },
+        val: {
+          // "Quais destas técnicas você usa para configurar validações e restrições (listas suspensas, intervalos bloqueados) para prevenir erros em planilhas?"
+          type: "select-multiple",
+          options: [
+            "Listas suspensas para evitar valores inválidos",
+            "Proteção de células críticas",
+            "Validações condicionais em tempo real",
+            "Automação de alertas para dados fora do padrão",
+          ],
+          required: true,
+        },
+        scp: repeatedDefinitions.scp,
+        rep: {
+          // "Como você gera relatórios regulares de problemas resolvidos?"
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+        },
       },
     },
     expert: {
       spreadSheets: {
-        arr: "textarea",
-        sec: "checkbox",
-        mcr: "textarea",
-        big: "select-one",
-        par: "textarea",
+        arr: {
+          // "De que forma você trabalha com fórmulas matriciais ou funções avançadas (ÍNDICE, CORRESP)?"
+          type: "select-one",
+          options: [
+            "Uso algumas funções avançadas (ÍNDICE, CORRESP)",
+            "Uso fórmulas matriciais diversas em múltiplos cenários",
+          ],
+          required: true,
+        },
+        sec: repeatedDefinitions.exp,
+        mcr: {
+          // "Quais destas técnicas para depurar macros avançadas (VBA) que causam lentidão ou bloqueiam recursos compartilhados?"
+          type: "select-multiple",
+          options: [
+            "Não trabalho com macros avançadas",
+            "Otimização do código para reduzir loops desnecessários",
+            "Uso de breakpoints e depuração passo a passo",
+            "Ajuste de tempo de execução e delays",
+            "Alternância entre execução síncrona e assíncrona",
+          ],
+          required: true,
+        },
+        big: repeatedDefinitions.frq,
+        par: {
+          // "Descreva técnicas que você utiliza para tuning de performance em planilhas muito grandes (milhares de linhas ou abas)."
+          type: "textarea",
+          maxLength: limits.small.MAX_UTF_16_SIGNED_SURROGATE,
+          required: false,
+        },
       },
     },
   },
   operatorio: {
     beginner: {
       spreadSheets: {
-        net: "textarea",
-        per: "checkbox",
-        cpy: "radio",
-        bkp: "checkbox",
-        col: "radio",
+        net: {
+          // "Quais técnicas você usa para habilitar o acesso a planilhas compartilhadas via rede local para a equipe?"
+          type: "select-multiple",
+          options: [
+            "Não gerencio planilhas compartilhadas em rede",
+            "Compartilhamento via pasta de rede",
+            "Controle de permissões de leitura/escrita",
+            "Uso de drives compartilhados (Google Drive, OneDrive)",
+            "Ativação de histórico de versões",
+          ],
+          required: true,
+        },
+        per: repeatedDefinitions.sec,
+        cpy: {
+          // "Quais técnicas você recomenda para orientar a criação de cópias de planilhas para backup rápido no dia a dia?"
+          type: "select-multiple",
+          options: [
+            "Cópia manual antes de alterações críticas",
+            "Automação de backups via scripts",
+            "Uso de ferramentas de versionamento",
+            "Envio de cópias para e-mails internos",
+          ],
+          required: true,
+        },
+        bkp: {
+          //"Quais práticas de backup simples você aplica para evitar perda em planilhas armazenadas em rede?"
+          type: "select-multiple",
+          options: [
+            "Backup manual semanal/mensal",
+            "Uso de serviços de backup automático",
+            "Armazenamento em múltiplos locais",
+            "Backup de versões anteriores",
+          ],
+          required: true,
+        },
+        col: repeatedDefinitions.frq,
       },
     },
     intermediate: {
       spreadSheets: {
-        sec: "checkbox",
-        mac: "textarea",
-        scp: "textarea",
-        dmp: "textarea",
-        conf: "textarea",
+        sec: {
+          // "Quais recursos você usa para implementar senhas ou criptografia de arquivos relacionados a redes?"
+          type: "select-multiple",
+          options: [
+            "Proteção por senha no próprio Excel/Google Sheets",
+            "Uso de arquivos ZIP criptografados",
+            "Criptografia de disco para proteção adicional",
+            "Gerenciamento de acesso via AD/SSO",
+            "Não aplico segurança avançada em planilhas",
+          ],
+          required: true,
+        },
+        mac: {
+          //"Quais técnicas você utiliza para depurar macros de nível intermediário?"
+          type: "select-multiple",
+          options: [
+            "Não gerencio macros de segurança",
+            "Assinatura digital de macros",
+            "Restrição de execução de macros não confiáveis",
+            "Validação de código antes da implantação",
+            "Monitoramento de execução via logs",
+          ],
+          required: true,
+        },
+        scp: repeatedDefinitions.scp,
+        dmp: repeatedDefinitions.yn,
+        conf: {
+          // "Qual sua abordagem ao resolver conflitos de versão quando vários usuários salvam simultaneamente?"
+          type: "textarea",
+          maxLength: 1000,
+          required: false,
+          writingSuggestions: true,
+          spellCheck: true,
+        },
       },
     },
     expert: {
       spreadSheets: {
-        adv: "textarea",
-        big: "textarea",
-        log: "textarea",
-        res: "textarea",
-        ref: "textarea",
+        adv: {
+          //"Como você automatiza instalações em larga escala (SCCM) de pacotes de planilha e gerencia atualizações?"
+          type: "select-multiple",
+          options: [
+            "Distribuição de pacotes de planilhas via SCCM",
+            "Atualizações automatizadas em massa",
+            "Gerenciamento centralizado via GPO",
+            "Testes de compatibilidade antes da implantação",
+            "Não gerencio instalações automatizadas de planilhas",
+          ],
+          required: true,
+        },
+        big: repeatedDefinitions.yn,
+        log: {
+          // "Como você documenta logs de erros e processos em planilhas?"
+          type: "select-multiple",
+          options: [
+            "Registro manual de logs em abas dedicadas",
+            "Uso de scripts para captura automática de logs",
+            "Exportação de logs para ferramentas externas",
+            "Monitoramento automatizado via macros",
+            "Não documento logs em planilhas",
+          ],
+          required: true,
+        },
+        res: {
+          // Quais técnicas você usa para gerenciar a restauração de planilhas corrompidas?
+          type: "select-multiple",
+          options: [
+            "Uso de backups automáticos",
+            "Recuperação via histórico de versões",
+            "Tentativa de restauração via ferramentas nativas",
+            "Abertura em editores alternativos para resgate",
+            "Não faço restauração de planilhas corrompidas",
+          ],
+          required: false,
+        },
+        ref: {
+          // "Quais técnicas você usa para tratar referências externas e macros avançadas causando loops ou travamentos na rede?"
+          type: "select-multiple",
+          options: [
+            "Monitoramento de uso excessivo de macros",
+            "Redução do uso de links entre planilhas",
+            "Testes de carga para detectar gargalos",
+            "Separação de cálculos complexos em abas dedicadas",
+            "Não trabalho com referências externas avançadas",
+          ],
+          required: true,
+        },
       },
     },
   },
   desenvolvimento: {
     beginner: {
       spreadSheets: {
-        bug: "textarea",
-        cal: "textarea",
-        chg: "textarea",
-        env: "select-one",
-        col: "checkbox",
+        bug: repeatedDefinitions.yn,
+        cal: {
+          // "Quais técnicas você utiliza para fazer cálculos de estimativas (ex.: datas de entrega) em planilhas básicas?"
+          type: "select-multiple",
+          options: [
+            "Uso de fórmulas básicas (SOMA, MÉDIA, PROJEÇÃO)",
+            "Cálculo de prazos baseado em dependências (ex.: encadeamento de tarefas)",
+            "Uso de formatação condicional para destacar prazos críticos",
+            "Utilização de tabelas dinâmicas para análise de cronogramas",
+            "Automação de estimativas via scripts ou macros (Google Apps Script, VBA)",
+            "Importação/exportação de estimativas para ferramentas de gerenciamento de projetos (Jira, Trello)",
+          ],
+          required: true,
+        },
+        chg: repeatedDefinitions.frq,
+        env: repeatedDefinitions.yn,
+        col: repeatedDefinitions.colab,
       },
     },
     intermediate: {
       spreadSheets: {
-        scr: "textarea",
-        mds: "textarea",
-        con: "textarea",
-        link: "textarea",
-        sec: "checkbox",
+        scr: repeatedDefinitions.scp,
+        mds: repeatedDefinitions.yn,
+        con: repeatedDefinitions.frq,
+        link: repeatedDefinitions.yn,
+        sec: repeatedDefinitions.sec,
       },
     },
     expert: {
       spreadSheets: {
-        big: "select-one",
-        piv: "textarea",
-        spt: "textarea",
-        ref: "textarea",
-        adm: "textarea",
+        big: repeatedDefinitions.yn,
+        piv: {
+          // Como você utiliza planilhas para correlações ou pivot complexos de logs do sistema?"
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: false,
+          writingSuggestions: true,
+          spellCheck: true,
+        },
+        spt: repeatedDefinitions.scp,
+        adm: {
+          // "Quais destas práticas de auditoria (histórico, logs) para rastrear quem alterou métricas críticas?"
+          type: "select-multiple",
+          options: [
+            "Registro automático de alterações via scripts",
+            "Uso do histórico de versões da planilha",
+            "Armazenamento de logs em repositórios Git",
+            "Controle de acesso por usuário para edição de métricas",
+            "Geração de relatórios periódicos de alterações",
+            "Assinatura digital para validar alterações críticas",
+            "Exportação de logs para sistemas de monitoramento (SIEM, Splunk)",
+          ],
+          required: true,
+        },
+        ref: {
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+        },
       },
     },
   },
   devOps: {
     beginner: {
       spreadSheets: {
-        pip: "textarea",
-        env: "select-one",
-        job: "textarea",
-        rep: "checkbox",
-        acc: "radio",
+        pip: repeatedDefinitions.yn,
+        env: repeatedDefinitions.frq,
+        job: {
+          // "Que jobs ou tarefas você descreve na planilha?"
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          writingSuggestions: true,
+          spellCheck: true,
+        },
+        rep: repeatedDefinitions.frq,
+        acc: {
+          //"Quais técnicas você utiliza para integrar planilhas diretamente no fluxo de fluxo DevOps?"
+          type: "select-multiple",
+          options: [
+            "Importação automática via API",
+            "Integração com Jenkins/GitLab CI/CD",
+            "Webhooks para atualização de dados",
+            "Uso de scripts para sincronização (Python, Shell)",
+            "Exportação manual para formatos compatíveis (CSV, JSON)",
+            "Automação com Google Apps Script",
+          ],
+          required: true,
+        },
       },
     },
     intermediate: {
       spreadSheets: {
-        int: "textarea",
-        scp: "textarea",
-        das: "textarea",
-        col: "textarea",
-        seg: "checkbox",
+        int: repeatedDefinitions.yn,
+        scp: repeatedDefinitions.scp,
+        col: repeatedDefinitions.colab,
+        seg: repeatedDefinitions.sec,
+        das: {
+          // "Como documenta dashboards de monitoramento?"
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: false,
+          writingSuggestions: true,
+          spellCheck: true,
+        },
       },
     },
     expert: {
       spreadSheets: {
-        big: "select-one",
-        aut: "textarea",
-        adv: "textarea",
-        ver: "textarea",
-        aud: "textarea",
+        big: repeatedDefinitions.frq,
+        aut: {
+          // "Que tipo de resultos e links de automação você registra em planilhas (scripts de rollback, escalonamento)?"
+          type: "select-multiple",
+          options: [
+            "Scripts de rollback",
+            "Escalonamento automático (scale up/down)",
+            "Fluxos de CI/CD adicionais",
+            "Testes/validações automáticas",
+          ],
+          required: true,
+        },
+        adv: repeatedDefinitions.frq,
+        ver: {
+          // "Descreva como você versiona planilhas e scripts no pipeline DevOps."
+          type: "select-multiple",
+          options: [
+            "Versionamento manual por data/hora",
+            "Scripts automáticos de CI/CD integrados com softwares de planilhamento",
+            "Git ou outro repositório de controle de versões",
+            "Ferramenta interna (ex.: SVN, repositório corporativo)",
+          ],
+          required: true,
+        },
+        aud: {
+          // "Como você audita logs ou histórico de builds dentro de planilhas?"
+          type: "select-multiple",
+          options: [
+            "Registro manual de logs em planilha",
+            "Importo logs do pipeline via script",
+            "Uso de macros para parsear relatórios de build",
+          ],
+          required: true,
+        },
+      },
+    },
+  },
+});
+export const docEntryTypes: {
+  [K in roleDefined]: {
+    [L in complexityLabel]: {
+      docs: KeysRecords<DocsQuestionsKeys>;
+    };
+  };
+} = {
+  executivoAdministrativo: {
+    beginner: {
+      docs: {
+        // eaDocsKeys.beginner
+        fmt: repeatedDefinitions.exp, // "Qual é sua familiaridade com formatações simples..."
+        tmp: repeatedDefinitions.tmp, // "De que forma você aproveita modelos (templates) prontos..."
+        cbb: repeatedDefinitions.colab,
+        frq: repeatedDefinitions.frq,
+        rdo: {
+          // "O quanto você prefere responder com radio groups ou seleções rápidas?"
+          type: "radio",
+          options: [
+            "Prefiro respostas rápidas (seletores, checks e rádios)",
+            "Prefiro respostas mais longas (campos de texto)",
+            "Indiferente",
+          ],
+          required: true,
+        },
+        exp: repeatedDefinitions.frq,
+        prt: repeatedDefinitions.exp,
+        spl: {
+          // "Como você separa seções ou capítulos em documentos longos?"
+          type: "select-multiple",
+          options: [
+            "Utilizo quebras de página manuais",
+            "Uso Estilos e Sumário automático",
+            "Divido em arquivos distintos",
+          ],
+          required: true,
+        },
+        edt: {
+          // "Você edita documentos colaborativos online ou offline?"
+          type: "select-one",
+          options: [
+            "Somente offline (MS Word local, etc.)",
+            "Somente online (Google Docs, Office 365)",
+            "Ambos (depende do projeto)",
+          ],
+          required: true,
+        },
+        syn: {
+          // "De que forma você sincroniza documentos em diferentes dispositivos?"
+          type: "select-multiple",
+          options: [
+            "Manualmente, com Dispositivos Físicos de Armazenamento",
+            "Através de Serviços de Armazenamento de Nuvem (Google Drive, One Drive, etc.) ",
+            "Plataformas corporativas específicas (SharePoint, Nextcloud, etc.)",
+            "Plataformas de Versionamento (GitHub, GitLab, etc.)",
+          ],
+          required: true,
+        },
+      },
+    },
+    intermediate: {
+      docs: {
+        // eaDocsKeys.intermediate
+        tpl: {
+          type: "select-multiple",
+          options: [
+            "Sumário automático (Word/Google Docs)",
+            "Ferramentas de referências avançadas (LaTeX, etc.)",
+            "Macros/scripts para inserir índices",
+          ],
+          required: true,
+        },
+        rev: repeatedDefinitions.colab,
+        mac: repeatedDefinitions.scp,
+        sgn: repeatedDefinitions.frq,
+        stt: {
+          // "Que tipo de estratégia e ferramentas você utiliza para formatação do layout de edição?"
+          type: "select-multiple",
+          options: [
+            "Layout básico (margens, cabeçalhos)",
+            "Ferramentas de editoração avançada (InDesign, Publisher)",
+            "Uso estilos corporativos padronizados",
+            "Macros e scripts para aplicar layout uniforme",
+          ],
+          required: true,
+        },
+        idx: repeatedDefinitions.exp,
+        fmt: repeatedDefinitions.col,
+        crt: repeatedDefinitions.frq,
+        exp: repeatedDefinitions.exp,
+        api: repeatedDefinitions.frq,
+      },
+    },
+    expert: {
+      docs: {
+        // eaDocsKeys.expert
+        vba: repeatedDefinitions.scp,
+        sec: repeatedDefinitions.frq,
+        big: repeatedDefinitions.frq,
+        adv: {
+          // "Que técnicas avançadas (campos dinâmicos, mala direta) você utiliza em documentos corporativos?"
+          type: "select-multiple",
+          options: [
+            "Não uso campos dinâmicos/mala direta",
+            "Mala direta com planilha de contatos",
+            "Campos dinâmicos para placeholders complexos",
+            "Macros avançadas para gerar múltiplos documentos",
+          ],
+          required: true,
+        },
+        mlc: repeatedDefinitions.yn,
+        int: repeatedDefinitions.frq,
+        tem: repeatedDefinitions.frq,
+        dig: repeatedDefinitions.ast,
+        rpt: {
+          // "Qual sua experiência em gerar relatórios analíticos automatizados com base em texto estruturado?"
+          type: "select-multiple",
+          options: [
+            "Nunca gerei relatórios automatizados",
+            "Crio relatórios básicos a partir de scripts",
+            "Integro doc com bancos de dados e macros",
+            "Uso ferramentas de BI que extraem texto para dashboards",
+          ],
+          required: true,
+        },
+        stl: {
+          // "Descreva como você gerencia estilos de parágrafo, índice remissivo e formatação de layout altamente customizada."
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          writingSuggestions: true,
+          spellCheck: true,
+        },
+      },
+    },
+  },
+  financeiro: {
+    beginner: {
+      docs: {
+        frm: {
+          // "Como você elabora documentos financeiros simples (propostas, orçamentos)..."
+          type: "select-multiple",
+          options: [
+            "Não elaboro documentos financeiros",
+            "Uso modelos prontos (Word, Google Docs)",
+            "Faço formatação de texto manualmente",
+            "Automatizo tabelas e cálculos simples",
+          ],
+          required: true,
+        },
+        ref: {
+          // "De que forma você insere referências internas ou notas explicativas em documentos?"
+          type: "select-multiple",
+          options: [
+            "Não insiro referências/notas",
+            "Uso rodapé ou nota de rodapé manual",
+            "Ferramentas de referência interna (marcadores, links)",
+          ],
+          required: true,
+        },
+        rev: repeatedDefinitions.frq,
+        upg: repeatedDefinitions.colab,
+        cmt: {
+          // "Quais recursos você utiliza para comentar e fazer sugestões em documentos e relatórios?"
+          type: "select-multiple",
+          options: [
+            "Não adiciono comentários",
+            "Uso comentários nativos (Word, Google Docs)",
+            "Crio anotações em PDF",
+            "Uso plataformas de colaboração (SharePoint, Teams)",
+          ],
+          required: true,
+        },
+      },
+    },
+    intermediate: {
+      docs: {
+        stl: {
+          // "Qual é sua prática para padronizar estilos (cabeçalho, corpo, rodapé)..."
+          type: "select-multiple",
+          options: [
+            "Não padronizo estilos",
+            "Uso estilos básicos (título, subtítulo)",
+            "Macros/scripts para aplicar estilos pré-definidos",
+            "Ferramentas de design (ex.: InDesign) para relatórios complexos",
+          ],
+          required: true,
+        },
+        trc: repeatedDefinitions.colab,
+        ast: repeatedDefinitions.ast,
+        dbl: {
+          // "De que maneira você integra dados de planilhas ou bancos de dados em documentos de texto?"
+          type: "select-multiple",
+          options: [
+            "Copio/colo manualmente",
+            "Uso mala direta com planilhas",
+            "Ferramentas de link dinâmico (OLE, etc.)",
+            "Scripts para integrar documentos com dados extraídos de Banco de Dados",
+          ],
+          required: true,
+        },
+        alt: repeatedDefinitions.yn,
+      },
+    },
+    expert: {
+      docs: {
+        mac: repeatedDefinitions.scp,
+        cmp: repeatedDefinitions.colab,
+        rpt: {
+          // "De que forma você cria relatórios consolidados extensos..."
+          type: "select-multiple",
+          options: [
+            "Crio manualmente com sumário e índice",
+            "Uso macros/scripts para gerar seções e sumário automático",
+            "Ferramentas de BI integradas ao doc",
+          ],
+          required: true,
+        },
+        seg: repeatedDefinitions.sec,
+        apx: {
+          // "Como você gerencia anexos ou apêndices em documentos de fechamento contábil e fiscal complexos?"
+          type: "select-multiple",
+          options: [
+            "Não uso anexos",
+            "Anexo manualmente PDF/planilhas",
+            "Macros para inserir seções de apêndice",
+            "Ferramentas corporativas para linkar docs",
+          ],
+          required: true,
+        },
+      },
+    },
+  },
+  comercial: {
+    beginner: {
+      docs: {
+        rfp: {
+          // "Quais técnicas de formatação você prioriza no design gráficos de documentos para propostas comerciais?"
+          type: "select-multiple",
+          options: [
+            "Não utilizo formatação específica",
+            "Cabeçalhos e subcabeçalhos para organização",
+            "Listas numeradas ou com marcadores para itens",
+            "Tabelas para demonstrar preços e prazos",
+            "Uso de estilos corporativos (fontes, cores, logos)",
+            "Macros/scripts para padronizar layout",
+          ],
+          required: true,
+        },
+        lbl: repeatedDefinitions.col,
+        cpl: repeatedDefinitions.frq,
+        sig: repeatedDefinitions.ast,
+        hst: repeatedDefinitions.colab,
+      },
+    },
+    intermediate: {
+      docs: {
+        ref: {
+          // "Como você faz referência cruzada entre cláusulas em documentos de proposta...?"
+          type: "select-multiple",
+          options: [
+            "Link manual (Ex.: ver seção 2.1)",
+            "Ferramenta de referências internas (Word/Docs)",
+            "Macros/scripts para atualizar referências",
+            "Inserção de URIs no texto",
+          ],
+          required: true,
+        },
+        rev: repeatedDefinitions.colab,
+        mac: repeatedDefinitions.scp,
+        sty: repeatedDefinitions.tmp,
+        adv: repeatedDefinitions.frq,
+      },
+    },
+    expert: {
+      docs: {
+        api: {
+          // "De que forma você integra editores de texto a sistemas comerciais...?"
+          type: "select-multiple",
+          options: [
+            "Não integro a sistemas comerciais dedicados",
+            "Integração pontual via macros e scripts",
+            "APIs REST ou plugins dedicados",
+            "Integração completa (dados, templates, automação)",
+          ],
+          required: true,
+        },
+        cnd: {
+          // "Como você lida com campos dinâmicos e mala direta para dezenas de clientes simultaneamente?"
+          type: "select-multiple",
+          options: [
+            "Não uso campos dinâmicos",
+            "Mala direta simples com planilhas",
+            "Integração de macros/scripts para lotes grandes",
+            "Ferramenta corporativa (CRM) para centenas de clientes",
+          ],
+          required: true,
+        },
+        sec: repeatedDefinitions.frq,
+        cmp: repeatedDefinitions.colab,
+        mlc: repeatedDefinitions.yn,
+      },
+    },
+  },
+  marketing: {
+    beginner: {
+      docs: {
+        mch: repeatedDefinitions.tmp,
+        chk: repeatedDefinitions.yn,
+        pln: repeatedDefinitions.frq,
+        cmd: repeatedDefinitions.colab,
+        ext: repeatedDefinitions.frq,
+      },
+    },
+    intermediate: {
+      docs: {
+        mac: repeatedDefinitions.scp,
+        rev: repeatedDefinitions.colab,
+        stl: repeatedDefinitions.col,
+        mlt: repeatedDefinitions.frq,
+        doc: repeatedDefinitions.dbi,
+      },
+    },
+    expert: {
+      docs: {
+        adv: repeatedDefinitions.yn,
+        sec: repeatedDefinitions.sec,
+        ver: repeatedDefinitions.colab,
+        col: {
+          // "Você gerencia múltiplas equipes (social media, redatores, designers) editando o mesmo doc?"
+          type: "select-multiple",
+          options: [
+            "Não gerencio equipes múltiplas",
+            "Track changes e permissões manuais",
+            "Plataforma colaborativa (Google Workspace, etc.)",
+            "Ferramentas corporativas de PM (Asana, Trello) linkadas ao doc",
+          ],
+          required: true,
+        },
+        idx: {
+          // "Em materiais extensos (ex.: e-book), como você constrói sumários, índices e referências cruzadas?"
+          type: "select-multiple",
+          options: [
+            "Faço manualmente (marcadores)",
+            "Uso recursos nativos (Word, etc.)",
+            "Ferramentas avançadas (LaTeX, Indesign)",
+          ],
+          required: true,
+        },
+      },
+    },
+  },
+  suporteTecnicoN1: {
+    beginner: {
+      docs: {
+        fmt: repeatedDefinitions.colab,
+        syn: repeatedDefinitions.colab,
+        cpt: repeatedDefinitions.frq,
+        tmp: repeatedDefinitions.tmp,
+        col: {
+          // "Como você demonstra a colaboração simultânea (multiusuário) em um mesmo documento?"
+          type: "select-multiple",
+          options: [
+            "Recursos nativos do Word/Google Docs",
+            "Track changes + comentários offline",
+            "Ferramentas corporativas com logs de edição",
+          ],
+          required: true,
+        },
+      },
+    },
+    intermediate: {
+      docs: {
+        mac: repeatedDefinitions.scp,
+        rev: repeatedDefinitions.colab,
+        sec: repeatedDefinitions.sec,
+        stl: repeatedDefinitions.col,
+        prb: {
+          // "Qual é sua abordagem ao diagnosticar problemas intermediários de layout ou formatação avançada?"
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: false,
+          writingSuggestions: true,
+          spellCheck: true,
+        },
+      },
+    },
+    expert: {
+      docs: {
+        scr: repeatedDefinitions.scp,
+        cpy: repeatedDefinitions.colab,
+        idx: {
+          // "Como você instrui usuários a criarem índices remissivos ou seções avançadas em documentos extensos?"
+          type: "select-multiple",
+          options: [
+            "Sugiro sumário automático",
+            "Macros ou scripts para índices remissivos",
+          ],
+          required: true,
+        },
+        adv: {
+          // "De que forma você soluciona conflitos de permissões avançadas e restrições de edição em rede?"
+          type: "select-multiple",
+          options: [
+            "Não lido com permissões avançadas",
+            "Configuro ACLs no sistema de arquivos",
+            "Ferramentas corporativas de DLP e logs",
+            "Automação para conceder/retirar permissões",
+          ],
+          required: true,
+        },
+        dbi: repeatedDefinitions.frq,
+      },
+    },
+  },
+  suporteTecnicoN2: {
+    beginner: {
+      docs: {
+        syn: repeatedDefinitions.colab,
+        cmp: {
+          // "Quais destas ferramentas de conversão de formatos de documentos você recomendaria para um usuário?",
+          type: "select-multiple",
+          options: [
+            "Conversão nativa do Word/Google Docs (Salvar como PDF, etc.)",
+            "Ferramentas online (SmallPDF, iLovePDF, Zamzar, CloudConvert)",
+            "Ferramentas de linha de comando (ex.: LibreOffice --convert-to)",
+            "Adobe Acrobat para manipulação de PDFs",
+            "Não recomendo ferramentas específicas",
+          ],
+          required: true,
+        },
+        plg: repeatedDefinitions.frq,
+        pmt: {
+          // "Quais ferramentas você utiliza para intervir em problemas de permissão (arquivos bloqueados, somente leitura) em rede?"
+          type: "select-multiple",
+          options: [
+            "Alteração manual de permissões (Propriedades do arquivo, Segurança, NTFS)",
+            "Uso do comando 'takeown' e 'icacls' no Windows",
+            "Desbloqueio via ferramentas de administração de rede (Active Directory, GPO)",
+            "Abertura do arquivo em modo de compatibilidade",
+            "Solicitação de permissão ao administrador do sistema",
+            "Não utilizo ferramentas específicas para isso",
+          ],
+          required: true,
+        },
+        ori: {
+          // "Que orientações básicas você dá quando o documento é corrompido ou não abre corretamente?"
+          type: "select-multiple",
+          options: [
+            "Tentar abrir o arquivo em outro editor compatível (LibreOffice, Notepad++)",
+            "Recuperação automática no próprio software (Word, Excel, etc.)",
+            "Utilização de ferramentas online de recuperação de arquivos",
+            "Abrir o documento em modo de segurança",
+            "Recuperação de versões anteriores ou backups",
+            "Converter para outro formato antes de abrir",
+            "Não forneço orientações para esse tipo de problema",
+          ],
+          required: true,
+        },
+      },
+    },
+    intermediate: {
+      docs: {
+        mac: repeatedDefinitions.scp,
+        lay: {
+          // "Como você soluciona problemas de layout avançado (sumário, seções)...?"
+          type: "select-multiple",
+          options: [
+            "Não soluciono layout avançado",
+            "Ajustes manuais de sumário e seções",
+            "Macros que recriam sumário",
+            "Ferramentas de formatação corporativa",
+          ],
+          required: true,
+        },
+        col: repeatedDefinitions.colab,
+        idx: {
+          // "Como você orienta a criação de índices remissivos ou referências cruzadas...?"
+          type: "select-multiple",
+          options: [
+            "Uso Word/Docs com marcadores",
+            "Uso de Ferramentas avançadas (LaTeX, Indesign)",
+            "Uso de Scripts para índices remissivos grandes",
+          ],
+          required: true,
+        },
+        adv: {
+          // "Qual sua abordagem para logs ou trilhas de auditoria em edição de documentos compartilhados?"
+          type: "select-multiple",
+          options: [
+            "Uso histórico do Word/Docs",
+            "Sistemas de versionamento corporativos",
+            "Scripts de auditoria para docs",
+          ],
+          required: true,
+        },
+      },
+    },
+    expert: {
+      docs: {
+        vba: repeatedDefinitions.scp,
+        enc: repeatedDefinitions.exp,
+        api: repeatedDefinitions.exp,
+        mig: {
+          // "Qual sua estratégia ao migrar docs de um sistema legado (ex.: Lotus) para plataformas atuais...?"
+          type: "select-one",
+          options: [
+            "Exportação manual para formatos atuais",
+            "Ferramentas de conversão em massa",
+            "Scripts customizados para manter formatação",
+          ],
+          required: true,
+        },
+        srv: {
+          // "Descreva como você configura servidores de documentos (ex.: SharePoint)..."
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: false,
+          writingSuggestions: true,
+          spellCheck: true,
+        },
+      },
+    },
+  },
+  operatorio: {
+    beginner: {
+      docs: {
+        net: {
+          // "Como você configura as permissões básicas de rede para que os usuários acessem um editor de texto?"
+          type: "select-multiple",
+          options: [
+            "Acesso livre via rede local",
+            "Controle de acesso por grupos e usuários (AD)",
+            "VPN para acesso remoto seguro",
+          ],
+          required: true,
+        },
+        upd: repeatedDefinitions.frq,
+        lnk: {
+          // "De que modo você instala e vincula plugins ou complementos em servidores de arquivos locais?"
+          type: "select-multiple",
+          options: [
+            "Instalação manual em cada máquina",
+            "Distribuição via scripts/GPO",
+            "Sistemas de pacotes corporativos (SCCM)",
+          ],
+          required: true,
+        },
+        prt: {
+          // "Como você configura impressoras e controla spools de documentos em rede?"
+          type: "select-multiple",
+          options: [
+            "Adiciono impressora local e compartilho",
+            "Servidor de impressão (Windows Server Print Services)",
+            "Ferramentas de cotas (PaperCut, etc.)",
+          ],
+          required: true,
+        },
+        pat: {
+          // "Qual sua prática para padronizar caminhos de salvamento (servidor/nuvem)...?"
+          type: "select-multiple",
+          options: [
+            "Orientação manual e com intervenção direta",
+            "Crio GPO para mapear caminhos",
+            "Ferramenta de versionamento e backup automático",
+          ],
+          required: true,
+        },
+      },
+    },
+    intermediate: {
+      docs: {
+        gpo: repeatedDefinitions.scp,
+        tro: {
+          // "Como você soluciona problemas de lentidão ao abrir documentos via rede...?"
+          type: "select-multiple",
+          options: [
+            "Verifico latência de rede e DNS",
+            "Desabilito funcionalidades que causam travas (ex.: versioning)",
+            "Cache local ou replicação DFS",
+          ],
+          required: true,
+        },
+        vrs: {
+          // "Você gerencia versionamento centralizado (ex.: SharePoint) e resolve conflitos de check-in/out?"
+          type: "select-one",
+          options: [
+            "Configuro SharePoint básico",
+            "Aplico check-in/out e controlo conflitos manualmente",
+            "Ferramentas de versionamento corporativas robustas",
+          ],
+          required: true,
+        },
+        scr: {
+          // "De que forma você monitora logs de acesso e edição para auditoria de compliance em documentos?"
+          type: "select-multiple",
+          options: [
+            "Verifico logs locais do Windows ou do Samba",
+            "Uso ferramentas de SIEM (Splunk, etc.)",
+            "Macros e scripts para rastrear atividade",
+          ],
+          required: true,
+        },
+        pol: {
+          // "Como você define políticas de backup e snapshot para evitar perdas de dados em arquivos críticos?"
+          type: "select-multiple",
+          options: [
+            "Backup manual periódico",
+            "Snapshots automáticos",
+            "Soluções corporativas",
+          ],
+          required: true,
+        },
+      },
+    },
+    expert: {
+      docs: {
+        scc: {
+          // "Você customiza instalações em larga escala (SCCM) de editores de texto?"
+          type: "select-multiple",
+          options: [
+            "Pacote MSI básico distribuído manualmente",
+            "SCCM com configurações personalizadas (GPO + MST)",
+            "Testes de compatibilidade e atualizações automatizadas",
+          ],
+          required: true,
+        },
+        dlp: {
+          // "Como você integra soluções de DLP (Data Loss Prevention) para docs sensíveis na rede corporativa?"
+          type: "select-multiple",
+          options: [
+            "DLP básico (Bloqueio de e-mails externos)",
+            "Ferramentas avançadas (Microsoft Purview, Symantec DLP)",
+            "Alertas e logs centralizados para documentos críticos",
+          ],
+          required: true,
+        },
+        dfs: {
+          // "Qual sua abordagem para replicação DFS entre múltiplos sites, evitando corrupção de documentos?"
+          type: "select-multiple",
+          options: [
+            "DFS básico com replicação bidirecional",
+            "Scripts para checar conflitos e integridade",
+            "Ferramentas de cluster corporativo (Azure File Sync)",
+          ],
+          required: true,
+        },
+        off: {
+          // "Você gerencia merges offline/online e problemas de credenciais em cenários desconectados?"
+          type: "select-multiple",
+          options: [
+            "Manual (salvo localmente e substituo ao reconectar)",
+            "Ferramentas de versionamento (Git, etc.) para doc",
+            "Autenticação federada com cache de credenciais",
+          ],
+          required: true,
+        },
+        iso: {
+          // "De que forma você garante conformidade (ISO, PCI) para manipulação segura de documentos corporativos?"
+          type: "select-multiple",
+          options: [
+            "Políticas mínimas de segurança",
+            "Ferramentas de auditoria e logs obrigatórias",
+            "Procedimentos certificados e verificados regularmente",
+          ],
+          required: true,
+        },
+      },
+    },
+  },
+  desenvolvimento: {
+    beginner: {
+      docs: {
+        api: repeatedDefinitions.docp,
+        pat: {
+          // "Você segue algum padrão (ex.: Markdown) para registrar instruções de compilação ou uso?"
+          type: "select-multiple",
+          options: [
+            "Markdown/README",
+            "Ferramentas de doc (Asciidoc, ReStructuredText)",
+            "Wiki corporativa com templates",
+            "Jupyter Notebooks",
+            "HTML",
+            "Formatos relacionais (.csv, .xls, etc.)",
+            "Documentos processador (.doc, .docx, etc.)",
+          ],
+          required: true,
+        },
+        col: repeatedDefinitions.exp,
+        ver: repeatedDefinitions.colab,
+        sty: {
+          // "De que forma você padroniza estilos de anotações nos arquivos?"
+          type: "select-multiple",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+        },
+      },
+    },
+    intermediate: {
+      docs: {
+        rfc: repeatedDefinitions.frq,
+        sum: {
+          // "Em que nível você gera sumários automáticos e referências cruzadas...?"
+          type: "select-one",
+          options: [
+            "Ferramenta nativa (Word/Docs) + referências cruzadas",
+            "Sistemas de doc (Sphinx/MkDocs) com auto-index",
+            "Inteligências Articiais",
+          ],
+          required: true,
+        },
+        dev: repeatedDefinitions.exp,
+        rev: {
+          // "Como você lida com revisões colaborativas, incluindo comentários e sugestões de colegas?"
+          type: "select-multiple",
+          options: [
+            "Track changes e comentários no doc",
+            "Ferramentas de code review (GitHub, GitLab) para doc",
+            "Plataformas colaborativas (Confluence, Slack, Trelo, Notion, etc.)",
+          ],
+          required: true,
+        },
+        pbl: {
+          // "De que forma você publica ou disponibiliza esses documentos para equipes de QA, Ops?"
+          type: "select-multiple",
+          options: [
+            "Documentos enviado por e-mail",
+            "Wikis corporativas",
+            "Ferramentas de doc automation (MkDocs, Docusaurus)",
+            "Repositórios de versionamento locais e em nuvem",
+          ],
+          required: true,
+        },
+      },
+    },
+    expert: {
+      docs: {
+        scp: repeatedDefinitions.yn,
+        col: {
+          // "Como você mantém controle rigoroso de alterações em docs extensos (manual de arquitetura) via Git?"
+          type: "select-multiple",
+          options: [
+            "Commit doc manualmente sem merges",
+            "Política de pull requests para cada doc change",
+            "Scripts de diffs e merges text-based",
+          ],
+          required: true,
+        },
+        arc: {
+          // "De que maneira você descreve arquitetura de software avançada (ex.: diagramas UML) em docs e versiona?"
+          type: "select-multiple",
+          options: [
+            "Diagramas salvos como imagens no repositório",
+            "Ferramentas de diagrama online (Lucid, Draw.io) com export",
+            "Asciidoc/PlantUML versionado no Git",
+          ],
+          required: true,
+        },
+        int: repeatedDefinitions.frq,
+        pol: {
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+        },
+      },
+    },
+  },
+  devOps: {
+    beginner: {
+      docs: {
+        sdr: repeatedDefinitions.docp,
+        cco: repeatedDefinitions.yn,
+        vrs: repeatedDefinitions.frq,
+        col: repeatedDefinitions.colab,
+        cli: repeatedDefinitions.exp,
+      },
+    },
+    intermediate: {
+      docs: {
+        arc: {
+          // "Como você registra arquitetura de pipelines (desenhos, YAML samples) em docs de referência?"
+          type: "select-multiple",
+          options: [
+            "Incluo exemplos de .yaml e .json no README",
+            "Ferramentas visuais (Draw.io) e anexo no doc",
+            "Scripts que geram diagrama a partir do pipeline real",
+          ],
+          required: true,
+        },
+        sec: repeatedDefinitions.sec,
+        pol: {
+          // "Você insere políticas de commits, branch naming e merges em um documento de convenções?"
+          type: "select-multiple",
+          options: [
+            "Defino no README do repositório",
+            "Documento corporativo de convenções DevOps",
+            "Acompanhado por scripts de lint e validação",
+            "Comentários nos arquivos de configuração",
+          ],
+          required: true,
+        },
+        ver: repeatedDefinitions.exp,
+        aut: {
+          // "Você descreve automações (hooks, triggers) e como elas funcionam para integrantes novos?"
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+        },
+      },
+    },
+    expert: {
+      docs: {
+        smk: {
+          // "Você utiliza smokes ou specs em doc para QA e DevOps (ex.: BDD) e versiona junto do pipeline?"
+          type: "select-multiple",
+          options: [
+            "Spec do QA sem versionamento",
+            "Integro BDD (Cucumber) e versiono junto",
+            "Ferramentas que geram doc automatic a partir dos testes",
+          ],
+          required: true,
+        },
+        gen: {
+          // "Como você gera documentação automatizada (ex.: swagger de microserviços) e vincula a um repositório doc?"
+          type: "select-multiple",
+          options: [
+            "Exporto swagger manualmente",
+            "Script no CI que atualiza repositório doc",
+            "Ferramentas de doc as code (Sphinx, MkDocs) integrado",
+          ],
+          required: true,
+        },
+        ext: {
+          // "De que forma você integra doc com wikis corporativas (SharePoint, Confluence) e mantém sincronizado?"
+          type: "select-multiple",
+          options: [
+            "Copio/colo manualmente na Plataforma",
+            "Automações para exportar docs para wikis",
+            "APIs de sync entre repositórios e wikis corporativas",
+          ],
+          required: true,
+        },
+        adv: {
+          // "Qual é seu procedimento para diagramar pipelines DevOps complexos (multi-stage, multi-cloud) e revisar periodicamente?"
+          type: "select-multiple",
+          options: [
+            "Uso ferramenta de diagrama local (Visio, Draw.io)",
+            "Armazeno diagramas em repositório e reviso a cada sprint",
+            "Scripts geram diagramas automáticos (ex.: Pipeline-as-Code)",
+          ],
+          required: true,
+        },
+        pol: {
+          type: "select-multiple",
+          options: [
+            "Checagens pontuais sem doc detalhada",
+            "Documentação formal de cada controle (ISO, PCI)",
+            "Ferramentas de compliance integradas ao pipeline + doc",
+          ],
+          required: true,
+        },
       },
     },
   },
 };
+//TODO VERIFICAR
+export const fmEntryTypes: {
+  [K in roleDefined]: {
+    [L in complexityLabel]: {
+      formBuilder: KeysRecords<FormBuilderQuestionsKeys>;
+    };
+  };
+} = ObjectHelper.deepFreeze({
+  executivoAdministrativo: {
+    beginner: {
+      formBuilder: {
+        crt: repeatedDefinitions.exp,
+        tpl: repeatedDefinitions.yn,
+        slc: {
+          type: "select-multiple",
+          options: [
+            "Baseio no tipo de dados necessário",
+            "Uso múltipla escolha para opções pré-definidas",
+            "Texto livre para comentários",
+            "Classificação por estrelas/notas",
+          ],
+          required: true,
+        },
+        rsp: repeatedDefinitions.frq,
+        emb: repeatedDefinitions.yn,
+      },
+    },
+    intermediate: {
+      formBuilder: {
+        aut: {
+          type: "select-multiple",
+          options: [
+            "Notificações por e-mail via Google Apps Script",
+            "Integração com Slack/Microsoft Teams",
+            "Webhooks para sistemas internos",
+            "Não configuro automações",
+          ],
+          required: true,
+        },
+        exp: repeatedDefinitions.exp,
+        api: repeatedDefinitions.yn,
+        val: {
+          type: "select-multiple",
+          options: [
+            "Validação de formato de e-mail",
+            "Regex para padrões específicos",
+            "Verificação de números de telefone",
+            "Validação de datas em intervalos",
+          ],
+          required: true,
+        },
+        rpt: repeatedDefinitions.frq,
+      },
+    },
+    expert: {
+      formBuilder: {
+        adv: {
+          type: "select-multiple",
+          options: [
+            "Integração com Salesforce via API",
+            "Conexão direta com MySQL/PostgreSQL",
+            "Sincronização em tempo real via Zapier",
+            "Webhooks customizados",
+          ],
+          required: true,
+        },
+        cus: repeatedDefinitions.scp,
+        sec: repeatedDefinitions.sec,
+        mlc: {
+          type: "select-multiple",
+          options: [
+            "Análise de sentimento com NLP",
+            "Classificação automática de respostas",
+            "Detecção de padrões em dados abertos",
+            "Não utilizo IA",
+          ],
+          required: true,
+        },
+        dsh: repeatedDefinitions.yn,
+      },
+    },
+  },
+  financeiro: {
+    beginner: {
+      formBuilder: {
+        cre: repeatedDefinitions.exp,
+        rls: repeatedDefinitions.yn,
+        sec: repeatedDefinitions.sec,
+        eml: {
+          type: "select-multiple",
+          options: [
+            "Link público via e-mail",
+            "Acesso restrito por domínio",
+            "Compartilhamento interno via intranet",
+            "Arquivo PDF protegido",
+          ],
+          required: true,
+        },
+        rep: repeatedDefinitions.yn,
+      },
+    },
+    intermediate: {
+      formBuilder: {
+        log: repeatedDefinitions.yn,
+        ntf: {
+          type: "select-multiple",
+          options: [
+            "Notificações via Google Workspace",
+            "Alertas no Microsoft 365",
+            "Integração com sistema de tickets",
+            "Não configuro notificações",
+          ],
+          required: true,
+        },
+        val: {
+          type: "select-multiple",
+          options: [
+            "Validação de CNPJ/CPF",
+            "Verificação de dígitos bancários",
+            "Restrição de valores numéricos",
+            "Validação de datas fiscais",
+          ],
+          required: true,
+        },
+        api: repeatedDefinitions.frq,
+        fwd: repeatedDefinitions.yn,
+      },
+    },
+    expert: {
+      formBuilder: {
+        adv: {
+          type: "select-multiple",
+          options: [
+            "CSS customizado para branding",
+            "JavaScript para validações complexas",
+            "Integração com SAP via ODBC",
+            "Assinatura digital de formulários",
+          ],
+          required: true,
+        },
+        aut: repeatedDefinitions.scp,
+        sec: {
+          type: "select-multiple",
+          options: [
+            "Criptografia AES-256",
+            "Armazenamento em bancos isolados",
+            "Mascaramento de dados sensíveis",
+            "Tokenização de informações",
+          ],
+          required: true,
+        },
+        e2e: repeatedDefinitions.yn,
+        dsh: repeatedDefinitions.yn,
+      },
+    },
+  },
+  comercial: {
+    beginner: {
+      formBuilder: {
+        cre: repeatedDefinitions.exp,
+        rls: repeatedDefinitions.yn,
+        cst: repeatedDefinitions.frq,
+        est: repeatedDefinitions.yn,
+        shr: {
+          type: "select-multiple",
+          options: [
+            "Link direto em e-mails",
+            "QR Code em materiais impressos",
+            "Incorporação em site",
+            "Compartilhamento via redes sociais",
+          ],
+          required: true,
+        },
+      },
+    },
+    intermediate: {
+      formBuilder: {
+        lgi: repeatedDefinitions.yn,
+        ntf: repeatedDefinitions.yn,
+        seg: {
+          type: "select-multiple",
+          options: [
+            "Segmentação por canal de origem",
+            "Classificação por interesse declarado",
+            "Tags por estágio do funil",
+            "Priorização por score BANT",
+          ],
+          required: true,
+        },
+        val: {
+          type: "select-multiple",
+          options: [
+            "Validação de CNPJ via Receita WS",
+            "Verificação de formato de telefone",
+            "Confirmação de e-mail via double opt-in",
+            "Checagem de CEP válido",
+          ],
+          required: true,
+        },
+        rep: repeatedDefinitions.yn,
+      },
+    },
+    expert: {
+      formBuilder: {
+        adv: {
+          type: "select-multiple",
+          options: [
+            "Embed em Single Page Apps",
+            "Customização com React Components",
+            "Integração via SDKs proprietários",
+            "Autenticação OAuth para CRMs",
+          ],
+          required: true,
+        },
+        api: repeatedDefinitions.yn,
+        scy: repeatedDefinitions.sec,
+        atn: repeatedDefinitions.yn,
+        dash: repeatedDefinitions.yn,
+      },
+    },
+  },
+  marketing: {
+    beginner: {
+      formBuilder: {
+        crt: repeatedDefinitions.exp,
+        rls: repeatedDefinitions.yn,
+        seg: {
+          type: "select-multiple",
+          options: [
+            "Por interesse em produtos",
+            "Por faixa etária",
+            "Por localização geográfica",
+            "Por fonte de tráfego",
+          ],
+          required: true,
+        },
+        lnk: repeatedDefinitions.yn,
+        rep: repeatedDefinitions.yn,
+      },
+    },
+    intermediate: {
+      formBuilder: {
+        lgc: repeatedDefinitions.yn,
+        ntf: repeatedDefinitions.yn,
+        api: repeatedDefinitions.frq,
+        seg: {
+          type: "select-multiple",
+          options: [
+            "Lead scoring básico",
+            "Classificação por temperatura",
+            "Segmentação por persona",
+            "Tags por campanha específica",
+          ],
+          required: true,
+        },
+        val: repeatedDefinitions.yn,
+      },
+    },
+    expert: {
+      formBuilder: {
+        adv: {
+          type: "select-multiple",
+          options: [
+            "Personalização dinâmica com CSS variables",
+            "A/B testing de versões de formulário",
+            "Integração com CDPs como Segment",
+            "Ativação em tempo real via APIs",
+          ],
+          required: true,
+        },
+        int: repeatedDefinitions.yn,
+        sec: repeatedDefinitions.sec,
+        atn: repeatedDefinitions.yn,
+        dash: repeatedDefinitions.yn,
+      },
+    },
+  },
+  suporteTecnicoN1: {
+    beginner: {
+      formBuilder: {
+        frm: repeatedDefinitions.exp,
+        val: repeatedDefinitions.yn,
+        lay: {
+          type: "select-multiple",
+          options: [
+            "Agrupamento por seções",
+            "Progressão lógica de perguntas",
+            "Uso de descrições explicativas",
+            "Espaçamento adequado entre campos",
+          ],
+          required: true,
+        },
+        cmm: repeatedDefinitions.frq,
+        shp: repeatedDefinitions.yn,
+      },
+    },
+    intermediate: {
+      formBuilder: {
+        cnd: repeatedDefinitions.yn,
+        seg: {
+          type: "select-multiple",
+          options: [
+            "Seções condicionais por perfil",
+            "Páginas separadas para contextos diferentes",
+            "Mostrar/ocultar campos dinamicamente",
+            "Validação cruzada entre seções",
+          ],
+          required: true,
+        },
+        aut: repeatedDefinitions.yn,
+        rdx: repeatedDefinitions.yn,
+        ext: repeatedDefinitions.yn,
+      },
+    },
+    expert: {
+      formBuilder: {
+        scr: repeatedDefinitions.scp,
+        sec: repeatedDefinitions.sec,
+        mul: {
+          type: "select-multiple",
+          options: [
+            "Fluxos com aprovação em cascata",
+            "Validação entre níveis hierárquicos",
+            "Integração com sistemas de tickets",
+            "Notificações contextuais por etapa",
+          ],
+          required: true,
+        },
+        rep: repeatedDefinitions.yn,
+        man: repeatedDefinitions.yn,
+      },
+    },
+  },
+  suporteTecnicoN2: {
+    beginner: {
+      formBuilder: {
+        bug: {
+          type: "select-multiple",
+          options: [
+            "Verificação de conflitos de dependências",
+            "Testes em diferentes navegadores",
+            "Análise de console de erros",
+            "Validação de permissões de acesso",
+            "Não identifico bugs em formulários",
+          ],
+          required: true,
+        },
+        pmt: repeatedDefinitions.sec,
+        vrf: {
+          type: "select-multiple",
+          options: [
+            "Validação de campos obrigatórios",
+            "Verificação de formatos básicos",
+            "Testes de submissão vazia",
+            "Alertas visuais para campos inválidos",
+            "Não realizo verificações",
+          ],
+          required: true,
+        },
+        lay: repeatedDefinitions.colab,
+        shl: repeatedDefinitions.yn,
+      },
+    },
+    intermediate: {
+      formBuilder: {
+        cnd: {
+          type: "select-multiple",
+          options: [
+            "Lógica de exibição condicional",
+            "Validação cruzada entre campos",
+            "Cálculos dinâmicos com respostas",
+            "Redirecionamento entre seções",
+            "Não implemento lógicas complexas",
+          ],
+          required: true,
+        },
+        rls: {
+          type: "select-multiple",
+          options: [
+            "Disparo de e-mails automáticos",
+            "Integração com sistemas de tickets",
+            "Atualização de planilhas em tempo real",
+            "Notificações via webhook",
+            "Não configuro regras de envio",
+          ],
+          required: true,
+        },
+        cfg: repeatedDefinitions.scp,
+        scp: {
+          type: "select-multiple",
+          options: [
+            "Validação de CPF/CNPJ via regex",
+            "Checagem de formatos de data",
+            "Verificação de domínios de e-mail",
+            "Validação de números de telefone",
+            "Não implemento validações complexas",
+          ],
+          required: true,
+        },
+        des: repeatedDefinitions.yn,
+      },
+    },
+    expert: {
+      formBuilder: {
+        api: {
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          writingSuggestions: true,
+          spellCheck: true,
+        },
+        sec: {
+          type: "select-multiple",
+          options: [
+            "Criptografia end-to-end",
+            "Mascaramento de dados sensíveis",
+            "Tokenização de informações",
+            "Logs de auditoria detalhados",
+            "Não implemento segurança avançada",
+          ],
+          required: true,
+        },
+        flw: {
+          type: "select-multiple",
+          options: [
+            "Aprovação multi-nível hierárquico",
+            "Integração com sistemas de assinatura digital",
+            "Validação jurídica de respostas",
+            "Workflows automatizados com BPMN",
+            "Não crio fluxos complexos",
+          ],
+          required: true,
+        },
+        mul: repeatedDefinitions.yn,
+        adv: {
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: false,
+          writingSuggestions: true,
+        },
+      },
+    },
+  },
+  operatorio: {
+    beginner: {
+      formBuilder: {
+        dsp: {
+          type: "select-multiple",
+          options: [
+            "Instalação via GPO",
+            "Configuração manual de acesso",
+            "Criação de atalhos padronizados",
+            "Documentação de acesso básico",
+            "Não disponibilizo ferramentas",
+          ],
+          required: true,
+        },
+        ins: repeatedDefinitions.yn,
+        csh: repeatedDefinitions.frq,
+        net: {
+          type: "select-multiple",
+          options: [
+            "Whitelist de IPs confiáveis",
+            "Configuração de proxy corporativo",
+            "Uso de VPN para acesso",
+            "Liberação de portas específicas",
+            "Não lido com restrições de rede",
+          ],
+          required: true,
+        },
+        brw: repeatedDefinitions.yn,
+      },
+    },
+    intermediate: {
+      formBuilder: {
+        sso: {
+          type: "select-multiple",
+          options: [
+            "Integração com Active Directory",
+            "Configuração SAML 2.0",
+            "Autenticação OAuth 2.0",
+            "Sincronização de grupos LDAP",
+            "Não implemento SSO",
+          ],
+          required: true,
+        },
+        scp: repeatedDefinitions.scp,
+        sec: {
+          type: "select-multiple",
+          options: [
+            "Certificados SSL/TLS",
+            "Configuração de HSTS",
+            "Cipher suites atualizados",
+            "Verificação de revogação CRL/OCSP",
+            "Não implemento SSL avançado",
+          ],
+          required: true,
+        },
+        aut: repeatedDefinitions.yn,
+        dpl: repeatedDefinitions.frq,
+      },
+    },
+    expert: {
+      formBuilder: {
+        adv: {
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          spellCheck: true,
+        },
+        api: {
+          type: "select-multiple",
+          options: [
+            "Integração com ServiceNow",
+            "Conexão com Zendesk via API",
+            "Automação com PowerShell",
+            "Fluxos customizados com Python",
+            "Não integro com sistemas externos",
+          ],
+          required: true,
+        },
+        crt: repeatedDefinitions.sec,
+        flw: repeatedDefinitions.yn,
+        drp: {
+          type: "select-multiple",
+          options: [
+            "Replicação em tempo real",
+            "Backups georedundantes",
+            "Snapshots horários",
+            "Failover automático entre DCs",
+            "Não implemento DRP",
+          ],
+          required: true,
+        },
+      },
+    },
+  },
+  desenvolvimento: {
+    beginner: {
+      formBuilder: {
+        sng: repeatedDefinitions.yn,
+        bug: {
+          type: "select-multiple",
+          options: [
+            "Formulário de GitHub Issues",
+            "Template padronizado de reporte",
+            "Captura automática de logs",
+            "Integração com Sentry/Bugsnag",
+            "Não utilizo formulários para bugs",
+          ],
+          required: true,
+        },
+        surv: repeatedDefinitions.frq,
+        ann: repeatedDefinitions.yn,
+        sec: repeatedDefinitions.sec,
+      },
+    },
+    intermediate: {
+      formBuilder: {
+        cnd: {
+          type: "select-multiple",
+          options: [
+            "Lógica de branching com respostas",
+            "Validação de inputs técnicos",
+            "Integração com API de validação",
+            "Customização com JSON Schema",
+            "Não implemento lógicas complexas",
+          ],
+          required: true,
+        },
+        dta: repeatedDefinitions.yn,
+        flw: {
+          type: "select-multiple",
+          options: [
+            "Aprovação via Pull Request",
+            "Integração com Jira Workflow",
+            "Notificações no Slack",
+            "Validação de Code Owners",
+            "Não automatizo fluxos",
+          ],
+          required: true,
+        },
+        scp: repeatedDefinitions.scp,
+        col: repeatedDefinitions.yn,
+      },
+    },
+    expert: {
+      formBuilder: {
+        adv: {
+          type: "select-multiple",
+          options: [
+            "Geração automática de tickets",
+            "Integração com Webhooks",
+            "Parsing de stack traces",
+            "Envio para sistemas de monitoramento",
+            "Não crio integrações avançadas",
+          ],
+          required: true,
+        },
+        doc: {
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          writingSuggestions: true,
+        },
+        aut: repeatedDefinitions.scp,
+        sec: repeatedDefinitions.sec,
+        cst: {
+          type: "select-multiple",
+          options: [
+            "Temas CSS personalizados",
+            "Componentes React customizados",
+            "Logging detalhado de interações",
+            "Analytics embutido",
+            "Não customizo layouts",
+          ],
+          required: true,
+        },
+      },
+    },
+  },
+  devOps: {
+    beginner: {
+      formBuilder: {
+        frq: repeatedDefinitions.frq,
+        bgs: repeatedDefinitions.yn,
+        usr: {
+          type: "select-multiple",
+          options: [
+            "Controle por grupos do AD",
+            "Permissões baseadas em roles",
+            "Acesso somente leitura",
+            "Aprovação manual de usuários",
+            "Não gerencio permissões",
+          ],
+          required: true,
+        },
+        doc: repeatedDefinitions.yn,
+        dsp: repeatedDefinitions.frq,
+      },
+    },
+    intermediate: {
+      formBuilder: {
+        cnd: {
+          type: "select-multiple",
+          options: [
+            "Filtragem por ambiente (dev/stage/prod)",
+            "Validação de inputs de infraestrutura",
+            "Checagem de compliance pré-implantação",
+            "Integração com políticas de segurança",
+            "Não implemento validações condicionais",
+          ],
+          required: true,
+        },
+        val: {
+          type: "select-multiple",
+          options: [
+            "Validação de nomes de recursos",
+            "Verificação de padrões de tagging",
+            "Checagem de configurações de segurança",
+            "Validação de templates CloudFormation",
+            "Não realizo validações complexas",
+          ],
+          required: true,
+        },
+        rep: repeatedDefinitions.yn,
+        aut: {
+          type: "select-multiple",
+          options: [
+            "Disparo via webhook",
+            "Integração com Jenkins pipelines",
+            "Execução via cron jobs",
+            "Orquestração com Kubernetes",
+            "Não automatizo respostas",
+          ],
+          required: true,
+        },
+        seg: repeatedDefinitions.sec,
+      },
+    },
+    expert: {
+      formBuilder: {
+        adv: {
+          type: "select-multiple",
+          options: [
+            "Chatbots com Dialogflow",
+            "Integração com ITSM tools",
+            "Orquestração de multi-cloud",
+            "Autoscaling baseado em respostas",
+            "Não implemento automações complexas",
+          ],
+          required: true,
+        },
+        wfh: {
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          spellCheck: true,
+        },
+        dpl: repeatedDefinitions.scp,
+        esc: {
+          type: "select-multiple",
+          options: [
+            "Priorização por severity levels",
+            "Rotas diretas para SRE",
+            "Alertas em múltiplos canais",
+            "Acionamento automático de on-call",
+            "Não implemento escalonamento",
+          ],
+          required: true,
+        },
+        aud: repeatedDefinitions.sec,
+      },
+    },
+  },
+});
+//TODO VERIFICAR
+export const csEntryTypes: {
+  [K in roleDefined]: {
+    [L in complexityLabel]: {
+      cloudStorage: KeysRecords<CloudStorageQuestionsKeys>;
+    };
+  };
+} = ObjectHelper.deepFreeze({
+  executivoAdministrativo: {
+    beginner: {
+      cloudStorage: {
+        upl: repeatedDefinitions.exp,
+        org: {
+          type: "select-multiple",
+          options: [
+            "Pastas por projeto ou cliente",
+            "Data no nome dos arquivos",
+            "Tags/metadados para busca",
+            "Hierarquia padrão da empresa",
+            "Organização manual sem padrão",
+          ],
+          required: true,
+        },
+        shr: repeatedDefinitions.colab,
+        acc: repeatedDefinitions.yn,
+        syn: repeatedDefinitions.frq,
+      },
+    },
+    intermediate: {
+      cloudStorage: {
+        ver: {
+          type: "select-multiple",
+          options: [
+            "Histórico de versões habilitado",
+            "Nomenclatura com versão (v1, v2)",
+            "Sistema de check-out/check-in",
+            "Backups manuais periódicos",
+            "Não controlo versões",
+          ],
+          required: true,
+        },
+        bck: repeatedDefinitions.yn,
+        api: repeatedDefinitions.exp,
+        sec: repeatedDefinitions.sec,
+        sch: {
+          type: "select-multiple",
+          options: [
+            "Políticas de retenção definidas",
+            "Classificação de dados sensíveis",
+            "Exclusão automática por tempo",
+            "Criptografia de arquivos em repouso",
+            "Não implemento políticas",
+          ],
+          required: true,
+        },
+      },
+    },
+    expert: {
+      cloudStorage: {
+        int: {
+          type: "select-multiple",
+          options: [
+            "Integração via API REST",
+            "Webhooks para sincronização",
+            "Conectores nativos de CRM",
+            "Scripts customizados (Python, JS)",
+            "Não integro com outros sistemas",
+          ],
+          required: true,
+        },
+        big: {
+          type: "select-multiple",
+          options: [
+            "Armazenamento em objetos (S3)",
+            "CDN para distribuição global",
+            "Arquivamento em cold storage",
+            "Deduplicação de dados",
+            "Não lido com grandes volumes",
+          ],
+          required: true,
+        },
+        adv: {
+          type: "select-multiple",
+          options: [
+            "Monitoramento de custos em tempo real",
+            "Armazenamento em múltiplas regiões",
+            "Tiered storage por frequência de acesso",
+            "Automação de lifecycle policies",
+            "Não otimizo custos",
+          ],
+          required: true,
+        },
+        mig: repeatedDefinitions.yn,
+        rpt: {
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          writingSuggestions: true,
+          spellCheck: true,
+        },
+      },
+    },
+  },
+  financeiro: {
+    beginner: {
+      cloudStorage: {
+        upl: repeatedDefinitions.exp,
+        org: {
+          type: "select-multiple",
+          options: [
+            "Por ano fiscal",
+            "Por tipo de documento (NF, extrato)",
+            "Por fornecedor/cliente",
+            "Tags de status (aprovado, pendente)",
+            "Sem organização específica",
+          ],
+          required: true,
+        },
+        shr: repeatedDefinitions.colab,
+        prm: repeatedDefinitions.yn,
+        syn: repeatedDefinitions.frq,
+      },
+    },
+    intermediate: {
+      cloudStorage: {
+        ver: {
+          type: "select-multiple",
+          options: [
+            "Versionamento automático",
+            "Snapshots diários",
+            "Backups em fita/glacier",
+            "Controle manual de versões",
+            "Não mantenho histórico",
+          ],
+          required: true,
+        },
+        bkp: repeatedDefinitions.yn,
+        int: {
+          type: "select-multiple",
+          options: [
+            "Integração com ERP via SFTP",
+            "API para upload automático",
+            "Webhooks para notificações",
+            "Sincronização com planilhas",
+            "Não integro sistemas",
+          ],
+          required: true,
+        },
+        sec: {
+          type: "select-multiple",
+          options: [
+            "Criptografia AES-256",
+            "Acesso por VPN corporativa",
+            "Autenticação de dois fatores",
+            "Logs de auditoria detalhados",
+            "Sem medidas especiais",
+          ],
+          required: true,
+        },
+        log: repeatedDefinitions.yn,
+      },
+    },
+    expert: {
+      cloudStorage: {
+        mch: {
+          type: "select-multiple",
+          options: [
+            "Armazenamento em bloco para DBs",
+            "Sistemas de arquivos distribuídos",
+            "Arquivamento em WORM compliance",
+            "Metadata tagging avançado",
+            "Não gerencio grandes volumes",
+          ],
+          required: true,
+        },
+        cln: repeatedDefinitions.yn,
+        cdc: {
+          type: "select-multiple",
+          options: [
+            "Retenção de 5+ anos para documentos fiscais",
+            "Máscara de dados sensíveis",
+            "Access Control baseado em roles",
+            "Certificação PCI DSS",
+            "Não implemento compliance",
+          ],
+          required: true,
+        },
+        mid: repeatedDefinitions.yn,
+        drs: {
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          writingSuggestions: true,
+        },
+      },
+    },
+  },
+  comercial: {
+    beginner: {
+      cloudStorage: {
+        upl: repeatedDefinitions.exp,
+        org: {
+          type: "select-multiple",
+          options: [
+            "Por estágio do funil",
+            "Por tamanho do negócio",
+            "Por região geográfica",
+            "Tags de prioridade",
+            "Organização aleatória",
+          ],
+          required: true,
+        },
+        shr: repeatedDefinitions.colab,
+        prm: repeatedDefinitions.yn,
+        syn: repeatedDefinitions.frq,
+      },
+    },
+    intermediate: {
+      cloudStorage: {
+        ver: {
+          type: "select-multiple",
+          options: [
+            "Controle de versão colaborativo",
+            "Lock de arquivos em edição",
+            "Histórico de mudanças detalhado",
+            "Backups incrementais",
+            "Sem controle de versão",
+          ],
+          required: true,
+        },
+        bck: repeatedDefinitions.yn,
+        int: {
+          type: "select-multiple",
+          options: [
+            "Integração com Slack/Teams",
+            "Notificações em tempo real",
+            "Sincronização com CRM",
+            "Automação de workflows",
+            "Não integro plataformas",
+          ],
+          required: true,
+        },
+        sec: repeatedDefinitions.sec,
+        log: repeatedDefinitions.yn,
+      },
+    },
+    expert: {
+      cloudStorage: {
+        mch: {
+          type: "select-multiple",
+          options: [
+            "Catálogo digital com pesquisa semântica",
+            "Armazenamento multi-cloud",
+            "Gerenciamento de metadados em escala",
+            "IA para classificação automática",
+            "Não lido com grandes catálogos",
+          ],
+          required: true,
+        },
+        cln: repeatedDefinitions.yn,
+        cdc: {
+          type: "select-multiple",
+          options: [
+            "Anonimização de dados pessoais",
+            "Políticas de consentimento RGPD",
+            "Exclusão automática por expiração",
+            "Criptografia em trânsito e repouso",
+            "Não implemento compliance",
+          ],
+          required: true,
+        },
+        mig: repeatedDefinitions.yn,
+        inc: {
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          spellCheck: true,
+        },
+      },
+    },
+  },
+  marketing: {
+    beginner: {
+      cloudStorage: {
+        upl: repeatedDefinitions.exp,
+        org: {
+          type: "select-multiple",
+          options: [
+            "Pastas por campanha ou projeto",
+            "Tags por tipo de mídia (imagem, vídeo)",
+            "Estrutura por datas de lançamento",
+            "Hierarquia por público-alvo",
+            "Organização manual sem padrão",
+          ],
+          required: true,
+        },
+        shr: repeatedDefinitions.colab,
+        prm: repeatedDefinitions.yn,
+        syn: repeatedDefinitions.frq,
+      },
+    },
+    intermediate: {
+      cloudStorage: {
+        ver: {
+          type: "select-multiple",
+          options: [
+            "Versionamento automático de arquivos",
+            "Nomenclatura com versão (v1, v2)",
+            "Backups diários de materiais",
+            "Histórico de alterações detalhado",
+            "Não controlo versões",
+          ],
+          required: true,
+        },
+        bck: repeatedDefinitions.yn,
+        int: {
+          type: "select-multiple",
+          options: [
+            "Integração com ferramentas de automação (HubSpot, Marketo)",
+            "Sincronização com plataformas de mídia social",
+            "Webhooks para notificações de alterações",
+            "APIs para upload automático de conteúdos",
+            "Não integro sistemas",
+          ],
+          required: true,
+        },
+        sec: repeatedDefinitions.sec,
+        log: repeatedDefinitions.yn,
+      },
+    },
+    expert: {
+      cloudStorage: {
+        mch: {
+          type: "select-multiple",
+          options: [
+            "Gerenciamento de grandes bibliotecas de mídia",
+            "Armazenamento multi-cloud para redundância",
+            "Uso de IA para classificação de conteúdos",
+            "Metadata tagging avançado para busca semântica",
+            "Não lido com grandes volumes de mídia",
+          ],
+          required: true,
+        },
+        cln: repeatedDefinitions.yn,
+        cdc: {
+          type: "select-multiple",
+          options: [
+            "Políticas de retenção de dados (LGPD, GDPR)",
+            "Anonimização de dados de clientes",
+            "Criptografia de arquivos sensíveis",
+            "Exclusão automática de conteúdos expirados",
+            "Não implemento compliance",
+          ],
+          required: true,
+        },
+        mid: repeatedDefinitions.yn,
+        drs: {
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          writingSuggestions: true,
+        },
+      },
+    },
+  },
+  suporteTecnicoN1: {
+    beginner: {
+      cloudStorage: {
+        upl: repeatedDefinitions.exp,
+        syn: {
+          type: "select-multiple",
+          options: [
+            "Clientes desktop (Drive, OneDrive)",
+            "Sincronização seletiva por pasta",
+            "Configuração de proxy corporativo",
+            "Resolução de conflitos básicos",
+            "Não ensino sincronização",
+          ],
+          required: true,
+        },
+        sdr: repeatedDefinitions.colab,
+        rec: repeatedDefinitions.frq,
+        nav: {
+          type: "select-multiple",
+          options: [
+            "Estrutura hierárquica clara",
+            "Convenções de nomenclatura",
+            "Arquivos de índice README",
+            "Ferramentas de busca integrada",
+            "Não instruo organização",
+          ],
+          required: true,
+        },
+      },
+    },
+    intermediate: {
+      cloudStorage: {
+        ext: {
+          type: "select-multiple",
+          options: [
+            "Office Online integration",
+            "Editores PDF/Imagem",
+            "Ferramentas de assinatura digital",
+            "Players de mídia streaming",
+            "Não configuro integrações",
+          ],
+          required: true,
+        },
+        adv: {
+          type: "select-multiple",
+          options: [
+            "Links temporários com expiração",
+            "Restrição por domínio de e-mail",
+            "Permissões em nível de arquivo",
+            "Acesso somente via VPN",
+            "Não configuro permissões avançadas",
+          ],
+          required: true,
+        },
+        bck: repeatedDefinitions.yn,
+        prf: {
+          type: "select-multiple",
+          options: [
+            "Otimização de cache local",
+            "Configuração de bandwidth limits",
+            "Priorização de arquivos recentes",
+            "Uso de delta sync",
+            "Não resolvo problemas de performance",
+          ],
+          required: true,
+        },
+        sec: repeatedDefinitions.sec,
+      },
+    },
+    expert: {
+      cloudStorage: {
+        api: {
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          writingSuggestions: true,
+        },
+        pol: {
+          type: "select-multiple",
+          options: [
+            "Retenção legal de documentos",
+            "Políticas de data sovereignty",
+            "Classificação automática de dados",
+            "Governança baseada em tags",
+            "Não implemento políticas",
+          ],
+          required: true,
+        },
+        aud: {
+          type: "select-multiple",
+          options: [
+            "Alertas de acesso suspeito",
+            "Relatórios de atividade detalhados",
+            "Integração com SIEM",
+            "Correlação de logs multi-fonte",
+            "Não realizo auditorias",
+          ],
+          required: true,
+        },
+        mlt: repeatedDefinitions.yn,
+        drp: repeatedDefinitions.frq,
+      },
+    },
+  },
+  suporteTecnicoN2: {
+    beginner: {
+      cloudStorage: {
+        loc: {
+          type: "select-multiple",
+          options: [
+            "Verificação de permissões NTFS/ACLs",
+            "Reconfiguração de mapeamento de rede",
+            "Reset de credenciais de acesso",
+            "Validação de conectividade de rede",
+            "Não resolvo problemas de mapeamento",
+          ],
+          required: true,
+        },
+        sch: {
+          type: "select-multiple",
+          options: [
+            "Pesquisa por metadados",
+            "Filtros por data de modificação",
+            "Busca full-text em documentos",
+            "Tags personalizadas",
+            "Não utilizo busca avançada",
+          ],
+          required: true,
+        },
+        ssl: repeatedDefinitions.yn,
+        syn: {
+          type: "select-multiple",
+          options: [
+            "Resolução de conflitos de versão",
+            "Uso de histórico de alterações",
+            "Restauração de backup local",
+            "Comparação de hash de arquivos",
+            "Não lido com sincronização",
+          ],
+          required: true,
+        },
+        rec: repeatedDefinitions.frq,
+      },
+    },
+    intermediate: {
+      cloudStorage: {
+        qum: {
+          type: "select-multiple",
+          options: [
+            "Implementação de quotas por departamento",
+            "Limpeza de arquivos temporários",
+            "Migração para storage tiered",
+            "Compressão de arquivos antigos",
+            "Não gerencio quotas",
+          ],
+          required: true,
+        },
+        ver: {
+          type: "select-multiple",
+          options: [
+            "Versionamento baseado em tags Git",
+            "Snapshots horários automatizados",
+            "Retenção de 30 versões",
+            "Bloqueio de arquivos em edição",
+            "Não implemento versionamento",
+          ],
+          required: true,
+        },
+        col: {
+          type: "select-multiple",
+          options: [
+            "Estrutura de pastas baseada em projetos",
+            "Controle de acesso granular",
+            "Metadados para classificação",
+            "Sistema de aprovação de alterações",
+            "Não organizo repositórios complexos",
+          ],
+          required: true,
+        },
+        int: repeatedDefinitions.scp,
+        sec: repeatedDefinitions.sec,
+      },
+    },
+    expert: {
+      cloudStorage: {
+        dpl: {
+          type: "select-multiple",
+          options: [
+            "Deduplicação em nível de bloco",
+            "Replicação assíncrona multi-site",
+            "Balanceamento de carga global",
+            "Uso de algoritmos de diff delta",
+            "Não otimizo duplicação",
+          ],
+          required: true,
+        },
+        bck: {
+          type: "select-multiple",
+          options: [
+            "Backups incrementais forever",
+            "Snapshotting com RPO de 15min",
+            "Replicação síncrona para DR site",
+            "Validação de integridade com checksum",
+            "Não implemento backups avançados",
+          ],
+          required: true,
+        },
+        adv: {
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          writingSuggestions: true,
+        },
+        mlt: {
+          type: "select-multiple",
+          options: [
+            "Migração via Storage Gateway",
+            "Uso de ferramentas multicloud (Rclone)",
+            "Conversão de formatos durante transferência",
+            "Validação pós-migração com hash",
+            "Não migro entre provedores",
+          ],
+          required: true,
+        },
+        pol: {
+          type: "select-multiple",
+          options: [
+            "Governança baseada em recursos AWS",
+            "Tags de compliance automáticas",
+            "Políticas de acesso baseadas em contexto",
+            "Certificação ISO 27001 integrada",
+            "Não implemento governança",
+          ],
+          required: true,
+        },
+      },
+    },
+  },
+  operatorio: {
+    beginner: {
+      cloudStorage: {
+        mnt: {
+          type: "select-multiple",
+          options: [
+            "Mapemanento via script de login",
+            "Configuração GPO para drives de rede",
+            "Acesso via atalhos padronizados",
+            "Montagem manual por usuário",
+            "Não configuro shares de rede",
+          ],
+          required: true,
+        },
+        prs: {
+          type: "select-multiple",
+          options: [
+            "Controle via grupos do Active Directory",
+            "Permissões herdadas de pastas pai",
+            "ACLs personalizadas por departamento",
+            "Acesso somente leitura para convidados",
+            "Não defino permissões",
+          ],
+          required: true,
+        },
+        syn: repeatedDefinitions.frq,
+        rec: {
+          type: "select-multiple",
+          options: [
+            "Restauração via VSS (Volume Shadow Copy)",
+            "Recuperação de lixeira de rede",
+            "Uso de backups de file server",
+            "Restauração manual de snapshots",
+            "Não recupero arquivos deletados",
+          ],
+          required: true,
+        },
+        drv: repeatedDefinitions.yn,
+      },
+    },
+    intermediate: {
+      cloudStorage: {
+        qta: {
+          type: "select-multiple",
+          options: [
+            "Quotas baseadas em AD groups",
+            "Alertas de 80% de capacidade",
+            "Auto-expansão de volumes",
+            "Relatórios de uso detalhados",
+            "Não implemento quotas",
+          ],
+          required: true,
+        },
+        ver: {
+          type: "select-multiple",
+          options: [
+            "Snapshots diários automatizados",
+            "Versionamento em storage de objetos",
+            "Retenção de 7 versões diárias",
+            "Proteção contra ransomware",
+            "Não mantenho versões",
+          ],
+          required: true,
+        },
+        abl: repeatedDefinitions.yn,
+        sec: {
+          type: "select-multiple",
+          options: [
+            "Criptografia AES-256 em repouso",
+            "Rotação automática de chaves KMS",
+            "Certificados SSL/TLS 1.3",
+            "Autenticação multifator",
+            "Não implemento segurança avançada",
+          ],
+          required: true,
+        },
+        bkp: repeatedDefinitions.yn,
+      },
+    },
+    expert: {
+      cloudStorage: {
+        dpl: {
+          type: "select-multiple",
+          options: [
+            "DFS Namespaces para alta disponibilidade",
+            "Replicação em tempo real com Storage Replica",
+            "Balanceamento de carga global com GSLB",
+            "Monitoramento de performance em tempo real",
+            "Não implemento replicação",
+          ],
+          required: true,
+        },
+        enc: {
+          type: "select-multiple",
+          options: [
+            "Encriptação em nível de arquivo",
+            "HSM para gestão de chaves",
+            "TDE (Transparent Data Encryption)",
+            "Tokenização de dados sensíveis",
+            "Não utilizo encriptação",
+          ],
+          required: true,
+        },
+        aut: {
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          spellCheck: true,
+        },
+        drp: {
+          type: "select-multiple",
+          options: [
+            "Failover automático entre datacenters",
+            "Backups air-gapped",
+            "Replicação assíncrona geo-redundante",
+            "Testes de DR semestrais",
+            "Não possuo plano de DR",
+          ],
+          required: true,
+        },
+        iso: repeatedDefinitions.yn,
+      },
+    },
+  },
+  desenvolvimento: {
+    beginner: {
+      cloudStorage: {
+        rep: {
+          type: "select-multiple",
+          options: [
+            "Estrutura Git-based",
+            "Separação por branches",
+            "Versionamento semântico",
+            "Pastas por linguagem/framework",
+            "Organização ad-hoc",
+          ],
+          required: true,
+        },
+        syn: {
+          type: "select-multiple",
+          options: [
+            "Sync via Git LFS",
+            "Scripts de sincronização customizados",
+            "Clientes desktop (Drive, Dropbox)",
+            "Mount de repositórios como volumes",
+            "Não sincronizo projetos",
+          ],
+          required: true,
+        },
+        bac: repeatedDefinitions.yn,
+        pro: {
+          type: "select-multiple",
+          options: [
+            "Controle via .gitignore",
+            "ACLs baseadas em grupos",
+            "Approval workflows",
+            "Proteção contra exclusão acidental",
+            "Não gerencio permissões",
+          ],
+          required: true,
+        },
+        nme: repeatedDefinitions.yn,
+      },
+    },
+    intermediate: {
+      cloudStorage: {
+        lck: {
+          type: "select-multiple",
+          options: [
+            "File locking via Locksmith",
+            "Check-out/check-in automático",
+            "Notificações de conflito em tempo real",
+            "Merge automático de versões",
+            "Não resolvo conflitos",
+          ],
+          required: true,
+        },
+        ver: {
+          type: "select-multiple",
+          options: [
+            "Tags de release automatizadas",
+            "Snapshotting diário",
+            "Versionamento baseado em hash",
+            "Armazenamento imutável",
+            "Não versiono assets",
+          ],
+          required: true,
+        },
+        net: {
+          type: "select-multiple",
+          options: [
+            "CDN para assets estáticos",
+            "Otimização de TCP window size",
+            "Compressão Brotli/Gzip",
+            "Cache agressivo com invalidação",
+            "Não otimizo performance",
+          ],
+          required: true,
+        },
+        int: repeatedDefinitions.scp,
+        sec: repeatedDefinitions.sec,
+      },
+    },
+    expert: {
+      cloudStorage: {
+        scc: {
+          type: "select-multiple",
+          options: [
+            "Cache hierárquico com Redis",
+            "Invalidation via webhooks",
+            "Prefetching preditivo",
+            "Artefatos compilados em registro",
+            "Não implemento caching",
+          ],
+          required: true,
+        },
+        hgh: {
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          writingSuggestions: true,
+        },
+        aud: {
+          type: "select-multiple",
+          options: [
+            "Logs de acesso em tempo real",
+            "Auditoria de integridade de binários",
+            "Assinaturas digitais SHA-256",
+            "Monitoramento de alterações não autorizadas",
+            "Não realizo auditorias",
+          ],
+          required: true,
+        },
+        dpl: {
+          type: "select-multiple",
+          options: [
+            "Replicação active-active",
+            "DNS-based traffic steering",
+            "Failover automático entre clouds",
+            "Health checks integrados",
+            "Não implemento HA",
+          ],
+          required: true,
+        },
+        mig: repeatedDefinitions.yn,
+      },
+    },
+  },
+  devOps: {
+    beginner: {
+      cloudStorage: {
+        art: {
+          type: "select-multiple",
+          options: [
+            "Repositório S3 simples",
+            "Estrutura de pastas por ambiente",
+            "Versionamento manual",
+            "Backups em ZIP agendados",
+            "Não armazeno artefatos",
+          ],
+          required: true,
+        },
+        net: {
+          type: "select-multiple",
+          options: [
+            "Mapemanento NFS básico",
+            "Acesso via SMB/CIFS",
+            "Montagem em EC2 instances",
+            "Configuração de permissões IAM",
+            "Não configuro acesso",
+          ],
+          required: true,
+        },
+        syn: repeatedDefinitions.frq,
+        bak: repeatedDefinitions.yn,
+        doc: repeatedDefinitions.yn,
+      },
+    },
+    intermediate: {
+      cloudStorage: {
+        rep: {
+          type: "select-multiple",
+          options: [
+            "Nexus Repository OSS",
+            "Artifactory para pacotes",
+            "Registro Docker privado",
+            "Armazenamento imutável S3",
+            "Não uso repositórios",
+          ],
+          required: true,
+        },
+        acl: {
+          type: "select-multiple",
+          options: [
+            "Controle via políticas IAM",
+            "Grupos de segurança por pipeline",
+            "Temporary security credentials",
+            "Integração com Active Directory",
+            "Não restringo acesso",
+          ],
+          required: true,
+        },
+        scp: repeatedDefinitions.scp,
+        inf: {
+          type: "select-multiple",
+          options: [
+            "Terraform para provisionamento",
+            "Ansible para configuração",
+            "Packer para AMIs",
+            "Cross-account access roles",
+            "Não automatizo infra",
+          ],
+          required: true,
+        },
+        ver: repeatedDefinitions.yn,
+      },
+    },
+    expert: {
+      cloudStorage: {
+        dpl: {
+          type: "select-multiple",
+          options: [
+            "Arquitetura multi-cloud active-active",
+            "Replicação síncrona entre regiões",
+            "Gerenciamento via Kubernetes CSI",
+            "Storage-as-code com GitOps",
+            "Não implemento distribuição",
+          ],
+          required: true,
+        },
+        big: {
+          type: "textarea",
+          maxLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+          required: true,
+          spellCheck: true,
+        },
+        enc: {
+          type: "select-multiple",
+          options: [
+            "Envelope encryption com KMS",
+            "Client-side encryption",
+            "HSM para chaves mestras",
+            "Rotação automática de chaves",
+            "Não utilizo criptografia",
+          ],
+          required: true,
+        },
+        aud: {
+          type: "select-multiple",
+          options: [
+            "Auditoria contínua com CloudTrail",
+            "Monitoramento de acesso anômalo",
+            "Integração com SIEM corporativo",
+            "Relatórios de compliance automatizados",
+            "Não implemento auditoria",
+          ],
+          required: true,
+        },
+        sso: repeatedDefinitions.yn,
+      },
+    },
+  },
+});
+//bi
+//planning
+//crms
+//erps
+//audio
+//image
+//video
+//llms
