@@ -124,9 +124,18 @@ import {
 export type nlStr = string | null;
 export type voidish = undefined | null;
 export type nlEl = Element | null;
-export type queryableNode = Document | DocumentFragment | Element;
-export type ArrayLikeNotIterable = NamedNodeMap | DOMStringMap | TouchList;
-export type Int8ArrayLike = Int8Array | Uint8Array | Uint8ClampedArray;
+export type queryableNode =
+  | Document
+  | DocumentFragment
+  | Element;
+export type ArrayLikeNotIterable =
+  | NamedNodeMap
+  | DOMStringMap
+  | TouchList;
+export type Int8ArrayLike =
+  | Int8Array
+  | Uint8Array
+  | Uint8ClampedArray;
 export type Int16ArrayLike = Int16Array | Uint16Array;
 export type Int32ArrayLike = Int32Array | Uint32Array;
 export type FloatArrayLike = Float32Array | Float64Array;
@@ -140,27 +149,39 @@ export type SizeableIterable = Map | Set;
 export type SettableIterable =
   | SizeableIterable
   | TypedArray; /* eslint-disable */
-export type BaseIterableNotIterator = BaseArray | SizeableIterable | String;
+export type BaseIterableNotIterator =
+  | BaseArray
+  | SizeableIterable
+  | String;
 /* eslint-enable */
-export type BaseIterable = BaseIterableNotIterator | Generator;
+export type BaseIterable =
+  | BaseIterableNotIterator
+  | Generator;
 export type DOMIterable =
   | NodeList
   | HTMLCollection
   | DOMStringList
   | CSSRuleList
   | StyleSheetList;
-export type IterableNotIterator = BaseIterableNotIterator | DOMIterable;
+export type IterableNotIterator =
+  | BaseIterableNotIterator
+  | DOMIterable;
 export type SpecialHTMLCollection =
   | HTMLFormControlsCollection
   | HTMLOptionsCollection;
 export type SpecialNodeList = RadioNodeList;
-export type SpecialDOMCollection = SpecialHTMLCollection | SpecialNodeList;
+export type SpecialDOMCollection =
+  | SpecialHTMLCollection
+  | SpecialNodeList;
 export type IterableIterator = Generator;
 export type ArrayLike =
   | ArrayLikeNotIterable
   | IterableNotIterator
   | IterableIterator;
-export type ForEachable = BaseArray | SizeableIterable | DOMIterable;
+export type ForEachable =
+  | BaseArray
+  | SizeableIterable
+  | DOMIterable;
 export type nlQueryableNode = queryableNode | null;
 export type nlHtEl = HTMLElement | null;
 export type nlDiv = HTMLDivElement | null;
@@ -171,20 +192,40 @@ export type nlBtn = HTMLButtonElement | null;
 export type nlFm = HTMLFormElement | null;
 export type nlFs = HTMLFieldSetElement | null;
 export type nlDlg = HTMLDialogElement | null;
-export type List<T> = Array<T> | NodeListOf<T> | HTMLCollectionOf<T>;
+export type List<T> =
+  | Array<T>
+  | NodeListOf<T>
+  | HTMLCollectionOf<T>;
 export interface ContextualizedTel {
   ctx: React.Context<ITelCtx> | undefined;
 }
 export type nlRef<T> = React.RefObject<T> | null;
 export type nlElRef = nlRef<nlEl>;
-export type nlRDispatch<T> = React.Dispatch<React.SetStateAction<T>> | null;
-export type genericElement = HTMLDivElement | HTMLSpanElement;
-export type inputLikeElement = HTMLInputElement | HTMLTextAreaElement;
-export type entryElement = inputLikeElement | HTMLSelectElement;
-export type disableableElement = entryElement | HTMLButtonElement;
-export type pressableElement = HTMLButtonElement | HTMLInputElement;
-export type imageLikeElement = HTMLImageElement | HTMLInputElement;
-export type listElement = HTMLUListElement | HTMLOListElement | HTMLMenuElement;
+export type nlRDispatch<T> = React.Dispatch<
+  React.SetStateAction<T>
+> | null;
+export type genericElement =
+  | HTMLDivElement
+  | HTMLSpanElement;
+export type inputLikeElement =
+  | HTMLInputElement
+  | HTMLTextAreaElement;
+export type entryElement =
+  | inputLikeElement
+  | HTMLSelectElement;
+export type disableableElement =
+  | entryElement
+  | HTMLButtonElement;
+export type pressableElement =
+  | HTMLButtonElement
+  | HTMLInputElement;
+export type imageLikeElement =
+  | HTMLImageElement
+  | HTMLInputElement;
+export type listElement =
+  | HTMLUListElement
+  | HTMLOListElement
+  | HTMLMenuElement;
 export type FormControl =
   | entryElement
   | HTMLButtonElement
@@ -267,7 +308,10 @@ export type InputType =
   | "submit"
   | EntryInputType;
 export type SelectTypes = "one" | "multiple";
-export type EntryTypes = EntryInputType | SelectTypes | "textarea";
+export type EntryTypes =
+  | EntryInputType
+  | SelectTypes
+  | "textarea";
 export type VerboseEntryTypes =
   | EntryInputType
   | "select-one"
@@ -277,7 +321,8 @@ export interface DefaultFieldDescription {
   type: VerboseEntryTypes;
   required?: boolean;
 }
-export interface TextFieldDescription extends DefaultFieldDescription {
+export interface TextFieldDescription
+  extends DefaultFieldDescription {
   minLength?: number;
   maxLength?: number;
   min?: number;
@@ -285,7 +330,8 @@ export interface TextFieldDescription extends DefaultFieldDescription {
   spellCheck?: boolean;
   writingSuggestions?: boolean;
 }
-export interface OptionFieldDescription extends DefaultFieldDescription {
+export interface OptionFieldDescription
+  extends DefaultFieldDescription {
   options?: string[];
 }
 export type DocsBeginnerKeys =
@@ -321,7 +367,8 @@ export type DocsExpertKeys =
 export type DocsQuestionsKeys =
   | DocsBeginnerKeys
   | DocsIntermediateKeys
-  | DocsExpertKeys;
+  | DocsExpertKeys
+  | "libre";
 export type SpreadsheetsBeginnerKeys =
   | keyof typeof eaSsKeys.beginner
   | keyof typeof fnSsKeys.beginner
@@ -355,7 +402,8 @@ export type SpreadsheetsExpertKeys =
 export type SpreadsheetsQuestionsKeys =
   | SpreadsheetsBeginnerKeys
   | SpreadsheetsIntermediateKeys
-  | SpreadsheetsExpertKeys;
+  | SpreadsheetsExpertKeys
+  | "libre";
 export type FormBuildersBeginnerKeys =
   | keyof typeof eaFmKeys.beginner
   | keyof typeof fnFmKeys.beginner
@@ -389,7 +437,8 @@ export type FormBuilderExpertKeys =
 export type FormBuilderQuestionsKeys =
   | FormBuildersBeginnerKeys
   | FormBuilderIntermediateKeys
-  | FormBuilderExpertKeys;
+  | FormBuilderExpertKeys
+  | "libre";
 export type CloudStorageBeginnerKeys =
   | keyof typeof eaCsKeys.beginner
   | keyof typeof fnCsKeys.beginner
@@ -423,7 +472,8 @@ export type CloudStorageExpertKeys =
 export type CloudStorageQuestionsKeys =
   | CloudStorageBeginnerKeys
   | CloudStorageIntermediateKeys
-  | CloudStorageExpertKeys;
+  | CloudStorageExpertKeys
+  | "libre";
 export type BiBeginnerKeys =
   | keyof typeof eaBiKeys.beginner
   | keyof typeof fnBiKeys.beginner
@@ -460,7 +510,8 @@ export type BiExpertKeys =
 export type BiQuestionsKeys =
   | BiBeginnerKeys
   | BiIntermediateKeys
-  | BiExpertKeys;
+  | BiExpertKeys
+  | "libre";
 export type CrmBeginnerKeys =
   | keyof typeof eaCrmKeys.beginner
   | keyof typeof fnCrmKeys.beginner
@@ -497,7 +548,8 @@ export type CrmExpertKeys =
 export type CrmQuestionsKeys =
   | CrmBeginnerKeys
   | CrmIntermediateKeys
-  | CrmExpertKeys;
+  | CrmExpertKeys
+  | "libre";
 export type ErpBeginnerKeys =
   | keyof typeof eaErpKeys.beginner
   | keyof typeof fnErpKeys.beginner
@@ -534,7 +586,8 @@ export type ErpExpertKeys =
 export type ErpQuestionsKeys =
   | ErpBeginnerKeys
   | ErpIntermediateKeys
-  | ErpExpertKeys;
+  | ErpExpertKeys
+  | "libre";
 export type PlanningBeginnerKeys =
   | keyof typeof eaPlnKeys.beginner
   | keyof typeof fnPlnKeys.beginner
@@ -571,7 +624,8 @@ export type PlanningExpertKeys =
 export type PlanningQuestionsKeys =
   | PlanningBeginnerKeys
   | PlanningIntermediateKeys
-  | PlanningExpertKeys;
+  | PlanningExpertKeys
+  | "libre";
 export type AudioAiBeginnerKeys =
   | keyof typeof eaAiAdKeys.beginner
   | keyof typeof fnAiAdKeys.beginner
@@ -608,7 +662,8 @@ export type AudioAiExpertKeys =
 export type AudioAiQuestionsKeys =
   | AudioAiBeginnerKeys
   | AudioAiIntermediateKeys
-  | AudioAiExpertKeys;
+  | AudioAiExpertKeys
+  | "libre";
 export type ImageAiBeginnerKeys =
   | keyof typeof eaAiImgKeys.beginner
   | keyof typeof fnAiImgKeys.beginner
@@ -645,7 +700,8 @@ export type ImageAiExpertKeys =
 export type ImageAiQuestionsKeys =
   | ImageAiBeginnerKeys
   | ImageAiIntermediateKeys
-  | ImageAiExpertKeys;
+  | ImageAiExpertKeys
+  | "libre";
 export type VideoAiBeginnerKeys =
   | keyof typeof eaAiVdKeys.beginner
   | keyof typeof fnAiVdKeys.beginner
@@ -682,7 +738,8 @@ export type VideoAiExpertKeys =
 export type VideoAiQuestionsKeys =
   | VideoAiBeginnerKeys
   | VideoAiIntermediateKeys
-  | VideoAiExpertKeys;
+  | VideoAiExpertKeys
+  | "libre";
 export type LLMBeginnerKeys =
   | keyof typeof eaLlmKeys.beginner
   | keyof typeof fnLlmKeys.beginner
@@ -719,7 +776,8 @@ export type LLMExpertKeys =
 export type LLMQuestionsKeys =
   | LLMBeginnerKeys
   | LLMIntermediateKeys
-  | LLMExpertKeys;
+  | LLMExpertKeys
+  | "libre";
 export type OfficeAppsKeys =
   | DocsQuestionsKeys
   | SpreadsheetsQuestionsKeys
@@ -735,7 +793,10 @@ export type AiKeys =
   | ImageAiQuestionsKeys
   | VideoAiQuestionsKeys
   | LLMQuestionsKeys;
-export type QuestionsKeys = OfficeAppsKeys | OfficePlatformsKeys | AiKeys;
+export type QuestionsKeys =
+  | OfficeAppsKeys
+  | OfficePlatformsKeys
+  | AiKeys;
 export type RoleComplexities = {
   beginner: Partial<Record<BeginnerAcronyms, any>>;
   intermediate: Partial<Record<IntermediateAcronyms, any>>;
