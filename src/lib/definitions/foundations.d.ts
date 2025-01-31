@@ -48,7 +48,10 @@ export interface PostController {
   ) => AxiosResponse | Response;
 }
 export interface Mapper {
-  [methodName: string]: (data: T, ...args: any) => Exclude<any, T>;
+  [methodName: string]: (
+    data: T,
+    ...args: any
+  ) => Exclude<any, T>;
 }
 export interface routes {
   sendRequirements: string;
@@ -119,15 +122,37 @@ export type AiBlocks = {
   llms: string;
   video: string;
 };
-export interface EntryElementsDict<G, T> {
-  [K in Exclude<roleType, "undefined">]: {
-    [L in complexityLabel]: {
-      [G in addQuestionsKey]: Partial<Record<SpreadsheetsQuestionsKeys, T>>;
-    };
-  };
-}
+export type fmBaseKeys = "tpl" | "rsp" | "emb" | "slc";
+export type repeatingKeys =
+  | "fmt"
+  | "sum"
+  | "tmp"
+  | "mcr"
+  | "big"
+  | "arr"
+  | "tbd";
+export type repeatingDefinitionKeys =
+  | "sum"
+  | "col"
+  | "exp"
+  | "fil"
+  | "frq"
+  | "cht"
+  | "scp"
+  | "yn"
+  | "dbi"
+  | "colab"
+  | "sec"
+  | "tmp"
+  | "ast"
+  | "docp"
+  | "txts"
+  | "txtl";
 export type complexityLevel = 1 | 2 | 3 | 4 | 5;
-export type complexityLabel = "beginner" | "intermediate" | "expert";
+export type complexityLabel =
+  | "beginner"
+  | "intermediate"
+  | "expert";
 export type appGroups = "Tasks" | "Platforms";
 export type roleQuestionsMap = Map<
   officeTopicType,
@@ -141,10 +166,14 @@ export type PseudoNum = `${number}`;
 export type DDDPattern = `${number}${number}`;
 export type ValidPhonePattern =
   | `${number}${number}${number}${number}${number}${"-"}?${number}${number}${number}${number}`
-  | `${DDDPattern}${" " | ""}${number}${number}${number}${number}${
+  | `${DDDPattern}${
+      | " "
+      | ""}${number}${number}${number}${number}${
       | number
       | ""}${"-"}?${number}${number}${number}${number}`
-  | `${"+" | ""}${number}${number | ""}${number | ""}${" " | ""}${DDDPattern}${
+  | `${"+" | ""}${number}${number | ""}${number | ""}${
+      | " "
+      | ""}${DDDPattern}${
       | " "
       | ""}${number}${number}${number}${number}${
       | number
@@ -166,7 +195,9 @@ export type AuthorizationValues =
   | `Basic ${string}`
   | `Digest ${string}`
   | `OAuth ${string}`;
-export type UpdateHeaderKeys = HttpBaseKeys | "Content-Type";
+export type UpdateHeaderKeys =
+  | HttpBaseKeys
+  | "Content-Type";
 export type ContentTypeValues =
   | BaseValues
   | "multipart/form-data"
@@ -208,7 +239,10 @@ export type HeaderKeyValueUnion =
   | { key: "Authorization"; value: AuthorizationValues }
   | { key: "Cache-Control"; value: CacheControlValues }
   | { key: "Content-Type"; value: ContentTypeValues }
-  | { key: "X-Requested-With"; value: "XMLHttpRequest" | string }
+  | {
+      key: "X-Requested-With";
+      value: "XMLHttpRequest" | string;
+    }
   | { key: "Allow"; value: AllowValues }
   | { key: "Content-Length"; value: `${number}` }
   | { key: CustomHeaderKeys; value: CustomHeaderValues };
@@ -256,8 +290,13 @@ export type HTTPReturnsFriendlyPt =
   | "Redireção"
   | "Erro no Servidor"
   | "Erro no Cliente";
-export type HTTPReturnsFriendly = HTTPReturnsFriendlyEn | HTTPReturnsFriendlyPt;
-export type ResponseLanguage<PT extends string, EN extends string> = {
+export type HTTPReturnsFriendly =
+  | HTTPReturnsFriendlyEn
+  | HTTPReturnsFriendlyPt;
+export type ResponseLanguage<
+  PT extends string,
+  EN extends string
+> = {
   pt: PT;
   en: EN;
 };

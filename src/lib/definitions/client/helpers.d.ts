@@ -120,6 +120,7 @@ import {
   stN2PlnKeys,
   stN2SsKeys,
 } from "@/lib/client/vars";
+import { roleType } from "../foundations";
 //primitives
 export type nlStr = string | null;
 export type voidish = undefined | null;
@@ -334,445 +335,470 @@ export interface OptionFieldDescription
   extends DefaultFieldDescription {
   options?: string[];
 }
+export type roleDefined = Exclude<roleType, "undefined">;
+export type ROStringRecord = Readonly<
+  Record<string, string>
+>;
+export type FieldDescription =
+  | TextFieldDescription
+  | OptionFieldDescription;
+export type KeysRecords<T extends string> = Partial<
+  Record<T, FieldDescription>
+>;
+export type EntryTypeDictionary<T> = Readonly<{
+  [K in roleDefined]: {
+    [L in complexityLabel]: KeysRecords<T>;
+  };
+}>;
+export interface EntryElementsDict<G, T> {
+  [K in Exclude<roleType, "undefined">]: {
+    [L in complexityLabel]: {
+      [G in addQuestionsKey]: Partial<
+        Record<SpreadsheetsQuestionsKeys, T>
+      >;
+    };
+  };
+}
+export type StrKey<T> = keyof T & string;
 export type DocsBeginnerKeys =
-  | keyof typeof eaDocsKeys.beginner
-  | keyof typeof fnDocsKeys.beginner
-  | keyof typeof cmDocsKeys.beginner
-  | keyof typeof mktDocsKeys.beginner
-  | keyof typeof stN1DocsKeys.beginner
-  | keyof typeof stN2DocsKeys.beginner
-  | keyof typeof opDocsKeys.beginner
-  | keyof typeof devDocsKeys.beginner
-  | keyof typeof devOpsDocsKeys.beginner;
+  | StrKey<typeof eaDocsKeys.beginner>
+  | StrKey<typeof fnDocsKeys.beginner>
+  | StrKey<typeof cmDocsKeys.beginner>
+  | StrKey<typeof mktDocsKeys.beginner>
+  | StrKey<typeof stN1DocsKeys.beginner>
+  | StrKey<typeof stN2DocsKeys.beginner>
+  | StrKey<typeof opDocsKeys.beginner>
+  | StrKey<typeof devDocsKeys.beginner>
+  | StrKey<typeof devOpsDocsKeys.beginner>;
 export type DocsIntermediateKeys =
-  | keyof typeof eaDocsKeys.intermediate
-  | keyof typeof fnDocsKeys.intermediate
-  | keyof typeof cmDocsKeys.intermediate
-  | keyof typeof mktDocsKeys.intermediate
-  | keyof typeof stN1DocsKeys.intermediate
-  | keyof typeof stN2DocsKeys.intermediate
-  | keyof typeof opDocsKeys.intermediate
-  | keyof typeof devDocsKeys.intermediate
-  | keyof typeof devOpsDocsKeys.intermediate;
+  | StrKey<typeof eaDocsKeys.intermediate>
+  | StrKey<typeof fnDocsKeys.intermediate>
+  | StrKey<typeof cmDocsKeys.intermediate>
+  | StrKey<typeof mktDocsKeys.intermediate>
+  | StrKey<typeof stN1DocsKeys.intermediate>
+  | StrKey<typeof stN2DocsKeys.intermediate>
+  | StrKey<typeof opDocsKeys.intermediate>
+  | StrKey<typeof devDocsKeys.intermediate>
+  | StrKey<typeof devOpsDocsKeys.intermediate>;
 export type DocsExpertKeys =
-  | keyof typeof eaDocsKeys.expert
-  | keyof typeof fnDocsKeys.expert
-  | keyof typeof cmDocsKeys.expert
-  | keyof typeof mktDocsKeys.expert
-  | keyof typeof stN1DocsKeys.expert
-  | keyof typeof stN2DocsKeys.expert
-  | keyof typeof opDocsKeys.expert
-  | keyof typeof devDocsKeys.expert
-  | keyof typeof devOpsDocsKeys.expert;
+  | StrKey<typeof eaDocsKeys.expert>
+  | StrKey<typeof fnDocsKeys.expert>
+  | StrKey<typeof cmDocsKeys.expert>
+  | StrKey<typeof mktDocsKeys.expert>
+  | StrKey<typeof stN1DocsKeys.expert>
+  | StrKey<typeof stN2DocsKeys.expert>
+  | StrKey<typeof opDocsKeys.expert>
+  | StrKey<typeof devDocsKeys.expert>
+  | StrKey<typeof devOpsDocsKeys.expert>;
 export type DocsQuestionsKeys =
   | DocsBeginnerKeys
   | DocsIntermediateKeys
   | DocsExpertKeys
   | "libre";
 export type SpreadsheetsBeginnerKeys =
-  | keyof typeof eaSsKeys.beginner
-  | keyof typeof fnSsKeys.beginner
-  | keyof typeof cmSsKeys.beginner
-  | keyof typeof mktSsKeys.beginner
-  | keyof typeof stN1SsKeys.beginner
-  | keyof typeof stN2SsKeys.beginner
-  | keyof typeof opSsKeys.beginner
-  | keyof typeof devSsKeys.beginner
-  | keyof typeof devOpsSsKeys.beginner;
+  | StrKey<typeof eaSsKeys.beginner>
+  | StrKey<typeof fnSsKeys.beginner>
+  | StrKey<typeof cmSsKeys.beginner>
+  | StrKey<typeof mktSsKeys.beginner>
+  | StrKey<typeof stN1SsKeys.beginner>
+  | StrKey<typeof stN2SsKeys.beginner>
+  | StrKey<typeof opSsKeys.beginner>
+  | StrKey<typeof devSsKeys.beginner>
+  | StrKey<typeof devOpsSsKeys.beginner>;
 export type SpreadsheetsIntermediateKeys =
-  | keyof typeof eaSsKeys.intermediate
-  | keyof typeof fnSsKeys.intermediate
-  | keyof typeof cmSsKeys.intermediate
-  | keyof typeof mktSsKeys.intermediate
-  | keyof typeof stN1SsKeys.intermediate
-  | keyof typeof stN2SsKeys.intermediate
-  | keyof typeof opSsKeys.intermediate
-  | keyof typeof devSsKeys.intermediate
-  | keyof typeof devOpsSsKeys.intermediate;
+  | StrKey<typeof eaSsKeys.intermediate>
+  | StrKey<typeof fnSsKeys.intermediate>
+  | StrKey<typeof cmSsKeys.intermediate>
+  | StrKey<typeof mktSsKeys.intermediate>
+  | StrKey<typeof stN1SsKeys.intermediate>
+  | StrKey<typeof stN2SsKeys.intermediate>
+  | StrKey<typeof opSsKeys.intermediate>
+  | StrKey<typeof devSsKeys.intermediate>
+  | StrKey<typeof devOpsSsKeys.intermediate>;
 export type SpreadsheetsExpertKeys =
-  | keyof typeof eaSsKeys.expert
-  | keyof typeof fnSsKeys.expert
-  | keyof typeof cmSsKeys.expert
-  | keyof typeof mktSsKeys.expert
-  | keyof typeof stN1SsKeys.expert
-  | keyof typeof stN2SsKeys.expert
-  | keyof typeof opSsKeys.expert
-  | keyof typeof devSsKeys.expert
-  | keyof typeof devOpsSsKeys.expert;
+  | StrKey<typeof eaSsKeys.expert>
+  | StrKey<typeof fnSsKeys.expert>
+  | StrKey<typeof cmSsKeys.expert>
+  | StrKey<typeof mktSsKeys.expert>
+  | StrKey<typeof stN1SsKeys.expert>
+  | StrKey<typeof stN2SsKeys.expert>
+  | StrKey<typeof opSsKeys.expert>
+  | StrKey<typeof devSsKeys.expert>
+  | StrKey<typeof devOpsSsKeys.expert>;
 export type SpreadsheetsQuestionsKeys =
   | SpreadsheetsBeginnerKeys
   | SpreadsheetsIntermediateKeys
   | SpreadsheetsExpertKeys
   | "libre";
 export type FormBuildersBeginnerKeys =
-  | keyof typeof eaFmKeys.beginner
-  | keyof typeof fnFmKeys.beginner
-  | keyof typeof cmFmKeys.beginner
-  | keyof typeof mktFmKeys.beginner
-  | keyof typeof stN1FmKeys.beginner
-  | keyof typeof stN2FmKeys.beginner
-  | keyof typeof opFmKeys.beginner
-  | keyof typeof devFmKeys.beginner
-  | keyof typeof devOpsFmKeys.beginner;
+  | StrKey<typeof eaFmKeys.beginner>
+  | StrKey<typeof fnFmKeys.beginner>
+  | StrKey<typeof cmFmKeys.beginner>
+  | StrKey<typeof mktFmKeys.beginner>
+  | StrKey<typeof stN1FmKeys.beginner>
+  | StrKey<typeof stN2FmKeys.beginner>
+  | StrKey<typeof opFmKeys.beginner>
+  | StrKey<typeof devFmKeys.beginner>
+  | StrKey<typeof devOpsFmKeys.beginner>;
 export type FormBuilderIntermediateKeys =
-  | keyof typeof eaFmKeys.intermediate
-  | keyof typeof fnFmKeys.intermediate
-  | keyof typeof cmFmKeys.intermediate
-  | keyof typeof mktFmKeys.intermediate
-  | keyof typeof stN1FmKeys.intermediate
-  | keyof typeof stN2FmKeys.intermediate
-  | keyof typeof opFmKeys.intermediate
-  | keyof typeof devFmKeys.intermediate
-  | keyof typeof devOpsFmKeys.intermediate;
+  | StrKey<typeof eaFmKeys.intermediate>
+  | StrKey<typeof fnFmKeys.intermediate>
+  | StrKey<typeof cmFmKeys.intermediate>
+  | StrKey<typeof mktFmKeys.intermediate>
+  | StrKey<typeof stN1FmKeys.intermediate>
+  | StrKey<typeof stN2FmKeys.intermediate>
+  | StrKey<typeof opFmKeys.intermediate>
+  | StrKey<typeof devFmKeys.intermediate>
+  | StrKey<typeof devOpsFmKeys.intermediate>;
 export type FormBuilderExpertKeys =
-  | keyof typeof eaFmKeys.expert
-  | keyof typeof fnFmKeys.expert
-  | keyof typeof cmFmKeys.expert
-  | keyof typeof mktFmKeys.expert
-  | keyof typeof stN1FmKeys.expert
-  | keyof typeof stN2FmKeys.expert
-  | keyof typeof opFmKeys.expert
-  | keyof typeof devFmKeys.expert
-  | keyof typeof devOpsFmKeys.expert;
+  | StrKey<typeof eaFmKeys.expert>
+  | StrKey<typeof fnFmKeys.expert>
+  | StrKey<typeof cmFmKeys.expert>
+  | StrKey<typeof mktFmKeys.expert>
+  | StrKey<typeof stN1FmKeys.expert>
+  | StrKey<typeof stN2FmKeys.expert>
+  | StrKey<typeof opFmKeys.expert>
+  | StrKey<typeof devFmKeys.expert>
+  | StrKey<typeof devOpsFmKeys.expert>;
 export type FormBuilderQuestionsKeys =
   | FormBuildersBeginnerKeys
   | FormBuilderIntermediateKeys
   | FormBuilderExpertKeys
   | "libre";
 export type CloudStorageBeginnerKeys =
-  | keyof typeof eaCsKeys.beginner
-  | keyof typeof fnCsKeys.beginner
-  | keyof typeof cmCsKeys.beginner
-  | keyof typeof mktCsKeys.beginner
-  | keyof typeof stN1CsKeys.beginner
-  | keyof typeof stN2CsKeys.beginner
-  | keyof typeof opCsKeys.beginner
-  | keyof typeof devCsKeys.beginner
-  | keyof typeof devOpsCsKeys.beginner;
+  | StrKey<typeof eaCsKeys.beginner>
+  | StrKey<typeof fnCsKeys.beginner>
+  | StrKey<typeof cmCsKeys.beginner>
+  | StrKey<typeof mktCsKeys.beginner>
+  | StrKey<typeof stN1CsKeys.beginner>
+  | StrKey<typeof stN2CsKeys.beginner>
+  | StrKey<typeof opCsKeys.beginner>
+  | StrKey<typeof devCsKeys.beginner>
+  | StrKey<typeof devOpsCsKeys.beginner>;
 export type CloudStorageIntermediateKeys =
-  | keyof typeof eaCsKeys.intermediate
-  | keyof typeof fnCsKeys.intermediate
-  | keyof typeof cmCsKeys.intermediate
-  | keyof typeof mktCsKeys.intermediate
-  | keyof typeof stN1CsKeys.intermediate
-  | keyof typeof stN2CsKeys.intermediate
-  | keyof typeof opCsKeys.intermediate
-  | keyof typeof devCsKeys.intermediate
-  | keyof typeof devOpsCsKeys.intermediate;
+  | StrKey<typeof eaCsKeys.intermediate>
+  | StrKey<typeof fnCsKeys.intermediate>
+  | StrKey<typeof cmCsKeys.intermediate>
+  | StrKey<typeof mktCsKeys.intermediate>
+  | StrKey<typeof stN1CsKeys.intermediate>
+  | StrKey<typeof stN2CsKeys.intermediate>
+  | StrKey<typeof opCsKeys.intermediate>
+  | StrKey<typeof devCsKeys.intermediate>
+  | StrKey<typeof devOpsCsKeys.intermediate>;
 export type CloudStorageExpertKeys =
-  | keyof typeof eaCsKeys.expert
-  | keyof typeof fnCsKeys.expert
-  | keyof typeof cmCsKeys.expert
-  | keyof typeof mktCsKeys.expert
-  | keyof typeof stN1CsKeys.expert
-  | keyof typeof stN2CsKeys.expert
-  | keyof typeof opCsKeys.expert
-  | keyof typeof devCsKeys.expert
-  | keyof typeof devOpsCsKeys.expert;
+  | StrKey<typeof eaCsKeys.expert>
+  | StrKey<typeof fnCsKeys.expert>
+  | StrKey<typeof cmCsKeys.expert>
+  | StrKey<typeof mktCsKeys.expert>
+  | StrKey<typeof stN1CsKeys.expert>
+  | StrKey<typeof stN2CsKeys.expert>
+  | StrKey<typeof opCsKeys.expert>
+  | StrKey<typeof devCsKeys.expert>
+  | StrKey<typeof devOpsCsKeys.expert>;
 export type CloudStorageQuestionsKeys =
   | CloudStorageBeginnerKeys
   | CloudStorageIntermediateKeys
   | CloudStorageExpertKeys
   | "libre";
 export type BiBeginnerKeys =
-  | keyof typeof eaBiKeys.beginner
-  | keyof typeof fnBiKeys.beginner
-  | keyof typeof cmBiKeys.beginner
-  | keyof typeof mktBiKeys.beginner
-  | keyof typeof stN1BiKeys.beginner
-  | keyof typeof stN2BiKeys.beginner
-  | keyof typeof opBiKeys.beginner
-  | keyof typeof devBiKeys.beginner
-  | keyof typeof devOpsBiKeys.beginner
-  | keyof typeof defBiKeys.beginner;
+  | StrKey<typeof eaBiKeys.beginner>
+  | StrKey<typeof fnBiKeys.beginner>
+  | StrKey<typeof cmBiKeys.beginner>
+  | StrKey<typeof mktBiKeys.beginner>
+  | StrKey<typeof stN1BiKeys.beginner>
+  | StrKey<typeof stN2BiKeys.beginner>
+  | StrKey<typeof opBiKeys.beginner>
+  | StrKey<typeof devBiKeys.beginner>
+  | StrKey<typeof devOpsBiKeys.beginner>
+  | StrKey<typeof defBiKeys.beginner>;
 export type BiIntermediateKeys =
-  | keyof typeof eaBiKeys.intermediate
-  | keyof typeof fnBiKeys.intermediate
-  | keyof typeof cmBiKeys.intermediate
-  | keyof typeof mktBiKeys.intermediate
-  | keyof typeof stN1BiKeys.intermediate
-  | keyof typeof stN2BiKeys.intermediate
-  | keyof typeof opBiKeys.intermediate
-  | keyof typeof devCsKeys.intermediate
-  | keyof typeof devOpsBiKeys.intermediate
-  | keyof typeof defBiKeys.intermediate;
+  | StrKey<typeof eaBiKeys.intermediate>
+  | StrKey<typeof fnBiKeys.intermediate>
+  | StrKey<typeof cmBiKeys.intermediate>
+  | StrKey<typeof mktBiKeys.intermediate>
+  | StrKey<typeof stN1BiKeys.intermediate>
+  | StrKey<typeof stN2BiKeys.intermediate>
+  | StrKey<typeof opBiKeys.intermediate>
+  | StrKey<typeof devCsKeys.intermediate>
+  | StrKey<typeof devOpsBiKeys.intermediate>
+  | StrKey<typeof defBiKeys.intermediate>;
 export type BiExpertKeys =
-  | keyof typeof eaBiKeys.expert
-  | keyof typeof fnBiKeys.expert
-  | keyof typeof cmBiKeys.expert
-  | keyof typeof mktBiKeys.expert
-  | keyof typeof stN1BiKeys.expert
-  | keyof typeof stN2BiKeys.expert
-  | keyof typeof opBiKeys.expert
-  | keyof typeof devCsKeys.expert
-  | keyof typeof devOpsBiKeys.expert
-  | keyof typeof defBiKeys.expert;
+  | StrKey<typeof eaBiKeys.expert>
+  | StrKey<typeof fnBiKeys.expert>
+  | StrKey<typeof cmBiKeys.expert>
+  | StrKey<typeof mktBiKeys.expert>
+  | StrKey<typeof stN1BiKeys.expert>
+  | StrKey<typeof stN2BiKeys.expert>
+  | StrKey<typeof opBiKeys.expert>
+  | StrKey<typeof devCsKeys.expert>
+  | StrKey<typeof devOpsBiKeys.expert>
+  | StrKey<typeof defBiKeys.expert>;
 export type BiQuestionsKeys =
   | BiBeginnerKeys
   | BiIntermediateKeys
   | BiExpertKeys
   | "libre";
 export type CrmBeginnerKeys =
-  | keyof typeof eaCrmKeys.beginner
-  | keyof typeof fnCrmKeys.beginner
-  | keyof typeof cmCrmKeys.beginner
-  | keyof typeof mktCrmKeys.beginner
-  | keyof typeof stN1CrmsKeys.beginner
-  | keyof typeof stN2CrmsKeys.beginner
-  | keyof typeof opCrmsKeys.beginner
-  | keyof typeof devCrmsKeys.beginner
-  | keyof typeof devOpsCrmsKeys.beginner
-  | keyof typeof defCrmsKeys.beginner;
+  | StrKey<typeof eaCrmKeys.beginner>
+  | StrKey<typeof fnCrmKeys.beginner>
+  | StrKey<typeof cmCrmKeys.beginner>
+  | StrKey<typeof mktCrmKeys.beginner>
+  | StrKey<typeof stN1CrmsKeys.beginner>
+  | StrKey<typeof stN2CrmsKeys.beginner>
+  | StrKey<typeof opCrmsKeys.beginner>
+  | StrKey<typeof devCrmsKeys.beginner>
+  | StrKey<typeof devOpsCrmsKeys.beginner>
+  | StrKey<typeof defCrmsKeys.beginner>;
 export type CrmIntermediateKeys =
-  | keyof typeof eaCrmKeys.intermediate
-  | keyof typeof fnCrmKeys.intermediate
-  | keyof typeof cmCrmKeys.intermediate
-  | keyof typeof mktCrmKeys.intermediate
-  | keyof typeof stN1CrmsKeys.intermediate
-  | keyof typeof stN2CrmsKeys.intermediate
-  | keyof typeof opBiKeys.intermediate
-  | keyof typeof devCsKeys.intermediate
-  | keyof typeof devOpsCrmsKeys.intermediate
-  | keyof typeof defCrmsKeys.intermediate;
+  | StrKey<typeof eaCrmKeys.intermediate>
+  | StrKey<typeof fnCrmKeys.intermediate>
+  | StrKey<typeof cmCrmKeys.intermediate>
+  | StrKey<typeof mktCrmKeys.intermediate>
+  | StrKey<typeof stN1CrmsKeys.intermediate>
+  | StrKey<typeof stN2CrmsKeys.intermediate>
+  | StrKey<typeof opBiKeys.intermediate>
+  | StrKey<typeof devCsKeys.intermediate>
+  | StrKey<typeof devOpsCrmsKeys.intermediate>
+  | StrKey<typeof defCrmsKeys.intermediate>;
 export type CrmExpertKeys =
-  | keyof typeof eaCrmKeys.expert
-  | keyof typeof fnCrmKeys.expert
-  | keyof typeof cmCrmKeys.expert
-  | keyof typeof mktCrmKeys.expert
-  | keyof typeof stN1CrmsKeys.expert
-  | keyof typeof stN2CrmsKeys.expert
-  | keyof typeof opBiKeys.expert
-  | keyof typeof devCsKeys.expert
-  | keyof typeof devOpsCrmsKeys.expert
-  | keyof typeof defCrmsKeys.expert;
+  | StrKey<typeof eaCrmKeys.expert>
+  | StrKey<typeof fnCrmKeys.expert>
+  | StrKey<typeof cmCrmKeys.expert>
+  | StrKey<typeof mktCrmKeys.expert>
+  | StrKey<typeof stN1CrmsKeys.expert>
+  | StrKey<typeof stN2CrmsKeys.expert>
+  | StrKey<typeof opBiKeys.expert>
+  | StrKey<typeof devCsKeys.expert>
+  | StrKey<typeof devOpsCrmsKeys.expert>
+  | StrKey<typeof defCrmsKeys.expert>;
 export type CrmQuestionsKeys =
   | CrmBeginnerKeys
   | CrmIntermediateKeys
   | CrmExpertKeys
   | "libre";
 export type ErpBeginnerKeys =
-  | keyof typeof eaErpKeys.beginner
-  | keyof typeof fnErpKeys.beginner
-  | keyof typeof cmErpKeys.beginner
-  | keyof typeof mktErpsKeys.beginner
-  | keyof typeof stN1ErpsKeys.beginner
-  | keyof typeof stN2ErpsKeys.beginner
-  | keyof typeof opErpsKeys.beginner
-  | keyof typeof devErpsKeys.beginner
-  | keyof typeof devOpsErpsKeys.beginner
-  | keyof typeof defErpsKeys.beginner;
+  | StrKey<typeof eaErpKeys.beginner>
+  | StrKey<typeof fnErpKeys.beginner>
+  | StrKey<typeof cmErpKeys.beginner>
+  | StrKey<typeof mktErpsKeys.beginner>
+  | StrKey<typeof stN1ErpsKeys.beginner>
+  | StrKey<typeof stN2ErpsKeys.beginner>
+  | StrKey<typeof opErpsKeys.beginner>
+  | StrKey<typeof devErpsKeys.beginner>
+  | StrKey<typeof devOpsErpsKeys.beginner>
+  | StrKey<typeof defErpsKeys.beginner>;
 export type ErpIntermediateKeys =
-  | keyof typeof eaErpKeys.intermediate
-  | keyof typeof fnErpKeys.intermediate
-  | keyof typeof cmErpKeys.intermediate
-  | keyof typeof mktErpsKeys.intermediate
-  | keyof typeof stN1ErpsKeys.intermediate
-  | keyof typeof stN2ErpsKeys.intermediate
-  | keyof typeof opErpsKeys.intermediate
-  | keyof typeof devErpsKeys.intermediate
-  | keyof typeof devOpsErpsKeys.intermediate
-  | keyof typeof defErpsKeys.intermediate;
+  | StrKey<typeof eaErpKeys.intermediate>
+  | StrKey<typeof fnErpKeys.intermediate>
+  | StrKey<typeof cmErpKeys.intermediate>
+  | StrKey<typeof mktErpsKeys.intermediate>
+  | StrKey<typeof stN1ErpsKeys.intermediate>
+  | StrKey<typeof stN2ErpsKeys.intermediate>
+  | StrKey<typeof opErpsKeys.intermediate>
+  | StrKey<typeof devErpsKeys.intermediate>
+  | StrKey<typeof devOpsErpsKeys.intermediate>
+  | StrKey<typeof defErpsKeys.intermediate>;
 export type ErpExpertKeys =
-  | keyof typeof eaErpKeys.expert
-  | keyof typeof fnErpKeys.expert
-  | keyof typeof cmErpKeys.expert
-  | keyof typeof mktErpsKeys.expert
-  | keyof typeof stN1ErpsKeys.expert
-  | keyof typeof stN2ErpsKeys.expert
-  | keyof typeof opErpsKeys.expert
-  | keyof typeof devErpsKeys.expert
-  | keyof typeof devOpsErpsKeys.expert
-  | keyof typeof defErpsKeys.expert;
+  | StrKey<typeof eaErpKeys.expert>
+  | StrKey<typeof fnErpKeys.expert>
+  | StrKey<typeof cmErpKeys.expert>
+  | StrKey<typeof mktErpsKeys.expert>
+  | StrKey<typeof stN1ErpsKeys.expert>
+  | StrKey<typeof stN2ErpsKeys.expert>
+  | StrKey<typeof opErpsKeys.expert>
+  | StrKey<typeof devErpsKeys.expert>
+  | StrKey<typeof devOpsErpsKeys.expert>
+  | StrKey<typeof defErpsKeys.expert>;
 export type ErpQuestionsKeys =
   | ErpBeginnerKeys
   | ErpIntermediateKeys
   | ErpExpertKeys
   | "libre";
 export type PlanningBeginnerKeys =
-  | keyof typeof eaPlnKeys.beginner
-  | keyof typeof fnPlnKeys.beginner
-  | keyof typeof cmPlnKeys.beginner
-  | keyof typeof mktPlnKeys.beginner
-  | keyof typeof stN1PlnKeys.beginner
-  | keyof typeof stN2PlnKeys.beginner
-  | keyof typeof opPlnKeys.beginner
-  | keyof typeof devPlnKeys.beginner
-  | keyof typeof devOpsPlnKeys.beginner
-  | keyof typeof defPlnKeys.beginner;
+  | StrKey<typeof eaPlnKeys.beginner>
+  | StrKey<typeof fnPlnKeys.beginner>
+  | StrKey<typeof cmPlnKeys.beginner>
+  | StrKey<typeof mktPlnKeys.beginner>
+  | StrKey<typeof stN1PlnKeys.beginner>
+  | StrKey<typeof stN2PlnKeys.beginner>
+  | StrKey<typeof opPlnKeys.beginner>
+  | StrKey<typeof devPlnKeys.beginner>
+  | StrKey<typeof devOpsPlnKeys.beginner>
+  | StrKey<typeof defPlnKeys.beginner>;
 export type PlanningIntermediateKeys =
-  | keyof typeof eaPlnKeys.intermediate
-  | keyof typeof fnPlnKeys.intermediate
-  | keyof typeof cmPlnKeys.intermediate
-  | keyof typeof mktPlnKeys.intermediate
-  | keyof typeof stN1PlnKeys.intermediate
-  | keyof typeof stN2PlnKeys.intermediate
-  | keyof typeof opPlnKeys.intermediate
-  | keyof typeof devPlnKeys.intermediate
-  | keyof typeof devOpsPlnKeys.intermediate
-  | keyof typeof defPlnKeys.intermediate;
+  | StrKey<typeof eaPlnKeys.intermediate>
+  | StrKey<typeof fnPlnKeys.intermediate>
+  | StrKey<typeof cmPlnKeys.intermediate>
+  | StrKey<typeof mktPlnKeys.intermediate>
+  | StrKey<typeof stN1PlnKeys.intermediate>
+  | StrKey<typeof stN2PlnKeys.intermediate>
+  | StrKey<typeof opPlnKeys.intermediate>
+  | StrKey<typeof devPlnKeys.intermediate>
+  | StrKey<typeof devOpsPlnKeys.intermediate>
+  | StrKey<typeof defPlnKeys.intermediate>;
 export type PlanningExpertKeys =
-  | keyof typeof eaPlnKeys.expert
-  | keyof typeof fnPlnKeys.expert
-  | keyof typeof cmPlnKeys.expert
-  | keyof typeof mktPlnKeys.expert
-  | keyof typeof stN1PlnKeys.expert
-  | keyof typeof stN2PlnKeys.expert
-  | keyof typeof opPlnKeys.expert
-  | keyof typeof devPlnKeys.expert
-  | keyof typeof devOpsPlnKeys.expert
-  | keyof typeof defPlnKeys.expert;
+  | StrKey<typeof eaPlnKeys.expert>
+  | StrKey<typeof fnPlnKeys.expert>
+  | StrKey<typeof cmPlnKeys.expert>
+  | StrKey<typeof mktPlnKeys.expert>
+  | StrKey<typeof stN1PlnKeys.expert>
+  | StrKey<typeof stN2PlnKeys.expert>
+  | StrKey<typeof opPlnKeys.expert>
+  | StrKey<typeof devPlnKeys.expert>
+  | StrKey<typeof devOpsPlnKeys.expert>
+  | StrKey<typeof defPlnKeys.expert>;
 export type PlanningQuestionsKeys =
   | PlanningBeginnerKeys
   | PlanningIntermediateKeys
   | PlanningExpertKeys
   | "libre";
 export type AudioAiBeginnerKeys =
-  | keyof typeof eaAiAdKeys.beginner
-  | keyof typeof fnAiAdKeys.beginner
-  | keyof typeof cmAiAdKeys.beginner
-  | keyof typeof mktAiAdKeys.beginner
-  | keyof typeof stN1AiAdKeys.beginner
-  | keyof typeof stN2AiAdKeys.beginner
-  | keyof typeof opAiAdKeys.beginner
-  | keyof typeof devAiAdKeys.beginner
-  | keyof typeof devOpsAiAdKeys.beginner
-  | keyof typeof defAiAdKeys.beginner;
+  | StrKey<typeof eaAiAdKeys.beginner>
+  | StrKey<typeof fnAiAdKeys.beginner>
+  | StrKey<typeof cmAiAdKeys.beginner>
+  | StrKey<typeof mktAiAdKeys.beginner>
+  | StrKey<typeof stN1AiAdKeys.beginner>
+  | StrKey<typeof stN2AiAdKeys.beginner>
+  | StrKey<typeof opAiAdKeys.beginner>
+  | StrKey<typeof devAiAdKeys.beginner>
+  | StrKey<typeof devOpsAiAdKeys.beginner>
+  | StrKey<typeof defAiAdKeys.beginner>;
 export type AudioAiIntermediateKeys =
-  | keyof typeof eaAiAdKeys.intermediate
-  | keyof typeof fnAiAdKeys.intermediate
-  | keyof typeof cmAiAdKeys.intermediate
-  | keyof typeof mktAiAdKeys.intermediate
-  | keyof typeof stN1AiAdKeys.intermediate
-  | keyof typeof stN2AiAdKeys.intermediate
-  | keyof typeof opAiAdKeys.intermediate
-  | keyof typeof devAiAdKeys.intermediate
-  | keyof typeof devOpsAiAdKeys.intermediate
-  | keyof typeof defPlnKeys.intermediate;
+  | StrKey<typeof eaAiAdKeys.intermediate>
+  | StrKey<typeof fnAiAdKeys.intermediate>
+  | StrKey<typeof cmAiAdKeys.intermediate>
+  | StrKey<typeof mktAiAdKeys.intermediate>
+  | StrKey<typeof stN1AiAdKeys.intermediate>
+  | StrKey<typeof stN2AiAdKeys.intermediate>
+  | StrKey<typeof opAiAdKeys.intermediate>
+  | StrKey<typeof devAiAdKeys.intermediate>
+  | StrKey<typeof devOpsAiAdKeys.intermediate>
+  | StrKey<typeof defPlnKeys.intermediate>;
 export type AudioAiExpertKeys =
-  | keyof typeof eaAiAdKeys.expert
-  | keyof typeof fnAiAdKeys.expert
-  | keyof typeof cmAiAdKeys.expert
-  | keyof typeof mktAiAdKeys.expert
-  | keyof typeof stN1AiAdKeys.expert
-  | keyof typeof stN2AiAdKeys.expert
-  | keyof typeof opAiAdKeys.expert
-  | keyof typeof devAiAdKeys.expert
-  | keyof typeof devOpsAiAdKeys.expert
-  | keyof typeof defPlnKeys.expert;
+  | StrKey<typeof eaAiAdKeys.expert>
+  | StrKey<typeof fnAiAdKeys.expert>
+  | StrKey<typeof cmAiAdKeys.expert>
+  | StrKey<typeof mktAiAdKeys.expert>
+  | StrKey<typeof stN1AiAdKeys.expert>
+  | StrKey<typeof stN2AiAdKeys.expert>
+  | StrKey<typeof opAiAdKeys.expert>
+  | StrKey<typeof devAiAdKeys.expert>
+  | StrKey<typeof devOpsAiAdKeys.expert>
+  | StrKey<typeof defPlnKeys.expert>;
 export type AudioAiQuestionsKeys =
   | AudioAiBeginnerKeys
   | AudioAiIntermediateKeys
   | AudioAiExpertKeys
   | "libre";
 export type ImageAiBeginnerKeys =
-  | keyof typeof eaAiImgKeys.beginner
-  | keyof typeof fnAiImgKeys.beginner
-  | keyof typeof cmAiImgKeys.beginner
-  | keyof typeof mktAiImgKeys.beginner
-  | keyof typeof stN1AiImgKeys.beginner
-  | keyof typeof stN2AiImgKeys.beginner
-  | keyof typeof opAiImgKeys.beginner
-  | keyof typeof devAiImgKeys.beginner
-  | keyof typeof devOpsAiImgKeys.beginner
-  | keyof typeof defAiImgKeys.beginner;
+  | StrKey<typeof eaAiImgKeys.beginner>
+  | StrKey<typeof fnAiImgKeys.beginner>
+  | StrKey<typeof cmAiImgKeys.beginner>
+  | StrKey<typeof mktAiImgKeys.beginner>
+  | StrKey<typeof stN1AiImgKeys.beginner>
+  | StrKey<typeof stN2AiImgKeys.beginner>
+  | StrKey<typeof opAiImgKeys.beginner>
+  | StrKey<typeof devAiImgKeys.beginner>
+  | StrKey<typeof devOpsAiImgKeys.beginner>
+  | StrKey<typeof defAiImgKeys.beginner>;
 export type ImageAiIntermediateKeys =
-  | keyof typeof eaAiImgKeys.intermediate
-  | keyof typeof fnAiImgKeys.intermediate
-  | keyof typeof cmAiImgKeys.intermediate
-  | keyof typeof mktAiImgKeys.intermediate
-  | keyof typeof stN1AiImgKeys.intermediate
-  | keyof typeof stN2AiImgKeys.intermediate
-  | keyof typeof opAiImgKeys.intermediate
-  | keyof typeof devAiImgKeys.intermediate
-  | keyof typeof devOpsAiImgKeys.intermediate
-  | keyof typeof defAiImgKeys.intermediate;
+  | StrKey<typeof eaAiImgKeys.intermediate>
+  | StrKey<typeof fnAiImgKeys.intermediate>
+  | StrKey<typeof cmAiImgKeys.intermediate>
+  | StrKey<typeof mktAiImgKeys.intermediate>
+  | StrKey<typeof stN1AiImgKeys.intermediate>
+  | StrKey<typeof stN2AiImgKeys.intermediate>
+  | StrKey<typeof opAiImgKeys.intermediate>
+  | StrKey<typeof devAiImgKeys.intermediate>
+  | StrKey<typeof devOpsAiImgKeys.intermediate>
+  | StrKey<typeof defAiImgKeys.intermediate>;
 export type ImageAiExpertKeys =
-  | keyof typeof eaAiImgKeys.expert
-  | keyof typeof fnAiImgKeys.expert
-  | keyof typeof cmAiImgKeys.expert
-  | keyof typeof mktAiImgKeys.expert
-  | keyof typeof stN1AiImgKeys.expert
-  | keyof typeof stN2AiImgKeys.expert
-  | keyof typeof opAiImgKeys.expert
-  | keyof typeof devAiImgKeys.expert
-  | keyof typeof devOpsAiImgKeys.expert
-  | keyof typeof defAiImgKeys.expert;
+  | StrKey<typeof eaAiImgKeys.expert>
+  | StrKey<typeof fnAiImgKeys.expert>
+  | StrKey<typeof cmAiImgKeys.expert>
+  | StrKey<typeof mktAiImgKeys.expert>
+  | StrKey<typeof stN1AiImgKeys.expert>
+  | StrKey<typeof stN2AiImgKeys.expert>
+  | StrKey<typeof opAiImgKeys.expert>
+  | StrKey<typeof devAiImgKeys.expert>
+  | StrKey<typeof devOpsAiImgKeys.expert>
+  | StrKey<typeof defAiImgKeys.expert>;
 export type ImageAiQuestionsKeys =
   | ImageAiBeginnerKeys
   | ImageAiIntermediateKeys
   | ImageAiExpertKeys
   | "libre";
 export type VideoAiBeginnerKeys =
-  | keyof typeof eaAiVdKeys.beginner
-  | keyof typeof fnAiVdKeys.beginner
-  | keyof typeof cmAiVdKeys.beginner
-  | keyof typeof mktAiVdKeys.beginner
-  | keyof typeof stN1AiVdKeys.beginner
-  | keyof typeof stN2AiVdKeys.beginner
-  | keyof typeof opAiVdKeys.beginner
-  | keyof typeof devAiVdKeys.beginner
-  | keyof typeof devOpsAiVdKeys.beginner
-  | keyof typeof defAiVdKeys.beginner;
+  | StrKey<typeof eaAiVdKeys.beginner>
+  | StrKey<typeof fnAiVdKeys.beginner>
+  | StrKey<typeof cmAiVdKeys.beginner>
+  | StrKey<typeof mktAiVdKeys.beginner>
+  | StrKey<typeof stN1AiVdKeys.beginner>
+  | StrKey<typeof stN2AiVdKeys.beginner>
+  | StrKey<typeof opAiVdKeys.beginner>
+  | StrKey<typeof devAiVdKeys.beginner>
+  | StrKey<typeof devOpsAiVdKeys.beginner>
+  | StrKey<typeof defAiVdKeys.beginner>;
 export type VideoAiIntermediateKeys =
-  | keyof typeof eaAiVdKeys.intermediate
-  | keyof typeof fnAiVdKeys.intermediate
-  | keyof typeof cmAiVdKeys.intermediate
-  | keyof typeof mktAiVdKeys.intermediate
-  | keyof typeof stN1AiVdKeys.intermediate
-  | keyof typeof stN2AiVdKeys.intermediate
-  | keyof typeof opAiVdKeys.intermediate
-  | keyof typeof devAiAdKeys.intermediate
-  | keyof typeof devOpsAiVdKeys.intermediate
-  | keyof typeof defAiVdKeys.intermediate;
+  | StrKey<typeof eaAiVdKeys.intermediate>
+  | StrKey<typeof fnAiVdKeys.intermediate>
+  | StrKey<typeof cmAiVdKeys.intermediate>
+  | StrKey<typeof mktAiVdKeys.intermediate>
+  | StrKey<typeof stN1AiVdKeys.intermediate>
+  | StrKey<typeof stN2AiVdKeys.intermediate>
+  | StrKey<typeof opAiVdKeys.intermediate>
+  | StrKey<typeof devAiAdKeys.intermediate>
+  | StrKey<typeof devOpsAiVdKeys.intermediate>
+  | StrKey<typeof defAiVdKeys.intermediate>;
 export type VideoAiExpertKeys =
-  | keyof typeof eaAiVdKeys.expert
-  | keyof typeof fnAiVdKeys.expert
-  | keyof typeof cmAiVdKeys.expert
-  | keyof typeof mktAiVdKeys.expert
-  | keyof typeof stN1AiVdKeys.expert
-  | keyof typeof stN2AiVdKeys.expert
-  | keyof typeof opAiVdKeys.expert
-  | keyof typeof devAiAdKeys.expert
-  | keyof typeof devOpsAiVdKeys.expert
-  | keyof typeof defAiVdKeys.expert;
+  | StrKey<typeof eaAiVdKeys.expert>
+  | StrKey<typeof fnAiVdKeys.expert>
+  | StrKey<typeof cmAiVdKeys.expert>
+  | StrKey<typeof mktAiVdKeys.expert>
+  | StrKey<typeof stN1AiVdKeys.expert>
+  | StrKey<typeof stN2AiVdKeys.expert>
+  | StrKey<typeof opAiVdKeys.expert>
+  | StrKey<typeof devAiAdKeys.expert>
+  | StrKey<typeof devOpsAiVdKeys.expert>
+  | StrKey<typeof defAiVdKeys.expert>;
 export type VideoAiQuestionsKeys =
   | VideoAiBeginnerKeys
   | VideoAiIntermediateKeys
   | VideoAiExpertKeys
   | "libre";
 export type LLMBeginnerKeys =
-  | keyof typeof eaLlmKeys.beginner
-  | keyof typeof fnLlmKeys.beginner
-  | keyof typeof cmLlmsKeys.beginner
-  | keyof typeof mktLlmsKeys.beginner
-  | keyof typeof stN1LlmsKeys.beginner
-  | keyof typeof stN2LlmsKeys.beginner
-  | keyof typeof opLlmsKeys.beginner
-  | keyof typeof devLlmsKeys.beginner
-  | keyof typeof devOpsLlmsKeys.beginner
-  | keyof typeof defLlmsKeys.beginner;
+  | StrKey<typeof eaLlmKeys.beginner>
+  | StrKey<typeof fnLlmKeys.beginner>
+  | StrKey<typeof cmLlmsKeys.beginner>
+  | StrKey<typeof mktLlmsKeys.beginner>
+  | StrKey<typeof stN1LlmsKeys.beginner>
+  | StrKey<typeof stN2LlmsKeys.beginner>
+  | StrKey<typeof opLlmsKeys.beginner>
+  | StrKey<typeof devLlmsKeys.beginner>
+  | StrKey<typeof devOpsLlmsKeys.beginner>
+  | StrKey<typeof defLlmsKeys.beginner>;
 export type LLMIntermediateKeys =
-  | keyof typeof eaLlmKeys.intermediate
-  | keyof typeof fnLlmKeys.intermediate
-  | keyof typeof cmLlmsKeys.intermediate
-  | keyof typeof mktLlmsKeys.intermediate
-  | keyof typeof stN1LlmsKeys.intermediate
-  | keyof typeof stN2LlmsKeys.intermediate
-  | keyof typeof opLlmsKeys.intermediate
-  | keyof typeof devLlmsKeys.intermediate
-  | keyof typeof devOpsLlmsKeys.intermediate
-  | keyof typeof defLlmsKeys.intermediate;
+  | StrKey<typeof eaLlmKeys.intermediate>
+  | StrKey<typeof fnLlmKeys.intermediate>
+  | StrKey<typeof cmLlmsKeys.intermediate>
+  | StrKey<typeof mktLlmsKeys.intermediate>
+  | StrKey<typeof stN1LlmsKeys.intermediate>
+  | StrKey<typeof stN2LlmsKeys.intermediate>
+  | StrKey<typeof opLlmsKeys.intermediate>
+  | StrKey<typeof devLlmsKeys.intermediate>
+  | StrKey<typeof devOpsLlmsKeys.intermediate>
+  | StrKey<typeof defLlmsKeys.intermediate>;
 export type LLMExpertKeys =
-  | keyof typeof eaLlmKeys.expert
-  | keyof typeof fnLlmKeys.expert
-  | keyof typeof cmAiVdKeys.expert
-  | keyof typeof mktLlmsKeys.expert
-  | keyof typeof stN1LlmsKeys.expert
-  | keyof typeof stN2LlmsKeys.expert
-  | keyof typeof opLlmsKeys.expert
-  | keyof typeof devLlmsKeys.expert
-  | keyof typeof devOpsLlmsKeys.expert
-  | keyof typeof defLlmsKeys.expert;
+  | StrKey<typeof eaLlmKeys.expert>
+  | StrKey<typeof fnLlmKeys.expert>
+  | StrKey<typeof cmAiVdKeys.expert>
+  | StrKey<typeof mktLlmsKeys.expert>
+  | StrKey<typeof stN1LlmsKeys.expert>
+  | StrKey<typeof stN2LlmsKeys.expert>
+  | StrKey<typeof opLlmsKeys.expert>
+  | StrKey<typeof devLlmsKeys.expert>
+  | StrKey<typeof devOpsLlmsKeys.expert>
+  | StrKey<typeof defLlmsKeys.expert>;
 export type LLMQuestionsKeys =
   | LLMBeginnerKeys
   | LLMIntermediateKeys

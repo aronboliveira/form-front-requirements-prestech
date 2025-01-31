@@ -4,6 +4,7 @@ export default class ObjectHelper {
       key =>
         typeof (obj as any)[key] === "object" &&
         obj !== null &&
+        !Object.isFrozen(obj) &&
         ObjectHelper.deepFreeze((obj as any)[key])
     );
     return Object.freeze(obj);
@@ -12,7 +13,9 @@ export default class ObjectHelper {
     try {
       return JSON.stringify(data);
     } catch (e) {
-      console.error(`Error stringifying data:\n${(e as Error).message}`);
+      console.error(
+        `Error stringifying data:\n${(e as Error).message}`
+      );
       return "";
     }
   }
@@ -20,11 +23,15 @@ export default class ObjectHelper {
     try {
       return JSON.parse(data);
     } catch (e) {
-      console.error(`Error parsing data:\n${(e as Error).message}`);
+      console.error(
+        `Error parsing data:\n${(e as Error).message}`
+      );
       return null;
     }
   }
 }
 export function protoName(f: any): string {
-  return typeof f === "function" ? f.prototype.constructor.name : "";
+  return typeof f === "function"
+    ? f.prototype.constructor.name
+    : "";
 }
