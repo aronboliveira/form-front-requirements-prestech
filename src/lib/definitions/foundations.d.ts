@@ -123,6 +123,7 @@ export type AiBlocks = {
   video: string;
 };
 export type fmBaseKeys = "tpl" | "rsp" | "emb" | "slc";
+export type csBaseKeys = "shr" | "syn" | "org";
 export type repeatingKeys =
   | "fmt"
   | "sum"
