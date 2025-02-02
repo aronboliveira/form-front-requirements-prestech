@@ -8,7 +8,7 @@ import {
   cmDocsKeys,
   cmErpKeys,
   cmFmKeys,
-  cmLlmsKeys,
+  cmLlmKeys,
   cmPlnKeys,
   cmSsKeys,
   defAiAdKeys,
@@ -20,7 +20,7 @@ import {
   defDocsQuestions,
   defErpsKeys,
   defFmQuestions,
-  defLlmsKeys,
+  defLlmKeys,
   defPlnKeys,
   devAiAdKeys,
   devAiImgKeys,
@@ -31,7 +31,7 @@ import {
   devDocsKeys,
   devErpsKeys,
   devFmKeys,
-  devLlmsKeys,
+  devLlmKeys,
   devOpsAiAdKeys,
   devOpsAiImgKeys,
   devOpsAiVdKeys,
@@ -41,7 +41,7 @@ import {
   devOpsDocsKeys,
   devOpsErpsKeys,
   devOpsFmKeys,
-  devOpsLlmsKeys,
+  devOpsLlmKeys,
   devOpsPlnKeys,
   devOpsSsKeys,
   devPlnKeys,
@@ -80,7 +80,7 @@ import {
   mktDocsKeys,
   mktErpsKeys,
   mktFmKeys,
-  mktLlmsKeys,
+  mktLlmKeys,
   mktPlnKeys,
   mktSsKeys,
   opAiAdKeys,
@@ -92,7 +92,7 @@ import {
   opDocsKeys,
   opErpsKeys,
   opFmKeys,
-  opLlmsKeys,
+  opLlmKeys,
   opPlnKeys,
   opSsKeys,
   stN1AiAdKeys,
@@ -104,7 +104,7 @@ import {
   stN1DocsKeys,
   stN1ErpsKeys,
   stN1FmKeys,
-  stN1LlmsKeys,
+  stN1LlmKeys,
   stN1PlnKeys,
   stN1SsKeys,
   stN2AiAdKeys,
@@ -116,11 +116,11 @@ import {
   stN2DocsKeys,
   stN2ErpsKeys,
   stN2FmKeys,
-  stN2LlmsKeys,
+  stN2LlmKeys,
   stN2PlnKeys,
   stN2SsKeys,
 } from "@/lib/client/vars";
-import { roleType } from "../foundations";
+import { complexityLabel, roleType } from "../foundations";
 //primitives
 export type nlStr = string | null;
 export type voidish = undefined | null;
@@ -349,6 +349,9 @@ export type EntryTypeDictionary<T> = Readonly<{
   [K in roleDefined]: {
     [L in complexityLabel]: KeysRecords<T>;
   };
+}>;
+export type ROFieldRecord<T extends object> = Readonly<{
+  [K in keyof T]: FieldDescription;
 }>;
 export interface EntryElementsDict<G, T> {
   [K in Exclude<roleType, "undefined">]: {
@@ -769,36 +772,33 @@ export type VideoAiQuestionsKeys =
 export type LLMBeginnerKeys =
   | StrKey<typeof eaLlmKeys.beginner>
   | StrKey<typeof fnLlmKeys.beginner>
-  | StrKey<typeof cmLlmsKeys.beginner>
-  | StrKey<typeof mktLlmsKeys.beginner>
-  | StrKey<typeof stN1LlmsKeys.beginner>
-  | StrKey<typeof stN2LlmsKeys.beginner>
-  | StrKey<typeof opLlmsKeys.beginner>
-  | StrKey<typeof devLlmsKeys.beginner>
-  | StrKey<typeof devOpsLlmsKeys.beginner>
-  | StrKey<typeof defLlmsKeys.beginner>;
+  | StrKey<typeof cmLlmKeys.beginner>
+  | StrKey<typeof mktLlmKeys.beginner>
+  | StrKey<typeof stN1LlmKeys.beginner>
+  | StrKey<typeof stN2LlmKeys.beginner>
+  | StrKey<typeof opLlmKeys.beginner>
+  | StrKey<typeof devLlmKeys.beginner>
+  | StrKey<typeof devOpsLlmKeys.beginner>;
 export type LLMIntermediateKeys =
   | StrKey<typeof eaLlmKeys.intermediate>
   | StrKey<typeof fnLlmKeys.intermediate>
-  | StrKey<typeof cmLlmsKeys.intermediate>
-  | StrKey<typeof mktLlmsKeys.intermediate>
-  | StrKey<typeof stN1LlmsKeys.intermediate>
-  | StrKey<typeof stN2LlmsKeys.intermediate>
-  | StrKey<typeof opLlmsKeys.intermediate>
-  | StrKey<typeof devLlmsKeys.intermediate>
-  | StrKey<typeof devOpsLlmsKeys.intermediate>
-  | StrKey<typeof defLlmsKeys.intermediate>;
+  | StrKey<typeof cmLlmKeys.intermediate>
+  | StrKey<typeof mktLlmKeys.intermediate>
+  | StrKey<typeof stN1LlmKeys.intermediate>
+  | StrKey<typeof stN2LlmKeys.intermediate>
+  | StrKey<typeof opLlmKeys.intermediate>
+  | StrKey<typeof devLlmKeys.intermediate>
+  | StrKey<typeof devOpsLlmKeys.intermediate>;
 export type LLMExpertKeys =
   | StrKey<typeof eaLlmKeys.expert>
   | StrKey<typeof fnLlmKeys.expert>
   | StrKey<typeof cmAiVdKeys.expert>
-  | StrKey<typeof mktLlmsKeys.expert>
-  | StrKey<typeof stN1LlmsKeys.expert>
-  | StrKey<typeof stN2LlmsKeys.expert>
-  | StrKey<typeof opLlmsKeys.expert>
-  | StrKey<typeof devLlmsKeys.expert>
-  | StrKey<typeof devOpsLlmsKeys.expert>
-  | StrKey<typeof defLlmsKeys.expert>;
+  | StrKey<typeof mktLlmKeys.expert>
+  | StrKey<typeof stN1LlmKeys.expert>
+  | StrKey<typeof stN2LlmKeys.expert>
+  | StrKey<typeof opLlmKeys.expert>
+  | StrKey<typeof devLlmKeys.expert>
+  | StrKey<typeof devOpsLlmKeys.expert>;
 export type LLMQuestionsKeys =
   | LLMBeginnerKeys
   | LLMIntermediateKeys

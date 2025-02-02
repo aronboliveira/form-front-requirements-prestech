@@ -1,12 +1,17 @@
 import {
+  AudioAiQuestionsKeys,
   ClassesKey,
   CloudStorageQuestionsKeys,
   DocsQuestionsKeys,
   EntryTypeDictionary,
   FieldDescription,
   FormBuilderQuestionsKeys,
+  ImageAiQuestionsKeys,
   KeysRecords,
+  LLMQuestionsKeys,
+  ROFieldRecord,
   SpreadsheetsQuestionsKeys,
+  VideoAiQuestionsKeys,
 } from "../definitions/client/helpers";
 import {
   AiBlocks,
@@ -14,8 +19,6 @@ import {
   RangeCtxComponentNames,
   addQuestionsKey,
   complexityLabel,
-  csBaseKeys,
-  fmBaseKeys,
   repeatingDefinitionKeys,
   repeatingKeys,
   roleQuestionsMap,
@@ -1510,20 +1513,157 @@ export const repeated: Readonly<{
   arr: "Você domina ou utiliza fórmulas matriciais (ex.: ÍNDICE, CORRESP) para cálculos avançados?",
   tbd: "Como você utiliza tabelas dinâmicas para analisar grandes quantidades de dados?",
 });
-function withFrozenLibreLabel(
-  dict: Record<string, any>,
-  _case: addQuestionsKey
-): Readonly<Record<string, any>> {
+function withFrozenLibreLabel<
+  T extends Record<string, any>
+>(dict: T, _case: addQuestionsKey): T {
   Object.keys(dict).forEach(k => {
     if (!libre[_case]) return;
     if (!("lib" in dict))
-      dict[k] = {
+      (dict as any)[k] = {
         ...dict[k],
         lib: libre[_case],
       };
   });
   return ObjectHelper.deepFreeze(dict);
 }
+export const fmGeneralKeys = ObjectHelper.deepFreeze({
+  tpl: "Com que frequência você utiliza templates prontos para elaborar questionários?",
+  rsp: "Quais são suas formas preferenciais de salvar dados de um formulário?",
+  emb: "Quais destas técnicas você utiliza com mais frequência para analisar resultados aglomerados por diversas submissões de um formulário?",
+  plt: "Quais destas ferramentas você utiliza para construção de formulários?",
+  slc: "Descreva livremente seu critério para escolher entre múltipla escolha (dropdowns, rádios, checkboxes) ou respostas paragrafadas",
+});
+export const fmBeginnerKeys = ObjectHelper.deepFreeze({
+  crt: "Qual é o seu nível de experiência criando formulários para coleta de dados?",
+  ...fmGeneralKeys,
+});
+export const fmIntermediateKeys = ObjectHelper.deepFreeze({
+  ...fmGeneralKeys,
+  aut: "Como você configura para envio de notificações ou respostas?",
+  api: "Com que frequência você integra formulários a APIs para coleta ou envio de dados?",
+});
+export const fmExpertKeys = ObjectHelper.deepFreeze({
+  ...fmGeneralKeys,
+  dsh: "Como você conecta formulários a dashboards para relatórios em tempo real?",
+});
+export const csGeneralKeys = ObjectHelper.deepFreeze({
+  syn: "Quais destas plaformas de armazenamento em nuvem você tem preferência em utilizar?",
+  shr: "Quais são suas formas preferenciar de habilitar o compartilhamento de arquivos em nuvem com outras colaboradores?",
+  org: "Descreva seus critérios para organizar pastas e arquivos armazenados em nuvem (ex.: Padrão de nomenclatura, Lógicas de Separação, etc.)",
+});
+export const csBeginnerKeys = ObjectHelper.deepFreeze({
+  upl: "Qual é o seu nível de experiência em enviar arquivos para armazenamento em nuvem?",
+  ...csGeneralKeys,
+  acc: "Você já configurou permissões básicas (somente leitura, edição, tipos de restrição) para arquivos em nuvem?",
+});
+export const csIntermediateKeys = ObjectHelper.deepFreeze({
+  ...csGeneralKeys,
+  ver: "Como você lida com controle de versões para evitar perda de dados?",
+  bck: "Com que frequência você executa backups de pastas ou arquivos importantes para nuvens?",
+  sch: "Quais critérios você utiliza para garantir conformidade com normas de gestão de dados compartilhados (ex.: LGPD) quando trabalhando em nuvens?",
+});
+export const csExpertKeys = ObjectHelper.deepFreeze({
+  ...csGeneralKeys,
+  scp: "Quais destas tecnologias você utiliza para automatizar procedimentos de gestão, controle e governança de dados em nuvem?",
+  sch: "Quais critérios você utiliza para garantir conformidade com normas de gestão de dados compartilhados (ex.: LGPD) quando trabalhando em nuvens?",
+});
+export const aiAdGeneralKeys = ObjectHelper.deepFreeze({
+  gen: "Qual é o seu nível de experiência utilizando IA generativa para criar e manipular áudios?",
+  evl: "Quais critérios você utiliza para avaliar e determinar a qualidade dos áudios gerados pela IA?",
+  tts: "Com que frequência você utiliza IAs para recursos de text-to-spreech?",
+  cln: 'Com que frequência você utiliza IAs para "clonagem" de vozes?',
+  int: "Quais são os principais casos de uso para IA em áudio na sua rotina específica de trabalho?",
+});
+export const aiAdBeginnerKeys = ObjectHelper.deepFreeze({
+  set: "Você já configurou um ambiente básico para captura e conversão de áudio com IA?",
+  ...aiAdGeneralKeys,
+});
+export const aiAdIntermediateKeys = ObjectHelper.deepFreeze(
+  {
+    ...aiAdGeneralKeys,
+    edt: "Quais as principais ferramentas que você utiliza para editar ou ajustar os áudios gerados por IAs?",
+    doc: "Você documenta os processos e configurações utilizados para trabalhar com áudios gerados por IA?",
+    ing: "Como você integra a IA de áudio em fluxos de trabalho mais complexos?",
+  }
+);
+export const aiAdExpertKeys = ObjectHelper.deepFreeze({
+  ...aiAdGeneralKeys,
+  adv: "Com que frequência você utiliza integrações avançadas ou APIs para otimização de áudio via IA?",
+  vol: "Você automatiza a produção e análise de grandes volumes de áudios com IA?",
+  sec: "Como você implementa medidas de segurança para proteger áudios gerados por IA?",
+});
+export const aiImgGeneralKeys = ObjectHelper.deepFreeze({
+  gen: "Qual é o seu nível de experiência utilizando IA generativa para criar e manipular imagens?",
+  evl: "Quais critérios você utiliza para avaliar a qualidade das imagens geradas pelas IAs?",
+  opt: "Quais ferramentas você utiliza para editar e otimizar a qualidade das imagens geradas pelas IAs?",
+  fmt: "Quais ferramentas você converter o formato das imagens geradas por IAs?",
+  col: "Com que frequência você utiliza IAs para aplicar ajustes automáticos de cor ou filtros em imagens?",
+  int: "Quais são os principais casos de uso para IA em imagens na sua rotina específica de trabalho?",
+});
+export const aiImgBeginnerKeys = ObjectHelper.deepFreeze({
+  set: "Você já configurou um ambiente básico para captura e edição simples de imagens com IA?",
+  ...aiImgGeneralKeys,
+});
+export const aiImgIntermediateKeys =
+  ObjectHelper.deepFreeze({
+    doc: "Com que frequência você documenta os processos e configurações utilizados para trabalhar com imagens geradas por IA?",
+    ing: "Como você integra as imagens geradas por IA em fluxos de trabalho mais complexos?",
+    ...aiImgGeneralKeys,
+  });
+export const aiImgExpertKeys = ObjectHelper.deepFreeze({
+  adv: "Com que frequência você utiliza integrações avançadas ou APIs para otimização de imagens via IA?",
+  vol: "Você automatiza a produção e análise de grandes volumes de imagens (ao menos 1GB) com IAs?",
+  sec: "Como você implementa medidas de segurança para proteger as imagens geradas por IA?",
+  ...aiImgGeneralKeys,
+});
+export const aiVdGeneralKeys = ObjectHelper.deepFreeze({
+  gen: "Qual é o seu nível de experiência utilizando IA generativa para criar e manipular vídeos?",
+  evl: "Quais critérios você utiliza para avaliar e determinar a qualidade dos vídeos gerados pela IA?",
+  tts: "Com que frequência você utiliza IAs Generativas com recursos de text-to-video?",
+  cln: "Com que frequência você utiliza IAs para replicação de estilos visuais, como templates?",
+  int: "Quais são os principais casos de uso para IA em vídeo na sua rotina específica de trabalho?",
+});
+export const aiVdBeginnerKeys = ObjectHelper.deepFreeze({
+  cnt: "Você já utilizou IAs Generativas de Vídeo para transicionar diferentes imagens?",
+  set: "Qual é o seu nível de experiência utilizando ferramentas de roteirização ou storyboards com ferramentas de IAs Generativas?",
+  ...aiVdGeneralKeys,
+});
+export const aiVdIntermediateKeys = ObjectHelper.deepFreeze(
+  {
+    edt: "Quais as principais ferramentas que você utiliza para editar ou ajustar os vídeos gerados por IAs?",
+    doc: "Você documenta os processos e configurações utilizados para trabalhar com vídeos gerados por IA?",
+    ing: "Como você integra os vídeos gerados por IA em fluxos automáticos de trabalho?",
+    ...aiVdGeneralKeys,
+  }
+);
+export const aiVdExpertKeys = ObjectHelper.deepFreeze({
+  adv: "Com que frequência você utiliza integrações avançadas (como chamadas de APIs) para envio automático de vídeos manipulados por IAs?",
+  edt: "Quais as principais ferramentas que você utiliza para editar ou ajustar os vídeos gerados por IAs?",
+  txt: "Descreva pontos críticos dos seus padrões de roteiração para geração de vídeos com IAs automáticas",
+  ...aiVdGeneralKeys,
+});
+export const llmGeneralKeys = ObjectHelper.deepFreeze({
+  lan: "Em que idiomas você costuma interagir com LLMs?",
+  val: "Com que frequência você considera que as LLMs trazem retornos inadequados ou insatisfatórios?",
+  col: "Descreva, de forma geral, os seus principais casos de uso (possíveis ou em prática) de LLMs na rotina de trabalho",
+});
+export const llmBeginnerKeys = ObjectHelper.deepFreeze({
+  use: "Qual é o seu nível de experiência interagindo com LLMs (ChatGPT, Claude, DeepSeek, etc.)?",
+  sec: "Você mascara dados sensíveis (Chaves de API, Senhas, Dados pessoais) em prompts?",
+  ...llmGeneralKeys,
+});
+export const llmIntermediateKeys = ObjectHelper.deepFreeze({
+  ...llmGeneralKeys,
+  ext: "Com que frequência você solicita para que as LLMs proceseam dados diretamente em formatos de imagens bitmap (.png, .jpeg) ou PDFs?",
+  stp: "Descreva, de forma geral, as principais diferenças na forma como você solicita prompts para modelos baseados em chain-of-thought (ChatGPT o1, DeepSeek R1) vs. outras famílias de modelos",
+});
+export const llmExpertKeys = ObjectHelper.deepFreeze({
+  ...llmGeneralKeys,
+  fin: "Quais destas práticas você adota para realizar o refinamento de resultados de prompts ao iniciar uma sessão com uma LLM?",
+  int: "Você possui LLMs integradas em sistemas da sua rotina de trabalho, para uso de terceiros (ex.: como chatbots)?",
+  mlt: "Você já participou ativamente do treinamento (aprendizado de máquina) de LLMs, seja no desenvolvimento direto ou estabelecimento de parâmetros?",
+  ext: "Com que frequência você solicita para que as LLMs proceseam dados diretamente em formatos de imagens bitmap (.png, .jpeg) ou PDFs?",
+});
 export const eaDocsKeys = withFrozenLibreLabel(
   {
     beginner: {
@@ -1606,28 +1746,6 @@ export const eaSsKeys = withFrozenLibreLabel(
   },
   "spreadSheets"
 );
-export const fmGeneralKeys = ObjectHelper.deepFreeze({
-  tpl: "Com que frequência você utiliza templates prontos para elaborar questionários?",
-  rsp: "Quais são suas formas preferenciais de salvar dados de um formulário?",
-  emb: "Quais destas técnicas você utiliza com mais frequência para analisar resultados aglomerados por diversas submissões de um formulário?",
-  plt: "Quais destas ferramentas você utiliza para construção de formulários?",
-  slc: "Descreva livremente seu critério para escolher entre múltipla escolha (dropdowns, rádios, checkboxes) ou respostas paragrafadas",
-});
-export const fmBeginnerKeys = ObjectHelper.deepFreeze({
-  beginner: {
-    crt: "Qual é o seu nível de experiência criando formulários para coleta de dados?",
-    ...fmGeneralKeys,
-  },
-});
-export const fmIntermediateKeys = ObjectHelper.deepFreeze({
-  ...fmGeneralKeys,
-  aut: "Como você configura para envio de notificações ou respostas?",
-  api: "Com que frequência você integra formulários a APIs para coleta ou envio de dados?",
-});
-export const fmExpertKeys = ObjectHelper.deepFreeze({
-  ...fmGeneralKeys,
-  dsh: "Como você conecta formulários a dashboards para relatórios em tempo real?",
-});
 export const eaFmKeys = withFrozenLibreLabel(
   {
     beginner: {
@@ -1643,27 +1761,6 @@ export const eaFmKeys = withFrozenLibreLabel(
   },
   "formBuilders"
 );
-export const csGeneralKeys = ObjectHelper.deepFreeze({
-  syn: "Quais destas plaformas de armazenamento em nuvem você tem preferência em utilizar?",
-  shr: "Quais são suas formas preferenciar de habilitar o compartilhamento de arquivos em nuvem com outras colaboradores?",
-  org: "Descreva seus critérios para organizar pastas e arquivos armazenados em nuvem (ex.: Padrão de nomenclatura, Lógicas de Separação, etc.)",
-});
-export const csBeginnerKeys = ObjectHelper.deepFreeze({
-  upl: "Qual é o seu nível de experiência em enviar arquivos para armazenamento em nuvem?",
-  ...csGeneralKeys,
-  acc: "Você já configurou permissões básicas (somente leitura, edição, tipos de restrição) para arquivos em nuvem?",
-});
-export const csIntermediateKeys = ObjectHelper.deepFreeze({
-  ...csGeneralKeys,
-  ver: "Como você lida com controle de versões para evitar perda de dados?",
-  bck: "Com que frequência você executa backups de pastas ou arquivos importantes para nuvens?",
-  sch: "Quais critérios você utiliza para garantir conformidade com normas de gestão de dados compartilhados (ex.: LGPD) quando trabalhando em nuvens?",
-});
-export const csExpertKeys = ObjectHelper.deepFreeze({
-  ...csGeneralKeys,
-  scp: "Quais destas tecnologias você utiliza para automatizar procedimentos de gestão, controle e governança de dados em nuvem?",
-  sch: "Quais critérios você utiliza para garantir conformidade com normas de gestão de dados compartilhados (ex.: LGPD) quando trabalhando em nuvens?",
-});
 export const eaCsKeys = withFrozenLibreLabel(
   {
     beginner: {
@@ -1789,25 +1886,13 @@ export const eaPlnKeys = withFrozenLibreLabel(
 export const eaAiAdKeys = withFrozenLibreLabel(
   {
     beginner: {
-      rec: "Em que situações você utiliza ferramentas de IA generativa (ex.: clonagem de voz) para criar áudios simples ou recados?",
-      mic: "Você ajusta a configuração do microfone ao usar soluções de síntese de voz ou clonagem vocal?",
-      fmt: "Como você converte formatos de áudio (ex.: WAV -> MP3) quando a IA gera o arquivo e precisa compartilhar?",
-      ply: "De que forma você reproduz e avalia a qualidade de áudios gerados pela IA antes de distribuí-los?",
-      shr: "Você compartilha áudios sintetizados pela IA? Quais plataformas ou políticas de acesso costuma usar?",
+      ...aiAdBeginnerKeys,
     },
     intermediate: {
-      dsp: "Como você aplica filtros ou efeitos (ex.: redução de ruído) após a IA criar ou modificar um áudio?",
-      net: "Você encontra problemas de latência ou rede ao enviar/receber áudios gerados por IA em serviços online?",
-      mix: "Em que frequência você mescla faixas de áudio humano com conteúdo de voz ou música gerada por IA?",
-      stp: "Você documenta o passo a passo (drivers, plugins) para configurar e utilizar soluções de IA na criação de áudio?",
-      adv: "Como você soluciona problemas de entonação ou timing quando várias faixas geradas por IA são combinadas em um único projeto?",
+      ...aiAdIntermediateKeys,
     },
     expert: {
-      enc: "Como você protege e criptografa áudios confidenciais gerados por IA (ex.: reuniões executivas sintetizadas)?",
-      api: "Em que nível você integra APIs avançadas de TTS ou clonagem de voz em seus fluxos de trabalho administrativos?",
-      dsp: "Você customiza parâmetros de DSP (equalização, compressão) para adequar áudios de IA a padrões corporativos?",
-      adv: "Com que frequência você configura placas de som dedicadas ou setups profissionais para otimizar a geração de áudio via IA?",
-      big: "Você manipula lotes extensos de áudios gerados por IA (ex.: podcasts sintéticos) e gera insights ou relatórios automáticos?",
+      ...aiAdExpertKeys,
     },
   },
   "audio"
@@ -1815,25 +1900,13 @@ export const eaAiAdKeys = withFrozenLibreLabel(
 export const eaAiImgKeys = withFrozenLibreLabel(
   {
     beginner: {
-      vie: "Como você gera e organiza imagens criadas por IA (ex.: Midjourney, DALL·E) em pastas ou galerias simples?",
-      edc: "Você faz edições breves (recortar, girar) após a IA gerar a imagem, usando ferramentas básicas (Paint, Preview)?",
-      cpt: "Com que frequência você solicita capturas de tela ou referências para a IA aprimorar o resultado visual?",
-      cmp: "Você converte formatos (ex.: PNG -> JPG) depois que a IA produz a imagem, para otimizar tamanho ou qualidade?",
-      shr: "De que modo você compartilha imagens geradas por IA com colegas (links, anexos) e controla a distribuição?",
+      ...aiImgBeginnerKeys,
     },
     intermediate: {
-      lay: "Você lida com camadas (layers) ao ajustar detalhes em editores intermediários (GIMP) de uma imagem criada por IA?",
-      cor: "Como você faz correções de cor ou iluminação em imagens geradas por IA, mantendo consistência visual?",
-      net: "Em que frequência você hospeda criações de IA em plataformas colaborativas (ex.: Drive, Imgur) para feedback?",
-      ret: "Você faz retoques (ex.: remover imperfeições) em criações da IA, unindo o trabalho humano + geração automática?",
-      sec: "Qual sua prática para ocultar dados sensíveis (blur) ou metadados de imagens geradas por IA antes de compartilhar?",
+      ...aiImgIntermediateKeys,
     },
     expert: {
-      ani: "Como você gera animações curtas (ex.: GIFs ou vídeos) a partir de sequências de imagens criadas por IA?",
-      spt: "Você organiza sprites ou atlases de elementos (ex.: ícones gerados) para uso em aplicativos corporativos?",
-      prf: "Em que frequência você otimiza imagens de alta resolução criadas por IA para sites ou sistemas exigentes?",
-      cad: "Como você lida com IA para gerar vetores (SVG) ou elementos CAD e integrá-los a fluxos corporativos?",
-      big: "Você automatiza lotes massivos de geração/edição usando scripts (ex.: ImageMagick) e IA, gerando relatórios de volume?",
+      ...aiImgExpertKeys,
     },
   },
   "image"
@@ -1867,25 +1940,17 @@ export const eaAiVdKeys = withFrozenLibreLabel(
 export const eaLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
-      use: "Você já utilizou chatbots de IA (ChatGPT, etc.) para perguntas gerais ou explicações simples?",
-      lan: "Em que idioma você costuma conversar com a IA e se sente confortável (PT/EN)?",
-      val: "Como você verifica se a resposta gerada pela IA não contém erros graves ou omissões?",
-      sec: "Você evita colocar dados sensíveis (senhas, PII) em prompts? (Sim/Não)",
-      col: "De que forma você compartilha a resposta da IA com colegas ou registra no seu workflow?",
+      ...llmBeginnerKeys,
     },
     intermediate: {
-      sys: "Você utiliza prompts com mensagens de sistema ou persona para guiar respostas da IA?",
-      stp: "Como você elabora prompts em etapas (chain-of-thought) para obter maior precisão?",
-      cor: "Em que frequência você corrige a IA apontando erros e melhorando o prompt subsequente?",
-      scp: "Você integra a IA em scripts ou miniaplicativos (ex.: API calls) para automatizar tarefas?",
-      ext: "Você faz extração de trechos relevantes (summary) e registra em algum local de conhecimento?",
+      ...llmIntermediateKeys,
+      mon: "Como você considera que as LLMs podem beneficar suas práticas de monitoramento de equipes e designação de tarefas?",
+      doc: "Com que frequência você utiliza LLMs para produzir ou analisar relatórios e documentos corporativos?",
     },
     expert: {
-      fin: "Como você lida com fine-tuning ou custom instructions em modelos mais avançados (ex.: LLaMA)?",
-      aud: "Você registra logs de prompts/respostas em sistemas e revisa para compliance ou melhoria?",
-      int: "Em que forma você integra a IA a pipelines automáticos (ex.: gera rascunhos, sugere relatórios)?",
-      adv: "Você manipula prompts extensos ou refinados para respostas muito específicas ou técnicas?",
-      pol: "Qual sua política para governança (LGPD, compliance) e exclusão de dados sensíveis enviados à IA?",
+      ...llmExpertKeys,
+      mon: "Como você considera que as LLMs podem beneficar suas práticas de monitoramento de equipes e designação de tarefas?",
+      doc: "Com que frequência você utiliza LLMs para produzir ou analisar relatórios e documentos corporativos?",
     },
   },
   "llms"
@@ -2104,25 +2169,13 @@ export const fnPlnKeys = withFrozenLibreLabel(
 export const fnAiAdKeys = withFrozenLibreLabel(
   {
     beginner: {
-      trn: "Como você utiliza IA para transformar relatórios financeiros em áudio (ex.: TTS) de forma simples?",
-      gen: "Você gera áudios com IA para atualizações rápidas de status financeiro ou comunicados internos?",
-      cln: "Você considera útil o uso de voice cloning com IA para narrar treinamentos contábeis?",
-      spd: "Como a IA ajuda a ajustar velocidade ou entonação em áudios explicativos sobre finanças?",
-      exm: "De que forma você usa IA para criar exemplos de fluxo financeiro em áudios curtos?",
+      ...aiAdBeginnerKeys,
     },
     intermediate: {
-      ent: "Você personaliza entonações de TTS para termos contábeis ou fiscais com a ajuda de IA?",
-      wfl: "Como você integra áudios gerados por IA em fluxos de trabalho financeiro (ex.: anexos em relatórios)?",
-      edi: "Você edita áudios criados por IA para remover ruídos ou ajustar detalhes?",
-      tdb: "De que forma você armazena áudios gerados com IA junto a documentos financeiros para referência?",
-      mul: "Como a IA auxilia na combinação de múltiplos locutores em um único áudio financeiro?",
+      ...aiAdIntermediateKeys,
     },
     expert: {
-      sec: "Como você utiliza IA para criptografar e proteger áudios de consultoria financeira?",
-      scr: "De que forma você usa IA para gerar áudio dinâmico a partir de dados financeiros (ex.: cotações)?",
-      adv: "Você utiliza IA para narrar relatórios financeiros extensos automaticamente? Como?",
-      api: "Como você integra APIs de TTS ou voice cloning com ferramentas financeiras?",
-      lst: "Descreva uma situação em que áudios avançados gerados por IA ajudaram na tomada de decisão executiva.",
+      ...aiAdExpertKeys,
     },
   },
   "audio"
@@ -2130,25 +2183,13 @@ export const fnAiAdKeys = withFrozenLibreLabel(
 export const fnAiImgKeys = withFrozenLibreLabel(
   {
     beginner: {
-      add: "Você utiliza IA para inserir gráficos ou imagens em relatórios financeiros automaticamente?",
-      edi: "Como a IA ajuda a ajustar gráficos ou destacar resultados em relatórios financeiros?",
-      tmb: "Você gera miniaturas de gráficos financeiros automaticamente usando IA para apresentações?",
-      ext: "De que forma você utiliza IA para extrair dados de imagens, como OCR em notas fiscais?",
-      cmp: "Você usa IA para comparar gráficos de relatórios financeiros de períodos diferentes?",
+      ...aiImgBeginnerKeys,
     },
     intermediate: {
-      chl: "Como a IA auxilia na criação de colagens ou mosaicos de gráficos para relatórios visuais?",
-      tgo: "Você usa IA para anotar ou destacar linhas e informações críticas em gráficos financeiros?",
-      ocr: "Com que frequência você utiliza IA para extrair texto de documentos financeiros (ex.: notas, faturas)?",
-      pub: "De que forma a IA facilita a publicação de gráficos financeiros em sites ou intranets?",
-      pkg: "Você utiliza IA em ferramentas como Photoshop para ajustar e refinar gráficos de relatórios?",
+      ...aiImgIntermediateKeys,
     },
     expert: {
-      mlc: "Como você utiliza IA para detectar padrões em imagens financeiras, como gráficos ou relatórios?",
-      adv: "Você integra IA para extrair dados automaticamente de gráficos e integrá-los em planilhas?",
-      sec: "De que forma a IA protege imagens sensíveis, como prints de dashboards financeiros, contra acessos indevidos?",
-      dsp: "Como a IA ajuda a criar apresentações detalhadas combinando várias imagens financeiras?",
-      dif: "Você usa IA para identificar mudanças sutis entre duas versões de relatórios gráficos?",
+      ...aiImgExpertKeys,
     },
   },
   "image"
@@ -2182,25 +2223,16 @@ export const fnAiVdKeys = withFrozenLibreLabel(
 export const fnLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
-      chat: "Você já utilizou chatbots (ex.: ChatGPT) para tirar dúvidas sobre linguagem de vendas ou copiar termos comerciais?",
-      cor: "Com que frequência você pede correções ou reformulações de e-mails de prospecção para IA?",
-      gnr: "Você gera rascunhos de discursos ou pitches comerciais usando modelos de linguagem?",
-      sum: "Você utiliza IA para resumir relatórios longos de pipeline ou reuniões de vendas?",
-      tip: "Como você trata dados de clientes (nome, informações) quando usa LLMs, evitando expor detalhes confidenciais?",
+      ...llmBeginnerKeys,
     },
     intermediate: {
-      nlp: "Você já analisou feedback de clientes (ex.: reviews, e-mails) usando processamento de linguagem natural?",
-      prc: "De que maneira você cria prompts elaborados para a IA auxiliar em scripts de vendas?",
-      exc: "Você já pediu para IA gerar planilhas exemplares ou relatórios de funil automaticamente?",
-      doc: "Com que frequência você integra a IA para criação e padronização de documentos de propostas?",
-      pol: "Como você controla políticas de privacidade ao inserir dados de prospects no prompt?",
+      ...llmIntermediateKeys,
+      rel: "Como você considera que LLMs podem auxiliar diretamente na produção de relatórios e documentos financeiros?",
     },
     expert: {
-      fin: "Você já usou LLMs para prever vendas, estimar taxa de conversão ou analisar tendências do mercado?",
-      api: "Como você conecta APIs de IA a sistemas de CRM ou plataformas de e-mail marketing?",
-      adv: "Você treinou modelos específicos com dados de negociações passadas para orientação de pricing?",
-      aud: "De que forma você revisa e valida as respostas da IA, evitando sugestões comerciais inviáveis ou ilegais?",
-      sec: "Qual é sua prática de segurança (criptografia, limpeza de dados) ao enviar informações estratégicas para IA?",
+      ...llmExpertKeys,
+      ten: "Com que frequência você usa LLMs para prever vendas, estimar taxa de conversão ou analisar tendências do mercado?",
+      rel: "Como você considera que LLMs podem auxiliar diretamente na produção de relatórios e documentos financeiros?",
     },
   },
   "llms"
@@ -2413,25 +2445,13 @@ export const cmPlnKeys = withFrozenLibreLabel(
 export const cmAiAdKeys = withFrozenLibreLabel(
   {
     beginner: {
-      trn: "Você utiliza IA para transformar contratos ou documentos comerciais em áudios narrados para fácil consulta?",
-      gen: "Com que frequência você gera áudios via IA para comunicar atualizações sobre negociações ou contratos? (Sim/Não)",
-      adv: "Você já usou IA para criar áudios que explicam termos e condições de propostas comerciais?",
-      spd: "Como a IA ajuda a ajustar tom e velocidade de áudios para comunicações formais?",
-      exm: "Você utiliza IA para gerar exemplos práticos em áudio para instruir novos membros da equipe comercial?",
+      ...aiAdBeginnerKeys,
     },
     intermediate: {
-      ent: "Você usa IA para personalizar entonações em áudios para diferentes públicos comerciais (formal/informal)?",
-      edi: "Com que frequência você utiliza IA para melhorar a qualidade de áudios gravados, como reduzir ruídos?",
-      wfl: "Você automatiza o envio de áudios gerados por IA para clientes ou parceiros como parte do fluxo de negociações?",
-      mul: "Você utiliza IA para criar áudios simulando diálogos ou cenários de negociação?",
-      doc: "Como você utiliza IA para organizar e documentar áudios criados para reuniões ou contratos?",
+      ...aiAdIntermediateKeys,
     },
     expert: {
-      sec: "Você aplica criptografia a áudios sensíveis gerados por IA para proteger informações comerciais?",
-      scr: "Como você usa IA para criar áudios dinâmicos baseados em informações comerciais (ex.: valores de contratos)?",
-      adv: "Você integra IA para criar locuções profissionais que acompanhem documentos ou apresentações comerciais?",
-      api: "Como você conecta APIs de IA (TTS ou voice cloning) para automatizar áudios comerciais personalizados?",
-      cmp: "Você analisa métricas ou resultados de comunicações comerciais com áudios gerados por IA? Como?",
+      ...aiAdExpertKeys,
     },
   },
   "audio"
@@ -2439,25 +2459,13 @@ export const cmAiAdKeys = withFrozenLibreLabel(
 export const cmAiImgKeys = withFrozenLibreLabel(
   {
     beginner: {
-      add: "Você utiliza IA para gerar gráficos ou diagramas que acompanhem propostas comerciais?",
-      edi: "Como você usa IA para ajustar ou destacar informações importantes em imagens anexadas a documentos comerciais?",
-      tmb: "Você gera miniaturas de relatórios ou documentos com IA para apresentações rápidas?",
-      ext: "De que forma você utiliza IA para extrair informações de imagens de contratos ou faturas (OCR)?",
-      cmp: "Você compara versões de imagens ou gráficos comerciais usando IA para identificar diferenças?",
+      ...aiImgBeginnerKeys,
     },
     intermediate: {
-      chl: "Você usa IA para criar composições visuais de gráficos ou tabelas em relatórios comerciais?",
-      tgo: "Como você utiliza IA para anotar ou destacar automaticamente pontos importantes em imagens de propostas?",
-      ocr: "Você usa IA para digitalizar e organizar documentos físicos (ex.: contratos, acordos) regularmente?",
-      pub: "Como você utiliza IA para formatar e publicar imagens ou gráficos comerciais em sistemas internos?",
-      pkg: "Você utiliza ferramentas de IA para ajustar designs de documentos comerciais, como tabelas visuais?",
+      ...aiImgIntermediateKeys,
     },
     expert: {
-      mlc: "Como você usa IA para classificar ou etiquetar imagens de documentos comerciais para organização?",
-      adv: "Você integra IA para detectar e destacar termos críticos em imagens de contratos e relatórios?",
-      sec: "Como você utiliza IA para proteger imagens sensíveis em propostas comerciais contra acessos não autorizados?",
-      dsp: "Você cria painéis visuais com IA para apresentar resultados ou previsões comerciais?",
-      dif: "Como a IA auxilia na identificação de mudanças em documentos visuais entre versões de propostas ou contratos?",
+      ...aiImgExpertKeys,
     },
   },
   "image"
@@ -2488,28 +2496,23 @@ export const cmAiVdKeys = withFrozenLibreLabel(
   },
   "video"
 );
-export const cmLlmsKeys = withFrozenLibreLabel(
+export const cmLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
-      chat: "Você já utilizou chatbots (ex.: ChatGPT) para tirar dúvidas sobre linguagem de vendas ou copiar termos comerciais?",
-      cor: "Com que frequência você pede correções ou reformulações de e-mails de prospecção para IA?",
-      gnr: "Você gera rascunhos de discursos ou pitches comerciais usando modelos de linguagem?",
-      sum: "Você utiliza IA para resumir relatórios longos de pipeline ou reuniões de vendas?",
-      tip: "Como você trata dados de clientes (nome, informações) quando usa LLMs, evitando expor detalhes confidenciais?",
+      ...llmBeginnerKeys,
+      tip: "De que maneira você considera que LLMs podem ajudar a tratar, filtrar e organizados dados de clientes (nome, informações)?",
     },
     intermediate: {
-      nlp: "Você já analisou feedback de clientes (ex.: reviews, e-mails) usando processamento de linguagem natural?",
-      prc: "De que maneira você cria prompts elaborados para a IA auxiliar em scripts de vendas?",
-      exc: "Você já pediu para IA gerar planilhas exemplares ou relatórios de funil automaticamente?",
-      doc: "Com que frequência você integra a IA para criação e padronização de documentos de propostas?",
-      pol: "Como você controla políticas de privacidade ao inserir dados de prospects no prompt?",
+      ...llmIntermediateKeys,
+      pol: "Quais destes pontos críticos a cerca de políticas em relações comerciais você dá prioridade quando utilizando LLMs?",
+      nlp: "Com que frequência você analisa mensagens e documentos extensos de clientes usando LLMs?",
+      doc: "Com que frequência você utiliza LLMs para produzir relatórios e documentos corporativos?",
     },
     expert: {
-      fin: "Você já usou LLMs para prever vendas, estimar taxa de conversão ou analisar tendências do mercado?",
-      api: "Como você conecta APIs de IA a sistemas de CRM ou plataformas de e-mail marketing?",
-      adv: "Você treinou modelos específicos com dados de negociações passadas para orientação de pricing?",
-      aud: "De que forma você revisa e valida as respostas da IA, evitando sugestões comerciais inviáveis ou ilegais?",
-      sec: "Qual é sua prática de segurança (criptografia, limpeza de dados) ao enviar informações estratégicas para IA?",
+      ...llmExpertKeys,
+      api: "Com que frequência você conecta APIs de LLMs a sistemas de CRM ou plataformas de e-mail marketing?",
+      adv: "Você já treinou modelos específicos com dados de negociações passadas para orientação de pricing?",
+      prv: "Com que frequência você usa LLMs para prever vendas, estimar taxa de conversão ou analisar tendências do mercado?",
     },
   },
   "llms"
@@ -2529,7 +2532,7 @@ export const comercialAddQuestions =
       ["audio", cmAiAdKeys],
       ["image", cmAiImgKeys],
       ["video", cmAiVdKeys],
-      ["llms", cmLlmsKeys],
+      ["llms", cmLlmKeys],
     ]),
   ]);
 export const mktDocsKeys = withFrozenLibreLabel(
@@ -2726,25 +2729,13 @@ export const mktPlnKeys = withFrozenLibreLabel(
 export const mktAiAdKeys = withFrozenLibreLabel(
   {
     beginner: {
-      trn: "Você utiliza IA para criar áudios personalizados com jingles ou scripts promocionais?",
-      gen: "Com que frequência você envia áudios gerados automaticamente por IA para clientes? (Sim/Não)",
-      adv: "Você comenta campanhas usando IA para criar áudios rápidos e com alta clareza?",
-      spd: "Como você ajusta automaticamente a velocidade ou tom de áudios promocionais com IA?",
-      exm: "Você já utilizou IA para gerar áudios de persuasão para leads ou instruções internas?",
+      ...aiAdBeginnerKeys,
     },
     intermediate: {
-      ent: "Você usa IA para personalizar entonação de voz para campanhas específicas?",
-      edi: "Com que frequência você utiliza IA para editar trechos de áudio (corte, música de fundo)?",
-      wfl: "Você automatiza fluxos de envio de áudios gerados por IA em campanhas de nutrição de leads?",
-      mul: "Como você usa IA para criar áudios colaborativos (múltiplos locutores) em marketing?",
-      doc: "De que forma você utiliza IA para organizar e documentar versões de áudios de campanhas?",
+      ...aiAdIntermediateKeys,
     },
     expert: {
-      sec: "Você utiliza IA para proteger áudios promocionais estratégicos com criptografia?",
-      scr: "Como você gera áudios dinâmicos com IA para campanhas baseados em dados reais?",
-      adv: "Quais ferramentas de IA de voz você utiliza para criar locuções promocionais? Cite um exemplo.",
-      api: "Você integra APIs de IA de áudio (TTS) com ferramentas de automação de marketing?",
-      cmp: "Quais insights você extrai de métricas em campanhas com e sem áudios gerados por IA?",
+      ...aiAdExpertKeys,
     },
   },
   "audio"
@@ -2752,25 +2743,13 @@ export const mktAiAdKeys = withFrozenLibreLabel(
 export const mktAiImgKeys = withFrozenLibreLabel(
   {
     beginner: {
-      add: "Você utiliza IA para inserir automaticamente logos ou banners em posts de marketing?",
-      edi: "Quais ferramentas de IA você usa para edições simples de imagens para redes sociais?",
-      tmb: "Você gera miniaturas automaticamente com IA para planejamento visual de campanhas?",
-      ext: "Com que frequência você usa IA para extrair texto de flyers ou panfletos impressos?",
-      cmp: "Você utiliza IA para comparar banners promocionais e decidir qual versão é mais eficiente?",
+      ...aiImgBeginnerKeys,
     },
     intermediate: {
-      chl: "Como você usa IA para criar montagens visuais (mosaicos) em campanhas maiores?",
-      tgo: "De que forma você aplica IA para realçar detalhes em imagens promocionais?",
-      ocr: "Você usa IA para digitalizar imagens com texto e integrá-las em relatórios?",
-      pub: "Quais ferramentas de IA você usa para publicar imagens otimizadas em CMS ou redes sociais?",
-      pkg: "Você usa IA em plataformas intermediárias (ex.: Canva) para designs mais profissionais?",
+      ...aiImgIntermediateKeys,
     },
     expert: {
-      mlc: "Como você utiliza IA para analisar e etiquetar imagens de campanhas automaticamente?",
-      adv: "Quais ferramentas de IA você integra para insights visuais (ex.: reconhecimento de objetos)?",
-      sec: "Você usa IA para proteger imagens estratégicas (ex.: protótipos de campanhas futuras)?",
-      dsp: "Como você utiliza IA para criar painéis visuais antes/depois em relatórios de marketing?",
-      dif: "Você usa IA para detectar alterações sutis entre versões de imagens em campanhas?",
+      ...aiImgExpertKeys,
     },
   },
   "image"
@@ -2801,28 +2780,22 @@ export const mktAiVdKeys = withFrozenLibreLabel(
   },
   "video"
 );
-export const mktLlmsKeys = withFrozenLibreLabel(
+export const mktLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
-      chat: "Você já utilizou chatbots (ex.: ChatGPT) para gerar ideias de slogans ou chamadas de marketing?",
-      cor: "Com que frequência você pede reformulações de texto publicitário para IA?",
-      gnr: "Você gera rascunhos de posts ou e-mails de divulgação usando modelos de linguagem?",
-      sum: "Você utiliza IA para resumir resultados de campanhas longas?",
-      tip: "Como você evita expor dados sensíveis (ex.: ROI exato, nomes de clientes) em prompts de IA?",
+      ...llmBeginnerKeys,
     },
     intermediate: {
-      nlp: "Você analisa sentimentos em feedback de clientes ou reviews usando NLP?",
-      prc: "De que forma você cria prompts detalhados para a IA gerar copies mais assertivas?",
-      exc: "Você já pediu para IA criar planilhas de budget ou simular projeções de campanha?",
-      doc: "Qual é sua rotina de integrar IA na produção de documentos (ex.: relatórios de performance)?",
-      pol: "Você segue alguma política de segurança ao enviar dados de leads para um modelo de linguagem?",
+      ...llmIntermediateKeys,
+      pol: "Com que frequência você utiliza LLMs para intepretar e resumir dados de relatórios e feedback?",
+      nlp: "Você utiliza LLMs para sumarizar estatísticas de feedback de clientes ou reviews usando?",
+      exc: "Você utiliza LLMs para criar planilhas de budget ou simular projeções de campanha?",
     },
     expert: {
-      fin: "Você aplica IA para prever engajamento ou taxa de conversão em anúncios?",
-      api: "Como você integra APIs de LLM para automatizar criação de conteúdo ou chatbots de marketing?",
-      adv: "Já treinou modelos com histórico de campanhas, gerando sugestões personalizadas de copy?",
-      aud: "De que forma você audita as respostas de IA para evitar incoerências ou violações de marca?",
-      sec: "Qual sua prática de criptografia ou sanitização de dados antes de enviar prompts com informações estratégicas?",
+      ...llmExpertKeys,
+      prv: "Você aplica IA para prever engajamento ou taxa de conversão em anúncios?",
+      adv: "Você já treinou modelos com histórico de campanhas, gerando sugestões personalizadas de copy?",
+      api: "Qual é o seu nível de experiência integrando APIs de LLMs para automatizar criação de conteúdo ou chatbots de marketing?",
     },
   },
   "llms"
@@ -2842,7 +2815,7 @@ export const marketingAddQuestions =
       ["audio", mktAiAdKeys],
       ["image", mktAiImgKeys],
       ["video", mktAiVdKeys],
-      ["llms", mktLlmsKeys],
+      ["llms", mktLlmKeys],
     ]),
   ]);
 export const stN1DocsKeys = withFrozenLibreLabel(
@@ -3043,25 +3016,13 @@ export const stN1PlnKeys = withFrozenLibreLabel(
 export const stN1AiAdKeys = withFrozenLibreLabel(
   {
     beginner: {
-      rec: "Como você utiliza ferramentas de IA para criar áudios simples a partir de texto (ex.: relatórios, lembretes)?",
-      tts: "Você auxilia usuários a configurarem IA de TTS (text-to-speech) para personalizar mensagens automáticas? (Sim/Não)",
-      syn: "Com que frequência você usa IA para sincronizar áudio com apresentações ou vídeos automaticamente?",
-      cmt: "Você já utilizou IA para editar trechos de áudio (ex.: cortar silêncios ou ajustar ritmo)?",
-      dev: "De que forma você sugere ferramentas de IA para solucionar problemas iniciais com áudio (ex.: drivers, ruídos)?",
+      ...aiAdBeginnerKeys,
     },
     intermediate: {
-      eff: "Você recomenda IA para aplicação de efeitos (ex.: redução de ruído, equalização) em áudios de suporte?",
-      plg: "Quais plugins baseados em IA você indica para edição avançada de áudio? (Audacity, Descript, etc.)",
-      str: "Como você usa IA para transcrever ou melhorar a qualidade de streams internos de áudio?",
-      arr: "Você já utilizou IA para gerar áudio automatizado com base em scripts ou macros? (Sim/Não)",
-      mix: "Como você combina IA para mixagem automática de várias faixas de áudio ou vozes?",
+      ...aiAdIntermediateKeys,
     },
     expert: {
-      adv: "Qual sua experiência com IA avançada para troubleshooting de áudio (ex.: ajustes de latência, sample rate)?",
-      api: "Você integra APIs de IA de áudio (ex.: ElevenLabs, Descript) para gerar ou personalizar vozes? Descreva um caso.",
-      dsp: "Você ensina o uso de IA para configurar DSP avançado, como equalizadores ou compressores? (Sim/Não)",
-      sec: "Como você protege áudios sensíveis gerados por IA contra acessos indevidos ou vazamentos?",
-      hrd: "Você recomenda soluções baseadas em IA para otimização de hardware de áudio, como mixers ou microfones?",
+      ...aiAdExpertKeys,
     },
   },
   "audio"
@@ -3069,25 +3030,13 @@ export const stN1AiAdKeys = withFrozenLibreLabel(
 export const stN1AiImgKeys = withFrozenLibreLabel(
   {
     beginner: {
-      vie: "Como você utiliza IA para organizar e buscar imagens automaticamente em pastas ou galerias?",
-      edb: "Você já usou ferramentas de IA para edições rápidas (recorte, ajuste de brilho) de imagens?",
-      con: "Com que frequência você utiliza IA para converter formatos de imagem automaticamente (ex.: PNG para JPG)?",
-      upl: "Você auxilia usuários a subir imagens geradas por IA para plataformas internas? (Sim/Não)",
-      cat: "Você recomenda ferramentas de IA para classificar automaticamente imagens em categorias? Como?",
+      ...aiImgBeginnerKeys,
     },
     intermediate: {
-      fix: "Como você utiliza IA para ajustes intermediários em imagens (ex.: remoção de olhos vermelhos, correção de cor)?",
-      lay: "Você usa IA para gerenciar camadas e composições em editores (ex.: GIMP, Canva) em nível intermediário?",
-      com: "Quais ferramentas de IA você sugere para compactação inteligente de imagens com alta preservação de qualidade?",
-      col: "Você utiliza IA para gerenciar perfis de cor (sRGB, CMYK) e ajustes automáticos? (Sim/Não)",
-      inc: "De que forma você recomenda IA para corrigir inconsistências em imagens causadas por drivers ou impressoras?",
+      ...aiImgIntermediateKeys,
     },
     expert: {
-      psd: "Você integra IA em editores avançados (ex.: Photoshop) para automação de ajustes em projetos complexos?",
-      spt: "Como você orienta o uso de scripts com IA para processamento em lote (ex.: renomear, aplicar filtros)?",
-      vsn: "De que forma você utiliza IA para versionamento e controle de alterações em bibliotecas de imagens?",
-      ret: "Você recomenda IA para retoques avançados (ex.: remoção de objetos ou background) em suporte técnico?",
-      cat: "Como você implementa IA para catalogação avançada de imagens com metadados e busca eficiente?",
+      ...aiImgExpertKeys,
     },
   },
   "image"
@@ -3118,32 +3067,28 @@ export const stN1AiVdKeys = withFrozenLibreLabel(
   },
   "video"
 );
-export const stN1LlmsKeys = withFrozenLibreLabel(
+export const stLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
-      qna: "Como você orienta usuários a consultarem chatbots básicos (ex.: ChatGPT) para dúvidas pontuais?",
-      lan: "Você auxilia na escolha de linguagem (PT-BR, EN) para melhores resultados em LLMs básicos?",
-      fil: "Em que frequência você ensina a filtrar respostas ou avaliar se o conteúdo é confiável?",
-      cty: "Você lembra usuários sobre citar fontes ou verificar a citação do LLM? (Sim/Não)",
-      mem: "De que forma você explica a limitação de contexto (token limit) em chats longos?",
+      ...llmBeginnerKeys,
+      qna: "Quais destas abordagens você utiliza para orientar usuários de LLMs?",
     },
     intermediate: {
-      sys: "Como você utiliza prompts com mensagens de sistema ou persona para guiar respostas intermediárias?",
-      stp: "Você instrui sobre prompt chaining ou passos a passos para LLMs um pouco mais avançados?",
-      cor: "Qual sua abordagem para corrigir outputs incorretos ou reorientar o LLM? (ex.: re-prompt)",
-      api: "Você integra APIs de LLM (ex.: GPT) a pequenos scripts ou apps para tarefas N1? (Sim/Não)",
-      seg: "Como você lida com confidencialidade ou segurança de dados sensíveis ao usar LLMs?",
+      ...llmIntermediateKeys,
+      cor: "Quais suas abordagens para sugerir a correção de outputs incorretos ou reorientar o LLM?",
+      api: "Você integra APIs de LLM a pequenos scripts ou apps para tarefas de suporte técnico?",
     },
     expert: {
-      ftn: "Você já orienta fine-tuning ou custom LLM em ambientes corporativos? Explique um caso.",
-      pri: "O quanto você prioriza segurança e compliance (LGPD, etc.) em prompts ou dados sensíveis?",
-      cbt: "Você cria chatbots avançados integrados ao ERP/CRM? Em que frequência no N1?",
-      eva: "Como você avalia a qualidade das respostas e faz logging das interações para auditoria?",
-      prg: "Você integra LLM com pipelines DevOps (CI/CD) ou workflows de alto nível? Descreva brevemente.",
+      ...llmExpertKeys,
+      ftn: "Quais destas abordagens você utiliza para orientar o fine-tuning de LLMs em ambientes corporativos?",
+      cbt: "Você tem experiência criando chatbots com APIs de LLMs integrados a Plataformas empresariais?",
     },
   },
   "llms"
 );
+export const stN1LlmKeys = ObjectHelper.deepFreeze({
+  ...stLlmKeys,
+});
 export const suporteTecnicoN1AddQuestions =
   ObjectHelper.deepFreeze([
     "suporteTecnicoN1",
@@ -3159,7 +3104,7 @@ export const suporteTecnicoN1AddQuestions =
       ["audio", stN1AiAdKeys],
       ["image", stN1AiImgKeys],
       ["video", stN1AiVdKeys],
-      ["llms", stN1LlmsKeys],
+      ["llms", stN1LlmKeys],
     ]),
   ]);
 export const stN2DocsKeys = withFrozenLibreLabel(
@@ -3343,25 +3288,13 @@ export const stN2PlnKeys = withFrozenLibreLabel(
 export const stN2AiAdKeys = withFrozenLibreLabel(
   {
     beginner: {
-      rec: "Como você utiliza IA para gravar e organizar áudios de suporte técnico de forma automatizada?",
-      ply: "Você recomenda IA para corrigir problemas de reprodução de áudio automaticamente? (Sim/Não)",
-      cpt: "Você usa IA para cortar e unir trechos de áudio para tutoriais? (Sim/Não)",
-      spk: "Como você aplica IA para remover eco ou ruído em reuniões gravadas?",
-      fmt: "Você utiliza IA para converter automaticamente formatos de áudio para compatibilidade?",
+      ...aiAdBeginnerKeys,
     },
     intermediate: {
-      edg: "Quais ferramentas de IA você recomenda para equalização e limpeza de áudio em tutoriais?",
-      mix: "Como você utiliza IA para combinar trilhas de áudio (ex.: música + voz) de forma eficiente?",
-      net: "Você usa IA para diagnosticar e resolver latências em transmissões de áudio?",
-      hwd: "Quais soluções de IA você indica para configurar headsets ou interfaces USB automaticamente?",
-      stp: "Como você utiliza scripts de IA para automatizar conversões ou ajustes de volume?",
+      ...aiAdIntermediateKeys,
     },
     expert: {
-      dsp: "Você usa IA para configurar DSP avançado em suporte técnico? Cite um exemplo.",
-      bru: "Como você utiliza IA para corrigir distorções graves em capturas de áudio corporativo?",
-      api: "Quais APIs de IA você usa para manipulação ou transcrição de áudios técnicos?",
-      adv: "Como você utiliza IA para monitorar qualidade de áudio em transmissões ao vivo?",
-      enc: "Você usa IA para ajustar codecs e configurar streaming de áudio avançado?",
+      ...aiAdExpertKeys,
     },
   },
   "audio"
@@ -3369,25 +3302,13 @@ export const stN2AiAdKeys = withFrozenLibreLabel(
 export const stN2AiImgKeys = withFrozenLibreLabel(
   {
     beginner: {
-      edc: "Como você utiliza IA para edições básicas de imagens em suporte técnico? (ex.: recorte, ajuste de brilho)",
-      frq: "Com que frequência você usa IA para converter formatos de imagem automaticamente?",
-      cor: "Você usa IA para ajustar brilho ou contraste em imagens enviadas por usuários?",
-      scn: "Como você utiliza IA para processar digitalizações (ex.: OCR de documentos técnicos)?",
-      shr: "Você recomenda IA para organizar e compartilhar imagens em plataformas internas?",
+      ...aiImgBeginnerKeys,
     },
     intermediate: {
-      lay: "Como você aplica IA para lidar com camadas e objetos em editores intermediários (ex.: GIMP)?",
-      seg: "Você utiliza IA para seleção inteligente e remoção de fundo em imagens?",
-      frm: "Você usa IA para corrigir perfis de cor (RGB, CMYK) em imagens de suporte técnico?",
-      cmp: "Como você aplica IA para compressão de imagens mantendo alta qualidade?",
-      ani: "Você utiliza IA para criar GIFs ou animações simples de procedimentos técnicos?",
+      ...aiImgIntermediateKeys,
     },
     expert: {
-      adv: "Quais ferramentas de IA você utiliza para resolver problemas avançados em renderização de imagens?",
-      ret: "Você usa IA para retoques profissionais em imagens técnicas? Cite um caso.",
-      scr: "Como você automatiza processamentos de imagem em lote (ex.: redimensionar, aplicar marca d’água) com IA?",
-      fil: "Você utiliza IA para aplicar filtros avançados em imagens de suporte técnico?",
-      cat: "Como você organiza bibliotecas de imagens técnicas com metadados e busca avançada baseada em IA?",
+      ...aiImgExpertKeys,
     },
   },
   "image"
@@ -3418,32 +3339,9 @@ export const stN2AiVdKeys = withFrozenLibreLabel(
   },
   "video"
 );
-export const stN2LlmsKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      cha: "Como você esclarece a usuários básicos o funcionamento de chatbots de IA (ex.: ChatGPT) para perguntas gerais?",
-      prm: "Você orienta sobre prompts curtos e claros para obter melhores respostas?",
-      cpy: "De que modo você alerta sobre checagem de copy/paste e possíveis 'alucinações' da IA?",
-      doc: "Com que frequência você registra em uma base de conhecimento local as boas soluções geradas pela LLM?",
-      pol: "Você mantém alguma política para perguntas sensíveis ou confidenciais no chatbot? (Sim/Não)",
-    },
-    intermediate: {
-      ctx: "Você define contextos intermediários (ex.: system messages, role playing) para guiar respostas específicas?",
-      sec: "Em que nível você filtra dados sensíveis para não serem inseridos na LLM por engano?",
-      col: "Como você colabora com outro time N2 para validar se as respostas da IA estão corretas tecnicamente?",
-      ext: "Você integra LLMs com apps internos (via API) para automações pontuais? (Sim/Não)",
-      stp: "Em que frequência você recomenda splitted prompts ou cadeias de raciocínio para maior precisão?",
-    },
-    expert: {
-      fin: "Como você lida com fine-tuning ou custom instructions em modelos corporativos de IA?",
-      cbt: "Você constrói chatbots complexos integrados a bases de conhecimento internas, resolvendo falhas de indexação?",
-      mon: "De que forma você audita logs de conversas, garantindo compliance (LGPD) e excluindo dados sensíveis?",
-      rlh: "Você já configura RLHF (Reinforcement Learning from Human Feedback) ou métodos equivalentes? Explique.",
-      mig: "Em que frequência você migra prompts ou dados de uma LLM para outra, evitando perda de contexto?",
-    },
-  },
-  "llms"
-);
+export const stN2LlmKeys = ObjectHelper.deepFreeze({
+  ...stLlmKeys,
+});
 export const suporteTecnicoN2AddQuestions =
   ObjectHelper.deepFreeze([
     "suporteTecnicoN2",
@@ -3459,7 +3357,7 @@ export const suporteTecnicoN2AddQuestions =
       ["audio", stN2AiAdKeys],
       ["image", stN2AiImgKeys],
       ["video", stN2AiVdKeys],
-      ["llms", stN2LlmsKeys],
+      ["llms", stN2LlmKeys],
     ]),
   ]);
 export const opDocsKeys = withFrozenLibreLabel(
@@ -3645,25 +3543,13 @@ export const opPlnKeys = withFrozenLibreLabel(
 export const opAiAdKeys = withFrozenLibreLabel(
   {
     beginner: {
-      spk: "Você usa IA para ajustar configurações de alto-falantes ou headsets automaticamente?",
-      rec: "Como você utiliza IA para capturar áudios e criar relatórios de incidentes automaticamente?",
-      vol: "Você utiliza IA para ajustar mixagem de volume em calls internas para evitar eco?",
-      cde: "Quais ferramentas baseadas em IA você usa para gerenciar codecs e compatibilidade de áudio?",
-      lat: "Como a IA ajuda a corrigir atrasos (latência) na reprodução de áudio em rede local?",
+      ...aiAdBeginnerKeys,
     },
     intermediate: {
-      dsp: "Você aplica IA para configurar equalização e reduzir ruídos em áudios corporativos?",
-      net: "Como você usa IA para gerenciar buffering em streams de áudio interno?",
-      pol: "Você utiliza IA para monitorar e aplicar políticas de gravação automática em dispositivos corporativos?",
-      dsk: "De que forma a IA ajuda na distribuição e configuração automática de softwares de edição de áudio?",
-      mix: "Você utiliza IA para mixar faixas de áudio (voz e música) para vídeos de treinamento interno?",
+      ...aiAdIntermediateKeys,
     },
     expert: {
-      adv: "Como você usa IA para resolver problemas avançados de latência em configurações de áudio high-end?",
-      api: "Você integra APIs de IA de áudio (ex.: TTS) em sistemas operacionais? Descreva um caso.",
-      enc: "De que forma você utiliza IA para encriptar streams de áudio em reuniões confidenciais?",
-      stn: "Como você usa IA para configurar estações avançadas de áudio e resolver travamentos em tempo real?",
-      ops: "Você gerencia broadcasting corporativo (ex.: servidores RTMP) com suporte de IA para otimização?",
+      ...aiAdExpertKeys,
     },
   },
   "audio"
@@ -3671,25 +3557,13 @@ export const opAiAdKeys = withFrozenLibreLabel(
 export const opAiImgKeys = withFrozenLibreLabel(
   {
     beginner: {
-      pre: "Você utiliza IA para configurar visualizadores e ajustar associações de arquivos automaticamente?",
-      scn: "Como a IA ajuda na solução de problemas de scanners locais e em rede?",
-      cpy: "Você usa IA para automatizar a impressão e cópia de imagens em impressoras corporativas?",
-      res: "Como você utiliza IA para ajustar resolução e tamanhos de imagens em relatórios simples?",
-      fmt: "Você utiliza IA para converter formatos de imagem e resolver problemas de incompatibilidade?",
+      ...aiImgBeginnerKeys,
     },
     intermediate: {
-      lay: "Como a IA auxilia na configuração de editores intermediários (ex.: GIMP) para evitar travamentos?",
-      col: "Você utiliza IA para ajustar perfis de cor automaticamente (ex.: sRGB, CMYK) em impressões corporativas?",
-      ret: "De que forma a IA ajuda em retoques avançados ou recortes complexos?",
-      net: "Como a IA otimiza a organização de grandes bibliotecas de imagens em rede?",
-      sec: "Você usa IA para restringir e monitorar acesso a imagens confidenciais em ambientes corporativos?",
+      ...aiImgIntermediateKeys,
     },
     expert: {
-      cad: "Você utiliza IA para gerenciar arquivos CAD e resolver problemas de desempenho em workstations?",
-      dsp: "Como a IA ajuda a configurar monitores calibrados e gerenciar imagens de alta resolução?",
-      sft: "Você utiliza IA para aplicar patches e resolver conflitos em editores high-end como Photoshop?",
-      inc: "Como você usa IA para recuperar imagens corrompidas ou resolver problemas relacionados?",
-      cns: "De que forma você usa IA para acelerar conversões em massa ou manipulação de imagens em servidores?",
+      ...aiImgExpertKeys,
     },
   },
   "image"
@@ -3720,27 +3594,18 @@ export const opAiVdKeys = withFrozenLibreLabel(
   },
   "video"
 );
-export const opLlmsKeys = withFrozenLibreLabel(
+export const opLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
-      tok: "Como você lida com limites de tokens ou desconexões quando usuários usam chat GPT-like via rede restrita?",
-      prox: "Você configura proxy/firewall para permitir acesso a APIs LLM, mantendo logs de segurança?",
-      lgn: "Com que frequência gerencia logins ou chaves de API para usuários consultarem IA?",
-      dlp: "Como você evita que dados sensíveis sejam inseridos em prompts e fiquem retidos na nuvem?",
-      mon: "Você monitora quantas requisições a LLM são feitas e se há picos de uso incomuns?",
+      ...llmBeginnerKeys,
     },
     intermediate: {
-      adv: "Você cria prompts intermediários e ajusta scripts (ex.: para gerar relatórios semimanualmente)?",
-      gpo: "De que forma distribui configurações (certs, environment) para permitir uso de LLM local ou proxied?",
-      sec: "Como você filtra dados confidenciais ou anexa disclaimers antes de enviar queries à LLM?",
-      lat: "Em que frequência soluciona latência ou timeouts ao conectar a LLM externa, ajustando roteamento?",
-      ext: "Você integrou LLM a sistemas de help desk ou CRMs, resolvendo problemas de autenticação e mapeamento?",
+      ...llmIntermediateKeys,
+      lvl: "Qual é o nível de utilidade que você considera que LLMs têm ou podem ter para seus processos de trabalho em redes e instalações?",
     },
     expert: {
-      fin: "Qual sua experiência ao configurar instâncias self-hosted (ex.: LLaMA) e manter performance no N2?",
-      iso: "Você atende normas ISO ou compliance para logging e relatórios de prompts LLM? Explique um caso.",
-      sso: "De que modo implementa SSO e bloqueios de IP/region para LLM em rede corporativa?",
-      aud: "Você gera logs avançados de prompts e respostas, corrigindo vazamentos de info sensível?",
+      ...llmExpertKeys,
+      lvl: "Qual é o nível de utilidade que você considera que LLMs têm ou podem ter para seus processos de trabalho em redes e instalações?",
       cus: "Com que frequência manipula modelos custom (fine-tuning local) e distribui para equipes especializadas?",
     },
   },
@@ -3761,7 +3626,7 @@ export const operatorioAddQuestions =
       ["audio", opAiAdKeys],
       ["image", opAiImgKeys],
       ["video", opAiVdKeys],
-      ["llms", opLlmsKeys],
+      ["llms", opLlmKeys],
     ]),
   ]);
 export const devDocsKeys = withFrozenLibreLabel(
@@ -3965,25 +3830,13 @@ export const devPlnKeys = withFrozenLibreLabel(
 export const devAiAdKeys = withFrozenLibreLabel(
   {
     beginner: {
-      rec: "Como você utiliza IA para gravar e organizar áudios para tutoriais e demonstrações?",
-      lip: "Você usa IA para corrigir problemas de sincronização de áudio e vídeo automaticamente?",
-      cns: "De que forma a IA auxilia na conversão de formatos de áudio para aplicações front-end?",
-      deb: "Como você utiliza IA para diagnosticar problemas de drivers de áudio em estações de desenvolvimento?",
-      vcl: "Você usa IA para gerenciar e otimizar o áudio em calls diárias do time de desenvolvimento?",
+      ...aiAdBeginnerKeys,
     },
     intermediate: {
-      mix: "Você utiliza IA para mixar fundo musical e locução em vídeos de apresentação de software?",
-      net: "Como você usa IA para reduzir latência e packet loss em chamadas remotas?",
-      dsp: "Você aplica IA para reduzir ruídos e melhorar a qualidade de áudio em podcasts internos?",
-      aut: "De que forma você usa scripts baseados em IA para converter lotes de áudios gravados?",
-      cst: "Você integra plugins de IA para melhorar áudio em IDEs ou chats corporativos?",
+      ...aiAdIntermediateKeys,
     },
     expert: {
-      api: "Como você utiliza APIs de IA de áudio em aplicações construídas pelo time de desenvolvimento?",
-      lat: "Você utiliza IA para resolver problemas avançados de latência em estações high-end?",
-      adv: "Como a IA ajuda na criação de pipelines para processar grandes volumes de áudio automaticamente?",
-      sec: "Você utiliza IA para proteger áudios confidenciais e gerenciar permissões de acesso?",
-      dsp: "Como você implementa IA para gerar ou manipular sinais digitais de áudio em tempo real?",
+      ...aiAdExpertKeys,
     },
   },
   "audio"
@@ -3991,25 +3844,13 @@ export const devAiAdKeys = withFrozenLibreLabel(
 export const devAiImgKeys = withFrozenLibreLabel(
   {
     beginner: {
-      scr: "Você utiliza IA para capturar e organizar screenshots em processos de documentação?",
-      edb: "Como a IA ajuda em edições básicas (recortes, anotações) para ilustrar bugs ou features?",
-      col: "De que forma a IA otimiza a colaboração no gerenciamento de repositórios de imagens?",
-      frt: "Você usa IA para comprimir imagens automaticamente sem perda significativa de qualidade?",
-      sth: "Como a IA auxilia na criação de miniaturas automáticas para previews em repositórios?",
+      ...aiImgBeginnerKeys,
     },
     intermediate: {
-      lay: "Você utiliza IA para gerenciar layers em editores como Photoshop para criar assets de UI?",
-      ver: "Como você utiliza IA para gerenciar versões de imagens em repositórios Git?",
-      col: "Você usa IA para garantir consistência visual em tokens de design aplicados a imagens?",
-      auto: "De que forma você utiliza scripts de IA para automação de redimensionamento ou processamento em lote?",
-      sec: "Como a IA ajuda a proteger imagens confidenciais (protótipos) em repositórios?",
+      ...aiImgIntermediateKeys,
     },
     expert: {
-      adv: "Você utiliza IA para gerar sprites ou atlas otimizados para alta performance em aplicações?",
-      cdp: "Como você integra IA em pipelines de CI/CD para compressão e otimização de imagens antes do deploy?",
-      dsp: "De que forma você utiliza IA para resolver problemas de GPU ao manipular assets gráficos complexos?",
-      cad: "Você usa IA para integrar imagens CAD no workflow dev? Como otimiza o desempenho?",
-      ia_: "De que forma a IA gera assets automaticamente e valida licenças no pipeline de desenvolvimento?",
+      ...aiImgExpertKeys,
     },
   },
   "image"
@@ -4040,28 +3881,25 @@ export const devAiVdKeys = withFrozenLibreLabel(
   },
   "video"
 );
-export const devLlmsKeys = withFrozenLibreLabel(
+export const devLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
-      chat: "Você utiliza ChatGPT ou similares para gerar snippets de código rápido para devs iniciantes?",
-      tips: "Como você orienta perguntas básicas (prompt) para obter exemplos de funções ou algoritmos?",
-      doc: "Com que frequência você obtém rascunhos de documentação ou explicações para libs desconhecidas?",
-      err: "De que forma você checa se as sugestões da LLM estão corretas (evitando 'alucinações')?",
-      nfo: "Você registra dicas ou comandos repetitivos em uma base local (wiki) para não depender sempre da IA?",
+      chat: 'Com que frequência você utiliza LLMs para gerar snippets ou "rascunhos" de código?',
+      tips: "Como você orienta perguntas básicas para obter exemplos de funções ou algoritmos?",
+      ...llmBeginnerKeys,
     },
     intermediate: {
-      ctx: "Você mantém algum contexto extra (ex.: system prompt) para gerar respostas alinhadas ao projeto?",
-      fdb: "Como você retroalimenta a LLM (informando falhas) para melhorar dicas de refactoring no front-end?",
-      int: "Em que frequência você integra a LLM em IDEs (ex.: GitHub Copilot) e resolve problemas de config?",
-      sec: "Você filtra dados sensíveis (chaves, senhas) antes de pedir ajuda à LLM? Qual sua abordagem?",
-      stp: "Qual sua prática para prompts em etapas (chain-of-thought) para obter instruções de build complexas?",
+      ...llmIntermediateKeys,
+      int: "Com que frequência você integra a LLM em IDEs (ex.: GitHub Copilot)?",
+      exp: "Qual é o seu nível de conhecimento em algoritmos de Aprendizado de Máquina?",
+      ctx: "Com que frequência você armazena prompts para reiterações futuras?",
+      stc: "Qual dessas prática você adota com modelos de chain-of-thought para orientações de tarefas com múltiplas camadas?",
     },
     expert: {
-      fin: "Você realiza fine-tuning ou prompt engineering avançado para modelos open-source (ex.: LLaMA) localmente?",
-      mlb: "Em que frequência você avalia qualidade (test set) das respostas geradas e cria logs de acurácia?",
-      api: "De que forma você integra a LLM com pipelines CI/CD, gerando code review automático ou sugestões de doc?",
-      scp: "Você constrói scripts para reformatar ou reestruturar código, baseando-se em sugestões da IA?",
-      adv: "Como você manipula grandes prompts ou instruções multi-arquivo em monorepos e garante performance?",
+      ...llmExpertKeys,
+      ftu: "Qual é o seu nível de experiência realizando fine-tuning ou prompt engineering avançado para modelos open-source?",
+      crt: "Selecione as classes de algoritmos de Aprendizado de Máquina que você mais tem experiência desenvolvendo",
+      api: "Quais destas práticas você utiliza para integrar LLMs com pipelines CI/CD?",
     },
   },
   "llms"
@@ -4080,7 +3918,7 @@ export const devAddQuestions = ObjectHelper.deepFreeze([
     ["audio", devAiAdKeys],
     ["image", devAiImgKeys],
     ["video", devAiVdKeys],
-    ["llms", devLlmsKeys],
+    ["llms", devLlmKeys],
   ]),
 ]);
 export const devOpsDocsKeys = withFrozenLibreLabel(
@@ -4270,25 +4108,13 @@ export const devOpsPlnKeys = withFrozenLibreLabel(
 export const devOpsAiAdKeys = withFrozenLibreLabel(
   {
     beginner: {
-      rec: "Como você utiliza IA para gravar e organizar áudios de dailies ou reuniões para análise do time?",
-      net: "Você usa IA para ajustar configurações de áudio em chamadas remotas e reduzir latência?",
-      frq: "Como você automatiza o uso de IA para disponibilizar replays de reuniões gravadas?",
-      doc: "De que forma a IA ajuda a gerar transcrições automáticas com timestamps em reuniões técnicas?",
-      mic: "Você utiliza IA para padronizar a qualidade de microfones e headsets na equipe?",
+      ...aiAdBeginnerKeys,
     },
     intermediate: {
-      dsp: "Como a IA ajuda a aplicar equalização e redução de ruído em reuniões críticas?",
-      cst: "Você usa IA para concatenar e organizar áudios de briefings ou discussões diárias?",
-      cpt: "De que forma a IA automatiza o corte e união de faixas longas de áudio técnico?",
-      net: "Você usa IA para gerenciar latência e interrupções em reuniões com 30+ participantes?",
-      adv: "Como a IA auxilia na normalização e amplificação de áudio em chamadas técnicas?",
+      ...aiAdIntermediateKeys,
     },
     expert: {
-      str: "Você utiliza IA para configurar streams de áudio em pipelines ou servidores? Como?",
-      api: "Como você integra APIs de IA (ex.: TTS, STT) para gerar logs ou notificações automáticas?",
-      dsp: "De que forma você usa IA para resolver problemas avançados de DSP em desktops DevOps?",
-      rec: "Você utiliza IA para consolidar gravações de reuniões e gerar insights automáticos?",
-      mlb: "Com que frequência você usa IA para transcrever, filtrar e gerar relatórios de reuniões DevOps?",
+      ...aiAdExpertKeys,
     },
   },
   "audio"
@@ -4296,25 +4122,13 @@ export const devOpsAiAdKeys = withFrozenLibreLabel(
 export const devOpsAiImgKeys = withFrozenLibreLabel(
   {
     beginner: {
-      scr: "Você utiliza IA para capturar e processar screenshots de logs ou telas de Jenkins automaticamente?",
-      edb: "Como a IA ajuda a destacar erros ou anotar imagens de pipelines ou diagramas técnicos?",
-      csh: "De que forma a IA automatiza a inserção de imagens no wiki ou documentação de pipelines?",
-      cmp: "Você utiliza IA para comprimir e otimizar imagens antes de subi-las em repositórios?",
-      tag: "Como a IA ajuda a criar tags automáticas para imagens (ex.: erros de pipeline)?",
+      ...aiImgBeginnerKeys,
     },
     intermediate: {
-      lay: "Como você usa IA para editar diagramas de arquitetura e criar fluxos complexos?",
-      net: "A IA facilita o compartilhamento e organização de pastas de ícones, screenshots e diagramas técnicos?",
-      col: "Como a IA colabora em editores online (ex.: Miro) para desenhar pipelines dinâmicos?",
-      conv: "Você usa IA para converter formatos vetoriais (SVG) em PNG ou PDF para relatórios técnicos?",
-      aut: "De que forma a IA automatiza a geração e atualização de diagramas (ex.: PlantUML) em pipelines?",
+      ...aiImgIntermediateKeys,
     },
     expert: {
-      big: "Você usa IA para manipular imagens de larga escala (ex.: logs visuais) em pipelines técnicos?",
-      adv: "Como a IA atualiza diagramas automaticamente com base em mudanças de código ou YAML?",
-      sec: "Você utiliza IA para proteger diagramas confidenciais em repositórios corporativos?",
-      mig: "De que forma a IA auxilia na migração de bibliotecas de ícones ou imagens entre repositórios?",
-      obs: "Como a IA ajuda a criar dashboards visuais com imagens de monitoramento (ex.: snapshots de Grafana)?",
+      ...aiImgExpertKeys,
     },
   },
   "image"
@@ -4345,28 +4159,24 @@ export const devOpsAiVdKeys = withFrozenLibreLabel(
   },
   "video"
 );
-export const devOpsLlmsKeys = withFrozenLibreLabel(
+export const devOpsLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
-      tip: "Como você usa LLM (ChatGPT, Copilot) para gerar esboços de scripts de CI/CD ou Dockerfiles simples?",
-      txt: "Você costuma pedir à IA descrições curtas de processos DevOps para documentação rápida? (Sim/Não)",
-      cmt: "Em que frequência você gera comentários de pipeline ou explicações automáticas via LLM?",
-      dev: "De que forma você revalida se a IA não está sugerindo algo inseguro (ex.: expor secrets em logs)?",
-      fdb: "Você coleta feedback do time se as sugestões da IA realmente ajudam ou criam ruído?",
+      ...llmBeginnerKeys,
+      cmt: "Com que frequência você gera comentários de pipeline ou explicações automáticas via LLM?",
+      tip: "Com que frequência você usa LLMs para gerar esboços de scripts de CI/CD ou Dockerfiles simples?",
     },
     intermediate: {
-      prp: "Você elabora prompts intermediários, detalhando environment, orquestrador, escalabilidade ao LLM?",
-      scr: "Como você automatiza script generation (bash, python) para configurações Docker/K8s e revisa segurança?",
-      pol: "Em que frequência você define políticas de 'não subir senhas ou tokens' ao pedir ajuda à IA?",
-      cdc: "Você integra a LLM a CD pipelines (ex.: PR auto-commit) e avalia se a modificação é segura?",
-      log: "De que modo você loga as interações com a IA para auditar se algum secret vazou?",
+      ...llmIntermediateKeys,
+      prp: "Com que frequência você elabora prompts detalhando environment, orquestrador e escalabilidade para auxílio de LLMs?",
+      ctx: "Com que frequência você armazena prompts para reiterações futuras?",
+      stc: "Qual dessas prática você adota com modelos de chain-of-thought para orientações de tarefas com múltiplas camadas?",
     },
     expert: {
+      ...llmExpertKeys,
       adv: "Você executa instâncias self-hosted de modelos open source (Bloom, LLaMA) para sugerir config IaC?",
+      api: "Quais destas práticas você utiliza para integrar LLMs com pipelines CI/CD?",
       cst: "Como você customiza o prompt engineering para refinar scripts de Terraform ou Ansible complexos?",
-      cyc: "Em que frequência você cria loops de feedback, onde o pipeline valida e a IA refina o script?",
-      sec: "De que forma você garante compliance (LGPD, HIPAA) se a IA manipular dados de infra sensíveis?",
-      mae: "Você avalia a métrica de acerto (porcentagem de uso real do snippet gerado) e registra em um dashboard?",
     },
   },
   "llms"
@@ -4385,7 +4195,7 @@ export const devOpsAddQuestions = ObjectHelper.deepFreeze([
     ["audio", devOpsAiAdKeys],
     ["image", devOpsAiImgKeys],
     ["video", devOpsAiVdKeys],
-    ["llms", devOpsLlmsKeys],
+    ["llms", devOpsLlmKeys],
   ]),
 ]);
 export const defaultQuestionsDict: Readonly<{
@@ -4628,25 +4438,13 @@ export const defPlnKeys = withFrozenLibreLabel(
 export const defAiAdKeys = withFrozenLibreLabel(
   {
     beginner: {
-      rec: "Você utiliza IA para gravar e organizar áudios simples (ex.: mensagens de voz)?",
-      ply: "Como a IA ajuda no controle de reprodução e ajustes de volume para arquivos de áudio?",
-      upf: "De que forma a IA otimiza o upload de arquivos de áudio para nuvem ou redes sociais?",
-      ctb: "Você utiliza IA para cortar ou editar trechos de áudio automaticamente?",
-      dev: "Como a IA valida o funcionamento de dispositivos como microfones e fones de ouvido?",
+      ...aiAdBeginnerKeys,
     },
     intermediate: {
-      dsp: "Você utiliza IA para aplicar filtros como redução de ruído e normalização em edições de áudio?",
-      mix: "Como a IA auxilia na união de várias faixas de áudio (ex.: música e locução)?",
-      ext: "De que forma você utiliza IA para converter formatos de áudio ou ajustar bitrates?",
-      net: "Você usa IA para gerenciar e solucionar problemas em streams de áudio?",
-      sec: "Como a IA ajuda a restringir o acesso a áudios confidenciais?",
+      ...aiAdIntermediateKeys,
     },
     expert: {
-      adv: "Você utiliza IA para edições avançadas (multi-track) ou plugins de áudio profissionais?",
-      api: "De que forma você integra IA (ex.: TTS) em processos de gravação ou legendagem?",
-      dsp: "Como a IA refina o áudio utilizando equalizadores e compressores avançados?",
-      aud: "Você utiliza IA para rastrear ou auditar downloads de arquivos de áudio confidenciais?",
-      enc: "Como você usa IA para criptografar arquivos de áudio sensíveis?",
+      ...aiAdExpertKeys,
     },
   },
   "audio"
@@ -4654,25 +4452,13 @@ export const defAiAdKeys = withFrozenLibreLabel(
 export const defAiImgKeys = withFrozenLibreLabel(
   {
     beginner: {
-      vie: "Você utiliza IA para organizar e visualizar automaticamente imagens (ex.: PNG, JPG)?",
-      red: "Como a IA ajuda a reduzir tamanhos ou recortar fotos em softwares simples?",
-      shr: "Você usa IA para automatizar o compartilhamento de screenshots e imagens?",
-      fmt: "Como a IA auxilia na conversão de formatos de imagem para economizar espaço?",
-      sec: "De que forma a IA identifica e protege imagens sensíveis antes do compartilhamento?",
+      ...aiImgBeginnerKeys,
     },
     intermediate: {
-      lay: "Você utiliza IA para gerenciar camadas em editores intermediários (ex.: GIMP)?",
-      cor: "Como a IA ajusta brilho, contraste ou filtros automaticamente em imagens medianas?",
-      net: "Você utiliza IA para redimensionar ou hospedar imagens em ferramentas online?",
-      mul: "De que forma a IA combina várias imagens em arquivos compostos (colagens)?",
-      ext: "Você usa IA para converter extensões avançadas (ex.: SVG) para formatos mais simples?",
+      ...aiImgIntermediateKeys,
     },
     expert: {
-      adv: "Você utiliza scripts baseados em IA para processar lotes de imagens em larga escala?",
-      ret: "Como a IA realiza retoques complexos (ex.: remoção de fundo, blending) automaticamente?",
-      prf: "De que forma a IA otimiza imagens para carregamento em sites ou aplicativos pesados?",
-      cts: "Você utiliza IA para aplicar compressões avançadas (ex.: WebP, HEIC) em projetos?",
-      ia_: "Como a IA auxilia na geração ou melhoria de imagens de maneira automatizada?",
+      ...aiImgExpertKeys,
     },
   },
   "image"
@@ -4703,7 +4489,7 @@ export const defAiVdKeys = withFrozenLibreLabel(
   },
   "video"
 );
-export const defLlmsKeys = withFrozenLibreLabel(
+export const defLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
       usr: "Você utiliza chatbots de IA (ChatGPT, etc.) para responder perguntas gerais ou curiosidades?",
@@ -4743,7 +4529,7 @@ export const defaultAddQuestions = ObjectHelper.deepFreeze([
     ["audio", defAiAdKeys],
     ["image", defAiImgKeys],
     ["video", defAiVdKeys],
-    ["llms", defLlmsKeys],
+    ["llms", defLlmKeys],
   ]),
 ]);
 const required = true;
@@ -4778,6 +4564,7 @@ export const repeatedDefinitions: Readonly<{
       "Básico",
       "Intermediário",
       "Avançado",
+      "Muito Avançado",
     ],
   },
   frq: {
@@ -4909,6 +4696,17 @@ export const repeatedDefinitions: Readonly<{
     ],
     required,
   },
+  lvl: {
+    type: "select-one",
+    options: [
+      "Nenhum(a)",
+      "Pouco(a)",
+      "Consideravelmente",
+      "Muito(a)",
+      "Extremo(a)",
+    ],
+    required,
+  },
   txts: {
     type: "textarea",
     required,
@@ -4928,7 +4726,7 @@ export const lib = ObjectHelper.deepFreeze(
   repeatedDefinitions.txtl
 );
 export const fmDefinitions: {
-  [K in fmBaseKeys]: FieldDescription;
+  [K in keyof typeof fmGeneralKeys]: FieldDescription;
 } = ObjectHelper.deepFreeze({
   tpl: repeatedDefinitions.frq,
   rsp: {
@@ -4974,14 +4772,14 @@ export const fmDefinitions: {
   slc: repeatedDefinitions.txtl,
 });
 export const fmBeginnerDefinitions: {
-  [K in fmBaseKeys & "crt"]: FieldDescription;
+  [K in keyof typeof fmBeginnerKeys]: FieldDescription;
 } = ObjectHelper.deepFreeze({
   crt: repeatedDefinitions.exp,
   ...fmDefinitions,
 });
-export const fmIntermediateDefinitions: Readonly<{
-  [K in fmBaseKeys & ("aut" | "api")]: FieldDescription;
-}> = ObjectHelper.deepFreeze({
+export const fmIntermediateDefinitions: ROFieldRecord<
+  typeof fmIntermediateKeys
+> = ObjectHelper.deepFreeze({
   ...fmDefinitions,
   aut: {
     type: "select-multiple",
@@ -4995,9 +4793,9 @@ export const fmIntermediateDefinitions: Readonly<{
   },
   api: repeatedDefinitions.frq,
 });
-export const fmExpertDefinitions: Readonly<{
-  [K in fmBaseKeys & "dsh"]: FieldDescription;
-}> = ObjectHelper.deepFreeze({
+export const fmExpertDefinitions: ROFieldRecord<
+  typeof fmExpertKeys
+> = ObjectHelper.deepFreeze({
   ...fmDefinitions,
   dsh: {
     //"Como você conecta formulários a dashboards para relatórios em tempo real?"
@@ -6228,7 +6026,6 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionsKeys> =
           type: "text",
           maxLength:
             limits.small.MAX_UTF_16_SIGNED_SURROGATE,
-
           writingSuggestions: true,
           spellCheck: true,
         },
@@ -6753,9 +6550,9 @@ export const fmEntryTypes: EntryTypeDictionary<FormBuilderQuestionsKeys> =
     },
     devOps: opRepeatedDefinitions,
   });
-export const csDefinitions: Readonly<{
-  [K in csBaseKeys]: FieldDescription;
-}> = ObjectHelper.deepFreeze({
+export const csDefinitions: ROFieldRecord<
+  typeof csGeneralKeys
+> = ObjectHelper.deepFreeze({
   //"Quais são suas formas preferenciar de habilitar o compartilhamento de arquivos em nuvem com outras colaboradores?",
   shr: {
     type: "select-multiple",
@@ -6785,25 +6582,24 @@ export const csDefinitions: Readonly<{
   },
   org: repeatedDefinitions.txtl,
 });
-export const csBeginnerDefinitions: Readonly<{
-  [K in csBaseKeys & ("upl" | "acc")]: FieldDescription;
-}> = {
+export const csBeginnerDefinitions: ROFieldRecord<
+  typeof csBeginnerKeys
+> = {
   upl: repeatedDefinitions.exp,
   ...csDefinitions,
   acc: repeatedDefinitions.yn,
 };
-export const csIntermediateDefinitions: Readonly<{
-  [K in csBaseKeys &
-    ("ver" | "bck" | "sch")]: FieldDescription;
-}> = {
+export const csIntermediateDefinitions: ROFieldRecord<
+  typeof csIntermediateKeys
+> = {
   ...csDefinitions,
   ver: repeatedDefinitions.colab,
   bck: repeatedDefinitions.frq,
   sch: repeatedDefinitions.txtl,
 };
-export const csExpertDefinitions: Readonly<{
-  [K in csBaseKeys & ("scp" | "sch")]: FieldDescription;
-}> = {
+export const csExpertDefinitions: ROFieldRecord<
+  typeof csExpertKeys
+> = {
   ...csDefinitions,
   scp: repeatedDefinitions.scp,
   sch: repeatedDefinitions.txtl,
@@ -7163,10 +6959,653 @@ export const csEntryTypes: EntryTypeDictionary<CloudStorageQuestionsKeys> =
     },
   });
 //bi
-//planning
 //crms
 //erps
-//audio
-//image
-//video
-//llms
+//planning
+export const aiAdDefinitions: ROFieldRecord<
+  typeof aiAdGeneralKeys
+> = ObjectHelper.deepFreeze({
+  gen: repeatedDefinitions.exp,
+  //"Quais critérios você utiliza para avaliar e determinar a qualidade dos áudios gerados pela IA?"
+  evl: {
+    type: "select-multiple",
+    options: [
+      "Clareza e inteligibilidade do áudio",
+      "Naturalidade e fluidez da voz gerada",
+      "Ausência de ruídos artificiais ou artefatos",
+      "Fidelidade ao tom e emoção esperados",
+      "Sincronização correta com legendas ou outros conteúdos",
+      "Comparação com áudios reais de referência",
+      "Ajuste manual de equalização e compressão antes da avaliação",
+      "Feedback de ouvintes ou especialistas para validação",
+    ],
+    required,
+  },
+  tts: repeatedDefinitions.frq,
+  cln: repeatedDefinitions.frq,
+  int: repeatedDefinitions.txts,
+});
+export const aiAdBeginnerDefinitions: ROFieldRecord<
+  typeof aiAdBeginnerKeys
+> = ObjectHelper.deepFreeze({
+  set: repeatedDefinitions.yn,
+  ...aiAdDefinitions,
+});
+export const aiAdIntermediateDefinitions: ROFieldRecord<
+  typeof aiAdIntermediateKeys
+> = ObjectHelper.deepFreeze({
+  // "Quais as principais ferramentas que você utiliza para editar ou ajustar os áudios gerados por IAs?"
+  edt: {
+    type: "select-multiple",
+    options: [
+      "Audacity (edição e aprimoramento básico)",
+      "Adobe Audition (mixagem e ajuste profissional)",
+      "GarageBand (edição intuitiva para macOS/iOS)",
+      "FL Studio (produção e manipulação avançada de áudio)",
+      "Logic Pro (edição avançada para macOS)",
+      "Izotope RX (remoção de ruídos e aprimoramento de áudio)",
+      "DaVinci Resolve Fairlight (edição integrada a vídeos)",
+      "Reaper (edição leve e flexível)",
+      "Plug-ins VST para ajustes específicos (ex.: equalização, compressão)",
+      "Edição manual via ferramentas nativas do modelo de IA",
+    ],
+    required,
+  },
+  doc: repeatedDefinitions.yn,
+  ing: repeatedDefinitions.txtl,
+  ...aiAdDefinitions,
+});
+export const aiAdExpertDefinitions: ROFieldRecord<
+  typeof aiAdExpertKeys
+> = ObjectHelper.deepFreeze({
+  adv: repeatedDefinitions.frq,
+  vol: repeatedDefinitions.yn,
+  sec: repeatedDefinitions.sec,
+  ...aiAdDefinitions,
+});
+export const aiAdEntryTypes: EntryTypeDictionary<AudioAiQuestionsKeys> =
+  withFrozenLib({
+    executivoAdministrativo: {
+      beginner: { ...aiAdBeginnerDefinitions },
+      intermediate: { ...aiAdIntermediateDefinitions },
+      expert: { ...aiAdExpertDefinitions },
+    },
+    financeiro: {
+      beginner: { ...aiAdBeginnerDefinitions },
+      intermediate: { ...aiAdIntermediateDefinitions },
+      expert: { ...aiAdExpertDefinitions },
+    },
+    comercial: {
+      beginner: { ...aiAdBeginnerDefinitions },
+      intermediate: { ...aiAdIntermediateDefinitions },
+      expert: { ...aiAdExpertDefinitions },
+    },
+    marketing: {
+      beginner: { ...aiAdBeginnerDefinitions },
+      intermediate: { ...aiAdIntermediateDefinitions },
+      expert: { ...aiAdExpertDefinitions },
+    },
+    suporteTecnicoN1: {
+      beginner: { ...aiAdBeginnerDefinitions },
+      intermediate: { ...aiAdIntermediateDefinitions },
+      expert: { ...aiAdExpertDefinitions },
+    },
+    suporteTecnicoN2: {
+      beginner: { ...aiAdBeginnerDefinitions },
+      intermediate: { ...aiAdIntermediateDefinitions },
+      expert: { ...aiAdExpertDefinitions },
+    },
+    operatorio: {
+      beginner: { ...aiAdBeginnerDefinitions },
+      intermediate: { ...aiAdIntermediateDefinitions },
+      expert: { ...aiAdExpertDefinitions },
+    },
+    desenvolvimento: {
+      beginner: { ...aiAdBeginnerDefinitions },
+      intermediate: { ...aiAdIntermediateDefinitions },
+      expert: { ...aiAdExpertDefinitions },
+    },
+    devOps: {
+      beginner: { ...aiAdBeginnerDefinitions },
+      intermediate: { ...aiAdIntermediateDefinitions },
+      expert: { ...aiAdExpertDefinitions },
+    },
+  });
+export const aiImgDefinitions: ROFieldRecord<
+  typeof aiImgGeneralKeys
+> = ObjectHelper.deepFreeze({
+  gen: repeatedDefinitions.frq,
+  //"Quais critérios você utiliza para avaliar a qualidade das imagens geradas pelas IAs?"
+  evl: {
+    type: "select-multiple",
+    options: [
+      "Resolução e nitidez da imagem",
+      "Realismo e fidelidade ao prompt",
+      "Coerência dos detalhes (ex.: mãos, olhos, proporções)",
+      "Ausência de artefatos visuais ou distorções",
+      "Cores e iluminação apropriadas",
+      "Aderência ao estilo desejado (ex.: fotorrealista, desenho, anime)",
+      "Comparação com imagens de referência",
+      "Feedback de outras pessoas ou especialistas",
+    ],
+    required,
+  },
+  //"Quais ferramentas você utiliza para editar e otimizar a qualidade das imagens geradas pelas IAs?"
+  opt: {
+    type: "select-multiple",
+    options: [
+      "Adobe Photoshop",
+      "GIMP",
+      "Canva",
+      "Affinity Photo",
+      "Remini (melhoria de resolução por IA)",
+      "Topaz Gigapixel AI (upscaling)",
+      "Denoising tools (ex.: AI-based noise reduction)",
+      "Correção manual de cores e iluminação",
+      "Filtros e ajustes automáticos em apps mobile",
+      "Ferramentas integradas nos próprios geradores de IA (ex.: DALL·E inpainting)",
+    ],
+    required,
+  },
+  //"Quais ferramentas você converter o formato das imagens geradas por IAs?"
+  fmt: {
+    type: "select-multiple",
+    options: [
+      "Adobe Photoshop",
+      "Imagemagick",
+      "GIMP",
+      "CloudConvert",
+      "Figma",
+      "Conversores online (ex.: Convertio, TinyPNG)",
+      "Ferramentas nativas do sistema operacional (ex.: Preview no macOS, Paint no Windows)",
+      "Bibliotecas de código (ex.: Pillow/PIL no Python, Sharp no Node.js)",
+      "Automação via scripts (ex.: ffmpeg, imagemagick CLI)",
+    ],
+    required,
+  },
+  col: repeatedDefinitions.frq,
+  int: repeatedDefinitions.txts,
+});
+export const aiImgBeginnerDefinitions: ROFieldRecord<
+  typeof aiImgBeginnerKeys
+> = ObjectHelper.deepFreeze({
+  set: repeatedDefinitions.yn,
+  ...aiImgDefinitions,
+});
+export const aiImgIntermediateDefinitions: ROFieldRecord<
+  typeof aiImgIntermediateKeys
+> = ObjectHelper.deepFreeze({
+  doc: repeatedDefinitions.frq,
+  ing: repeatedDefinitions.txtl,
+  ...aiImgDefinitions,
+});
+export const aiImgExpertDefinitions: ROFieldRecord<
+  typeof aiImgExpertKeys
+> = ObjectHelper.deepFreeze({
+  adv: repeatedDefinitions.frq,
+  vol: repeatedDefinitions.yn,
+  sec: repeatedDefinitions.sec,
+  ...aiImgDefinitions,
+});
+export const aiImgEntryTypes: EntryTypeDictionary<ImageAiQuestionsKeys> =
+  withFrozenLib({
+    executivoAdministrativo: {
+      beginner: { ...aiImgBeginnerDefinitions },
+      intermediate: { ...aiImgIntermediateDefinitions },
+      expert: { ...aiImgExpertDefinitions },
+    },
+    financeiro: {
+      beginner: { ...aiImgBeginnerDefinitions },
+      intermediate: { ...aiImgIntermediateDefinitions },
+      expert: { ...aiImgExpertDefinitions },
+    },
+    comercial: {
+      beginner: { ...aiImgBeginnerDefinitions },
+      intermediate: { ...aiImgIntermediateDefinitions },
+      expert: { ...aiImgExpertDefinitions },
+    },
+    marketing: {
+      beginner: { ...aiImgBeginnerDefinitions },
+      intermediate: { ...aiImgIntermediateDefinitions },
+      expert: { ...aiImgExpertDefinitions },
+    },
+    suporteTecnicoN1: {
+      beginner: { ...aiImgBeginnerDefinitions },
+      intermediate: { ...aiImgIntermediateDefinitions },
+      expert: { ...aiImgExpertDefinitions },
+    },
+    suporteTecnicoN2: {
+      beginner: { ...aiImgBeginnerDefinitions },
+      intermediate: { ...aiImgIntermediateDefinitions },
+      expert: { ...aiImgExpertDefinitions },
+    },
+    operatorio: {
+      beginner: { ...aiImgBeginnerDefinitions },
+      intermediate: { ...aiImgIntermediateDefinitions },
+      expert: { ...aiImgExpertDefinitions },
+    },
+    desenvolvimento: {
+      beginner: { ...aiImgBeginnerDefinitions },
+      intermediate: { ...aiImgIntermediateDefinitions },
+      expert: { ...aiImgExpertDefinitions },
+    },
+    devOps: {
+      beginner: { ...aiImgBeginnerDefinitions },
+      intermediate: { ...aiImgIntermediateDefinitions },
+      expert: { ...aiImgExpertDefinitions },
+    },
+  });
+export const aiVdDefinitions: ROFieldRecord<
+  typeof aiVdGeneralKeys
+> = ObjectHelper.deepFreeze({
+  gen: repeatedDefinitions.exp,
+  //"Quais critérios você utiliza para avaliar e determinar a qualidade dos vídeos gerados pela IA?"
+  evl: {
+    type: "select-multiple",
+    options: [
+      "Resolução e nitidez da imagem",
+      "Taxa de quadros por segundo (FPS) adequada",
+      "Coerência e fluidez na animação dos elementos",
+      "Sincronia correta entre áudio e vídeo",
+      "Realismo e fidelidade ao prompt",
+      "Ausência de artefatos visuais (ex.: glitches, distorções, flickering)",
+      "Cor e iluminação adequadas",
+      "Expressões faciais e movimentos naturais",
+      "Comparação com vídeos de referência",
+      "Feedback de especialistas ou público-alvo",
+    ],
+    required,
+  },
+  tts: repeatedDefinitions.frq,
+  cln: repeatedDefinitions.frq,
+  int: repeatedDefinitions.txts,
+});
+export const aiVdBeginnerDefinitions: ROFieldRecord<
+  typeof aiVdBeginnerKeys
+> = ObjectHelper.deepFreeze({
+  cnt: repeatedDefinitions.yn,
+  set: repeatedDefinitions.exp,
+  ...aiVdDefinitions,
+});
+const edt = ObjectHelper.deepFreeze({
+  type: "select-multiple",
+  options: [
+    "Adobe Premiere Pro",
+    "DaVinci Resolve",
+    "Final Cut Pro",
+    "CapCut",
+    "After Effects",
+    "Runway ML",
+    "Topaz Video Enhance AI (upscaling e melhorias)",
+    "FFmpeg (conversão e processamento via linha de comando)",
+    "VEED.io (edição online)",
+    "Adobe Express Video",
+    "Ferramentas nativas de edição (ex.: iMovie, Clipchamp)",
+  ],
+  required,
+});
+export const aiVdIntermediateDefinitions: ROFieldRecord<
+  typeof aiVdIntermediateKeys
+> = ObjectHelper.deepFreeze({
+  //"Quais as principais ferramentas que você utiliza para editar ou ajustar os vídeos gerados por IAs?"
+  edt,
+  doc: repeatedDefinitions.yn,
+  ing: repeatedDefinitions.txtl,
+  ...aiVdDefinitions,
+});
+export const aiVdExpertDefinitions: ROFieldRecord<
+  typeof aiVdExpertKeys
+> = ObjectHelper.deepFreeze({
+  adv: repeatedDefinitions.frq,
+  //"Quais as principais ferramentas que você utiliza para editar ou ajustar os vídeos gerados por IAs?"
+  edt,
+  txt: repeatedDefinitions.txts,
+  ...aiVdDefinitions,
+});
+export const aiVdEntryTypes: EntryTypeDictionary<VideoAiQuestionsKeys> =
+  withFrozenLib({
+    executivoAdministrativo: {
+      beginner: { ...aiVdBeginnerDefinitions },
+      intermediate: { ...aiVdIntermediateDefinitions },
+      expert: { ...aiVdExpertDefinitions },
+    },
+    financeiro: {
+      beginner: { ...aiVdBeginnerDefinitions },
+      intermediate: { ...aiVdIntermediateDefinitions },
+      expert: { ...aiVdExpertDefinitions },
+    },
+    comercial: {
+      beginner: { ...aiVdBeginnerDefinitions },
+      intermediate: { ...aiVdIntermediateDefinitions },
+      expert: { ...aiVdExpertDefinitions },
+    },
+    marketing: {
+      beginner: { ...aiVdBeginnerDefinitions },
+      intermediate: { ...aiVdIntermediateDefinitions },
+      expert: { ...aiVdExpertDefinitions },
+    },
+    suporteTecnicoN1: {
+      beginner: { ...aiVdBeginnerDefinitions },
+      intermediate: { ...aiVdIntermediateDefinitions },
+      expert: { ...aiVdExpertDefinitions },
+    },
+    suporteTecnicoN2: {
+      beginner: { ...aiVdBeginnerDefinitions },
+      intermediate: { ...aiVdIntermediateDefinitions },
+      expert: { ...aiVdExpertDefinitions },
+    },
+    operatorio: {
+      beginner: { ...aiVdBeginnerDefinitions },
+      intermediate: { ...aiVdIntermediateDefinitions },
+      expert: { ...aiVdExpertDefinitions },
+    },
+    desenvolvimento: {
+      beginner: { ...aiVdBeginnerDefinitions },
+      intermediate: { ...aiVdIntermediateDefinitions },
+      expert: { ...aiVdExpertDefinitions },
+    },
+    devOps: {
+      beginner: { ...aiVdBeginnerDefinitions },
+      intermediate: { ...aiVdIntermediateDefinitions },
+      expert: { ...aiVdExpertDefinitions },
+    },
+  });
+export const llmDefinitions: ROFieldRecord<
+  typeof llmGeneralKeys
+> = ObjectHelper.deepFreeze({
+  //"Em que idiomas você costuma interagir com LLMs? (focado no contexto brasileiro)"
+  lan: {
+    type: "select-multiple",
+    options: [
+      "Português",
+      "Inglês",
+      "Espanhol",
+      "Francês",
+      "Alemão",
+      "Chinês",
+      "Outros",
+    ],
+    required,
+  },
+  val: repeatedDefinitions.frq,
+  col: repeatedDefinitions.txtl,
+});
+export const llmBeginnerDefinitions: ROFieldRecord<
+  typeof llmBeginnerKeys
+> = ObjectHelper.deepFreeze({
+  use: repeatedDefinitions.exp,
+  sec: repeatedDefinitions.yn,
+  ...llmDefinitions,
+});
+export const llmIntermediateDefinitions: ROFieldRecord<
+  typeof llmIntermediateKeys
+> = ObjectHelper.deepFreeze({
+  ext: repeatedDefinitions.frq,
+  stp: repeatedDefinitions.txtl,
+  ...llmDefinitions,
+});
+export const llmExpertDefinitions: ROFieldRecord<
+  typeof llmExpertKeys
+> = ObjectHelper.deepFreeze({
+  // "Quais destas práticas você adota para realizar o refinamento de resultados de prompts ao iniciar uma sessão com uma LLM?"
+  fin: {
+    type: "select-multiple",
+    options: [
+      "Uso de instruções detalhadas e contextuais",
+      "Quebra do problema em subperguntas menores",
+      "Testes iterativos de diferentes abordagens de prompt",
+      "Ajuste da temperatura para variar a criatividade das respostas",
+      "Uso de exemplos concretos dentro do prompt",
+      "Refinamento baseado em feedback gerado pela própria IA",
+      "Adição de restrições explícitas (ex.: evitar respostas longas ou ambíguas)",
+    ],
+    required,
+  },
+  int: repeatedDefinitions.yn,
+  mlt: repeatedDefinitions.yn,
+  ext: repeatedDefinitions.frq,
+  ...llmDefinitions,
+});
+export const stLlmDefitinions: Readonly<{
+  beginner: {
+    [K in keyof typeof stLlmKeys.beginner]: FieldDescription;
+  };
+  intermediate: {
+    [K in keyof typeof stLlmKeys.intermediate]: FieldDescription;
+  };
+  expert: {
+    [K in keyof typeof stLlmKeys.expert]: FieldDescription;
+  };
+}> = ObjectHelper.deepFreeze({
+  beginner: {
+    ...llmBeginnerDefinitions,
+    //"Quais destas abordagens você utiliza para orientar usuários de LLMs?"
+    qna: {
+      type: "select-multiple",
+      options: [
+        "Treinamentos práticos com demonstrações de uso e limitações do LLM",
+        "Guias de boas práticas para redigir prompts eficazes",
+        "Monitoramento de uso e feedback para ajustes contínuos",
+        "Políticas de segurança e privacidade no uso de LLMs corporativos",
+        "Sessões de suporte técnico e esclarecimento de dúvidas",
+        "Documentação detalhada com exemplos de aplicação específica",
+        "Diretrizes para verificação da precisão das respostas geradas",
+      ],
+      required,
+    },
+  },
+  intermediate: {
+    cor: {
+      type: "select-multiple",
+      required,
+    },
+    api: repeatedDefinitions.yn,
+    ...llmIntermediateDefinitions,
+  },
+  expert: {
+    cbt: repeatedDefinitions.yn,
+    //"Quais destas abordagens você utiliza para orientar o fine-tuning de LLMs em ambientes corporativos?"
+    ftn: {
+      type: "select-multiple",
+      options: [
+        "Não participo de processos de fine-tuning de LLMs",
+        "Definição clara de objetivos de personalização e escopo do modelo",
+        "Coleta e curadoria de dados específicos para melhorar respostas",
+        "Uso de frameworks especializados para treinamento (ex.: LoRA, PEFT)",
+        "Implementação de avaliações contínuas para medir a precisão do modelo",
+        "Validação cruzada dos dados para evitar viés e overfitting",
+        "Criação de pipelines automatizados para atualização e versionamento",
+        "Segurança e conformidade regulatória ao utilizar dados sensíveis",
+        "Integração com APIs empresariais para personalização dinâmica",
+      ],
+      required,
+    },
+    ...llmExpertDefinitions,
+  },
+});
+const stc: FieldDescription = ObjectHelper.deepFreeze({
+    type: "select-multiple",
+    options: [
+      "Divisão explícita da tarefa em etapas lógicas antes da execução",
+      "Utilização de prompts estruturados com linguagem clara e objetiva para guiar o raciocínio passo a passo",
+      "Interação iterativa com o modelo para validar cada etapa antes da resposta final",
+      "Aprimoramento contínuo do contexto do modelo via memorização de respostas parciais",
+      "Uso de sub-modelos especializados para diferentes camadas do processo",
+      "Validação cruzada das respostas antes da conclusão",
+      "Automação de verificações de coerência em respostas intermediárias",
+      "Utilização de Linguagens de demarcação (XML, HTML, Markdown, etc.)",
+      "Listagem com índices numéricos ou alfabéticos",
+    ],
+    required,
+  }),
+  api: FieldDescription = ObjectHelper.deepFreeze({
+    type: "select-multiple",
+    options: [
+      "Não integro LLMs em pipelines CI/CD",
+      "Automação de testes unitários para validação de respostas geradas",
+      "Monitoramento contínuo de desempenho e ajuste de modelos via feedback",
+      "Versionamento e deploy automático de modelos ajustados",
+      "Uso de APIs para integração dinâmica de modelos com outros serviços",
+      "Treinamento e ajuste automatizado em resposta a mudanças no dataset",
+      "Pipeline de validação ética e compliance para modelos antes do deploy",
+      "Testes de adversarial robustness para detectar vulnerabilidades",
+    ],
+    required,
+  });
+export const llmEntryTypes: EntryTypeDictionary<LLMQuestionsKeys> =
+  withFrozenLib({
+    executivoAdministrativo: {
+      beginner: {
+        ...llmBeginnerDefinitions,
+      },
+      intermediate: {
+        ...llmIntermediateDefinitions,
+        doc: repeatedDefinitions.frq,
+        mon: repeatedDefinitions.txtl,
+      },
+      expert: {
+        ...llmExpertDefinitions,
+        doc: repeatedDefinitions.frq,
+        mon: repeatedDefinitions.txtl,
+      },
+    },
+    financeiro: {
+      beginner: {
+        ...llmBeginnerDefinitions,
+      },
+      intermediate: {
+        ...llmIntermediateDefinitions,
+        rel: repeatedDefinitions.txts,
+      },
+      expert: {
+        ...llmExpertDefinitions,
+        ten: repeatedDefinitions.frq,
+        rel: repeatedDefinitions.txts,
+      },
+    },
+    comercial: {
+      beginner: {
+        ...llmBeginnerDefinitions,
+        tip: repeatedDefinitions.txts,
+      },
+      intermediate: {
+        //"Quais destes pontos críticos a cerca de políticas em relações comerciais você dá prioridade quando utilizando LLMs?"
+        pol: {
+          type: "select-multiple",
+          options: [
+            "Confidencialidade e proteção de dados sensíveis em comunicações geradas por IA",
+            "Garantia de transparência e explicabilidade nas respostas geradas por LLMs",
+            "Prevenção contra viés e discriminação em conteúdos automatizados",
+            "Uso responsável para evitar manipulação ou desinformação comercial",
+            "Restrições sobre tomada de decisões automatizadas sem supervisão humana",
+            "Compliance com regulamentações de privacidade (ex.: GDPR, LGPD, CCPA)",
+            "Monitoramento contínuo da precisão e veracidade das informações geradas",
+            "Controle de permissões e acessos a LLMs em ambientes corporativos",
+            "Mitigação de riscos jurídicos ao utilizar IA para contratos e negociações",
+          ],
+          required,
+        },
+        nlp: repeatedDefinitions.frq,
+        doc: repeatedDefinitions.frq,
+        ...llmIntermediateDefinitions,
+      },
+      expert: {
+        adv: repeatedDefinitions.yn,
+        prv: repeatedDefinitions.frq,
+        api: repeatedDefinitions.frq,
+        ...llmExpertDefinitions,
+      },
+    },
+    marketing: {
+      beginner: {
+        ...llmBeginnerDefinitions,
+      },
+      intermediate: {
+        pol: repeatedDefinitions.frq,
+        nlp: repeatedDefinitions.yn,
+        exc: repeatedDefinitions.yn,
+        ...llmIntermediateDefinitions,
+      },
+      expert: {
+        prv: repeatedDefinitions.yn,
+        adv: repeatedDefinitions.yn,
+        api: repeatedDefinitions.exp,
+        ...llmExpertDefinitions,
+      },
+    },
+    suporteTecnicoN1: {
+      ...(stLlmKeys as any),
+    },
+    suporteTecnicoN2: {
+      ...(stLlmKeys as any),
+    },
+    operatorio: {
+      beginner: {
+        ...llmBeginnerDefinitions,
+      },
+      intermediate: {
+        lvl: repeatedDefinitions.lvl,
+        ...llmIntermediateDefinitions,
+      },
+      expert: {
+        lvl: repeatedDefinitions.lvl,
+        cus: repeatedDefinitions.frq,
+        ...llmExpertDefinitions,
+      },
+    },
+    desenvolvimento: {
+      beginner: {
+        chat: repeatedDefinitions.frq,
+        tips: repeatedDefinitions.txts,
+        ...llmBeginnerDefinitions,
+      },
+      intermediate: {
+        ctx: repeatedDefinitions.frq,
+        int: repeatedDefinitions.frq,
+        exp: repeatedDefinitions.exp,
+        //"Qual dessas prática você adota com modelos de chain-of-thought para orientações de tarefas com múltiplas camadas?"
+        stc,
+        ...llmIntermediateDefinitions,
+      },
+      expert: {
+        ftu: repeatedDefinitions.exp,
+        //"Selecione as classes de algoritmos de Aprendizado de Máquina que você mais tem experiência desenvolvendo"
+        crt: {
+          type: "select-multiple",
+          options: [
+            "Não desenvolvo algoritmos de Aprendizado de Máquina",
+            "Redes Neurais Artificiais (ANN, CNN, RNN, Transformers)",
+            "Modelos Baseados em Árvores (Decision Trees, Random Forest, XGBoost)",
+            "Modelos Estatísticos (Regressão Linear, Regressão Logística, SVM)",
+            "Redes Bayesianas e Modelos Probabilísticos",
+            "Modelos de Aprendizado por Reforço (Q-learning, DQN, PPO)",
+            "Sistemas de Recomendação (Collaborative Filtering, Matrix Factorization)",
+            "Técnicas de Aprendizado Não Supervisionado (Clustering, PCA, Autoencoders)",
+          ],
+          required,
+        },
+        //"Quais destas práticas você utiliza para integrar LLMs com pipelines CI/CD?"
+        api,
+        ...llmExpertDefinitions,
+      },
+    },
+    devOps: {
+      beginner: {
+        cmt: repeatedDefinitions.frq,
+        tip: repeatedDefinitions.frq,
+        ...llmBeginnerDefinitions,
+      },
+      intermediate: {
+        prp: repeatedDefinitions.frq,
+        ctx: repeatedDefinitions.frq,
+        stc,
+        ...llmIntermediateDefinitions,
+      },
+      expert: {
+        adv: repeatedDefinitions.yn,
+        api,
+        cst: repeatedDefinitions.txtl,
+        ...llmExpertDefinitions,
+      },
+    },
+  });

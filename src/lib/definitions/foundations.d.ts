@@ -122,8 +122,25 @@ export type AiBlocks = {
   llms: string;
   video: string;
 };
-export type fmBaseKeys = "tpl" | "rsp" | "emb" | "slc";
+export type fmBaseKeys =
+  | "tpl"
+  | "rsp"
+  | "emb"
+  | "slc"
+  | "plt";
 export type csBaseKeys = "shr" | "syn" | "org";
+export type aiAdBaseKeys =
+  | "gen"
+  | "evl"
+  | "tts"
+  | "cln"
+  | "int";
+export type aiAdExpertKeys =
+  | aiAdBaseKeys
+  | "adv"
+  | "vol"
+  | "sec";
+export type llmBaseKeys = "lan" | "val" | "col";
 export type repeatingKeys =
   | "fmt"
   | "sum"
@@ -147,6 +164,7 @@ export type repeatingDefinitionKeys =
   | "tmp"
   | "ast"
   | "docp"
+  | "lvl"
   | "txts"
   | "txtl";
 export type complexityLevel = 1 | 2 | 3 | 4 | 5;
