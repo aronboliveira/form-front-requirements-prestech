@@ -502,9 +502,16 @@ export type EntryTypeDictionary<T> = Readonly<{
     [L in complexityLabel]: KeysRecords<T>;
   };
 }>;
+export type EntryComplexityDictory<T> = Readonly<{
+  [K in complexityLabel]: KeysRecords<T>;
+}>;
 export type ROFieldRecord<T extends object> = Readonly<{
   [K in keyof T]: FieldDescription;
 }>;
+export type ROFieldStringRecord<T extends string> =
+  Readonly<{
+    [K in T]: FieldDescription;
+  }>;
 export interface EntryElementsDict<G, T> {
   [K in Exclude<roleType, "undefined">]: {
     [L in complexityLabel]: {

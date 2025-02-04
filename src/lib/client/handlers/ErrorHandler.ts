@@ -1,6 +1,6 @@
 import { flags, jsErrorsFriendlyNames } from "../vars";
 export default class ExceptionHandler {
-  static classify(exception: Error | DOMException): {
+  static classify(exception: Error): {
     type: string;
     status: number;
   } {
@@ -21,7 +21,10 @@ export default class ExceptionHandler {
           status: 400,
         };
       } else if (exception instanceof DOMException) {
-        const name = exception.name.toLowerCase().replace("error", "").trim();
+        const name = exception.name
+          .toLowerCase()
+          .replace("error", "")
+          .trim();
         switch (name) {
           case "indexsize":
           case "hierarchyrequest":
@@ -99,7 +102,10 @@ export default class ExceptionHandler {
       };
     }
   }
-  static describeValidityState(vs: ValidityState, custom?: string): string {
+  static describeValidityState(
+    vs: ValidityState,
+    custom?: string
+  ): string {
     for (const v of Object.keys(
       ValidityState.prototype
     ) as (keyof ValidityState)[]) {
@@ -107,9 +113,13 @@ export default class ExceptionHandler {
       if ((vs as any)[v] === false) {
         switch (v as keyof ValidityState) {
           case "badInput":
-            return flags.pt ? "Entrada inadequada" : "Inadequate entry";
+            return flags.pt
+              ? "Entrada inadequada"
+              : "Inadequate entry";
           case "patternMismatch":
-            return flags.pt ? "Padrão inadequado" : "Inadequate pattern";
+            return flags.pt
+              ? "Padrão inadequado"
+              : "Inadequate pattern";
           case "valueMissing":
             return flags.pt
               ? "O valor não pôde ser lido"
@@ -153,7 +163,9 @@ export default class ExceptionHandler {
     }
     return "";
   }
-  static getFriendlyErrorMessage(errorType: string): string {
+  static getFriendlyErrorMessage(
+    errorType: string
+  ): string {
     const friendlyNames = flags.pt
       ? jsErrorsFriendlyNames?.PT
       : jsErrorsFriendlyNames?.EN;
@@ -168,5 +180,12 @@ export default class ExceptionHandler {
   static isOkishCode(code: number): boolean {
     const firstDigit = code.toString().charAt(0);
     return ["1", "2", "3"].some(d => firstDigit === d);
+  }
+  static logUnexpected(e: Error) {
+    console.error(
+      `An unexpected error as occurred: ${
+        (e as Error).name
+      } (e as Error).message}`
+    );
   }
 }

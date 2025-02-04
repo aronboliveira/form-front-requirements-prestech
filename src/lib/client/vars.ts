@@ -1608,7 +1608,7 @@ export const csExpertKeys = ObjectHelper.deepFreeze({
   sch: `${cts} utiliza para garantir conformidade com normas de gestão de dados compartilhados (ex.: LGPD) ao trabalhar na nuvem?`,
 });
 export const biGeneralKeys = ObjectHelper.deepFreeze({
-  con: `${sttg} você usa para conectar 
+  con: `${sttg} você usa para conectar
   suas fontes de dados (planilhas, CSV, bancos, etc.) nas ferramentas de BI?`,
   grf: `${exp} utilizando os recursos nativos da ferramenta de BI para criar gráficos?`,
   fil: `${tcn} você utiliza para aplicar filtros e segmentações nativas da ferramenta para refinar suas visualizações?`,

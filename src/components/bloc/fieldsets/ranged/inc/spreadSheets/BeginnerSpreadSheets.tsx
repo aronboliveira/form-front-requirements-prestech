@@ -44,10 +44,12 @@ export default function BeginnerSpreadSheets({
             >
               {lab}
             </label>
-            {new RenderHandler(name).renderInput(
-              rolePrefix,
-              ac as QuestionKey
-            )}
+            {new RenderHandler({
+              name,
+              _role: rolePrefix,
+              _complexity: "beginner",
+              _appType: "spreadSheets",
+            }).renderInput(ac as QuestionKey)}
           </div>
         ))}
         {additional}
