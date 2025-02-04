@@ -15,31 +15,35 @@ import {
   defAiImgKeys,
   defAiVdKeys,
   defBiKeys,
-  defCrmsKeys,
+  defCrmKeys,
+  defCsKeys,
   defCsQuestions,
+  defDocsKeys,
   defDocsQuestions,
-  defErpsKeys,
+  defErpKeys,
+  defFmKeys,
   defFmQuestions,
   defLlmKeys,
   defPlnKeys,
+  defSsKeys,
   devAiAdKeys,
   devAiImgKeys,
   devAiVdKeys,
   devBiKeys,
-  devCrmsKeys,
+  devCrmKeys,
   devCsKeys,
   devDocsKeys,
-  devErpsKeys,
+  devErpKeys,
   devFmKeys,
   devLlmKeys,
   devOpsAiAdKeys,
   devOpsAiImgKeys,
   devOpsAiVdKeys,
   devOpsBiKeys,
-  devOpsCrmsKeys,
+  devOpsCrmKeys,
   devOpsCsKeys,
   devOpsDocsKeys,
-  devOpsErpsKeys,
+  devOpsErpKeys,
   devOpsFmKeys,
   devOpsLlmKeys,
   devOpsPlnKeys,
@@ -78,7 +82,7 @@ import {
   mktCrmKeys,
   mktCsKeys,
   mktDocsKeys,
-  mktErpsKeys,
+  mktErpKeys,
   mktFmKeys,
   mktLlmKeys,
   mktPlnKeys,
@@ -87,10 +91,10 @@ import {
   opAiImgKeys,
   opAiVdKeys,
   opBiKeys,
-  opCrmsKeys,
+  opCrmKeys,
   opCsKeys,
   opDocsKeys,
-  opErpsKeys,
+  opErpKeys,
   opFmKeys,
   opLlmKeys,
   opPlnKeys,
@@ -99,10 +103,10 @@ import {
   stN1AiImgKeys,
   stN1AiVdKeys,
   stN1BiKeys,
-  stN1CrmsKeys,
+  stN1CrmKeys,
   stN1CsKeys,
   stN1DocsKeys,
-  stN1ErpsKeys,
+  stN1ErpKeys,
   stN1FmKeys,
   stN1LlmKeys,
   stN1PlnKeys,
@@ -111,10 +115,10 @@ import {
   stN2AiImgKeys,
   stN2AiVdKeys,
   stN2BiKeys,
-  stN2CrmsKeys,
+  stN2CrmKeys,
   stN2CsKeys,
   stN2DocsKeys,
-  stN2ErpsKeys,
+  stN2ErpKeys,
   stN2FmKeys,
   stN2LlmKeys,
   stN2PlnKeys,
@@ -336,6 +340,150 @@ export interface OptionFieldDescription
   options?: string[];
 }
 export type roleDefined = Exclude<roleType, "undefined">;
+export type eaComplexityKeySet =
+  | typeof eaDocsKeys
+  | typeof eaSsKeys
+  | typeof eaFmKeys
+  | typeof eaCsKeys
+  | typeof eaBiKeys
+  | typeof eaCrmKeys
+  | typeof eaErpKeys
+  | typeof eaPlnKeys
+  | typeof eaAiAdKeys
+  | typeof eaAiImgKeys
+  | typeof eaAiVdKeys
+  | typeof eaLlmKeys;
+export type fnComplexityKeySet =
+  | typeof fnDocsKeys
+  | typeof fnSsKeys
+  | typeof fnFmKeys
+  | typeof fnCsKeys
+  | typeof fnBiKeys
+  | typeof fnCrmKeys
+  | typeof fnErpKeys
+  | typeof fnPlnKeys
+  | typeof fnAiAdKeys
+  | typeof fnAiImgKeys
+  | typeof fnAiVdKeys
+  | typeof fnLlmKeys;
+export type cmComplexityKeySet =
+  | typeof cmDocsKeys
+  | typeof cmSsKeys
+  | typeof cmFmKeys
+  | typeof cmCsKeys
+  | typeof cmBiKeys
+  | typeof cmCrmKeys
+  | typeof cmErpKeys
+  | typeof cmPlnKeys
+  | typeof cmAiAdKeys
+  | typeof cmAiImgKeys
+  | typeof cmAiVdKeys
+  | typeof cmLlmKeys;
+export type mktComplexityKeySet =
+  | typeof mktDocsKeys
+  | typeof mktSsKeys
+  | typeof mktFmKeys
+  | typeof mktCsKeys
+  | typeof mktBiKeys
+  | typeof mktCrmKeys
+  | typeof mktErpKeys
+  | typeof mktPlnKeys
+  | typeof mktAiAdKeys
+  | typeof mktAiImgKeys
+  | typeof mktAiVdKeys
+  | typeof mktLlmKeys;
+export type stN1ComplexityKeySet =
+  | typeof stN1DocsKeys
+  | typeof stN1SsKeys
+  | typeof stN1FmKeys
+  | typeof stN1CsKeys
+  | typeof stN1BiKeys
+  | typeof stN1CrmKeys
+  | typeof stN1ErpKeys
+  | typeof stN1PlnKeys
+  | typeof stN1AiAdKeys
+  | typeof stN1AiImgKeys
+  | typeof stN1AiVdKeys
+  | typeof stN1LlmKeys;
+export type stN2ComplexityKeySet =
+  | typeof stN2DocsKeys
+  | typeof stN2SsKeys
+  | typeof stN2FmKeys
+  | typeof stN2CsKeys
+  | typeof stN2BiKeys
+  | typeof stN2CrmKeys
+  | typeof stN2ErpKeys
+  | typeof stN2PlnKeys
+  | typeof stN2AiAdKeys
+  | typeof stN2AiImgKeys
+  | typeof stN2AiVdKeys
+  | typeof stN2LlmKeys;
+export type opComplexityKeySet =
+  | typeof opDocsKeys
+  | typeof opSsKeys
+  | typeof opFmKeys
+  | typeof opCsKeys
+  | typeof opBiKeys
+  | typeof opCrmKeys
+  | typeof opErpKeys
+  | typeof opPlnKeys
+  | typeof opAiAdKeys
+  | typeof opAiImgKeys
+  | typeof opAiVdKeys
+  | typeof opLlmKeys;
+export type devComplexityKeySet =
+  | typeof devDocsKeys
+  | typeof devSsKeys
+  | typeof devFmKeys
+  | typeof devCsKeys
+  | typeof devBiKeys
+  | typeof devCrmKeys
+  | typeof devErpKeys
+  | typeof devPlnKeys
+  | typeof devAiAdKeys
+  | typeof devAiImgKeys
+  | typeof devAiVdKeys
+  | typeof devLlmKeys;
+export type devOpsComplexityKeySet =
+  | typeof devOpsDocsKeys
+  | typeof devOpsSsKeys
+  | typeof devOpsFmKeys
+  | typeof devOpsCsKeys
+  | typeof devOpsBiKeys
+  | typeof devOpsCrmKeys
+  | typeof devOpsErpKeys
+  | typeof devOpsPlnKeys
+  | typeof devOpsAiAdKeys
+  | typeof devOpsAiImgKeys
+  | typeof devOpsAiVdKeys
+  | typeof devOpsLlmKeys;
+export type defComplexityKeySet =
+  | typeof defDocsKeys
+  | typeof defSsKeys
+  | typeof defFmKeys
+  | typeof defCsKeys
+  | typeof defBiKeys
+  | typeof defCrmKeys
+  | typeof defErpKeys
+  | typeof defPlnKeys
+  | typeof defAiAdKeys
+  | typeof defAiImgKeys
+  | typeof defAiVdKeys
+  | typeof defLlmKeys;
+export type complexityKeySet =
+  | eaComplexityKeySet
+  | fnComplexityKeySet
+  | cmComplexityKeySet
+  | mktComplexityKeySet
+  | stN1ComplexityKeySet
+  | stN2ComplexityKeySet
+  | opComplexityKeySet
+  | devComplexityKeySet
+  | devOpsComplexityKeySet
+  | defComplexityKeySet;
+export type complexityDict<T extends complexityKeySet> = {
+  [K in complexityLabel]: T[K];
+};
 export type ROStringRecord = Readonly<
   Record<string, string>
 >;
@@ -344,6 +492,10 @@ export type FieldDescription =
   | OptionFieldDescription;
 export type KeysRecords<T extends string> = Partial<
   Record<T, FieldDescription>
+>;
+export type QuestionsMap<T extends complexityKeySet> = Map<
+  addQuestionsKey,
+  complexityDict<T>
 >;
 export type EntryTypeDictionary<T> = Readonly<{
   [K in roleDefined]: {
@@ -357,7 +509,7 @@ export interface EntryElementsDict<G, T> {
   [K in Exclude<roleType, "undefined">]: {
     [L in complexityLabel]: {
       [G in addQuestionsKey]: Partial<
-        Record<SpreadsheetsQuestionsKeys, T>
+        Record<SpreadsheetsQuestionKey, T>
       >;
     };
   };
@@ -393,7 +545,7 @@ export type DocsExpertKeys =
   | StrKey<typeof opDocsKeys.expert>
   | StrKey<typeof devDocsKeys.expert>
   | StrKey<typeof devOpsDocsKeys.expert>;
-export type DocsQuestionsKeys =
+export type DocsQuestionKey =
   | DocsBeginnerKeys
   | DocsIntermediateKeys
   | DocsExpertKeys
@@ -428,7 +580,7 @@ export type SpreadsheetsExpertKeys =
   | StrKey<typeof opSsKeys.expert>
   | StrKey<typeof devSsKeys.expert>
   | StrKey<typeof devOpsSsKeys.expert>;
-export type SpreadsheetsQuestionsKeys =
+export type SpreadsheetsQuestionKey =
   | SpreadsheetsBeginnerKeys
   | SpreadsheetsIntermediateKeys
   | SpreadsheetsExpertKeys
@@ -463,7 +615,7 @@ export type FormBuilderExpertKeys =
   | StrKey<typeof opFmKeys.expert>
   | StrKey<typeof devFmKeys.expert>
   | StrKey<typeof devOpsFmKeys.expert>;
-export type FormBuilderQuestionsKeys =
+export type FormBuilderQuestionKey =
   | FormBuildersBeginnerKeys
   | FormBuilderIntermediateKeys
   | FormBuilderExpertKeys
@@ -498,7 +650,7 @@ export type CloudStorageExpertKeys =
   | StrKey<typeof opCsKeys.expert>
   | StrKey<typeof devCsKeys.expert>
   | StrKey<typeof devOpsCsKeys.expert>;
-export type CloudStorageQuestionsKeys =
+export type CloudStorageQuestionKey =
   | CloudStorageBeginnerKeys
   | CloudStorageIntermediateKeys
   | CloudStorageExpertKeys
@@ -536,7 +688,7 @@ export type BiExpertKeys =
   | StrKey<typeof devCsKeys.expert>
   | StrKey<typeof devOpsBiKeys.expert>
   | StrKey<typeof defBiKeys.expert>;
-export type BiQuestionsKeys =
+export type BiQuestionKey =
   | BiBeginnerKeys
   | BiIntermediateKeys
   | BiExpertKeys
@@ -546,35 +698,35 @@ export type CrmBeginnerKeys =
   | StrKey<typeof fnCrmKeys.beginner>
   | StrKey<typeof cmCrmKeys.beginner>
   | StrKey<typeof mktCrmKeys.beginner>
-  | StrKey<typeof stN1CrmsKeys.beginner>
-  | StrKey<typeof stN2CrmsKeys.beginner>
-  | StrKey<typeof opCrmsKeys.beginner>
-  | StrKey<typeof devCrmsKeys.beginner>
-  | StrKey<typeof devOpsCrmsKeys.beginner>
-  | StrKey<typeof defCrmsKeys.beginner>;
+  | StrKey<typeof stN1CrmKeys.beginner>
+  | StrKey<typeof stN2CrmKeys.beginner>
+  | StrKey<typeof opCrmKeys.beginner>
+  | StrKey<typeof devCrmKeys.beginner>
+  | StrKey<typeof devOpsCrmKeys.beginner>
+  | StrKey<typeof defCrmKeys.beginner>;
 export type CrmIntermediateKeys =
   | StrKey<typeof eaCrmKeys.intermediate>
   | StrKey<typeof fnCrmKeys.intermediate>
   | StrKey<typeof cmCrmKeys.intermediate>
   | StrKey<typeof mktCrmKeys.intermediate>
-  | StrKey<typeof stN1CrmsKeys.intermediate>
-  | StrKey<typeof stN2CrmsKeys.intermediate>
+  | StrKey<typeof stN1CrmKeys.intermediate>
+  | StrKey<typeof stN2CrmKeys.intermediate>
   | StrKey<typeof opBiKeys.intermediate>
   | StrKey<typeof devCsKeys.intermediate>
-  | StrKey<typeof devOpsCrmsKeys.intermediate>
-  | StrKey<typeof defCrmsKeys.intermediate>;
+  | StrKey<typeof devOpsCrmKeys.intermediate>
+  | StrKey<typeof defCrmKeys.intermediate>;
 export type CrmExpertKeys =
   | StrKey<typeof eaCrmKeys.expert>
   | StrKey<typeof fnCrmKeys.expert>
   | StrKey<typeof cmCrmKeys.expert>
   | StrKey<typeof mktCrmKeys.expert>
-  | StrKey<typeof stN1CrmsKeys.expert>
-  | StrKey<typeof stN2CrmsKeys.expert>
+  | StrKey<typeof stN1CrmKeys.expert>
+  | StrKey<typeof stN2CrmKeys.expert>
   | StrKey<typeof opBiKeys.expert>
   | StrKey<typeof devCsKeys.expert>
-  | StrKey<typeof devOpsCrmsKeys.expert>
-  | StrKey<typeof defCrmsKeys.expert>;
-export type CrmQuestionsKeys =
+  | StrKey<typeof devOpsCrmKeys.expert>
+  | StrKey<typeof defCrmKeys.expert>;
+export type CrmQuestionKey =
   | CrmBeginnerKeys
   | CrmIntermediateKeys
   | CrmExpertKeys
@@ -583,36 +735,36 @@ export type ErpBeginnerKeys =
   | StrKey<typeof eaErpKeys.beginner>
   | StrKey<typeof fnErpKeys.beginner>
   | StrKey<typeof cmErpKeys.beginner>
-  | StrKey<typeof mktErpsKeys.beginner>
-  | StrKey<typeof stN1ErpsKeys.beginner>
-  | StrKey<typeof stN2ErpsKeys.beginner>
-  | StrKey<typeof opErpsKeys.beginner>
-  | StrKey<typeof devErpsKeys.beginner>
-  | StrKey<typeof devOpsErpsKeys.beginner>
-  | StrKey<typeof defErpsKeys.beginner>;
+  | StrKey<typeof mktErpKeys.beginner>
+  | StrKey<typeof stN1ErpKeys.beginner>
+  | StrKey<typeof stN2ErpKeys.beginner>
+  | StrKey<typeof opErpKeys.beginner>
+  | StrKey<typeof devErpKeys.beginner>
+  | StrKey<typeof devOpsErpKeys.beginner>
+  | StrKey<typeof defErpKeys.beginner>;
 export type ErpIntermediateKeys =
   | StrKey<typeof eaErpKeys.intermediate>
   | StrKey<typeof fnErpKeys.intermediate>
   | StrKey<typeof cmErpKeys.intermediate>
-  | StrKey<typeof mktErpsKeys.intermediate>
-  | StrKey<typeof stN1ErpsKeys.intermediate>
-  | StrKey<typeof stN2ErpsKeys.intermediate>
-  | StrKey<typeof opErpsKeys.intermediate>
-  | StrKey<typeof devErpsKeys.intermediate>
-  | StrKey<typeof devOpsErpsKeys.intermediate>
-  | StrKey<typeof defErpsKeys.intermediate>;
+  | StrKey<typeof mktErpKeys.intermediate>
+  | StrKey<typeof stN1ErpKeys.intermediate>
+  | StrKey<typeof stN2ErpKeys.intermediate>
+  | StrKey<typeof opErpKeys.intermediate>
+  | StrKey<typeof devErpKeys.intermediate>
+  | StrKey<typeof devOpsErpKeys.intermediate>
+  | StrKey<typeof defErpKeys.intermediate>;
 export type ErpExpertKeys =
   | StrKey<typeof eaErpKeys.expert>
   | StrKey<typeof fnErpKeys.expert>
   | StrKey<typeof cmErpKeys.expert>
-  | StrKey<typeof mktErpsKeys.expert>
-  | StrKey<typeof stN1ErpsKeys.expert>
-  | StrKey<typeof stN2ErpsKeys.expert>
-  | StrKey<typeof opErpsKeys.expert>
-  | StrKey<typeof devErpsKeys.expert>
-  | StrKey<typeof devOpsErpsKeys.expert>
-  | StrKey<typeof defErpsKeys.expert>;
-export type ErpQuestionsKeys =
+  | StrKey<typeof mktErpKeys.expert>
+  | StrKey<typeof stN1ErpKeys.expert>
+  | StrKey<typeof stN2ErpKeys.expert>
+  | StrKey<typeof opErpKeys.expert>
+  | StrKey<typeof devErpKeys.expert>
+  | StrKey<typeof devOpsErpKeys.expert>
+  | StrKey<typeof defErpKeys.expert>;
+export type ErpQuestionKey =
   | ErpBeginnerKeys
   | ErpIntermediateKeys
   | ErpExpertKeys
@@ -650,7 +802,7 @@ export type PlanningExpertKeys =
   | StrKey<typeof devPlnKeys.expert>
   | StrKey<typeof devOpsPlnKeys.expert>
   | StrKey<typeof defPlnKeys.expert>;
-export type PlanningQuestionsKeys =
+export type PlanningQuestionKey =
   | PlanningBeginnerKeys
   | PlanningIntermediateKeys
   | PlanningExpertKeys
@@ -688,7 +840,7 @@ export type AudioAiExpertKeys =
   | StrKey<typeof devAiAdKeys.expert>
   | StrKey<typeof devOpsAiAdKeys.expert>
   | StrKey<typeof defPlnKeys.expert>;
-export type AudioAiQuestionsKeys =
+export type AudioAiQuestionKey =
   | AudioAiBeginnerKeys
   | AudioAiIntermediateKeys
   | AudioAiExpertKeys
@@ -726,7 +878,7 @@ export type ImageAiExpertKeys =
   | StrKey<typeof devAiImgKeys.expert>
   | StrKey<typeof devOpsAiImgKeys.expert>
   | StrKey<typeof defAiImgKeys.expert>;
-export type ImageAiQuestionsKeys =
+export type ImageAiQuestionKey =
   | ImageAiBeginnerKeys
   | ImageAiIntermediateKeys
   | ImageAiExpertKeys
@@ -764,7 +916,7 @@ export type VideoAiExpertKeys =
   | StrKey<typeof devAiAdKeys.expert>
   | StrKey<typeof devOpsAiVdKeys.expert>
   | StrKey<typeof defAiVdKeys.expert>;
-export type VideoAiQuestionsKeys =
+export type VideoAiQuestionKey =
   | VideoAiBeginnerKeys
   | VideoAiIntermediateKeys
   | VideoAiExpertKeys
@@ -799,27 +951,27 @@ export type LLMExpertKeys =
   | StrKey<typeof opLlmKeys.expert>
   | StrKey<typeof devLlmKeys.expert>
   | StrKey<typeof devOpsLlmKeys.expert>;
-export type LLMQuestionsKeys =
+export type LLMQuestionKey =
   | LLMBeginnerKeys
   | LLMIntermediateKeys
   | LLMExpertKeys
   | "libre";
 export type OfficeAppsKeys =
-  | DocsQuestionsKeys
-  | SpreadsheetsQuestionsKeys
-  | FormBuilderQuestionsKeys
-  | CloudStorageQuestionsKeys;
+  | DocsQuestionKey
+  | SpreadsheetsQuestionKey
+  | FormBuilderQuestionKey
+  | CloudStorageQuestionKey;
 export type OfficePlatformsKeys =
-  | BiQuestionsKeys
-  | CrmQuestionsKeys
-  | ErpQuestionsKeys
-  | PlanningQuestionsKeys;
+  | BiQuestionKey
+  | CrmQuestionKey
+  | ErpQuestionKey
+  | PlanningQuestionKey;
 export type AiKeys =
-  | AudioAiQuestionsKeys
-  | ImageAiQuestionsKeys
-  | VideoAiQuestionsKeys
-  | LLMQuestionsKeys;
-export type QuestionsKeys =
+  | AudioAiQuestionKey
+  | ImageAiQuestionKey
+  | VideoAiQuestionKey
+  | LLMQuestionKey;
+export type QuestionKey =
   | OfficeAppsKeys
   | OfficePlatformsKeys
   | AiKeys;

@@ -31,7 +31,9 @@ export interface TelFragmentOptInput extends OptInput {
 export interface IEmailInput extends OptInput {
   restriction?: RegExp;
 }
-export interface ITelInput extends OptInput, Partial<ContextualizedTel> {
+export interface ITelInput
+  extends OptInput,
+    Partial<ContextualizedTel> {
   type: TelType;
   ctx?: React.Context<ITelCtx>;
 }
@@ -82,7 +84,8 @@ export interface FsRangedBlock extends HasChildren {
   id: string;
   level: complexityLabel;
 }
-export interface RangeInputBlock extends Omit<OptInput, "id"> {
+export interface RangeInputBlock
+  extends Omit<OptInput, "id"> {
   id: rangeCtxIds;
   required?: boolean;
   label?: string;
@@ -100,13 +103,18 @@ export interface AddInputSubFieldset extends Addable {
   questions: Array<[string, string]>;
 }
 export interface AddInputBlock
-  extends Partial<HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement>,
+  extends Partial<
+      HTMLInputElement &
+        HTMLSelectElement &
+        HTMLTextAreaElement
+    >,
     Addable,
     Required<Identifiable> {
   name: string;
   descendants?: React.ReactNode;
 }
-export interface LimitedAddInputBlock extends AddInputBlock {
+export interface LimitedAddInputBlock
+  extends AddInputBlock {
   max?: number;
   min?: number;
 }

@@ -1,17 +1,35 @@
 import {
-  AudioAiQuestionsKeys,
+  AudioAiQuestionKey,
+  BiQuestionKey,
   ClassesKey,
-  CloudStorageQuestionsKeys,
-  DocsQuestionsKeys,
+  CloudStorageQuestionKey,
+  CrmQuestionKey,
+  DocsQuestionKey,
   EntryTypeDictionary,
+  ErpQuestionKey,
   FieldDescription,
-  FormBuilderQuestionsKeys,
-  ImageAiQuestionsKeys,
+  FormBuilderQuestionKey,
+  ImageAiQuestionKey,
   KeysRecords,
-  LLMQuestionsKeys,
+  LLMQuestionKey,
+  PlanningQuestionKey,
+  QuestionKey,
+  QuestionsMap,
   ROFieldRecord,
-  SpreadsheetsQuestionsKeys,
-  VideoAiQuestionsKeys,
+  SpreadsheetsQuestionKey,
+  VideoAiQuestionKey,
+  cmComplexityKeySet,
+  complexityDict,
+  complexityKeySet,
+  defComplexityKeySet,
+  devComplexityKeySet,
+  devOpsComplexityKeySet,
+  eaComplexityKeySet,
+  fnComplexityKeySet,
+  mktComplexityKeySet,
+  opComplexityKeySet,
+  stN1ComplexityKeySet,
+  stN2ComplexityKeySet,
 } from "../definitions/client/helpers";
 import {
   AiBlocks,
@@ -183,6 +201,18 @@ export enum friendlyRoles {
   default = "Cargo Não Definido",
   undefined = "Cargo Indefinido",
 }
+export enum roleAcronyms {
+  ea = friendlyRoles.executivoAdministrativo,
+  fn = friendlyRoles.financeiro,
+  cm = friendlyRoles.comercial,
+  mkt = friendlyRoles.marketing,
+  stN1 = friendlyRoles.suporteTecnicoN1,
+  stN2 = friendlyRoles.suporteTecnicoN2,
+  op = friendlyRoles.operatorio,
+  dev = friendlyRoles.desenvolvimento,
+  devOps = friendlyRoles.devOps,
+  def = friendlyRoles.default,
+}
 export enum Acronyms {
   dt = "DailyTasks",
   mt = "MainTasks",
@@ -196,7 +226,7 @@ export enum Acronyms {
 export enum AcronymsDefaults {
   dt = "Quais são suas principais tarefas diárias?",
   mt = "Quais são suas principais atividade na empresa que poderiam ser beneficiadas com novas automações e ouros recursos virtuais?",
-  ms = "Quais ferramentas digitais ou sistemas virtuais você utiliza rotineiramente no trabalho?",
+  ms = `Quais destas ferramentas digitais ou sistemas virtuais você utiliza rotineiramente no trabalho?`,
   as = "Caso utilize outros softwares no contexto anterior, mencione aqui:",
   pr = "Como você utiliza tecnologias para a organização e planejamento das suas atividades de trabalho?",
   op = "Existem, no seu trabalho, processos manuais ou repetitivos que você acredita que poderiam ser melhorados com tecnologias novas ou mais atualizadas?",
@@ -557,7 +587,7 @@ export const CtxLabels: roleQuestionsMap = Object.seal(
         ["devOps", ""],
         [
           "default",
-          "Quais ferramentas digitais ou sistemas virtuais você utiliza rotineiramente no trabalho?",
+          `Quais destas ferramentas digitais ou sistemas virtuais você utiliza rotineiramente no trabalho?`,
         ],
       ]),
     ],
@@ -1433,6 +1463,16 @@ export const suggestionsGroupsMap: Readonly<
   ])
 );
 // Related to range inputs
+const required = true,
+  exp = `Qual é o seu nível de experiência`,
+  fam = `Qual é a sua familiaridade`,
+  tcn = `Quais destas técnicas`,
+  sttg = `Quais destas estratégias`,
+  frq = `Com que frequência você`,
+  tls = `Quais destas ferramentas`,
+  rsc = `Quais destes recursos`,
+  cts = `Quais critérios você`,
+  mnn = `De que maneiras você`;
 export const appGroupsDict: Record<
   RangeCtxComponentNames,
   addQuestionsKey
@@ -1505,11 +1545,11 @@ export const libre: Readonly<
 export const repeated: Readonly<{
   [K in repeatingKeys]: string;
 }> = ObjectHelper.deepFreeze({
-  fmt: "Qual é sua familiaridade com formatações simples (negrito, itálico, cabeçalho)?",
-  sum: "Qual é sua familiaridade com funções matemáticas básicas (ex.: SOMA, MÉDIA, SOMASE)?",
+  fmt: `${fam} com formatações simples (negrito, itálico, cabeçalho)?`,
+  sum: `${fam} com funções matemáticas básicas (ex.: SOMA, MÉDIA, SOMASE)?`,
   tmp: "De que forma você aproveita modelos (templates) prontos para criar documentos básicos?",
   mcr: "Que estratégias de scripts (VBA, AppScript, Python) você utiliza para automatizar tarefas repetitivas?",
-  big: "Com que frequência você integra ou exporta dados para ferramentas de BI (ex.: Power BI, Data Studio)?",
+  big: `${frq} você integra ou exporta dados para ferramentas de BI (ex.: Power BI, Data Studio)?`,
   arr: "Você domina ou utiliza fórmulas matriciais (ex.: ÍNDICE, CORRESP) para cálculos avançados?",
   tbd: "Como você utiliza tabelas dinâmicas para analisar grandes quantidades de dados?",
 });
@@ -1527,51 +1567,143 @@ function withFrozenLibreLabel<
   return ObjectHelper.deepFreeze(dict);
 }
 export const fmGeneralKeys = ObjectHelper.deepFreeze({
-  tpl: "Com que frequência você utiliza templates prontos para elaborar questionários?",
+  tpl: `${frq} você utiliza templates prontos para elaborar questionários?`,
   rsp: "Quais são suas formas preferenciais de salvar dados de um formulário?",
-  emb: "Quais destas técnicas você utiliza com mais frequência para analisar resultados aglomerados por diversas submissões de um formulário?",
-  plt: "Quais destas ferramentas você utiliza para construção de formulários?",
+  emb: `${tcn} você utiliza com mais frequência para analisar resultados aglomerados de múltiplas submissões de um formulário?`,
+  plt: `${tls} você utiliza para construção de formulários?`,
   slc: "Descreva livremente seu critério para escolher entre múltipla escolha (dropdowns, rádios, checkboxes) ou respostas paragrafadas",
 });
 export const fmBeginnerKeys = ObjectHelper.deepFreeze({
-  crt: "Qual é o seu nível de experiência criando formulários para coleta de dados?",
+  crt: `${exp} criando formulários para coleta de dados?`,
   ...fmGeneralKeys,
 });
 export const fmIntermediateKeys = ObjectHelper.deepFreeze({
   ...fmGeneralKeys,
   aut: "Como você configura para envio de notificações ou respostas?",
-  api: "Com que frequência você integra formulários a APIs para coleta ou envio de dados?",
+  api: `${frq} você integra formulários a APIs para coleta ou envio de dados?`,
 });
 export const fmExpertKeys = ObjectHelper.deepFreeze({
   ...fmGeneralKeys,
   dsh: "Como você conecta formulários a dashboards para relatórios em tempo real?",
 });
 export const csGeneralKeys = ObjectHelper.deepFreeze({
-  syn: "Quais destas plaformas de armazenamento em nuvem você tem preferência em utilizar?",
-  shr: "Quais são suas formas preferenciar de habilitar o compartilhamento de arquivos em nuvem com outras colaboradores?",
+  syn: "Quais destas plataformas de armazenamento em nuvem você tem preferência por utilizar?",
+  shr: "Quais são suas formas preferidas de habilitar o compartilhamento de arquivos em nuvem com outros colaboradores?",
   org: "Descreva seus critérios para organizar pastas e arquivos armazenados em nuvem (ex.: Padrão de nomenclatura, Lógicas de Separação, etc.)",
 });
 export const csBeginnerKeys = ObjectHelper.deepFreeze({
-  upl: "Qual é o seu nível de experiência em enviar arquivos para armazenamento em nuvem?",
+  upl: `${exp} em enviar arquivos para armazenamento em nuvem?`,
   ...csGeneralKeys,
   acc: "Você já configurou permissões básicas (somente leitura, edição, tipos de restrição) para arquivos em nuvem?",
 });
 export const csIntermediateKeys = ObjectHelper.deepFreeze({
   ...csGeneralKeys,
   ver: "Como você lida com controle de versões para evitar perda de dados?",
-  bck: "Com que frequência você executa backups de pastas ou arquivos importantes para nuvens?",
-  sch: "Quais critérios você utiliza para garantir conformidade com normas de gestão de dados compartilhados (ex.: LGPD) quando trabalhando em nuvens?",
+  bck: `${frq} você executa backups de pastas ou arquivos importantes para nuvens?`,
+  sch: `${cts} utiliza para garantir conformidade com normas de gestão de dados compartilhados (ex.: LGPD) ao trabalhar na nuvem?`,
 });
 export const csExpertKeys = ObjectHelper.deepFreeze({
   ...csGeneralKeys,
   scp: "Quais destas tecnologias você utiliza para automatizar procedimentos de gestão, controle e governança de dados em nuvem?",
-  sch: "Quais critérios você utiliza para garantir conformidade com normas de gestão de dados compartilhados (ex.: LGPD) quando trabalhando em nuvens?",
+  sch: `${cts} utiliza para garantir conformidade com normas de gestão de dados compartilhados (ex.: LGPD) ao trabalhar na nuvem?`,
+});
+export const biGeneralKeys = ObjectHelper.deepFreeze({
+  con: `${sttg} você usa para conectar 
+  suas fontes de dados (planilhas, CSV, bancos, etc.) nas ferramentas de BI?`,
+  grf: `${exp} utilizando os recursos nativos da ferramenta de BI para criar gráficos?`,
+  fil: `${tcn} você utiliza para aplicar filtros e segmentações nativas da ferramenta para refinar suas visualizações?`,
+  atz: `${frq} você configura atualizações automáticas dos dados nas ferramentas de BI?`,
+  col: `${rsc} você utiliza para compartilhar dashboards e relatórios diretamente pela ferramenta de BI?`,
+});
+export const biBeginnerKeys = ObjectHelper.deepFreeze({
+  ...biGeneralKeys,
+});
+export const biIntermediateKeys = ObjectHelper.deepFreeze({
+  ...biGeneralKeys,
+  mdl: `${exp} modelando e transformando dados usando os recursos da ferramenta de BI para criar dashboards robustos?`,
+  aut: `${exp} utilizando as automações nativas da ferramenta de BI para atualizar os dados?`,
+  int: `${sttg} você utiliza para integrar diferentes fontes de dados na ferramenta de BI para análises detalhadas?`,
+});
+export const biExpertKeys = ObjectHelper.deepFreeze({
+  ...biGeneralKeys,
+  adv: `${sttg} você utiliza para otimizar a performance de consultas e visualizações em dashboards com grandes volumes de dados?`,
+  gov: `${exp} usando recursos avançados de segurança e governança (ex.: RLS) das ferramenta de BI?`,
+  api: `${exp} integrando APIs ou scripts personalizados nas ferramentas de BI para automação e customização?`,
+});
+export const crmGeneralKeys = ObjectHelper.deepFreeze({
+  con: `${mnn} conecta dados de clientes (leads, contatos) na plataforma de CRM (ex.: Salesforce, HubSpot)?`,
+  vis: `${rsc} nativos da plataforma para visualizar pipelines e funis de vendas?`,
+  seg: `${tcn} utiliza filtros predefinidos para segmentar clientes e leads?`,
+  rep: `${mnn} gera relatórios e dashboards para monitorar o desempenho comercial?`,
+  atz: `${frq} configura atualizações automáticas dos dados ou realiza importações manuais?`,
+});
+export const crmBeginnerKeys = ObjectHelper.deepFreeze({
+  crt: `${fam} com as funcionalidades básicas de plataformas de CRM?`,
+  ...crmGeneralKeys,
+});
+export const crmIntermediateKeys = ObjectHelper.deepFreeze({
+  ...crmGeneralKeys,
+  mdl: `${mnn} organiza e estrutura os dados de clientes para criar funis de vendas mais detalhados?`,
+  aut: `${tcn} você utiliza para que as automações nativas dispararem alertas e atualizem o status dos leads?`,
+  int: `${mnn} integra a plataforma de CRM com outras ferramentas (ex.: e-mail, marketing)?`,
+});
+export const crmExpertKeys = ObjectHelper.deepFreeze({
+  ...crmGeneralKeys,
+  adv: `${sttg} você utiliza para recursos avançados da plataforma de CRM buscando prever oportunidades e personalizar campanhas?`,
+  gov: `${cts} implementa para governança e segurança na gestão dos dados de clientes?`,
+  api: `${tcn} você utiliza para integrar APIs ou scripts personalizados buscando automatizar processos e customizar a plataforma de CRM?`,
+});
+export const erpGeneralKeys = ObjectHelper.deepFreeze({
+  cad: `${frq} cadastra fornecedores, produtos ou clientes simples sem grande complexidade em ERPs?`,
+  rep: `${frq} gera relatórios iniciais (vendas, pedidos) diretamente dos ERPs?`,
+  doc: `${rsc} você usa para salvar ou imprimir documentos fiscais gerados em ERPs?`,
+});
+export const erpBeginnerKeys = ObjectHelper.deepFreeze({
+  crt: `${fam} com as funcionalidades básicas de um ERP?`,
+  ...erpGeneralKeys,
+});
+export const erpIntermediateKeys = ObjectHelper.deepFreeze({
+  wfl: `${sttg} você considera para configurar fluxos intermediários (ex.: aprovação, descontos) dentro dos ERPs?`,
+  rel: `${sttg} você usa para elaborar relatórios customizados para análises específicas usando o ERP?`,
+  mig: `${frq} importa dados de planilhas ou migra entre ambientes (homologação, produção) em ERPs?`,
+  sec: `${rsc} você usa para definir permissões específicas para diferentes áreas (ex.: compras, vendas) em ERPs?`,
+  int: `${mnn} integra o ERP com outras ferramentas (ex.: CRM, e-commerce)?`,
+  ...erpGeneralKeys,
+});
+export const erpExpertKeys = ObjectHelper.deepFreeze({
+  ha_: `${exp} implantando alta disponibilidade (cluster, failover) em ERPs para evitar interrupções?`,
+  prc: `${rsc} você usa para orquestrar processos complexos (ex.: MRP, produção) e auditar logs em ERPs?`,
+  gov: `${sttg} você usa para implementar governança, compliance (LGPD, etc.) e auditoria avançada em ERPs?`,
+  ...erpGeneralKeys,
+});
+export const plnGeneralKeys = ObjectHelper.deepFreeze({
+  tpl: `${frq} você utiliza templates prontos para organizar suas tarefas e compromissos?`,
+  col: "Quais métodos você utiliza para colaborar e compartilhar quadros ou listas de tarefas?",
+  rep: "Quais padrões de relatórios ou dashboards você gera para acompanhar o progresso das atividades?",
+  sch: "Descreva seus principais critérios que voce~considera ao definir e revisar seus cronogramas e prazos nas suas ferramentas de planejamento",
+});
+export const plnBeginnerKeys = ObjectHelper.deepFreeze({
+  aut: `${frq} você cria automações para atualizar status ou enviar notificações em seus boards?`,
+  crt: "Quais são as principais ferramentas e subpaineis utilizados por você nestas plataformas?",
+  ...plnGeneralKeys,
+});
+export const plnIntermediateKeys = ObjectHelper.deepFreeze({
+  int: `${tls} você utiliza para integrar suas ferramentas de planejamento com outros sistemas?`,
+  sec: "Quais destas práticas você utiliza para gerenciar permissões e acessos para diferentes times nos seus quadros e agendas?",
+  crt: "Quais são as principais ferramentas e subpaineis utilizados por você nestas plataformas?",
+  ...plnGeneralKeys,
+});
+export const plnExpertKeys = ObjectHelper.deepFreeze({
+  ...plnGeneralKeys,
+  adv: "Quais práticas você utiliza para consolidar dados de múltiplos quadros para criar dashboards executivos?",
+  sci: "Você utiliza ou participa de metodologias avançadas de gerência (Scrum, Kanban) para otimização da performance de times?",
+  api: "Como você integra APIs ou scripts para automatizar a criação, movimentação e atualização de tarefas em massa?",
 });
 export const aiAdGeneralKeys = ObjectHelper.deepFreeze({
-  gen: "Qual é o seu nível de experiência utilizando IA generativa para criar e manipular áudios?",
-  evl: "Quais critérios você utiliza para avaliar e determinar a qualidade dos áudios gerados pela IA?",
-  tts: "Com que frequência você utiliza IAs para recursos de text-to-spreech?",
-  cln: 'Com que frequência você utiliza IAs para "clonagem" de vozes?',
+  gen: `${exp} utilizando IA generativa para criar e manipular áudios?`,
+  evl: `${cts} utiliza para avaliar e determinar a qualidade dos áudios gerados pela IA?`,
+  tts: `${frq} você utiliza IAs para recursos de text-to-spreech?`,
+  cln: `${frq} você utiliza IAs para "clonagem" de vozes?`,
   int: "Quais são os principais casos de uso para IA em áudio na sua rotina específica de trabalho?",
 });
 export const aiAdBeginnerKeys = ObjectHelper.deepFreeze({
@@ -1588,16 +1720,16 @@ export const aiAdIntermediateKeys = ObjectHelper.deepFreeze(
 );
 export const aiAdExpertKeys = ObjectHelper.deepFreeze({
   ...aiAdGeneralKeys,
-  adv: "Com que frequência você utiliza integrações avançadas ou APIs para otimização de áudio via IA?",
+  adv: `${frq} você utiliza integrações avançadas ou APIs para otimização de áudio via IA?`,
   vol: "Você automatiza a produção e análise de grandes volumes de áudios com IA?",
   sec: "Como você implementa medidas de segurança para proteger áudios gerados por IA?",
 });
 export const aiImgGeneralKeys = ObjectHelper.deepFreeze({
-  gen: "Qual é o seu nível de experiência utilizando IA generativa para criar e manipular imagens?",
-  evl: "Quais critérios você utiliza para avaliar a qualidade das imagens geradas pelas IAs?",
-  opt: "Quais ferramentas você utiliza para editar e otimizar a qualidade das imagens geradas pelas IAs?",
-  fmt: "Quais ferramentas você converter o formato das imagens geradas por IAs?",
-  col: "Com que frequência você utiliza IAs para aplicar ajustes automáticos de cor ou filtros em imagens?",
+  gen: `${exp} utilizando IA generativa para criar e manipular imagens?`,
+  evl: `${cts} utiliza para avaliar a qualidade das imagens geradas pelas IAs?`,
+  opt: `${tls} você utiliza para editar e otimizar a qualidade das imagens geradas pelas IAs?`,
+  fmt: `${tls} você converter o formato das imagens geradas por IAs?`,
+  col: `${frq} você utiliza IAs para aplicar ajustes automáticos de cor ou filtros em imagens?`,
   int: "Quais são os principais casos de uso para IA em imagens na sua rotina específica de trabalho?",
 });
 export const aiImgBeginnerKeys = ObjectHelper.deepFreeze({
@@ -1606,26 +1738,26 @@ export const aiImgBeginnerKeys = ObjectHelper.deepFreeze({
 });
 export const aiImgIntermediateKeys =
   ObjectHelper.deepFreeze({
-    doc: "Com que frequência você documenta os processos e configurações utilizados para trabalhar com imagens geradas por IA?",
+    doc: `${frq} você documenta os processos e configurações utilizados para trabalhar com imagens geradas por IA?`,
     ing: "Como você integra as imagens geradas por IA em fluxos de trabalho mais complexos?",
     ...aiImgGeneralKeys,
   });
 export const aiImgExpertKeys = ObjectHelper.deepFreeze({
-  adv: "Com que frequência você utiliza integrações avançadas ou APIs para otimização de imagens via IA?",
+  adv: `${frq} você utiliza integrações avançadas ou APIs para otimização de imagens via IA?`,
   vol: "Você automatiza a produção e análise de grandes volumes de imagens (ao menos 1GB) com IAs?",
   sec: "Como você implementa medidas de segurança para proteger as imagens geradas por IA?",
   ...aiImgGeneralKeys,
 });
 export const aiVdGeneralKeys = ObjectHelper.deepFreeze({
-  gen: "Qual é o seu nível de experiência utilizando IA generativa para criar e manipular vídeos?",
-  evl: "Quais critérios você utiliza para avaliar e determinar a qualidade dos vídeos gerados pela IA?",
-  tts: "Com que frequência você utiliza IAs Generativas com recursos de text-to-video?",
-  cln: "Com que frequência você utiliza IAs para replicação de estilos visuais, como templates?",
+  gen: `${exp} utilizando IA generativa para criar e manipular vídeos?`,
+  evl: `${cts} utiliza para avaliar e determinar a qualidade dos vídeos gerados pela IA?`,
+  tts: `${frq} você utiliza IAs Generativas com recursos de text-to-video?`,
+  cln: `${frq} você utiliza IAs para replicação de estilos visuais, como templates?`,
   int: "Quais são os principais casos de uso para IA em vídeo na sua rotina específica de trabalho?",
 });
 export const aiVdBeginnerKeys = ObjectHelper.deepFreeze({
   cnt: "Você já utilizou IAs Generativas de Vídeo para transicionar diferentes imagens?",
-  set: "Qual é o seu nível de experiência utilizando ferramentas de roteirização ou storyboards com ferramentas de IAs Generativas?",
+  set: `${exp} utilizando ferramentas de roteirização ou storyboards com ferramentas de IAs Generativas?`,
   ...aiVdGeneralKeys,
 });
 export const aiVdIntermediateKeys = ObjectHelper.deepFreeze(
@@ -1637,24 +1769,24 @@ export const aiVdIntermediateKeys = ObjectHelper.deepFreeze(
   }
 );
 export const aiVdExpertKeys = ObjectHelper.deepFreeze({
-  adv: "Com que frequência você utiliza integrações avançadas (como chamadas de APIs) para envio automático de vídeos manipulados por IAs?",
+  adv: `${frq} você utiliza integrações avançadas (como chamadas de APIs) para envio automático de vídeos manipulados por IAs?`,
   edt: "Quais as principais ferramentas que você utiliza para editar ou ajustar os vídeos gerados por IAs?",
   txt: "Descreva pontos críticos dos seus padrões de roteiração para geração de vídeos com IAs automáticas",
   ...aiVdGeneralKeys,
 });
 export const llmGeneralKeys = ObjectHelper.deepFreeze({
   lan: "Em que idiomas você costuma interagir com LLMs?",
-  val: "Com que frequência você considera que as LLMs trazem retornos inadequados ou insatisfatórios?",
+  val: `${frq} você considera que as LLMs trazem retornos inadequados ou insatisfatórios?`,
   col: "Descreva, de forma geral, os seus principais casos de uso (possíveis ou em prática) de LLMs na rotina de trabalho",
 });
 export const llmBeginnerKeys = ObjectHelper.deepFreeze({
-  use: "Qual é o seu nível de experiência interagindo com LLMs (ChatGPT, Claude, DeepSeek, etc.)?",
+  use: `${exp} interagindo com LLMs (ChatGPT, Claude, DeepSeek, etc.)?`,
   sec: "Você mascara dados sensíveis (Chaves de API, Senhas, Dados pessoais) em prompts?",
   ...llmGeneralKeys,
 });
 export const llmIntermediateKeys = ObjectHelper.deepFreeze({
   ...llmGeneralKeys,
-  ext: "Com que frequência você solicita para que as LLMs proceseam dados diretamente em formatos de imagens bitmap (.png, .jpeg) ou PDFs?",
+  ext: `${frq} você solicita para que as LLMs processem dados diretamente em formatos de imagens bitmap (.png, .jpeg) ou PDFs?`,
   stp: "Descreva, de forma geral, as principais diferenças na forma como você solicita prompts para modelos baseados em chain-of-thought (ChatGPT o1, DeepSeek R1) vs. outras famílias de modelos",
 });
 export const llmExpertKeys = ObjectHelper.deepFreeze({
@@ -1662,15 +1794,292 @@ export const llmExpertKeys = ObjectHelper.deepFreeze({
   fin: "Quais destas práticas você adota para realizar o refinamento de resultados de prompts ao iniciar uma sessão com uma LLM?",
   int: "Você possui LLMs integradas em sistemas da sua rotina de trabalho, para uso de terceiros (ex.: como chatbots)?",
   mlt: "Você já participou ativamente do treinamento (aprendizado de máquina) de LLMs, seja no desenvolvimento direto ou estabelecimento de parâmetros?",
-  ext: "Com que frequência você solicita para que as LLMs proceseam dados diretamente em formatos de imagens bitmap (.png, .jpeg) ou PDFs?",
+  ext: `${frq} você solicita para que as LLMs processem dados diretamente em formatos de imagens bitmap (.png, .jpeg) ou PDFs?`,
 });
+export const defaultQuestionsDict: Readonly<{
+  beginner: {
+    df1: string;
+    df2: string;
+    df3: string;
+  };
+  intermediate: {
+    df4: string;
+    df5: string;
+  };
+  expert: {
+    df6: string;
+    df7: string;
+  };
+}> = ObjectHelper.deepFreeze({
+  beginner: {
+    df1: "O quanto você se considera iniciante em uso de ferramentas tecnológicas do dia a dia?",
+    df2: `${frq} você recorre a internet (tutoriais, vídeos) para resolver dúvidas simples?`,
+    df3: "De que forma você organiza informações básicas em planilhas ou anotações?",
+  },
+  intermediate: {
+    df4: "Como você integra diferentes ferramentas (email, calendário, anotações) para maior eficiência?",
+    df5: "O quanto você domina uso de macros ou pequenos scripts para automação básica?",
+  },
+  expert: {
+    df6: "Descreva como você cria fluxos de trabalho complexos integrando múltiplas tecnologias:",
+    df7: "O quanto você planeja e gerencia soluções de TI em larga escala (várias equipes)?",
+  },
+});
+export const defDocsKeys = withFrozenLibreLabel(
+  {
+    beginner: {
+      fmt: repeated.fmt,
+      tem: repeated.tmp,
+      use: `${frq} você escreve textos simples (relatórios, anotações) em um editor de texto básico?`,
+      col: "Como você compartilha ou colabora em documentos com outras pessoas? (Ex.: link, e-mail)",
+      exp: `${exp} em exportar documentos para PDF ou outros formatos?`,
+    },
+    intermediate: {
+      rev: "Você controla revisões (histórico de versões, comentários) quando trabalha num documento?",
+      lay: "De que forma você organiza seções, sumário automático ou referências cruzadas em textos maiores?",
+      cmp: "Como você lida com compatibilidade (ex.: DOCX vs. ODT) e conversões de formato ao editar?",
+      mac: "Você utiliza macros ou funcionalidades automatizadas para padronizar formatação ou inserir campos?",
+      per: "Qual é sua prática para proteger documentos com senha ou restrição de edição?",
+    },
+    expert: {
+      vba: repeated.mcr,
+      idx: "Você já criou índices remissivos, estilos de parágrafo avançados ou capítulos em docs complexos?",
+      sec: "O quanto você manipula permissões avançadas, criptografia e controle de acesso em um editor de texto?",
+      api: "Como você integra APIs ou plugins externos para enriquecer a edição (ex.: checagem gramatical)?",
+      adv: "De que modo você gerencia documentos de alto volume (100+ páginas), mantendo consistência e performance?",
+    },
+  },
+  "docs"
+);
+export const defSsKeys = withFrozenLibreLabel(
+  {
+    beginner: {
+      mth: "Você realiza cálculos básicos (SOMA, MÉDIA) em planilhas para tarefas rotineiras?",
+      fmt: "Como você formata células (cores, bordas) para destacar dados importantes?",
+      fil: "Você sabe filtrar ou ordenar dados simples numa planilha? (Sim/Não)",
+      col: `${frq} você compartilha planilhas para que outros possam visualizar ou editar?`,
+      bar: "Você cria gráficos básicos (barra, pizza) para ilustrar resultados ou tendências?",
+    },
+    intermediate: {
+      piv: repeated.tbd,
+      fml: "Você domina funções intermediárias (SE, PROCV, CONCAT) para automatizar cálculos mais complexos?",
+      val: "Em que frequência você aplica validações de dados (listas suspensas, restrições de valor) nas células?",
+      net: "Você integra ou importa dados externos (ex.: planilhas online, CSV) para comparar informações?",
+      sec: "De que modo você protege certas abas ou intervalos contra edições indevidas?",
+    },
+    expert: {
+      mcr: "Você cria macros ou scripts (VBA, Google Apps Script) para automatizar processos extensos?",
+      dbi: "Como você conecta planilhas a bancos de dados ou APIs e atualiza os dados periodicamente?",
+      prf: "Você realiza tuning ou otimização quando há muitas fórmulas e abas, evitando lentidão?",
+      big: "Você manipula dados volumosos (milhares de linhas) e os consolida em dashboards avançados?",
+      aud: "Qual é sua prática ao auditar ou rastrear mudanças em planilhas grandes (logs, versões anteriores)?",
+    },
+  },
+  "spreadSheets"
+);
+export const defFmKeys = withFrozenLibreLabel(
+  {
+    beginner: {
+      cre: "Você cria formulários básicos (Google Forms, etc.) para coletar informações simples?",
+      cmp: "Como você define campos múltipla escolha ou abertas em seus formulários?",
+      shr: "De que forma você compartilha o link do formulário com os participantes (e-mail, rede social)?",
+      rsp: `${frq} você verifica as respostas e gera algum relatório simples do que foi coletado?`,
+      dsg: "Você personaliza a aparência (cores, imagens) ou usa configurações padrão?",
+    },
+    intermediate: {
+      cnd: "Você adiciona lógicas condicionais (pular certas perguntas) em formulários de complexidade média?",
+      val: "Como você valida tipos de resposta (ex.: número, e-mail) para evitar dados incorretos?",
+      seg: "Você cria seções ou blocos diferentes no mesmo formulário para organizar melhor as perguntas?",
+      col: "Em que frequência você colabora com outras pessoas na criação e edição do mesmo form?",
+      ext: "Você exporta as respostas para planilhas ou integra com outros serviços (ex.: Slack, Zapier)?",
+    },
+    expert: {
+      scr: "Você utiliza scripts (Apps Script, webhooks) para acionar processos automáticos a partir das respostas?",
+      sec: "Como você restringe o acesso (login corporativo, links protegidos) e garante privacidade dos dados?",
+      mul: "Você cria formulários multi-etapas, fluxos de aprovação ou workflows encadeados (N1->N2)?",
+      rep: "Você gera relatórios avançados (ex.: Data Studio, Power BI) a partir dos dados coletados?",
+      adv: "Em que frequência você embeda formulários em sites internos e customiza layout/JS adicional?",
+    },
+  },
+  "formBuilders"
+);
+export const defCsKeys = withFrozenLibreLabel(
+  {
+    beginner: {
+      upl: "Como você faz upload ou download de arquivos (ex.: Drive, Dropbox) para uso pessoal ou compartilhado?",
+      shr: "Você sabe compartilhar pastas com permissões básicas (visualizar, comentar, editar)?",
+      syn: "Em que frequência você sincroniza pastas locais com a nuvem, evitando versões desatualizadas?",
+      rec: "De que forma você restaura arquivos excluídos acidentalmente ou versões anteriores?",
+      nme: "Você segue algum padrão de nomeação de arquivos para facilitar buscas ou organização?",
+    },
+    intermediate: {
+      qta: "Você controla quotas de espaço (limites) e gerencia excedentes em pastas de compartilhamento?",
+      int: "Como você integra ferramentas de terceiros (ex.: editores online, automações) ao seu armazenamento?",
+      bkp: "Qual sua prática de backup automático (scripts, agendador) para não perder dados importantes?",
+      sec: "Você define criptografia ou senhas em certos arquivos/pastas, mantendo logs de acesso?",
+      ver: "Em que frequência você utiliza versionamento automático (snapshots, histórico) para reverter mudanças?",
+    },
+    expert: {
+      dfs: "Como você gerencia replicações ou sync avançado em vários dispositivos/sites de armazenamento?",
+      pol: "Você aplica políticas de retenção e governança (ex.: tempo de expiração) a certos arquivos confidenciais?",
+      aud: "De que modo você audita acessos (logs) e controla quem fez download ou exclusão de conteúdos críticos?",
+      mig: "Em que frequência você migra arquivos entre provedores (ex.: AWS S3, GDrive) e garante integridade?",
+      drp: "Qual sua estratégia de disaster recovery ou HA (alta disponibilidade) em caso de falha no storage principal?",
+    },
+  },
+  "cloudStorage"
+);
+export const defBiKeys = withFrozenLibreLabel(
+  {
+    beginner: {
+      ...biBeginnerKeys,
+    },
+    intermediate: {
+      ...biIntermediateKeys,
+    },
+    expert: {
+      ...biExpertKeys,
+    },
+  },
+  "businessInteligence"
+);
+export const defCrmKeys = withFrozenLibreLabel(
+  {
+    beginner: {
+      ...crmBeginnerKeys,
+    },
+    intermediate: {
+      ...crmIntermediateKeys,
+    },
+    expert: {
+      ...crmExpertKeys,
+    },
+  },
+  "Crms"
+);
+export const defErpKeys = withFrozenLibreLabel(
+  {
+    beginner: {
+      ...erpBeginnerKeys,
+    },
+    intermediate: {
+      ...erpIntermediateKeys,
+    },
+    expert: {
+      ...erpExpertKeys,
+    },
+  },
+  "Erps"
+);
+export const defPlnKeys = withFrozenLibreLabel(
+  {
+    beginner: {
+      ...plnBeginnerKeys,
+    },
+    intermediate: {
+      ...plnIntermediateKeys,
+    },
+    expert: {
+      ...plnExpertKeys,
+    },
+  },
+  "planning"
+);
+export const defAiAdKeys = withFrozenLibreLabel(
+  {
+    beginner: {
+      ...aiAdBeginnerKeys,
+    },
+    intermediate: {
+      ...aiAdIntermediateKeys,
+    },
+    expert: {
+      ...aiAdExpertKeys,
+    },
+  },
+  "audio"
+);
+export const defAiImgKeys = withFrozenLibreLabel(
+  {
+    beginner: {
+      ...aiImgBeginnerKeys,
+    },
+    intermediate: {
+      ...aiImgIntermediateKeys,
+    },
+    expert: {
+      ...aiImgExpertKeys,
+    },
+  },
+  "image"
+);
+export const defAiVdKeys = withFrozenLibreLabel(
+  {
+    beginner: {
+      ...aiVdBeginnerKeys,
+    },
+    intermediate: {
+      ...aiVdIntermediateKeys,
+    },
+    expert: {
+      ...aiVdExpertKeys,
+    },
+  },
+  "video"
+);
+export const defLlmKeys = withFrozenLibreLabel(
+  {
+    beginner: {
+      usr: "Você utiliza chatbots de IA (ChatGPT, etc.) para responder perguntas gerais ou curiosidades?",
+      prp: "Como você elabora perguntas (prompts) simples para obter respostas úteis na IA?",
+      cor: "Em que frequência você verifica a precisão das respostas obtidas, comparando com fontes confiáveis?",
+      lan: "Você conversa na IA em português ou inglês? Qual é seu grau de conforto nisso?",
+      alr: "Você está ciente de que as IA podem 'alucinar' respostas incorretas? (Sim/Não)",
+    },
+    intermediate: {
+      cxt: "Você utiliza contexto adicional (system, role messages) para guiar respostas mais personalizadas?",
+      scr: "De que forma você integra a IA em scripts ou apps simples (via API) para automatizar algumas consultas?",
+      seg: "Você filtra dados sensíveis (senhas, informações privadas) antes de inserir no prompt?",
+      rpd: "Você re-prompta a IA quando recebe algo incoerente e corrige a linha de raciocínio? (Sim/Não)",
+      col: "Em que frequência você colabora com colegas para elaborar prompts detalhados, focados em um assunto?",
+    },
+    expert: {
+      adv: "Como você realiza prompt engineering avançado (ex.: few-shot learning) para obter respostas complexas?",
+      fin: "Você lida com fine-tuning ou custom instructions em modelos open-source, localmente ou em cloud?",
+      aud: "De que forma você mantém logs de perguntas/respostas e evita expor dados confidenciais para a IA?",
+      mlb: "Em que frequência você avalia a qualidade (métricas) das respostas geradas pela IA e ajusta prompts?",
+      bch: "Você executa batch de perguntas automáticas (ex.: script chamando API) e processa resultados massivos?",
+    },
+  },
+  "llms"
+);
+export const defAddQuestions: [
+  roleType,
+  QuestionsMap<defComplexityKeySet>
+] = ObjectHelper.deepFreeze([
+  "default",
+  new Map([
+    ["docs", defDocsKeys as any],
+    ["spreadSheets", defSsKeys],
+    ["formBuilders", defFmKeys],
+    ["cloudStorage", defCsKeys],
+    ["businessInteligence", defBiKeys],
+    ["Crms", defCrmKeys],
+    ["Erps", defErpKeys],
+    ["planning", defPlnKeys],
+    ["audio", defAiAdKeys],
+    ["image", defAiImgKeys],
+    ["video", defAiVdKeys],
+    ["llms", defLlmKeys],
+  ]),
+]) as any;
 export const eaDocsKeys = withFrozenLibreLabel(
   {
     beginner: {
       fmt: repeated.fmt,
       tmp: repeated.tmp,
       cbb: "Como você gerencia a colaboração de documentos entre membros de equipes?",
-      frq: "Com que frequência você compartilha documentos para edição com colegas?",
+      frq: `${frq} você compartilha documentos para edição com colegas?`,
       rdo: "Qual forma de resposta em formulário você tem preferência?",
       exp: "O quanto você é familizariado com exportações em diferentes formatos, como .pdf ou .txt?",
       prt: "Qual sua experiência em configurar documentos para impressão?",
@@ -1680,25 +2089,25 @@ export const eaDocsKeys = withFrozenLibreLabel(
     },
     intermediate: {
       tpl: "Como você cria sumários automáticos ou referências cruzadas em documentos extensos?",
-      rev: "De que maneira você controla alterações e histórico de versões para múltiplos revisores?",
+      rev: `${mnn} controla alterações e histórico de versões para múltiplos revisores?`,
       mac: "Quais tecnologias você utiliza parar criar macros ou automações para padronizar relatórios?",
-      sgn: "Com que frequência você assina documentos digitalmente?",
+      sgn: `${frq} você assina documentos digitalmente?`,
       stt: "Que tipo de estratégia e ferramentas você utiliza para formatação do layout de edição?",
       idx: "Qual é a sua familaridade gerando índices remissivos automaticamente?",
-      fmt: "De que maneira você utiliza estilos personalizados para padronizar relatórios?",
-      crt: "Com que frequência você edita documentos colaborativos com permissões restritas por usuário?",
+      fmt: `${mnn} utiliza estilos personalizados para padronizar relatórios?`,
+      crt: `${frq} você edita documentos colaborativos com permissões restritas por usuário?`,
       exp: "Qual sua experiência em exportar documentos com configurações avançadas (marcas d’água, proteção)?",
-      api: "Com que frequência você integra editores de texto com APIs externas (ex.: para preenchimento automático)?",
+      api: `${frq} você integra editores de texto com APIs externas (ex.: para preenchimento automático)?`,
     },
     expert: {
       vba: repeated.mcr,
-      sec: "Com que frequência você lida com permissões avançadas, criptografia ou restrições de edição?",
+      sec: `${frq} você lida com permissões avançadas, criptografia ou restrições de edição?`,
       stl: "Descreva como você gerencia estilos de parágrafo, índice remissivo e formatação de layout altamente customizada.",
-      big: "Com que frequência você integra editores de texto a sistemas externos (APIs, bancos de dados)?",
+      big: `${frq} você integra editores de texto a sistemas externos (APIs, bancos de dados)?`,
       adv: "Que técnicas avançadas (campos dinâmicos, mala direta) você utiliza em documentos corporativos?",
       mlc: "Você já aplicou aprendizado de máquina para gerar ou analisar texto automaticamente?",
-      int: "Com que frequência integração com plataformas como SharePoint, OneDrive ou GitHub para gerenciamento de documentos?",
-      tem: "Com que frequência você gerencia templates corporativos com restrições para diferentes departamentos?",
+      int: `${frq} integração com plataformas como SharePoint, OneDrive ou GitHub para gerenciamento de documentos?`,
+      tem: `${frq} você gerencia templates corporativos com restrições para diferentes departamentos?`,
       dig: "De que forma você implementa processos de assinatura digital ou certificação de documentos?",
       rpt: "Qual sua experiência em gerar relatórios analíticos automatizados com base em texto estruturado?",
     },
@@ -1709,26 +2118,26 @@ export const eaSsKeys = withFrozenLibreLabel(
   {
     beginner: {
       sum: repeated.sum,
-      frq: "Com que frequência você configura planilhas para controle de dados simples?",
+      frq: `${frq} você configura planilhas para controle de dados simples?`,
       col: "Como você colore ou categoriza células para destacar informações importantes?",
       spr: "Você prefere responder perguntas por meio de seletores (radio, select) ou textos longos?",
       fil: "De que modo você filtra ou classifica dados de forma simples?",
       frz: "Como você congela linhas ou colunas em planilhas?",
       fmt: "Você já utilizou formatação condicional em planilhas simples?",
-      cpy: "Qual é o seu nível de experiência com copiar/colar fórmulas e preservar referências absolutas?",
-      ins: "De que maneira você insere gráficos básicos para ilustrar dados?",
+      cpy: `${exp} com copiar/colar fórmulas e preservar referências absolutas?`,
+      ins: `${mnn} insere gráficos básicos para ilustrar dados?`,
       shs: "Você trabalha frequentemente com abas múltiplas em planilhas?",
     },
     intermediate: {
       piv: repeated.tbd,
-      adv: "Com que frequência você integra dados de outras fontes (CSV, BD) na planilha?",
+      adv: `${frq} você integra dados de outras fontes (CSV, BD) na planilha?`,
       prc: "Em que frequência você cria fórmulas intermediárias (SE, PROCV, CONCAT) para automação?",
       cht: "Que tipos de gráficos você costuma gerar para visualização?",
       col: "Como você colabora com outros usuários simultaneamente (co-edit, proteções)?",
-      tbl: "Com que frequência voceê cria tabelas formatadas para facilitar análises e filtros?",
+      tbl: `${frq} voceê cria tabelas formatadas para facilitar análises e filtros?`,
       spl: "Como você divide dados em colunas separadas (Texto para Colunas)?",
       lnk: "Qual sua experiência em vincular células entre diferentes planilhas?",
-      imp: "Com que frequência você importa dados de fontes online para análises em tempo real?",
+      imp: `${frq} você importa dados de fontes online para análises em tempo real?`,
       aud: "De que forma você audita ou depura fórmulas para corrigir erros?",
     },
     expert: {
@@ -1736,8 +2145,8 @@ export const eaSsKeys = withFrozenLibreLabel(
       big: repeated.big,
       arr: repeated.arr,
       dbi: "Descreva como você conecta planilhas a bancos de dados SQL ou APIs, se aplicável.",
-      prf: "Com que frequência você faz tuning de performance em planilhas com dezenas de abas e fórmulas complexas?",
-      sch: "Com que frequência você utiliza scripts para agendar atualizações automáticas de dados?",
+      prf: `${frq} você faz tuning de performance em planilhas com dezenas de abas e fórmulas complexas?`,
+      sch: `${frq} você utiliza scripts para agendar atualizações automáticas de dados?`,
       mlc: "Você utiliza Aprendizado de máquina para prever ou categorizar dados?",
       api: "De que forma você utiliza APIs para buscar ou enviar dados automaticamente?",
       adv: "Que práticas avançadas você utiliza para validar e limpar grandes volumes de dados?",
@@ -1774,7 +2183,7 @@ export const eaCsKeys = withFrozenLibreLabel(
     expert: {
       ...csExpertKeys,
       int: "Como você integra armazenamento em nuvem a sistemas corporativos ou CRMs?",
-      big: "De que maneira você lida com grandes volumes de dados e distribuição eficiente entre equipes?",
+      big: `${mnn} lida com grandes volumes de dados e distribuição eficiente entre equipes?`,
     },
   },
   "cloudStorage"
@@ -1782,25 +2191,19 @@ export const eaCsKeys = withFrozenLibreLabel(
 export const eaBiKeys = withFrozenLibreLabel(
   {
     beginner: {
-      dat: "Como você conecta dados básicos (ex.: planilhas) para criar relatórios iniciais em BI?",
-      grf: "Que tipos de gráficos ou visuais simples você costuma configurar para análise rápida?",
-      fil: "Você aplica filtros ou segmentações em dashboards para focar em subsets de dados?",
-      rpt: "Com que frequência você gera relatórios em PDF ou apresenta painéis para colegas?",
-      col: "De que forma você permite que outros usuários colaborem ou vejam seus relatórios de BI?",
+      ...biBeginnerKeys,
+      ead: `${frq} você utiliza os recursos básicos de exportação e compartilhamento dos dashboards da ferramenta?`,
+      eas: `${frq} revisa os relatórios gerados para apoiar decisões administrativas?`,
     },
     intermediate: {
-      mdl: "Como você modela dados (criação de relacionamentos, colunas calculadas) em um nível intermediário?",
-      seg: "Você configura segurança em nível de linha ou permissões por usuário em painéis?",
-      adv: "Você cruza dados de múltiplas fontes (ex.: ERP + planilhas) num único relatório analítico?",
-      ref: "Em que frequência você agenda atualizações automáticas e resolve problemas de refresh?",
-      das: "Como você organiza dashboards com KPIs de negócio e links para relatórios detalhados?",
+      ...biIntermediateKeys,
+      eai: `${rsc} você utiliza para personaliza os dashboards para integrar dados administrativos e operacionais?`,
+      eax: `${exp} com recursos de interatividade (drill-through, filtros dinâmicos) nos relatórios?`,
     },
     expert: {
-      big: "Você lida com grandes volumes de dados (ex.: milhões de registros) e otimiza performance no BI?",
-      pre: "Como você executa análises preditivas ou scripts R/Python dentro do BI para insights avançados?",
-      gov: "De que maneira você implementa governança (workspaces, acesso hierárquico) e documenta cada relatório?",
-      api: "Você já integrou APIs de BI (REST) para push datasets ou para automação de deployment?",
-      adv: "Qual sua experiência em criar visuais customizados (ex.: TypeScript, D3.js) dentro da ferramenta de BI?",
+      ...biExpertKeys,
+      eae: `${exp} com análises preditivas integradas à ferramenta de BI para processos administrativos?`,
+      eam: "Descreva os principais pontos do seu fluxo de trabalho quando você consolida dados de múltiplos departamentos em dashboards executivos",
     },
   },
   "businessInteligence"
@@ -1808,25 +2211,19 @@ export const eaBiKeys = withFrozenLibreLabel(
 export const eaCrmKeys = withFrozenLibreLabel(
   {
     beginner: {
-      reg: "Como você registra leads ou contatos básicos no CRM (ex.: Microsoft Dynamics)?",
-      seg: "Em que frequência você segmenta clientes (região, tamanho da empresa) para campanhas simples?",
-      not: "Você utiliza notificações (ex.: e-mail) quando um lead muda de estágio?",
-      rel: "Qual sua experiência em gerar relatórios iniciais (pipeline de vendas) no CRM?",
-      usr: "De que forma você adiciona novos usuários com permissões básicas no sistema?",
+      ...crmBeginnerKeys,
+      ead: `${frq} recursos de exportação e compartilhamento dos dashboards para apoiar decisões administrativas?`,
+      eas: `${frq} os relatórios gerados para identificar oportunidades de melhoria na gestão de clientes?`,
     },
     intermediate: {
-      wfl: "Como você cria fluxos de trabalho (ex.: mudar status do lead automaticamente) para otimizar vendas?",
-      adv: "Você personaliza campos e layouts intermediários (ex.: campos obrigatórios, scoring) no CRM?",
-      api: "Em que frequência você integra o CRM com outras plataformas (ex.: e-mail marketing, Slack)?",
-      seg: "Como você configura segmentações avançadas (ex.: leads inativos há 30 dias)?",
-      scp: "Você automatiza alertas (ex.: lead estagnado) para que a equipe tome ação?",
+      ...crmIntermediateKeys,
+      eai: `${sttg} você usa para integrar dados administrativos ao CRM para obter insights estratégicos?`,
+      eax: `${exp} utilizando automações para consolidar informações de diferentes departamentos no CRM?`,
     },
     expert: {
-      prg: "Você programa scripts ou plugins avançados (Apex, TOTVS, etc.) para lógica customizada no CRM?",
-      big: "De que forma você cruza dados do CRM com Big Data ou IA para prever demandas e oportunidades?",
-      per: "Como você lida com permissões altamente granulares (ex.: visibilidade de campos, logs de alteração)?",
-      mig: "Em que frequência você migra dados massivos de outro CRM, limpando duplicados e conflitos?",
-      gov: "Você segue governança e compliance (LGPD) no CRM, auditando logs e definindo retenção de dados?",
+      ...crmExpertKeys,
+      eae: `${exp} com análises preditivas no CRM para suportar decisões executivas?`,
+      eam: `${sttg} você adota para consolidar dados de múltiplos setores em dashboards estratégicos no CRM?`,
     },
   },
   "Crms"
@@ -1834,109 +2231,35 @@ export const eaCrmKeys = withFrozenLibreLabel(
 export const eaErpKeys = withFrozenLibreLabel(
   {
     beginner: {
-      nav: "De que forma você navega pelos módulos básicos (ex.: compras, vendas) em um ERP (SAP, TOTVS)?",
-      cad: "Você cadastra produtos, clientes ou fornecedores simples sem grandes customizações?",
-      doc: "Em que frequência você emite documentos fiscais ou relatórios básicos de estoque no ERP?",
-      sup: "Como você solicita suporte quando encontra falhas simples (ex.: tela travada) no sistema?",
-      rpl: "Você gera relatórios de pequeno porte para checar dados de pedidos ou vendas rapidamente?",
+      ...erpBeginnerKeys,
+      eab: `${frq} extrai relatórios do ERP para apoiar decisões administrativas?`,
+      eac: `${mnn} exporta dados (PDF, CSV) e compartilha com gestores ou outros departamentos?`,
     },
     intermediate: {
-      wfl: "Como você configura fluxos intermediários de aprovação (ex.: requisição -> aprovação) no ERP?",
-      sec: "Você define permissões intermediárias (módulo de vendas vs. módulo de estoque) para cada perfil?",
-      mig: "Em que frequência você lida com importação de dados externos (ex.: planilhas) para dentro do ERP?",
-      rep: "Qual sua experiência em personalizar relatórios (ex.: TOTVS Reports, SAP Crystal) para análises específicas?",
-      int: "De que forma você integra o ERP com outras soluções (ex.: e-commerce, BI) e monitora possíveis conflitos?",
+      ...erpIntermediateKeys,
+      eai: `${mnn} alinha módulos administrativos (compras, vendas) para gerar visões consolidadas no ERP?`,
+      eax: `${cts} aplica ao definir fluxos e permissões que atendam às necessidades de áreas distintas?`,
     },
     expert: {
-      dev: "Você implementa scripts de customização profunda (ABAP, TOTVS fluig)? Em que situações?",
-      aud: "Como você rastreia logs e auditorias para atender conformidade (SOX, LGPD) em dados críticos do ERP?",
-      ha_: "Qual sua abordagem para alta disponibilidade (cluster, failover) e zero downtime no ERP?",
-      upg: "Em que frequência você gerencia updates de versão do ERP e executa testes de regressão para evitar problemas?",
-      big: "De que maneira você lida com grandes volumes transacionais e cria processos de otimização de performance no ERP?",
+      ...erpExpertKeys,
+      eae: `${exp} em scripts avançados (ABAP, TOTVS) para automatizar rotinas administrativas e reduzir retrabalho?`,
+      eaz: `${mnn} consolida dashboards executivos (governança, compliance) unindo dados de múltiplos módulos?`,
     },
   },
   "Erps"
 );
-export const eaPlnKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      brd: "Como você cria quadros básicos (Trello, Planner) para organizar tarefas do dia a dia?",
-      col: "De que forma você convida outras pessoas para participar do quadro e ver as atualizações?",
-      prz: "Você define prazos em cada cartão/tarefa? Em que frequência revisa essas datas?",
-      lab: "Como você usa etiquetas ou categorias para diferenciar tipos de tarefas?",
-      not: "Você habilita notificações quando há mudanças em status de tarefas? (Sim/Não)",
-    },
-    intermediate: {
-      aut: "Você cria automações (ex.: mover cartão ao concluir checklist) para agilizar fluxo de trabalho?",
-      rep: "Em que frequência você gera relatórios ou gráficos (ex.: burn-down) para ver progresso das tarefas?",
-      sec: "Como você gerencia permissões intermediárias (ex.: time X só lê, time Y pode editar) num board?",
-      dep: "Você define dependências entre tarefas (ex.: uma só começa quando a anterior acaba)?",
-      wbk: "De que modo você integra webhooks com outras ferramentas (Slack, e-mail) para notificações automáticas?",
-    },
-    expert: {
-      adv: "Como você lida com múltiplos quadros complexos, subdividindo projetos grandes em várias frentes?",
-      scr: "Você segue metodologias avançadas (Scrum, Kanban) e gera métricas (velocidade, throughput)?",
-      apr: "Em que frequência você implementa workflows de aprovação entre diferentes níveis hierárquicos?",
-      dash: "Como você consolida dados de vários quadros em um dashboard (ex.: Power BI, Google Data Studio)?",
-      scp: "De que forma você integra scripts ou APIs para automatizar criação e movimentação de tasks em massa?",
-    },
-  },
-  "planning"
-);
-export const eaAiAdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiAdBeginnerKeys,
-    },
-    intermediate: {
-      ...aiAdIntermediateKeys,
-    },
-    expert: {
-      ...aiAdExpertKeys,
-    },
-  },
-  "audio"
-);
-export const eaAiImgKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiImgBeginnerKeys,
-    },
-    intermediate: {
-      ...aiImgIntermediateKeys,
-    },
-    expert: {
-      ...aiImgExpertKeys,
-    },
-  },
-  "image"
-);
-export const eaAiVdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      rec: "Como você cria vídeos curtos (ex.: usando webcam + IA de edição) para ilustrações ou apresentações rápidas?",
-      edb: "Você faz edições simples (corte, trim) antes de publicar vídeos que foram gerados ou aprimorados pela IA?",
-      frq: "Com que frequência você envia vídeos gerados por IA (ex.: videoclipes sintéticos) a plataformas (Drive, YouTube)?",
-      aud: "Você avalia se o áudio está coerente quando a IA insere locuções ou dublagens automáticas no vídeo?",
-      frm: "De que forma você seleciona formatos (MP4, MOV) e resolução após a IA produzir o vídeo?",
-    },
-    intermediate: {
-      eff: "Você aplica efeitos (transições, legendas) com auxílio de IA (ex.: remoção de fundo) em editores intermediários?",
-      str: "Como você faz streaming ao vivo com suporte de IA (ex.: avatares, cenários virtuais) para grupos de trabalho?",
-      net: "Em que frequência você encontra gargalos de rede ao carregar ou compartilhar vídeos criados ou modificados pela IA?",
-      sub: "Você gera legendas automaticamente via IA para facilitar compreensão (ex.: pessoas sem áudio)?",
-      mix: "De que modo você mescla faixas de áudio e elementos visuais criados por IA num único projeto de vídeo?",
-    },
-    expert: {
-      adv: "Você usa editores profissionais (Adobe Premiere, DaVinci) com plugins de IA (ex.: correção de cor avançada, tracking inteligente)?",
-      enc: "Como você configura encoding sofisticado (bitrate, codecs) para equilibrar qualidade vs. tamanho em vídeos gerados pela IA?",
-      api: "Em que nível você integra plataformas de IA (ex.: Runway, Sora) via APIs para automação de etapas do vídeo?",
-      scp: "Você executa scripts (FFmpeg) para pós-processar em lote diversos clipes gerados pela IA (ex.: inserir marcas d’água)?",
-      ai_: "De que maneira você explora IA (ex.: remoção de objetos, geração de cenários) em vídeos institucionais complexos?",
-    },
-  },
-  "video"
-);
+export const eaPlnKeys = ObjectHelper.deepFreeze({
+  ...defPlnKeys,
+});
+export const eaAiAdKeys = ObjectHelper.deepFreeze({
+  ...defAiAdKeys,
+});
+export const eaAiImgKeys = ObjectHelper.deepFreeze({
+  ...defAiImgKeys,
+});
+export const eaAiVdKeys = ObjectHelper.deepFreeze({
+  ...defAiVdKeys,
+});
 export const eaLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
@@ -1945,48 +2268,53 @@ export const eaLlmKeys = withFrozenLibreLabel(
     intermediate: {
       ...llmIntermediateKeys,
       mon: "Como você considera que as LLMs podem beneficar suas práticas de monitoramento de equipes e designação de tarefas?",
-      doc: "Com que frequência você utiliza LLMs para produzir ou analisar relatórios e documentos corporativos?",
+      doc: `${frq} você utiliza LLMs para produzir ou analisar relatórios e documentos corporativos?`,
     },
     expert: {
       ...llmExpertKeys,
       mon: "Como você considera que as LLMs podem beneficar suas práticas de monitoramento de equipes e designação de tarefas?",
-      doc: "Com que frequência você utiliza LLMs para produzir ou analisar relatórios e documentos corporativos?",
+      doc: `${frq} você utiliza LLMs para produzir ou analisar relatórios e documentos corporativos?`,
     },
   },
   "llms"
 );
-export const executivoAdministrativoAddQuestions =
-  ObjectHelper.deepFreeze([
-    "executivoAdministrativo",
-    new Map([
-      ["docs", eaDocsKeys as any],
-      ["spreadSheets", eaSsKeys],
-      ["formBuilders", eaFmKeys],
-      ["cloudStorage", eaCsKeys],
-      ["businessInteligence", eaBiKeys],
-      ["Crms", eaCrmKeys],
-      ["Erps", eaErpKeys],
-      ["planning", eaPlnKeys],
-      ["audio", eaAiAdKeys],
-      ["image", eaAiImgKeys],
-      ["video", eaAiVdKeys],
-      ["llms", eaLlmKeys],
-    ]),
-  ]);
+export const eaAddQuestions: [
+  roleType,
+  QuestionsMap<eaComplexityKeySet>
+] = ObjectHelper.deepFreeze([
+  "executivoAdministrativo",
+  new Map<
+    addQuestionsKey,
+    complexityDict<eaComplexityKeySet>
+  >([
+    ["docs", eaDocsKeys as any],
+    ["spreadSheets", eaSsKeys],
+    ["formBuilders", eaFmKeys],
+    ["cloudStorage", eaCsKeys],
+    ["businessInteligence", eaBiKeys],
+    ["Crms", eaCrmKeys],
+    ["Erps", eaErpKeys],
+    ["planning", eaPlnKeys],
+    ["audio", eaAiAdKeys],
+    ["image", eaAiImgKeys],
+    ["video", eaAiVdKeys],
+    ["llms", eaLlmKeys],
+  ]),
+]);
 export const fnDocsKeys = withFrozenLibreLabel(
   {
     beginner: {
       frm: "Como você elabora documentos financeiros simples (propostas, orçamentos) e formata texto básico?",
       ref: "De que forma você insere referências internas ou notas explicativas em documentos?",
-      rev: "Com que frequência você revisa contratos ou relatórios de texto para ver se há erros de digitação ou valores trocados?",
-      upg: "Quais destas ferramentas você utiliza para gerenciar versões de documentos e relatórios?",
+      rev: `${frq} você revisa contratos ou relatórios de texto para ver se há erros de digitação ou valores trocados?`,
+      upg: `${tls} você utiliza para gerenciar versões de documentos e relatórios?`,
       cmt: "Quais recursos você utiliza para comentar e fazer sugestões em documentos e relatórios?",
     },
     intermediate: {
       stl: "Quais são as suas práticas para padronizar estilos (cabeçalho, corpo, rodapé) em relatórios financeiros intermediários?",
       trc: "Como você controla versões quando várias pessoas revisam o mesmo documento simultaneamente?",
       ast: "Você já configurou assinatura digital em relatórios financeiros? Como?",
-      dbl: "De que maneira você integra dados de planilhas ou bancos de dados em documentos de texto?",
+      dbl: `${mnn} integra dados de planilhas ou bancos de dados em documentos de texto?`,
       alt: "Você faz uso de texto alternativo ou marcações adicionais para facilitar auditorias? (Sim/Não)",
     },
     expert: {
@@ -2003,7 +2331,7 @@ export const fnSsKeys = withFrozenLibreLabel(
   {
     beginner: {
       sum: repeated.sum,
-      frq: "Com que frequência você configura planilhas para registrar receitas e despesas?",
+      frq: `${frq} você configura planilhas para registrar receitas e despesas?`,
       col: "Como você marca células com cores para diferenciar gastos fixos de variáveis?",
       cat: "De que modo você categoriza transações (alimentação, transporte, etc.) de forma simples?",
       fil: "Como você utiliza filtros básicos para visualizar apenas certos períodos ou tipos de despesas?",
@@ -2011,7 +2339,7 @@ export const fnSsKeys = withFrozenLibreLabel(
     intermediate: {
       tab: repeated.tbd,
       adv: "Como você integra planilhas financeiras a outras fontes de dados, como extratos bancários?",
-      dev: "Com que frequência você usa fórmulas intermediárias (PROCV, SE, TIR) para simulações financeiras?",
+      dev: `${frq} você usa fórmulas intermediárias (PROCV, SE, TIR) para simulações financeiras?`,
       cht: "Que tipos de gráficos você gera para ilustrar resultados financeiros?",
       val: "Quais dessa técnicas você utilizar para validar dados de entrada para evitar erros em análises financeiras?",
     },
@@ -2055,8 +2383,8 @@ export const fnCsKeys = withFrozenLibreLabel(
     },
     expert: {
       ...csExpertKeys,
-      mid: "Com que frequência você integra dados financeiros armazenados na nuvem a mecanismos de BI ou machine learning?",
-      drs: "Quais destas técnicas você adota para recuperar rapidamente documentos críticos em caso de desastre ou falha de acesso à nuvem?",
+      mid: `${frq} você integra dados financeiros armazenados na nuvem a mecanismos de BI ou machine learning?`,
+      drs: `${tcn} você adota para recuperar rapidamente documentos críticos em caso de desastre ou falha de acesso à nuvem?`,
       org: "Descreva seus critérios gerais para organizar pastas de extratos, demonstrações e notas fiscais para facilitar a busca",
     },
   },
@@ -2065,25 +2393,22 @@ export const fnCsKeys = withFrozenLibreLabel(
 export const fnBiKeys = withFrozenLibreLabel(
   {
     beginner: {
-      dat: "Você costuma importar dados de vendas (planilhas, CSV) para ferramentas de BI como Power BI ou Tableau?",
-      vis: "Como você gera visualizações iniciais (gráfico de barras, pizza) para entender volume de vendas?",
-      flt: "Você aplica filtros simples (ex.: período, região) para refinar os dados exibidos?",
-      shr: "De que forma você compartilha relatórios básicos de BI com colegas (link, PDF)?",
-      usr: "Você cria usuários ou permissões específicas para equipe comercial ver somente seus números?",
+      ...biBeginnerKeys,
+      fin: `${exp} utilizando os recursos de conexão de dados do BI para monitorar fluxo de caixa?`,
+      fnc: `${exp} criando gráficos para acompanhar indicadores financeiros?`,
+      fne: "Você utiliza refresh automático para manter dados financeiros atualizados?",
     },
     intermediate: {
-      mdl: "Como você modela dados de várias origens (CRM, planilhas) em uma ferramenta de BI?",
-      drv: "Você cria medidas ou colunas calculadas para analisar métricas intermediárias (ex.: taxa de conversão)?",
-      seg: "Em que frequência você utiliza segmentações por produto, região ou vendedor para ver resultados?",
-      col: "Como você colabora com o time para criar dashboards compartilhados?",
-      aut: "Você configurou atualizações automáticas desses dados (ex.: daily refresh)?",
+      ...biIntermediateKeys,
+      fim: `${sttg} você utiliza para modelar dados financeiros complexos para análises de rentabilidade?`,
+      fna: `${frq} você integra fontes de dados financeiros (ERP, planilhas) nas ferramentas de BI?`,
+      fic: `${exp} configurando automações e medidas calculadas para atualizar métricas em tempo real?`,
     },
     expert: {
-      dax: "Você domina expressões avançadas (ex.: DAX no Power BI) para análises de funil de vendas complexos?",
-      big: "Como você lida com altos volumes de dados (ex.: milhares de leads, milhões de registros) sem perda de performance?",
-      mlc: "Você integra scripts de R ou Python para previsões de receita ou churn dentro do BI?",
-      adv: "De que forma você publica dashboards para clientes externos ou parceiros (row-level security)?",
-      gov: "Como você garante governança (versionamento, segurança) em dashboards críticos de vendas?",
+      ...biExpertKeys,
+      fic: `${exp} configurando automações e medidas calculadas para atualizar métricas em tempo real?`,
+      fip: `${sttg} você implanta quando realiza análises preditivas para projeções financeiras?`,
+      fis: `${sttg} você utiliza para consolidar grandes volumes de dados financeiros em dashboards estratégicos?`,
     },
   },
   "businessInteligence"
@@ -2091,25 +2416,21 @@ export const fnBiKeys = withFrozenLibreLabel(
 export const fnCrmKeys = withFrozenLibreLabel(
   {
     beginner: {
-      mgr: "Como você registra leads e contatos básicos no CRM?",
-      sht: "Com que frequência você anota interações como e-mails ou ligações com potenciais clientes?",
-      seg: "De que forma você segmenta clientes (ex.: tipo de indústria, porte da empresa)?",
-      rel: "Você gera relatórios simples de status de negociação?",
-      col: "Como você compartilha dados de leads com outros membros da equipe?",
+      ...crmBeginnerKeys,
+      fin: `${exp} utilizando CRMs para monitorar fluxo de caixa básico e registros financeiros?`,
+      fnc: `${fam} configurando relatórios financeiros em CRMs para acompanhar vendas?`,
+      fne: `Você utiliza atualizações automáticas para manter os dados financeiros atualizados?`,
     },
     intermediate: {
-      scg: "Você configura scoring de leads (ex.: probabilidade de fechar) para priorizar?",
-      aut: "De que modo você cria automações (ex.: mover lead no pipeline quando recebe e-mail)?",
-      syn: "Como você sincroniza dados do CRM com planilhas ou BI para análise mais aprofundada?",
-      pro: "Qual é sua prática para usar pipelines de vendas detalhados (ex.: pré-venda, proposta, fechamento)?",
-      rep: "Você gera relatórios intermediários (ex.: vendedor x volume de vendas, taxa de conversão por etapa)?",
+      ...crmIntermediateKeys,
+      fim: `${tcn} você usa para modelar dados financeiros no CRM para análise de rentabilidade?`,
+      fna: `${exp} integrando fontes de dados financeiros (ERP, planilhas, etc.) na plataforma de CRM?`,
     },
     expert: {
-      api: "Você integra CRM com outras plataformas (ex.: sistemas de ticket, ERP) via API?",
-      mlc: "Você utiliza IA para prever data de fechamento ou filtrar leads mais quentes?",
-      cst: "Como você customiza o CRM (scripts, plugins) para adaptar 100% ao fluxo de vendas?",
-      adv: "De que forma você gerencia funis paralelos (ex.: diferentes linhas de produto) e subfunis?",
-      big: "Você analisa grandes históricos de leads para identificar padrões e gerar insights preditivos?",
+      ...crmExpertKeys,
+      fis: `${sttg} você para consolidar grandes volumes de dados financeiros em dashboards estratégicos?`,
+      fic: `${exp} configurando automações para atualizar indicadores financeiros em tempo real?`,
+      fip: `Descreva como você implementa análises preditivas para projeções financeiras?`,
     },
   },
   "Crms"
@@ -2117,109 +2438,38 @@ export const fnCrmKeys = withFrozenLibreLabel(
 export const fnErpKeys = withFrozenLibreLabel(
   {
     beginner: {
-      bas: "Qual é sua familiaridade com módulos básicos de um ERP (cadastro de clientes, pedidos)?",
-      mov: "Você já acompanha status de pedidos no ERP (pendente, faturado, entregue)?",
-      usr: "Como você gerencia usuários ou permissões simples para equipe de vendas?",
-      rep: "Você gera relatórios de pedidos ou volume de vendas diretamente no ERP?",
-      imp: "Você importou dados de planilhas externas (lista de clientes) para o ERP?",
+      ...erpBeginnerKeys,
+      fnb: `${frq} gera relatórios financeiros básicos (ex.: contas a pagar) no ERP?`,
+      fnc: `${fam} com cadastros de centros de custo ou contas contábeis dentro do ERP?`,
+      fnd: `${cts} segue ao conferir notas fiscais ou integrações de pagamento no ERP?`,
     },
     intermediate: {
-      cst: "De que forma você customiza campos ou layouts para atender necessidades do comercial?",
-      inf: "Você integra dados do ERP com softwares de análise (BI) ou outras planilhas?",
-      wfl: "Como você define fluxos de aprovação para pedidos (ex.: pedido de grande valor requer ok do gerente)?",
-      sec: "Qual é sua prática para criar perfis de segurança distintos (cada vendedor vê só seus pedidos)?",
-      tch: "Você já lidou com integrações via API para atualizar pipeline de vendas em tempo real?",
+      ...erpIntermediateKeys,
+      fni: `${mnn} cruza dados do ERP com planilhas/BI para análise de rentabilidade e previsão financeira?`,
+      fnj: `${tcn} utiliza para configurar aprovações de despesas ou investimentos altos em módulos financeiros?`,
+      fnk: `${mnn} customiza relatórios contábeis (ex.: balancete) e ajusta permissões para equipes financeiras?`,
     },
     expert: {
-      mod: "Quais módulos avançados (ex.: gestão de campanhas, comissionamento) você domina no ERP?",
-      spt: "Como você soluciona problemas complexos (ex.: duplicidade de pedido) dentro do ERP?",
-      mig: "Você participou de migrações de ERP (ex.: TOTVS para SAP) visando melhoria do comercial?",
-      eff: "De que forma você mede eficiência e performance do time de vendas usando dados do ERP?",
-      adv: "Quais customizações avançadas (scripts ABAP, TOTVS) são feitas para gerenciar grandes contas comerciais?",
+      ...erpExpertKeys,
+      fne: `${exp} em criar scripts avançados (ex.: ABAP, TOTVS) para auditoria contábil e compliance (SOX, IFRS)?`,
+      fnf: `${rsc} de HA em módulos financeiros são empregados para operações críticas (folha, tributos)?`,
+      fng: `${mnn} gerencia logs e governança para rastrear movimentações de alto impacto no ERP financeiro?`,
     },
   },
   "Erps"
 );
-export const fnPlnKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      tsk: "Como você cria listas de tarefas relativas a metas de vendas e follow-ups?",
-      col: "Você compartilha o plano comercial com o gestor e colegas?",
-      cal: "Com que frequência você usa calendário para prazos (ex.: renovar contrato, contatar leads)?",
-      lbl: "Você marca prioridades (ex.: alta, média) em tarefas ou leads críticos?",
-      upd: "De que modo você atualiza status (em prospecção, em negociação, concluído) no planejamento?",
-    },
-    intermediate: {
-      wfl: "Como você estabelece fluxos (ex.: lead captado -> qualificação -> proposta -> assinatura) dentro do sistema de planejamento?",
-      not: "Você configura alertas para datas importantes, como expiração de proposta?",
-      col: "De que maneira a equipe comercial trabalha colaborativamente no mesmo board/plano?",
-      rpr: "Quais relatórios de progresso (ex.: leads ganhos, leads perdidos) você gera?",
-      int: "Você integra a plataforma de planejamento com planilhas ou dashboards para ver metas em tempo real?",
-    },
-    expert: {
-      adv: "Como você cria painéis avançados para acompanhar OKRs e resultados de vendas semanais/mensais?",
-      aut: "Você utiliza automações que movem tarefas no funil comercial conforme determinadas regras (ex.: data-limite)?",
-      pri: "De que forma você prioriza oportunidades de maior valor ou com data de fechamento próxima?",
-      bus: "Você já integrou processos de planejamento com BI para replanejar metas de acordo com performance real?",
-      sec: "Quais práticas de segurança e governança aplicam-se quando múltiplos times (marketing, vendas) acessam o plano comercial?",
-    },
-  },
-  "planning"
-);
-export const fnAiAdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiAdBeginnerKeys,
-    },
-    intermediate: {
-      ...aiAdIntermediateKeys,
-    },
-    expert: {
-      ...aiAdExpertKeys,
-    },
-  },
-  "audio"
-);
-export const fnAiImgKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiImgBeginnerKeys,
-    },
-    intermediate: {
-      ...aiImgIntermediateKeys,
-    },
-    expert: {
-      ...aiImgExpertKeys,
-    },
-  },
-  "image"
-);
-export const fnAiVdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      tut: "Você usa IA para criar vídeos tutoriais de processos financeiros simples automaticamente?",
-      rec: "Como a IA auxilia na gravação de tela para explicar planilhas ou dashboards financeiros?",
-      edi: "Você utiliza IA para cortar ou ajustar vídeos que explicam informações financeiras?",
-      shw: "Como a IA ajuda a exibir gráficos e dashboards financeiros em apresentações de vídeo?",
-      sld: "Você converte slides financeiros em vídeos com a ajuda de IA para facilitar o consumo?",
-    },
-    intermediate: {
-      anl: "Como você utiliza IA para criar animações explicativas de tendências financeiras?",
-      tts: "Você utiliza IA para narrar relatórios financeiros com voz humana ou TTS?",
-      eda: "De que forma a IA ajuda a sincronizar trilhas sonoras ou efeitos em vídeos financeiros?",
-      sub: "Você gera legendas automáticas em vídeos financeiros com a ajuda de IA?",
-      mlc: "Como a IA cria vídeos instrutivos a partir de roteiros de relatórios financeiros complexos?",
-    },
-    expert: {
-      brd: "Como você usa IA para editar gravações longas de reuniões financeiras com highlights relevantes?",
-      int: "Você utiliza IA para integrar vídeos financeiros a dashboards interativos em tempo real?",
-      scn: "Como a IA ajuda na criação de cenários virtuais (chroma key) para apresentações financeiras?",
-      adv: "De que forma você utiliza IA para criar vídeos financeiros complexos com transições avançadas?",
-      sec: "Você usa IA para restringir acesso a vídeos confidenciais com dados financeiros sensíveis?",
-    },
-  },
-  "video"
-);
+export const fnPlnKeys = ObjectHelper.deepFreeze({
+  ...defPlnKeys,
+});
+export const fnAiAdKeys = ObjectHelper.deepFreeze({
+  ...defAiAdKeys,
+});
+export const fnAiImgKeys = ObjectHelper.deepFreeze({
+  ...defAiImgKeys,
+});
+export const fnAiVdKeys = ObjectHelper.deepFreeze({
+  ...defAiVdKeys,
+});
 export const fnLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
@@ -2231,37 +2481,39 @@ export const fnLlmKeys = withFrozenLibreLabel(
     },
     expert: {
       ...llmExpertKeys,
-      ten: "Com que frequência você usa LLMs para prever vendas, estimar taxa de conversão ou analisar tendências do mercado?",
+      ten: `${frq} você usa LLMs para prever vendas, estimar taxa de conversão ou analisar tendências do mercado?`,
       rel: "Como você considera que LLMs podem auxiliar diretamente na produção de relatórios e documentos financeiros?",
     },
   },
   "llms"
 );
-export const financeiroAddQuestions =
-  ObjectHelper.deepFreeze([
-    "financeiro",
-    new Map([
-      ["docs", fnDocsKeys as any],
-      ["spreadSheets", fnSsKeys],
-      ["formBuilders", fnFmKeys],
-      ["cloudStorage", fnCsKeys],
-      ["businessInteligence", fnBiKeys],
-      ["Crms", fnCrmKeys],
-      ["Erps", fnErpKeys],
-      ["planning", fnPlnKeys],
-      ["audio", fnAiAdKeys],
-      ["image", fnAiImgKeys],
-      ["video", fnAiVdKeys],
-      ["llms", fnLlmKeys],
-    ]),
-  ]);
+export const fnAddQuestions: [
+  roleType,
+  QuestionsMap<fnComplexityKeySet>
+] = ObjectHelper.deepFreeze([
+  "financeiro",
+  new Map([
+    ["docs", fnDocsKeys as any],
+    ["spreadSheets", fnSsKeys],
+    ["formBuilders", fnFmKeys],
+    ["cloudStorage", fnCsKeys],
+    ["businessInteligence", fnBiKeys],
+    ["Crms", fnCrmKeys],
+    ["Erps", fnErpKeys],
+    ["planning", fnPlnKeys],
+    ["audio", fnAiAdKeys],
+    ["image", fnAiImgKeys],
+    ["video", fnAiVdKeys],
+    ["llms", fnLlmKeys],
+  ]),
+]);
 export const cmDocsKeys = withFrozenLibreLabel(
   {
     beginner: {
       rfp: "Quais técnicas de formatação você prioriza no design gráficos de documentos para propostas comerciais?",
-      cpl: "Com que frequência você compila dados de vendas ou contatos em documentos textuais?",
-      lbl: "Quais destas técnicas você utiliza para realçar segmentos de textos?",
-      sig: "Com que frequência você utiliza assinaturas digitais?",
+      cpl: `${frq} você compila dados de vendas ou contatos em documentos textuais?`,
+      lbl: `${tcn} você utiliza para realçar segmentos de textos?`,
+      sig: `${frq} você utiliza assinaturas digitais?`,
       hst: "De que forma você mantém histórico de versões de ofertas enviadas a clientes?",
     },
     intermediate: {
@@ -2269,12 +2521,12 @@ export const cmDocsKeys = withFrozenLibreLabel(
       rev: "De que modo você controla comentários e revisões quando vários vendedores atualizam o mesmo arquivo?",
       mac: "Você utiliza macros ou scripts para preencher automaticamente dados de clientes em contratos?",
       sty: "Qual sua prática para padronizar estilos e layout em documentos de ofertas comerciais?",
-      adv: "Com que frequência você exporta os documentos em formato PDF?",
+      adv: `${frq} você exporta os documentos em formato PDF?`,
     },
     expert: {
       api: "De que forma você integra editores de texto a sistemas comerciais (ex.: CRM) para geração automática de contratos?",
       cnd: "Como você lida com campos dinâmicos e mala direta para dezenas de clientes simultaneamente?",
-      sec: "Com que frequência você aplica criptografia ou permissões avançadas em documentos de alto valor?",
+      sec: `${frq} você aplica criptografia ou permissões avançadas em documentos de alto valor?`,
       cmp: "Você faz comparação de versões para destacar alterações críticas em propostas?",
       mlc: "Já aplicou IA para redigir ou revisar cláusulas de documentos complexos (com várias condições)?",
     },
@@ -2285,7 +2537,7 @@ export const cmSsKeys = withFrozenLibreLabel(
   {
     beginner: {
       sum: repeated.sum,
-      lis: "Quais destas técnicas você utiliza para manter listas de leads ou clientes em planilhas simples?",
+      lis: `${tcn} você utiliza para manter listas de leads ou clientes em planilhas simples?`,
       pro: "Você usa planilhas para projeções básicas de vendas mensais?",
       seg: "Quais estratégia você usa para filtrar e segmentar clientes?",
       col: "De que modo você realça linhas ou colunas importantes (ex.: cliente prioritário)?",
@@ -2293,7 +2545,7 @@ export const cmSsKeys = withFrozenLibreLabel(
     intermediate: {
       piv: repeated.tbd,
       adv: "Você integra planilhas com CRM ou outras fontes para atualizar dados de vendas (Sim/Não)?",
-      for: "Com que frequência você utiliza fórmulas intermediárias (PROCV, SE, SOMASE) para acompanhamento de metas?",
+      for: `${frq} você utiliza fórmulas intermediárias (PROCV, SE, SOMASE) para acompanhamento de metas?`,
       cht: "Que gráficos você gera para ilustrar desempenho comercial ou comparação de metas?",
       col: "Como você colabora com outros vendedores ou gerentes numa única planilha, sem sobrescrever dados?",
     },
@@ -2301,7 +2553,7 @@ export const cmSsKeys = withFrozenLibreLabel(
       mac: repeated.mcr,
       big: repeated.big,
       seg: "Você cria segmentações avançadas e dashboards usando planilhas?",
-      dbi: "De que maneira você obtém informações de bancos de dados ou APIs (ex.: taxas de câmbio, cotações)?",
+      dbi: `${mnn} obtém informações de bancos de dados ou APIs (ex.: taxas de câmbio, cotações)?`,
       cmp: "Como você compara previsões e resultados reais em planilhas complexas, envolvendo vários times?",
     },
   },
@@ -2333,7 +2585,7 @@ export const cmCsKeys = withFrozenLibreLabel(
     },
     expert: {
       ...csExpertKeys,
-      mig: "Quais destas estratégias você adota para migrar grandes repositórios de documentos comerciais de um serviço um serviço em nuvem para outro?",
+      mig: `${sttg} você adota para migrar grandes repositórios de documentos comerciais de um serviço um serviço em nuvem para outro?`,
     },
   },
   "cloudStorage"
@@ -2341,25 +2593,22 @@ export const cmCsKeys = withFrozenLibreLabel(
 export const cmBiKeys = withFrozenLibreLabel(
   {
     beginner: {
-      dat: "Você costuma importar dados de vendas (planilhas, CSV) para ferramentas de BI como Power BI ou Tableau?",
-      vis: "Como você gera visualizações iniciais (gráfico de barras, pizza) para entender volume de vendas?",
-      flt: "Você aplica filtros simples (ex.: período, região) para refinar os dados exibidos?",
-      shr: "De que forma você compartilha relatórios básicos de BI com colegas (link, PDF)?",
-      usr: "Você cria usuários ou permissões específicas para equipe comercial ver somente seus números?",
+      ...biBeginnerKeys,
+      com: `${rsc} visuais de plataformas de BI você utiliza para monitorar metas de vendas diárias?`,
+      cmr: `${sttg} você adota para configurar dashboards simples para acompanhar indicadores comerciais?`,
+      cmx: "Descreva pontos críticos de análise no seu fluxo de trabalho quando compartilha relatórios de vendas diretamente pela ferramenta de BI",
     },
     intermediate: {
-      mdl: "Como você modela dados de várias origens (CRM, planilhas) em uma ferramenta de BI?",
-      drv: "Você cria medidas ou colunas calculadas para analisar métricas intermediárias (ex.: taxa de conversão)?",
-      seg: "Em que frequência você utiliza segmentações por produto, região ou vendedor para ver resultados?",
-      col: "Como você colabora com o time para criar dashboards compartilhados?",
-      aut: "Você configurou atualizações automáticas desses dados (ex.: daily refresh)?",
+      ...biIntermediateKeys,
+      cmm: `${frq} você modela dados de CRM e vendas para criar relatórios comerciais?`,
+      cma: `${exp} integrando dados de diferentes canais comerciais na ferramenta de BI?`,
+      cmc: `${exp} automatizando a consolidação de dados comerciais em dashboards?`,
     },
     expert: {
-      dax: "Você domina expressões avançadas (ex.: DAX no Power BI) para análises de funil de vendas complexos?",
-      big: "Como você lida com altos volumes de dados (ex.: milhares de leads, milhões de registros) sem perda de performance?",
-      mlc: "Você integra scripts de R ou Python para previsões de receita ou churn dentro do BI?",
-      adv: "De que forma você publica dashboards para clientes externos ou parceiros (row-level security)?",
-      gov: "Como você garante governança (versionamento, segurança) em dashboards críticos de vendas?",
+      ...biExpertKeys,
+      cme: `${rsc} de análises avançadas você utiliza para prever tendências de mercado?`,
+      cmf: `${sttg} você utiliza poara integrar dados de vendas e marketing para insights estratégicos?`,
+      cmg: `${exp} consolidando dashboards de múltiplos canais comerciais?`,
     },
   },
   "businessInteligence"
@@ -2367,25 +2616,22 @@ export const cmBiKeys = withFrozenLibreLabel(
 export const cmCrmKeys = withFrozenLibreLabel(
   {
     beginner: {
-      mgr: "Como você registra leads e contatos básicos no CRM?",
-      sht: "Com que frequência você anota interações como e-mails ou ligações com potenciais clientes?",
-      seg: "De que forma você segmenta clientes (ex.: tipo de indústria, porte da empresa)?",
-      rel: "Você gera relatórios simples de status de negociação?",
-      col: "Como você compartilha dados de leads com outros membros da equipe?",
+      ...crmBeginnerKeys,
+      com: `${exp} utilizando CRMs para registrar e acompanhar leads comerciais básicos?`,
+      cmr: `${frq} gera dashboards para monitorar o desempenho de vendas em CRMs?`,
+      cmx: `${frq} compartilha relatórios de vendas com sua equipe por meio do CRMs?`,
     },
     intermediate: {
-      scg: "Você configura scoring de leads (ex.: probabilidade de fechar) para priorizar?",
-      aut: "De que modo você cria automações (ex.: mover lead no pipeline quando recebe e-mail)?",
-      syn: "Como você sincroniza dados do CRM com planilhas ou BI para análise mais aprofundada?",
-      pro: "Qual é sua prática para usar pipelines de vendas detalhados (ex.: pré-venda, proposta, fechamento)?",
-      rep: "Você gera relatórios intermediários (ex.: vendedor x volume de vendas, taxa de conversão por etapa)?",
+      ...crmIntermediateKeys,
+      cmm: `${tcn} você usa para modelar dados de vendas em CRMs buscando identificar tendências?`,
+      cma: `${frq} você integra CRMs com ferramentas de marketing para alinhar estratégias de vendas?`,
+      cmc: `${exp} automatizando processos de atualização de status de leads em CRMs?`,
     },
     expert: {
-      api: "Você integra CRM com outras plataformas (ex.: sistemas de ticket, ERP) via API?",
-      mlc: "Você utiliza IA para prever data de fechamento ou filtrar leads mais quentes?",
-      cst: "Como você customiza o CRM (scripts, plugins) para adaptar 100% ao fluxo de vendas?",
-      adv: "De que forma você gerencia funis paralelos (ex.: diferentes linhas de produto) e subfunis?",
-      big: "Você analisa grandes históricos de leads para identificar padrões e gerar insights preditivos?",
+      ...crmExpertKeys,
+      cme: `${rsc} avançados de CRMs você utiliza para prever oportunidades de vendas?`,
+      cmg: `${sttg} você usa para consolidar informações de múltiplos canais comerciais em dashboards avançados em CRMs?`,
+      cmf: `${sttg} você utiliza para integrar dados de CRM com análises de mercado para insights estratégicos?`,
     },
   },
   "Crms"
@@ -2393,162 +2639,93 @@ export const cmCrmKeys = withFrozenLibreLabel(
 export const cmErpKeys = withFrozenLibreLabel(
   {
     beginner: {
-      bas: "Qual é sua familiaridade com módulos básicos de um ERP (cadastro de clientes, pedidos)?",
-      mov: "Você já acompanha status de pedidos no ERP (pendente, faturado, entregue)?",
-      usr: "Como você gerencia usuários ou permissões simples para equipe de vendas?",
-      rep: "Você gera relatórios de pedidos ou volume de vendas diretamente no ERP?",
-      imp: "Você importou dados de planilhas externas (lista de clientes) para o ERP?",
+      ...erpBeginnerKeys,
+      cmb: `${frq} acessa o módulo comercial do ERP para registrar pedidos e cadastrar clientes básicos?`,
+      cmc: `${fam} com relatórios de vendas (faturado, entregue) no ERP para monitorar desempenho comercial?`,
+      cmd: `${mnn} lida com cálculos de comissão ou descontos dentro do módulo comercial?`,
     },
     intermediate: {
-      cst: "De que forma você customiza campos ou layouts para atender necessidades do comercial?",
-      inf: "Você integra dados do ERP com softwares de análise (BI) ou outras planilhas?",
-      wfl: "Como você define fluxos de aprovação para pedidos (ex.: pedido de grande valor requer ok do gerente)?",
-      sec: "Qual é sua prática para criar perfis de segurança distintos (cada vendedor vê só seus pedidos)?",
-      tch: "Você já lidou com integrações via API para atualizar pipeline de vendas em tempo real?",
+      ...erpIntermediateKeys,
+      cmi: `${mnn} integra dados de vendas (ex.: estoque, financeiro) para agilizar processos no ERP?`,
+      cmj: `${cts} define ao configurar aprovações para pedidos de alto valor ou clientes especiais?`,
+      cmk: `${tcn} utiliza para customizar relatórios de vendas (ranking de vendedores, metas) e gerenciar permissões?`,
     },
     expert: {
-      mod: "Quais módulos avançados (ex.: gestão de campanhas, comissionamento) você domina no ERP?",
-      spt: "Como você soluciona problemas complexos (ex.: duplicidade de pedido) dentro do ERP?",
-      mig: "Você participou de migrações de ERP (ex.: TOTVS para SAP) visando melhoria do comercial?",
-      eff: "De que forma você mede eficiência e performance do time de vendas usando dados do ERP?",
-      adv: "Quais customizações avançadas (scripts ABAP, TOTVS) são feitas para gerenciar grandes contas comerciais?",
+      ...erpExpertKeys,
+      cme: `${exp} em rotinas avançadas de pricing ou campanhas via scripts no ERP (ABAP, TOTVS)?`,
+      cmf: `${mnn} emprega HA no módulo comercial para evitar downtime em períodos de alta demanda?`,
+      cmg: `${cts} segue para compliance (LGPD) e auditoria de dados de clientes em processos de vendas complexos?`,
     },
   },
   "Erps"
 );
-export const cmPlnKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      tsk: "Como você cria listas de tarefas relativas a metas de vendas e follow-ups?",
-      col: "Você compartilha o plano comercial com o gestor e colegas?",
-      cal: "Com que frequência você usa calendário para prazos (ex.: renovar contrato, contatar leads)?",
-      lbl: "Você marca prioridades (ex.: alta, média) em tarefas ou leads críticos?",
-      upd: "De que modo você atualiza status (em prospecção, em negociação, concluído) no planejamento?",
-    },
-    intermediate: {
-      wfl: "Como você estabelece fluxos (ex.: lead captado -> qualificação -> proposta -> assinatura) dentro do sistema de planejamento?",
-      not: "Você configura alertas para datas importantes, como expiração de proposta?",
-      col: "De que maneira a equipe comercial trabalha colaborativamente no mesmo board/plano?",
-      rpr: "Quais relatórios de progresso (ex.: leads ganhos, leads perdidos) você gera?",
-      int: "Você integra a plataforma de planejamento com planilhas ou dashboards para ver metas em tempo real?",
-    },
-    expert: {
-      adv: "Como você cria painéis avançados para acompanhar OKRs e resultados de vendas semanais/mensais?",
-      aut: "Você utiliza automações que movem tarefas no funil comercial conforme determinadas regras (ex.: data-limite)?",
-      pri: "De que forma você prioriza oportunidades de maior valor ou com data de fechamento próxima?",
-      bus: "Você já integrou processos de planejamento com BI para replanejar metas de acordo com performance real?",
-      sec: "Quais práticas de segurança e governança aplicam-se quando múltiplos times (marketing, vendas) acessam o plano comercial?",
-    },
-  },
-  "planning"
-);
-export const cmAiAdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiAdBeginnerKeys,
-    },
-    intermediate: {
-      ...aiAdIntermediateKeys,
-    },
-    expert: {
-      ...aiAdExpertKeys,
-    },
-  },
-  "audio"
-);
-export const cmAiImgKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiImgBeginnerKeys,
-    },
-    intermediate: {
-      ...aiImgIntermediateKeys,
-    },
-    expert: {
-      ...aiImgExpertKeys,
-    },
-  },
-  "image"
-);
-export const cmAiVdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      tut: "Você utiliza IA para criar vídeos curtos explicando cláusulas ou condições de contratos?",
-      rec: "Como a IA auxilia na gravação e narração de vídeos para apresentações de propostas comerciais?",
-      edi: "Você usa IA para editar automaticamente vídeos explicativos de negociações comerciais?",
-      shw: "Você utiliza IA para exibir gráficos ou tabelas comerciais em vídeos de apresentações formais?",
-      sld: "Como você transforma automaticamente apresentações comerciais em vídeos profissionais com IA?",
-    },
-    intermediate: {
-      anl: "Você usa IA para criar animações ou transições em vídeos explicativos de negociações comerciais?",
-      tts: "Como você utiliza IA para inserir narrações automáticas em vídeos que acompanham relatórios comerciais?",
-      eda: "Você utiliza IA para sincronizar áudio e vídeo em materiais explicativos comerciais?",
-      sub: "Você gera legendas automáticas em vídeos comerciais com termos específicos do setor usando IA?",
-      mlc: "Com que frequência você utiliza IA para criar vídeos instrutivos com base em roteiros de negociações comerciais?",
-    },
-    expert: {
-      brd: "Como você usa IA para editar e estruturar gravações de reuniões comerciais de alta complexidade?",
-      int: "Você utiliza IA para criar vídeos interativos que integrem dados comerciais em tempo real?",
-      scn: "Como você utiliza IA para configurar cenários virtuais em apresentações comerciais?",
-      adv: "Quais práticas avançadas de edição com IA você aplica para criar vídeos comerciais de alta qualidade?",
-      sec: "Como você utiliza IA para restringir acesso e proteger vídeos comerciais confidenciais?",
-    },
-  },
-  "video"
-);
+export const cmPlnKeys = ObjectHelper.deepFreeze({
+  ...defPlnKeys,
+});
+export const cmAiAdKeys = ObjectHelper.deepFreeze({
+  ...defAiAdKeys,
+});
+export const cmAiImgKeys = ObjectHelper.deepFreeze({
+  ...defAiImgKeys,
+});
+export const cmAiVdKeys = ObjectHelper.deepFreeze({
+  ...defAiVdKeys,
+});
 export const cmLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
       ...llmBeginnerKeys,
-      tip: "De que maneira você considera que LLMs podem ajudar a tratar, filtrar e organizados dados de clientes (nome, informações)?",
+      tip: `${mnn} considera que LLMs podem ajudar a tratar, filtrar e organizados dados de clientes (nome, informações)?`,
     },
     intermediate: {
       ...llmIntermediateKeys,
       pol: "Quais destes pontos críticos a cerca de políticas em relações comerciais você dá prioridade quando utilizando LLMs?",
-      nlp: "Com que frequência você analisa mensagens e documentos extensos de clientes usando LLMs?",
-      doc: "Com que frequência você utiliza LLMs para produzir relatórios e documentos corporativos?",
+      nlp: `${frq} você analisa mensagens e documentos extensos de clientes usando LLMs?`,
+      doc: `${frq} você utiliza LLMs para produzir relatórios e documentos corporativos?`,
     },
     expert: {
       ...llmExpertKeys,
-      api: "Com que frequência você conecta APIs de LLMs a sistemas de CRM ou plataformas de e-mail marketing?",
+      api: `${frq} você conecta APIs de LLMs a sistemas de CRM ou plataformas de e-mail marketing?`,
       adv: "Você já treinou modelos específicos com dados de negociações passadas para orientação de pricing?",
-      prv: "Com que frequência você usa LLMs para prever vendas, estimar taxa de conversão ou analisar tendências do mercado?",
+      prv: `${frq} você usa LLMs para prever vendas, estimar taxa de conversão ou analisar tendências do mercado?`,
     },
   },
   "llms"
 );
-export const comercialAddQuestions =
-  ObjectHelper.deepFreeze([
-    "comercial",
-    new Map([
-      ["docs", cmDocsKeys as any],
-      ["spreadSheets", cmSsKeys],
-      ["formBuilders", cmFmKeys],
-      ["cloudStorage", cmCsKeys],
-      ["businessInteligence", cmBiKeys],
-      ["Crms", cmCrmKeys],
-      ["Erps", cmErpKeys],
-      ["planning", cmPlnKeys],
-      ["audio", cmAiAdKeys],
-      ["image", cmAiImgKeys],
-      ["video", cmAiVdKeys],
-      ["llms", cmLlmKeys],
-    ]),
-  ]);
+export const cmAddQuestions: [
+  roleType,
+  QuestionsMap<cmComplexityKeySet>
+] = ObjectHelper.deepFreeze([
+  "comercial",
+  new Map([
+    ["docs", cmDocsKeys as any],
+    ["spreadSheets", cmSsKeys],
+    ["formBuilders", cmFmKeys],
+    ["cloudStorage", cmCsKeys],
+    ["businessInteligence", cmBiKeys],
+    ["Crms", cmCrmKeys],
+    ["Erps", cmErpKeys],
+    ["planning", cmPlnKeys],
+    ["audio", cmAiAdKeys],
+    ["image", cmAiImgKeys],
+    ["video", cmAiVdKeys],
+    ["llms", cmLlmKeys],
+  ]),
+]);
 export const mktDocsKeys = withFrozenLibreLabel(
   {
     beginner: {
       mch: "Como você redige materiais de marketing básicos (flyers, comunicados) com formatação simples?",
       chk: "Você utiliza checklists para revisar ortografia, imagens e coerência nos textos de marketing?",
-      pln: "Com que frequência você planeja conteúdo textual (ex.: posts) e compila num doc colaborativo?",
+      pln: `${frq} você planeja conteúdo textual (ex.: posts) e compila num doc colaborativo?`,
       cmd: "De que modo você adiciona comentários, sugestões e versões para aprovação?",
-      ext: "Com que frequência você exporta documentos no formato PDF?",
+      ext: `${frq} você exporta documentos no formato PDF?`,
     },
     intermediate: {
       mac: "Você criou macros ou modelos padronizados (layout, sumário) para relatórios de campanha?",
       rev: "De que forma você gerencia revisões vindas de gestores, designers e redatores ao mesmo tempo?",
-      stl: "Quais destes recursos gráficos você utiliza para destacar dados em documentos?",
-      mlt: "Com que frequência você utiliza mala direta (ex.: para e-mails de campanha em massa)?",
+      stl: `${rsc} gráficos você utiliza para destacar dados em documentos?`,
+      mlt: `${frq} você utiliza mala direta (ex.: para e-mails de campanha em massa)?`,
       doc: "Como você vincula partes do texto a dados externos (ex.: planilhas de resultados)?",
     },
     expert: {
@@ -2616,8 +2793,8 @@ export const mktCsKeys = withFrozenLibreLabel(
     },
     expert: {
       ...csExpertKeys,
-      rep: "Qual o seu nível de experiência em integrações com plataformas de BI?",
-      adv: "Quais destas técnicas você utiliza para automatizar uploads e organização de assets e postagens?",
+      rep: `${exp} em integrações com plataformas de BI?`,
+      adv: `${tcn} você utiliza para automatizar uploads e organização de assets e postagens?`,
     },
   },
   "cloudStorage"
@@ -2625,25 +2802,22 @@ export const mktCsKeys = withFrozenLibreLabel(
 export const mktBiKeys = withFrozenLibreLabel(
   {
     beginner: {
-      imp: "Você importa dados (ex.: gastos de campanhas, leads gerados) para BI?",
-      vis: "Como você cria gráficos básicos (cliques, custo) para visualizar resultados de marketing?",
-      fil: "Você filtra dados por data ou canal (ex.: Facebook, Instagram)?",
-      shr: "De que forma você compartilha painéis simples com colegas (link, PDF)?",
-      usr: "Você cria permissões específicas para que outros vejam só suas campanhas?",
+      ...biBeginnerKeys,
+      mkt: `${exp} utilizando ferramentas de BI para monitorar métricas básicas de campanhas de marketing?`,
+      mka: `${frq} você configura gráficos para acompanhar resultados de campanhas?`,
+      mkb: `${frq} você compartilha dashboards de marketing com sua equipe?`,
     },
     intermediate: {
-      mdl: "Como você modela dados de diversas origens (Google Ads, planilhas, etc.) numa ferramenta de BI?",
-      seg: "Você utiliza segmentações (ex.: por idade, região) para refinar análises?",
-      cal: "Você já criou colunas calculadas para métricas como CTR, CPA, ROI?",
-      drv: "De que forma você habilita drill-down (ex.: canal -> campanha -> anúncio específico)?",
-      aut: "Você atualiza dashboards automaticamente (ex.: daily refresh) para acompanhar métricas sem atraso?",
+      ...biIntermediateKeys,
+      mkm: `${exp} modelando dados de marketing (gastos, leads) nas ferramenta de BI?`,
+      mkd: `${sttg} Você segmenta dados de campanhas por canal e público usando recursos do BI?`,
+      mke: "Você configura atualizações automáticas para dashboards de marketing?",
     },
     expert: {
-      dax: "Você domina expressões avançadas (DAX, MDX, scripts) para cálculos de marketing?",
-      big: "Como você lida com grandes volumes de dados de anúncios (milhões de linhas) com performance?",
-      mlc: "Você integra scripts de IA (ex.: Python, R) para prever engajamento ou leads futuros?",
-      adv: "De que maneira você publica esses dashboards para stakeholders externos (agências, parceiros)?",
-      gov: "Como você gerencia governança (permissões, versionamento) de dashboards de marketing?",
+      ...biExpertKeys,
+      mkx: `${exp} integrando APIs de plataformas de ads com a ferramenta de BI para análises preditivas?`,
+      mkz: `${sttg} você utiliza para consolidar dados de múltiplas campanhas em dashboards avançados?`,
+      mky: "Descreva brevemente como você personaliza visualizações de dados de marketing para insights estratégicos?",
     },
   },
   "businessInteligence"
@@ -2651,135 +2825,58 @@ export const mktBiKeys = withFrozenLibreLabel(
 export const mktCrmKeys = withFrozenLibreLabel(
   {
     beginner: {
-      mgr: "Como você registra contatos ou leads iniciais no CRM para campanhas de marketing?",
-      sht: "Você anota interações de e-mail, redes sociais, inbound marketing? (Sim/Não)",
-      seg: "Você separa leads por tipo de interesse ou canal de entrada (ex.: blog, anúncio)?",
-      rel: "De que modo você gera relatórios básicos de leads (quantos chegaram, quantos responderam)?",
-      col: "Como você compartilha dados desses leads com outra equipe (ex.: vendas)?",
+      ...crmBeginnerKeys,
+      mkt: `${exp} utilizando CRMs para registrar leads originados de campanhas de marketing?`,
+      mka: `${exp} gerando relatórios simples para acompanhar o desempenho de campanhas?`,
+      mkb: `Quais são seus critérios para segmentar leads em CRMs de acordo com canais de entrada?`,
     },
     intermediate: {
-      scg: "Você atribui pontuação de leads (lead scoring) com base em ações de marketing (cliques, downloads)?",
-      aut: "Como você cria automações (ex.: mover lead para ‘MQL’ se abrir e-mail 2 vezes)?",
-      syn: "Você sincroniza dados do CRM com planilhas ou BI para ver pipeline de conversões?",
-      pro: "Qual é sua prática para acompanhar leads em funis diferentes (ex.: evento, webinar, inbound)?",
-      rep: "Você gera relatórios intermediários (ex.: taxa de conversão do marketing para vendas)?",
+      ...crmIntermediateKeys,
+      mkm: `${rsc} de CRMs você usa para modelar dados de campanhas buscando analisar o ROI?`,
+      mkd: `${tcn} você utiliza para integrar CRMs com plataformas de marketing buscando sincronizar dados de leads?`,
+      mke: `${frq} automatiza a atualização de status de leads a partir de ações de marketing?`,
     },
     expert: {
-      api: "Você integra o CRM com plataformas de automação de marketing, disparando e-mails ou anúncios segmentados?",
-      mlc: "Você aplica IA para prever qual lead é mais provável de avançar (propensão) com base em histórico?",
-      cst: "Como você customiza o CRM para gerenciar campanhas, definindo campos ou pipelines específicos?",
-      adv: "De que maneira você lida com funis complexos (vários estágios) e metas detalhadas de marketing?",
-      big: "Você faz análises massivas de leads (histórico de 1+ ano) para descobrir padrões de engajamento?",
+      ...crmExpertKeys,
+      mkx: `${exp} integrando APIs de plataformas de ads com CRMs para análises preditivas?`,
+      mkz: `${sttg} você utiliza para consolidar dados de campanhas de marketing em relatórios estratégicos?`,
+      mky: `Descreva como você personaliza dashboards no CRM para insights complexos de marketing`,
     },
   },
   "Crms"
 );
-export const mktErpsKeys = withFrozenLibreLabel(
+export const mktErpKeys = withFrozenLibreLabel(
   {
     beginner: {
-      bas: "Qual é sua familiaridade com o módulo de cadastro de produtos ou clientes em um ERP?",
-      mov: "Você verifica status de pedidos ou requisições geradas a partir de campanhas de marketing?",
-      usr: "Como você gerencia usuários ou permissões simples para equipe de marketing no ERP?",
-      rep: "Você gera relatórios básicos de produtos/serviços ligados a campanhas?",
-      imp: "Você já importou listas de clientes captados em campanhas para o ERP?",
+      ...erpBeginnerKeys,
+      mkb: `${frq} cria cadastros de produtos/campanhas no ERP para associar custos e estoque em ações de marketing?`,
+      mkc: `${mnn} gera relatórios básicos de impactos de campanhas (ex.: pedidos gerados) no ERP?`,
     },
     intermediate: {
-      cst: "De que forma você customiza campos (ex.: origem do lead, código de campanha) no ERP?",
-      inf: "Você integra dados do ERP (ex.: estoque, preço) com a plataforma de marketing ou landing pages?",
-      wfl: "Como você cria processos de aprovação (ex.: desconto especial) dependendo de dados vindos do marketing?",
-      sec: "Qual é sua prática para que cada time veja apenas as informações necessárias (ex.: marketing não vê contábil)?",
-      tch: "Você já fez integrações por API para atualizar status de campanha direto no ERP (ex.: ‘campanha finalizada’)?",
+      ...erpIntermediateKeys,
+      mki: `${mnn} integra plataformas de marketing (landing pages, leads) ao ERP para sincronizar dados?`,
+      mkx: `${tcn} utiliza para adicionar campos de campanha (ex.: origem, ROI) no ERP?`,
     },
     expert: {
-      mod: "Quais módulos avançados (promoções, CRM interno, automação) você domina no ERP?",
-      spt: "Como você resolve problemas (ex.: duplicidade de leads) entre marketing e módulos do ERP?",
-      mig: "Você participou de migrações de ERP visando melhorar tracking de campanhas?",
-      eff: "De que maneira você mede eficiência de campanhas (ROI) usando relatórios do ERP?",
-      adv: "Quais customizações avançadas (script TOTVS, ABAP SAP) você aplica para adequar processos de marketing?",
+      ...erpExpertKeys,
+      mke: `${exp} em scripts avançados para vincular dados de marketing (CPC, ROI) aos módulos do ERP?`,
+      mkf: `${mnn} protege dados de leads e clientes (LGPD) em campanhas complexas integradas ao ERP?`,
     },
   },
   "Erps"
 );
-export const mktPlnKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      tsk: "Como você lista tarefas de marketing (ex.: criação de posts, envio de e-mail) em um board simples?",
-      cal: "Com que frequência você usa calendários de campanha (datas de início e fim) para organização?",
-      lbl: "Você rotula tarefas por prioridade (ex.: alta, média, baixa) ou por canal (Facebook, Google)?",
-      upd: "De que forma você atualiza status das campanhas (ex.: em rascunho, lançada, finalizada)?",
-      shr: "Você compartilha esse plano com o gestor ou a equipe em tempo real?",
-    },
-    intermediate: {
-      wfl: "Como você estabelece fluxos de aprovação em campanhas (ex.: revisão de design, revisão de texto)?",
-      not: "Você cria alertas (ex.: e-mail ou Slack) quando um prazo de campanha está próximo?",
-      col: "Como cada membro do time pega suas tarefas e marca como concluídas no mesmo board?",
-      rpr: "Você gera relatórios intermediários (quantas tarefas fechadas, quantas pendentes)?",
-      int: "Você integra a plataforma de planejamento com planilhas ou sistemas de ads para ver resultados?",
-    },
-    expert: {
-      adv: "Como você projeta cronogramas avançados (ex.: Gantt) para grandes campanhas multi-canal?",
-      aut: "Você utiliza automações que movem tarefas ou notificam responsáveis conforme regras específicas?",
-      pri: "De que forma você prioriza campanhas com maior investimento ou maior ROI esperado?",
-      bus: "Você já correlacionou planejamento de marketing com dados de BI para readequar metas e prazos?",
-      sec: "Quais práticas de governança aplicam-se ao permitir que diferentes agências acessem seu board?",
-    },
-  },
-  "planning"
-);
-export const mktAiAdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiAdBeginnerKeys,
-    },
-    intermediate: {
-      ...aiAdIntermediateKeys,
-    },
-    expert: {
-      ...aiAdExpertKeys,
-    },
-  },
-  "audio"
-);
-export const mktAiImgKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiImgBeginnerKeys,
-    },
-    intermediate: {
-      ...aiImgIntermediateKeys,
-    },
-    expert: {
-      ...aiImgExpertKeys,
-    },
-  },
-  "image"
-);
-export const mktAiVdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      edt: "Você utiliza IA para editar vídeos promocionais simples (ex.: cortar, redimensionar)?",
-      upv: "Com que frequência você usa IA para otimizar uploads de vídeos em redes sociais?",
-      tem: "Você usa IA para personalizar templates pré-fabricados em vídeos promocionais? (Sim/Não)",
-      sub: "Como você gera legendas automáticas para vídeos de marketing com IA?",
-      frm: "Você utiliza IA para ajustar formatos de vídeo para diferentes plataformas (ex.: 16:9, 1:1)?",
-    },
-    intermediate: {
-      eff: "Quais efeitos visuais baseados em IA você utiliza para melhorar a qualidade de vídeos promocionais?",
-      aud: "Você sincroniza áudio automaticamente com vídeos promocionais usando IA?",
-      pla: "Você planeja campanhas de vídeo com ferramentas baseadas em IA? Cite um exemplo.",
-      cpt: "Como você usa IA para criar narrativas engajantes (storytelling) em vídeos de marketing?",
-      ani: "Você integra IA para criar animações personalizadas em vídeos de campanhas?",
-    },
-    expert: {
-      adv: "Quais práticas avançadas de IA você utiliza para integrar vídeos a estratégias omnichannel?",
-      ana: "Como você usa IA para medir métricas de vídeos (ex.: taxa de retenção, engajamento)?",
-      api: "De que forma você integra APIs de IA para automação de edição e publicação de vídeos?",
-      _3dv: "Você já usou IA para criar vídeos em 3D ou com realidade aumentada? (Sim/Não)",
-      adt: "Como você utiliza IA para personalizar vídeos (ex.: incluir o nome do cliente no vídeo)?",
-    },
-  },
-  "video"
-);
+export const mktPlnKeys = ObjectHelper.deepFreeze({
+  ...defPlnKeys,
+});
+export const mktAiAdKeys = ObjectHelper.deepFreeze({
+  ...defAiAdKeys,
+});
+export const mktAiImgKeys = ObjectHelper.deepFreeze({
+  ...defAiImgKeys,
+});
+export const mktAiVdKeys = ObjectHelper.deepFreeze({
+  ...defAiVdKeys,
+});
 export const mktLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
@@ -2787,7 +2884,7 @@ export const mktLlmKeys = withFrozenLibreLabel(
     },
     intermediate: {
       ...llmIntermediateKeys,
-      pol: "Com que frequência você utiliza LLMs para intepretar e resumir dados de relatórios e feedback?",
+      pol: `${frq} você utiliza LLMs para intepretar e resumir dados de relatórios e feedback?`,
       nlp: "Você utiliza LLMs para sumarizar estatísticas de feedback de clientes ou reviews usando?",
       exc: "Você utiliza LLMs para criar planilhas de budget ou simular projeções de campanha?",
     },
@@ -2795,35 +2892,37 @@ export const mktLlmKeys = withFrozenLibreLabel(
       ...llmExpertKeys,
       prv: "Você aplica IA para prever engajamento ou taxa de conversão em anúncios?",
       adv: "Você já treinou modelos com histórico de campanhas, gerando sugestões personalizadas de copy?",
-      api: "Qual é o seu nível de experiência integrando APIs de LLMs para automatizar criação de conteúdo ou chatbots de marketing?",
+      api: `${exp} integrando APIs de LLMs para automatizar criação de conteúdo ou chatbots de marketing?`,
     },
   },
   "llms"
 );
-export const marketingAddQuestions =
-  ObjectHelper.deepFreeze([
-    "marketing",
-    new Map([
-      ["docs", mktDocsKeys as any],
-      ["spreadSheets", mktSsKeys],
-      ["formBuilders", mktFmKeys],
-      ["cloudStorage", mktCsKeys],
-      ["businessInteligence", mktBiKeys],
-      ["Crms", mktCrmKeys],
-      ["Erps", mktErpsKeys],
-      ["planning", mktPlnKeys],
-      ["audio", mktAiAdKeys],
-      ["image", mktAiImgKeys],
-      ["video", mktAiVdKeys],
-      ["llms", mktLlmKeys],
-    ]),
-  ]);
+export const mktAddQuestions: [
+  roleType,
+  QuestionsMap<mktComplexityKeySet>
+] = ObjectHelper.deepFreeze([
+  "marketing",
+  new Map([
+    ["docs", mktDocsKeys as any],
+    ["spreadSheets", mktSsKeys],
+    ["formBuilders", mktFmKeys],
+    ["cloudStorage", mktCsKeys],
+    ["businessInteligence", mktBiKeys],
+    ["Crms", mktCrmKeys],
+    ["Erps", mktErpKeys],
+    ["planning", mktPlnKeys],
+    ["audio", mktAiAdKeys],
+    ["image", mktAiImgKeys],
+    ["video", mktAiVdKeys],
+    ["llms", mktLlmKeys],
+  ]),
+]);
 export const stN1DocsKeys = withFrozenLibreLabel(
   {
     beginner: {
       fmt: repeated.fmt,
       syn: "De que forma você ensina a sincronizar documentos na nuvem ou em rede local?",
-      cpt: "Com que frequência você auxilia na compatibilidade de arquivos entre diferentes versões do software?",
+      cpt: `${frq} você auxilia na compatibilidade de arquivos entre diferentes versões do software?`,
       tmp: "Você recomenda modelos prontos para usuários inexperientes em edição de texto? (Sim/Não)",
       col: "Como você analisa a colaboração simultânea (multiusuário) em um mesmo documento?",
     },
@@ -2831,15 +2930,15 @@ export const stN1DocsKeys = withFrozenLibreLabel(
       mac: repeated.mcr,
       rev: "Que estratégias você adota para controlar revisões e histórico de versões com equipes maiores?",
       sec: "Como você lida com a proteção de documentos via senhas ou restrição de edição?",
-      stl: "Quais ferramentas de estilo você apresenta para a configuração de estilos de texto (títulos, cabeçalhos) e sumários automáticos?",
+      stl: `${tls} de estilo você apresenta para a configuração de estilos de texto (títulos, cabeçalhos) e sumários automáticos?`,
       prb: "Qual é sua abordagem ao diagnosticar problemas intermediários de layout ou formatação avançada?",
     },
     expert: {
       scr: repeated.mcr,
-      cpy: "Quais destas ferramentas você instrui para o controle de versão dos documentos colaborativos?",
+      cpy: `${tls} você instrui para o controle de versão dos documentos colaborativos?`,
       idx: "Como você instrui usuários a criarem índices remissivos ou seções avançadas em documentos extensos?",
       adv: "De que forma você soluciona conflitos de permissões avançadas e restrições de edição em rede?",
-      dbi: "Com que frequência você integra documentos a bancos de dados ou APIs (ex.: mail merge massivo)?",
+      dbi: `${frq} você integra documentos a bancos de dados ou APIs (ex.: mail merge massivo)?`,
     },
   },
   "docs"
@@ -2848,22 +2947,22 @@ export const stN1SsKeys = withFrozenLibreLabel(
   {
     beginner: {
       sum: repeated.sum,
-      frm: "Quais destas técnicas de layout de formatação de células você recomendaria a um usuário para destacar dados?",
-      fil: "Quais destas técnicas você recomendaria a um usuário para filtrar ou classificar dados de modo simples?",
-      cbt: "Quais destes recursos você utiliza para configurar proteções básicas de célula para evitar alterações indevidas?",
+      frm: `${tcn} de layout de formatação de células você recomendaria a um usuário para destacar dados?`,
+      fil: `${tcn} você recomendaria a um usuário para filtrar ou classificar dados de modo simples?`,
+      cbt: `${rsc} você utiliza para configurar proteções básicas de célula para evitar alterações indevidas?`,
       con: "Como você orienta a colaboração simultânea em uma planilha (ex.: várias pessoas editando)?",
     },
     intermediate: {
       piv: "Qual é sua abordagem para ajudar usuários a criarem tabelas dinâmicas de complexidade média?",
-      fml: "Qual é a sua familiaridade com funções (SE, PROCV) para automação de cálculos multidimensionais e lógica?",
+      fml: `${fam} com funções (SE, PROCV) para automação de cálculos multidimensionais e lógica?`,
       cht: "Que tipos de gráficos você recomenda para análises em planilhas de nível intermediário?",
-      val: "Quais destas técnicas você recomenda para configurar validações de dados e evitar entradas incorretas?",
+      val: `${tcn} você recomenda para configurar validações de dados e evitar entradas incorretas?`,
       net: "De que forma você gerencia possíveis conflitos de versão ao trabalhar via rede ou nuvem?",
     },
     expert: {
       mcr: repeated.mcr,
       sec: "Qual sua experiência em configurar permissões avançadas em planilhas compartilhadas (ex.: range locking)?",
-      prf: "Quais destas técnicas você utiliza para otimizar performance em planilhas extensas com dezenas de abas e fórmulas aninhadas?",
+      prf: `${tcn} você utiliza para otimizar performance em planilhas extensas com dezenas de abas e fórmulas aninhadas?`,
       idx: "Com quais serviços externos você integra as suas planilhas?",
       aud: "De que forma você efetua auditoria em planilhas complexas para rastrear erros ou mudanças não autorizadas?",
     },
@@ -2893,180 +2992,90 @@ export const stN1CsKeys = withFrozenLibreLabel(
   {
     beginner: {
       ...csBeginnerKeys,
-      upl: "Com que frequência você auxilia usuários com arquivos em plataformas baseadas em nuvem?",
+      upl: `${frq} você auxilia usuários com arquivos em plataformas baseadas em nuvem?`,
       syn: "Descreva em termos gerais suas técnicas para sincronizar pastas locais com o armazenamento em nuvems",
     },
     intermediate: {
       ...csIntermediateKeys,
       prf: "Qual destas técnicas você utiliza para resolver problemas de performance em plataformas baseadas em nuvem?",
-      bck: "Quais destas técnicas você utiliza para gerenciar backups automáticos ou snapshots em storage de nuvem?",
+      bck: `${tcn} você utiliza para gerenciar backups automáticos ou snapshots em storage de nuvem?`,
     },
     expert: {
       ...csExpertKeys,
-      mlt: "Qual é o seu nível de experiência lidando com múltiplas contas ou provedores (Google, OneDrive, Amazon S3)?",
-      drp: "Quais destas técnicas você adota para lidar com prevenção e recuperação de desastres de repositórios críticos em nuvem?",
+      mlt: `${exp} lidando com múltiplas contas ou provedores (Google, OneDrive, Amazon S3)?`,
+      drp: `${tcn} você adota para lidar com prevenção e recuperação de desastres de repositórios críticos em nuvem?`,
     },
   },
   "cloudStorage"
 );
-export const stN1BiKeys = withFrozenLibreLabel(
+const stn =
+    "Descreva, em suas palavras, sua experiência orientando usuários com a instalação e configuração de ferramentas de BI",
+  stBiKeys = withFrozenLibreLabel(
+    {
+      beginner: {
+        ...biBeginnerKeys,
+        stn,
+      },
+      intermediate: {
+        ...biIntermediateKeys,
+        stn,
+      },
+      expert: {
+        ...biExpertKeys,
+        stn,
+      },
+    },
+    "businessInteligence"
+  );
+export const stN1BiKeys = ObjectHelper.deepFreeze({
+  ...stBiKeys,
+});
+export const stN1CrmKeys = withFrozenLibreLabel(
   {
     beginner: {
-      con: "De que forma você ensina usuários a conectar dados simples (planilhas) a ferramentas de BI (Power BI, etc.)?",
-      vsl: "Como você orienta a criação de visualizações básicas (gráficos simples, tabelas) em BI?",
-      fil: "Qual é sua prática ao configurar filtros e segmentações iniciais para analisar dados?",
-      rpt: "Com que frequência você auxilia na geração de relatórios básicos (PDF, print) para usuários finais?",
-      ref: "Você verifica se os dados estão atualizados ou se há problemas de refresh? (Sim/Não)",
+      ...crmBeginnerKeys,
+      stn: `${exp} utilizando CRMs para registrar atendimentos e monitorar o status de leads de suporte básico?`,
     },
     intermediate: {
-      mdm: "Como você lida com modelagem de dados intermediária (relacionamentos, chaves) em BI?",
-      das: "Você auxilia na criação de dashboards com métricas de negócio? Explique um exemplo.",
-      src: "Qual sua experiência ao integrar múltiplas fontes (vendas, estoque) no mesmo relatório?",
-      cal: "Como você ensina fórmulas/calculated fields (ex.: DAX no Power BI) de nível intermediário?",
-      sec: "Você configura segurança em nível de linha ou permissões específicas em dashboards compartilhados?",
+      ...crmIntermediateKeys,
+      sti: `Como você utiliza CRMs para acompanhar métricas de atendimento e identificar problemas operacionais?`,
     },
     expert: {
-      adv: "Como você soluciona problemas avançados de performance em dashboards com milhões de registros?",
-      sdb: "Você já integrou scripts ou R/Python para análises preditivas dentro do BI?",
-      gov: "De que forma você implementa governança e organização de workspaces BI (ex.: departmentalizado)?",
-      mlb: "Você automatiza a atualização de dados (scheduling, pipelines complexos) em sistemas corporativos?",
-      aud: "Como você audita logs de acesso e manipulação de dados em dashboards de alto nível?",
-    },
-  },
-  "businessInteligence"
-);
-export const stN1CrmsKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      lds: "Como você cadastra leads/clientes básicos em uma plataforma de CRM (ex.: Salesforce)?",
-      acs: "Com que frequência você ajuda a definir acessos simples (usuários, permissões) no CRM?",
-      stt: "Você configura status básicos de leads (novo, em follow-up) para controle de processo?",
-      rcv: "De que forma você orienta o registro de conversas ou visitas no CRM?",
-      rep: "Como você ajuda na geração de relatórios iniciais (pipeline simples) para visualização de oportunidades?",
-    },
-    intermediate: {
-      wfl: "Você cria fluxos de trabalho automáticos (ex.: envio de e-mail, mudança de estágio) no CRM?",
-      prf: "Como você lida com perfis e funções intermediárias (hierarquia de acessos, permissões avançadas)?",
-      int: "Qual é sua prática ao integrar CRM com outras ferramentas (ex.: e-mail marketing, BI)?",
-      scg: "De que maneira você orienta a segmentação de contatos (ex.: tags, filtros) para campanhas?",
-      doc: "Você configura documentos ou contratos a partir do CRM (merge de dados)? Explique.",
-    },
-    expert: {
-      api: "Como você implementa integrações por meio de APIs para automatizar ações no CRM?",
-      adv: "De que forma você resolve conflitos de duplicidade de dados em clientes grandes?",
-      cus: "Qual sua abordagem para customizar objetos, campos e layouts complexos no CRM?",
-      sfd: "Você lida com módulos avançados (Forecast, AI) em plataformas como Salesforce? (Sim/Não)",
-      sec: "Como você gerencia segurança e compliance (LGPD) no CRM quando há muitos usuários?",
+      ...crmExpertKeys,
+      ste: `${frq} integra CRMs com sistemas de suporte para análises avançadas de performance em atendimento?`,
     },
   },
   "Crms"
 );
-export const stN1ErpsKeys = withFrozenLibreLabel(
+export const stN1ErpKeys = withFrozenLibreLabel(
   {
     beginner: {
-      acc: "De que modo você auxilia usuários em cadastros básicos (clientes, produtos) em sistemas ERP?",
-      rep: "Como você gera relatórios simples de vendas ou financeiro no ERP para usuários comuns?",
-      men: "Você explica a navegação inicial nos menus do ERP e como acessar módulos básicos?",
-      doc: "Em que frequência você ajuda a emitir notas fiscais ou documentos de estoque?",
-      sup: "Como você orienta para suporte inicial (chamados, tickets) quando algo básico falha?",
+      ...erpBeginnerKeys,
+      snb: `${mnn} auxilia usuários em relatórios básicos (ex.: estoque, vendas) para chamados de ERP?`,
     },
     intermediate: {
-      cfg: "Você configura módulos intermediários (ex.: compras, produção) e permissões específicas?",
-      flw: "De que forma você define fluxos de aprovação (requisição -> aprovação) no ERP?",
-      mig: "Como você lida com migrações de dados (planilhas -> ERP) sem corromper registros?",
-      bkp: "Qual é sua prática de backup/restauração quando usuários precisam reverter transações?",
-      int: "Você integra o ERP a sistemas externos (ex.: e-commerce, BI) para dados sincronizados?",
+      ...erpIntermediateKeys,
+      sni: `${frq} soluciona problemas intermediários (falha de permissão, importação de planilhas) no ERP durante suporte?`,
     },
     expert: {
-      dev: "Como você gerencia customizações profundas (scripts ABAP/TOTVS) para demandas avançadas?",
-      seg: "De que modo você controla segurança e auditoria, rastreando logs de alterações críticas?",
-      otm: "Você otimiza performance em cenários com grande volume de dados e muitos usuários simultâneos?",
-      api: "De que forma você expõe ou consome APIs do ERP para automações corporativas grandes?",
-      upd: "Como você lida com atualizações de versão do ERP, evitando downtime e conflitos?",
+      ...erpExpertKeys,
+      sne: `${tcn} utiliza para configurações avançadas (API, tuning) em atendimentos críticos do ERP?`,
     },
   },
   "Erps"
 );
-export const stN1PlnKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      brd: "Como você orienta na criação de quadros básicos (Trello, Planner) para organizar tarefas?",
-      stt: "Você explica status típicos (A fazer, Em andamento, Concluído) e como mover cartões?",
-      lbl: "De que modo você mostra o uso de etiquetas para categorizar atividades simples?",
-      cmt: "Com que frequência você incentiva anotações e comentários detalhados nos cartões/tarefas?",
-      col: "Você ensina colaboração multiusuário para que vários colegas vejam atualizações em tempo real?",
-    },
-    intermediate: {
-      aut: "Em que nível você configura automações (ex.: mover cartão ao vencer prazo) nas ferramentas?",
-      prf: "Como você lida com permissões intermediárias (ex.: membros específicos, observadores)?",
-      cal: "Você integra calendários ou define datas-limite com notificações de forma robusta?",
-      rpt: "Que tipo de relatórios ou gráficos (burndown, Gantt) você gera para acompanhar progresso?",
-      int: "Você conecta essas ferramentas de planejamento com outros sistemas (CRM, ERP) ou e-mail?",
-    },
-    expert: {
-      adv: "Como você coordena quadros complexos de projetos grandes, com múltiplas equipes e sprints?",
-      scp: "Você configura métodos avançados (Scrum/Kanban) e métricas (velocidade, backlog) para times grandes?",
-      rls: "De que forma você controla níveis de acesso, incluindo convidados externos ou revisores?",
-      wfs: "Você gerencia integrações ou webhooks para automatizar comunicação com pipeline DevOps?",
-      mlb: "Em que frequência você recorre a machine learning ou IA para prever prazos e atrasos?",
-    },
-  },
-  "planning"
-);
-export const stN1AiAdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiAdBeginnerKeys,
-    },
-    intermediate: {
-      ...aiAdIntermediateKeys,
-    },
-    expert: {
-      ...aiAdExpertKeys,
-    },
-  },
-  "audio"
-);
-export const stN1AiImgKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiImgBeginnerKeys,
-    },
-    intermediate: {
-      ...aiImgIntermediateKeys,
-    },
-    expert: {
-      ...aiImgExpertKeys,
-    },
-  },
-  "image"
-);
-export const stN1AiVdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      rec: "Como você utiliza IA para criar tutoriais rápidos em vídeo gerados automaticamente para suporte técnico?",
-      edt: "Você recomenda ferramentas de IA para edições básicas (corte automático, legendas rápidas) em vídeos? (Sim/Não)",
-      frm: "Com que frequência você utiliza IA para converter formatos e ajustar resoluções automaticamente?",
-      upl: "Você usa IA para otimizar o upload de vídeos para plataformas internas? (Sim/Não)",
-      cap: "Como você utiliza IA para gerar legendas automáticas em vídeos curtos para acessibilidade?",
-    },
-    intermediate: {
-      eff: "Quais ferramentas de IA você usa para aplicar efeitos visuais ou zoom automático em vídeos técnicos?",
-      aud: "Você utiliza IA para sincronizar áudio com vídeo em tutoriais? Cite um exemplo.",
-      mul: "Como você aplica IA para gerenciar múltiplas faixas de vídeo e áudio (ex.: overlays, mixagem)?",
-      ctt: "Você gera conteúdo de treinamento em vídeo com o auxílio de IA? Como isso melhora a produtividade?",
-      sec: "Como você utiliza IA para proteger vídeos internos, garantindo que apenas pessoas autorizadas tenham acesso?",
-    },
-    expert: {
-      adv: "Você utiliza IA em edições multicâmera ou com chroma key (fundo verde) para vídeos técnicos complexos?",
-      str: "Como você aplica IA para gerenciar transmissões ao vivo com ajustes automáticos de qualidade e latência?",
-      api: "Você integra APIs de IA para automação de publicação e edição de vídeos? Descreva uma aplicação prática.",
-      enc: "Você recomenda ferramentas de IA para encoding otimizado (bitrate, codecs) de vídeos longos?",
-      mlv: "Em que frequência você utiliza IA para análise de vídeos, como geração de insights ou legendas automáticas?",
-    },
-  },
-  "video"
-);
+export const stN1PlnKeys = ObjectHelper.deepFreeze({
+  ...defPlnKeys,
+});
+export const stN1AiAdKeys = ObjectHelper.deepFreeze({
+  ...defAiAdKeys,
+});
+export const stN1AiImgKeys = ObjectHelper.deepFreeze({
+  ...defAiImgKeys,
+});
+export const stN1AiVdKeys = ObjectHelper.deepFreeze({
+  ...defAiVdKeys,
+});
 export const stLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
@@ -3089,31 +3098,33 @@ export const stLlmKeys = withFrozenLibreLabel(
 export const stN1LlmKeys = ObjectHelper.deepFreeze({
   ...stLlmKeys,
 });
-export const suporteTecnicoN1AddQuestions =
-  ObjectHelper.deepFreeze([
-    "suporteTecnicoN1",
-    new Map([
-      ["docs", stN1DocsKeys as any],
-      ["spreadSheets", stN1SsKeys],
-      ["formBuilders", stN1FmKeys],
-      ["cloudStorage", stN1CsKeys],
-      ["businessInteligence", stN1BiKeys],
-      ["Crms", stN1CrmsKeys],
-      ["Erps", stN1ErpsKeys],
-      ["planning", stN1PlnKeys],
-      ["audio", stN1AiAdKeys],
-      ["image", stN1AiImgKeys],
-      ["video", stN1AiVdKeys],
-      ["llms", stN1LlmKeys],
-    ]),
-  ]);
+export const stN1AddQuestions: [
+  roleType,
+  QuestionsMap<stN1ComplexityKeySet>
+] = ObjectHelper.deepFreeze([
+  "suporteTecnicoN1",
+  new Map([
+    ["docs", stN1DocsKeys as any],
+    ["spreadSheets", stN1SsKeys],
+    ["formBuilders", stN1FmKeys],
+    ["cloudStorage", stN1CsKeys],
+    ["businessInteligence", stN1BiKeys],
+    ["Crms", stN1CrmKeys],
+    ["Erps", stN1ErpKeys],
+    ["planning", stN1PlnKeys],
+    ["audio", stN1AiAdKeys],
+    ["image", stN1AiImgKeys],
+    ["video", stN1AiVdKeys],
+    ["llms", stN1LlmKeys],
+  ]),
+]);
 export const stN2DocsKeys = withFrozenLibreLabel(
   {
     beginner: {
-      syn: "Quais destas ferramentas você utiliza para a sincronização de arquivos .doc entre servidores ou ferramentas na nuvem?",
-      cmp: "Quais destas ferramentas de conversão de formatos de documentos você recomendaria para um usuário?",
-      plg: "Com que frequência você instala ou configura plugins básicos de formatação de documentos para usuários?",
-      pmt: "Quais ferramentas você utiliza para intervir em problemas de permissão (arquivos bloqueados, somente leitura) em rede?",
+      syn: `${tls} você utiliza para a sincronização de arquivos .doc entre servidores ou ferramentas na nuvem?`,
+      cmp: `${tls} de conversão de formatos de documentos você recomendaria para um usuário?`,
+      plg: `${frq} você instala ou configura plugins básicos de formatação de documentos para usuários?`,
+      pmt: `${tls} você utiliza para intervir em problemas de permissão (arquivos bloqueados, somente leitura) em rede?`,
       ori: "Que orientações básicas você dá quando o documento é corrompido ou não abre corretamente?",
     },
     intermediate: {
@@ -3127,7 +3138,7 @@ export const stN2DocsKeys = withFrozenLibreLabel(
       vba: repeated.mcr,
       enc: "Em que nível você lida com criptografia avançada de documentos e permissões de usuários distintos?",
       srv: "Descreva pontos críticos na configuração de servidores especializados em persistência de documentos (ex.: SharePoint), proporcionando edição simultânea sem conflito.",
-      api: "Qual é a sua familiaridade na integração com APIs ou complementos externos (ex.: Scripts com Python) para manipular documentos massivamente?",
+      api: `${fam} com integração com APIs ou complementos externos (ex.: Scripts com Python) para manipular documentos massivamente?`,
       mig: "Qual sua estratégia ao migrar docs de um sistema legado para plataformas atuais, mantendo formatação?",
     },
   },
@@ -3136,24 +3147,24 @@ export const stN2DocsKeys = withFrozenLibreLabel(
 export const stN2SsKeys = withFrozenLibreLabel(
   {
     beginner: {
-      net: "Quais destas técnicas você orienta a configuração de planilhas em rede local ou via ferramentas de compartilhamento (Drive, OneDrive)?",
-      fmz: "Quais destas técnicas você usa para evitar formatações que podem quebrar fórmulas ao abrir planilhas em versões distintas?",
-      cft: "Quais destas técnicas você recomenda para fazer a conferência de dados em planilhas compartilhadas, resolvendo conflitos básicos de edição?",
+      net: `${tcn} você orienta a configuração de planilhas em rede local ou via ferramentas de compartilhamento (Drive, OneDrive)?`,
+      fmz: `${tcn} você usa para evitar formatações que podem quebrar fórmulas ao abrir planilhas em versões distintas?`,
+      cft: `${tcn} você recomenda para fazer a conferência de dados em planilhas compartilhadas, resolvendo conflitos básicos de edição?`,
       csd: "Em que frequência você lida com consultas simples (ex.: importação CSV) para dados de planilha?",
       bak: "Quais destas práticas você recomenda para backups diários de planilhas importantes?",
     },
     intermediate: {
-      piv: "Quais destas técnicas você utiliza para intervir na criação ou troubleshooting de Tabelas Dinâmicas com múltiplas fontes de dados?",
-      lnk: "Quais destas técnicas você utiliza para solucionar problemas em planilhas que importam/ligam dados de outras pastas de trabalho?",
-      val: "Quais destas técnicas você usa para configurar validações e restrições para prevenir erros em planilhas?",
+      piv: `${tcn} você utiliza para intervir na criação ou troubleshooting de Tabelas Dinâmicas com múltiplas fontes de dados?`,
+      lnk: `${tcn} você utiliza para solucionar problemas em planilhas que importam/ligam dados de outras pastas de trabalho?`,
+      val: `${tcn} você usa para configurar validações e restrições para prevenir erros em planilhas?`,
       scp: "Quais formatos de scripts você usa para integrações pontuais em planilhas?",
       rep: "Como você gera relatórios semestrais ou consolida planilhas vindas de diferentes setores (ex.: contábil, vendas)?",
     },
     expert: {
       arr: "Qual é o seu nível de familiaridade com funções matriciais avançadas (ex.: MATRIZDINAMICA, Fórmulas aninhadas complexas)?",
       sec: "Qual é sua prática ao configurar segurança (proteção de intervalos, permissões de usuário) em grandes planilhas de rede?",
-      mcr: "Quais destas técnicas para depurar macros avançadas (VBA) que causam lentidão ou bloqueiam recursos compartilhados?",
-      big: "Com que frequência você conecta planilhas a bancos de dados corporativos via ODBC/SQL e soluciona problemas de acesso?",
+      mcr: `${tcn} para depurar macros avançadas (VBA) que causam lentidão ou bloqueiam recursos compartilhados?`,
+      big: `${frq} você conecta planilhas a bancos de dados corporativos via ODBC/SQL e soluciona problemas de acesso?`,
       par: "Descreva técnicas que você utiliza para tuning de performance em planilhas muito grandes (milhares de linhas ou abas).",
     },
   },
@@ -3181,203 +3192,79 @@ export const stN2FmKeys = withFrozenLibreLabel(
 export const stN2CsKeys = ObjectHelper.deepFreeze({
   ...stN1CsKeys,
 });
-export const stN2BiKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      con: "De que forma você ajuda usuários a conectar dados básicos (ex.: planilha, CSV) em ferramentas de BI (Power BI)?",
-      nav: "Você orienta sobre a navegação inicial em dashboards e filtros simples?",
-      bas: "Como você lida com problemas de refresh manual quando os dados não atualizam automaticamente?",
-      rpt: "Qual sua abordagem para exportar relatórios em PDF ou outros formatos no BI?",
-      err: "Você depura erros básicos de credenciais ou permissões ao acessar o dashboard?",
-    },
-    intermediate: {
-      mrg: "Você configura merges ou joins em múltiplas fontes de dados (ex.: contábil + vendas)?",
-      dax: "Qual é sua experiência em DAX (Power BI) ou cálculos intermediários em outras plataformas (Tableau calc fields)?",
-      sch: "Você agenda atualizações regulares ou incrementais e resolve falhas nesse agendamento?",
-      seg: "Como você configura segurança em nível de linha (RLS) ou filtros avançados para grupos distintos?",
-      adv: "Você orienta sobre criação de visuais customizados ou scripts R/Python dentro do BI?",
-    },
-    expert: {
-      prf: "De que forma você otimiza performance em dashboards gigantes (tabelas de milhões de linhas)?",
-      api: "Você integra APIs de BI (Push data, REST) a sistemas corporativos, resolvendo problemas complexos?",
-      cus: "Como você personaliza completamente visuais (ex.: TypeScript custom visuals, D3.js) para relatórios?",
-      mlb: "Em que frequência você realiza análises preditivas ou algoritmos de machine learning embutidos no BI?",
-      aud: "Você realiza auditoria e logs de acesso detalhados, rastreando quem alterou relatórios ou dados?",
-    },
+export const stN2BiKeys = ObjectHelper.deepFreeze({
+  ...stBiKeys,
+});
+export const stN2CrmKeys = ObjectHelper.deepFreeze({
+  ...stN1CrmKeys,
+});
+export const stN2ErpKeys = ObjectHelper.deepFreeze({
+  beginner: {
+    ...erpBeginnerKeys,
+    s2b: `${mnn} realiza configurações iniciais (login, rede) para usuários no ERP?`,
   },
-  "businessInteligence"
-);
-export const stN2CrmsKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      acs: "Como você auxilia no acesso inicial ao CRM, criando logins e permissões básicas?",
-      syn: "Você ajusta sincronização de contatos e calendários com e-mails ou smartphones?",
-      imp: "Com que frequência você importa planilhas de leads para o CRM, resolvendo conflitos de campos?",
-      rep: "Como você configura relatórios simples de pipeline ou funil de vendas para usuários novatos?",
-      col: "De que forma você soluciona inconsistências de dados entre o CRM e outro sistema (ex.: e-mail marketing)?",
-    },
-    intermediate: {
-      auto: "Você cria automações de estágio (mover lead) ou gatilhos (enviar e-mail) dentro do CRM?",
-      seg: "Como você lida com segmentações e listas de clientes mais avançadas, baseadas em múltiplos critérios?",
-      int: "De que forma você integra o CRM com plataformas de atendimento (chat, ticket) para ver histórico unificado?",
-      adv: "Qual sua prática ao criar campos personalizados e regras de acesso específicas para certos times?",
-      scp: "Você aplica scripts ou APIs do CRM para extrair informações para relatórios intermediários?",
-    },
-    expert: {
-      dev: "Como você customiza objetos ou lógica avançada (Apex, TOTVS scripts) para grandes empresas?",
-      per: "Você define perfis de segurança complexos, controlando minuciosamente quem vê quais oportunidades?",
-      mig: "Em que frequência você realiza migrações de dados massivas (ex.: outro CRM -> atual) resolvendo chaves duplicadas?",
-      big: "Você integra IA ou Big Data (scoring, previsões) dentro do CRM, e lida com falhas ou latências?",
-      aud: "De que modo você audita logs de alteração de dados de leads e garante conformidade (LGPD)?",
-    },
+  intermediate: {
+    ...erpIntermediateKeys,
+    s2i: `${frq} atua em tickets complexos (módulos em conflito, dados inconsistentes) ao dar suporte no ERP?`,
   },
-  "Crms"
-);
-export const stN2ErpsKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      log: "Como você ajuda usuários a efetuar login inicial no ERP (ex.: TOTVS, SAP) e entender menus básicos?",
-      cst: "De que forma você configura cadastros simples (fornecedores, clientes) sem erros de duplicidade?",
-      fni: "Você ensina a emitir relatórios básicos de financeiro ou estoque para um usuário novato?",
-      prc: "Com que frequência você orienta processos básicos (ex.: vendas -> faturamento) em um ERP?",
-      sup: "Como você registra chamados de suporte no próprio ERP ou em outro sistema, quando surgem problemas?",
-    },
-    intermediate: {
-      mls: "Você realiza configurações de módulos intermediários (ex.: compras, produção) e resolve falhas de permissão?",
-      act: "Como você orienta integrações contábeis (lotes, conciliação) dentro do ERP?",
-      rpt: "Você gera relatórios intermediários (extraindo dados de mais de um módulo) via queries nativas?",
-      prd: "De que modo você configura processos de aprovação ou workflow no ERP para pedidos maiores?",
-      cyc: "Qual é sua prática ao lidar com ciclos de inventário, correções de saldo ou reprocessamento de NF?",
-    },
-    expert: {
-      dev: "Como você implementa customizações avançadas (ex.: ABAP no SAP, TOTVS fluig) e soluciona conflitos?",
-      int: "Você integra o ERP a sistemas externos (BI, e-commerce) usando APIs? Descreva um exemplo crítico.",
-      sft: "Em que frequência você realiza 'soft closes' ou 'hard closes' em contabilidade e evita problemas de reabertura?",
-      per: "Como você gerencia permissões extremamente granulares em sistemas ERP robustos, rastreando logs de acesso?",
-      mig: "De que forma você faz migração de versão ou patches em ERP sem interromper operações críticas?",
-    },
+  expert: {
+    ...erpExpertKeys,
+    s2e: `${tcn} aplica ao executar scripts avançados (ABAP, TOTVS) ou integrações profundas para incidentes críticos no ERP?`,
   },
-  "Erps"
-);
-export const stN2PlnKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      wrk: "Como você ajuda usuários a criar quadros/tarefas básicos (ex.: Planner, Trello) e entender colunas simples?",
-      inv: "Qual a abordagem para orientá-los a convidar colegas e atribuir responsáveis pelas tarefas?",
-      lab: "De que modo você sugere uso de labels ou tags para categorizar tarefas no N2?",
-      dat: "Você configura datas-limite ou lembretes básicos para que tarefas não fiquem atrasadas?",
-      cmt: "Como você incentiva a adição de comentários/descrição detalhada em cada tarefa?",
-    },
-    intermediate: {
-      aut: "Você define automações (ex.: mover tarefa ao mudar status) dentro de Notion, Trello ou Planner?",
-      per: "Como você lida com permissões intermediárias (ex.: um time vê somente um conjunto de boards)?",
-      ext: "Em que frequência você integra essas plataformas com Slack, E-mail ou outro app para notificações?",
-      rep: "De que forma você gera relatórios ou quadros de resumo (ex.: quantas tarefas concluídas por semana)?",
-      cou: "Você orienta contadores de tempo (time tracking) ou funcionalidades intermediárias (sprints)?",
-    },
-    expert: {
-      mul: "Como você gerencia múltiplos quadros complexos envolvendo equipes distintas (marketing, vendas)?",
-      adv: "Você configura metodologias avançadas (Scrum completo, Kanban evoluído) e relatórios de burndown?",
-      dep: "De que modo você trata dependências entre tarefas e autoatualizações de prazos?",
-      wbh: "Você implementa webhooks ou scripts para sincronizar dados entre planning e pipeline DevOps?",
-      bus: "Qual é sua experiência em gerar dashboards executivos (ex.: Power BI) a partir de boards de planejamento?",
-    },
-  },
-  "planning"
-);
-export const stN2AiAdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiAdBeginnerKeys,
-    },
-    intermediate: {
-      ...aiAdIntermediateKeys,
-    },
-    expert: {
-      ...aiAdExpertKeys,
-    },
-  },
-  "audio"
-);
-export const stN2AiImgKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiImgBeginnerKeys,
-    },
-    intermediate: {
-      ...aiImgIntermediateKeys,
-    },
-    expert: {
-      ...aiImgExpertKeys,
-    },
-  },
-  "image"
-);
-export const stN2AiVdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      rec: "Você utiliza IA para gravar e organizar vídeos de suporte técnico automaticamente?",
-      edt: "Como você usa IA para edições básicas de vídeos de treinamento técnico (cortes, textos)?",
-      frm: "Você aplica IA para conversão de formatos de vídeo (MP4, MOV) automaticamente?",
-      upl: "Você usa IA para otimizar o upload de vídeos técnicos em plataformas internas? (Sim/Não)",
-      cap: "Você utiliza IA para gerar legendas automáticas para vídeos de suporte técnico?",
-    },
-    intermediate: {
-      fxv: "Como você aplica IA para transições ou correções intermediárias em vídeos técnicos?",
-      syn: "Você usa IA para sincronizar trilhas de áudio separadas (ex.: narração + instruções visuais)?",
-      net: "Como você utiliza IA para solucionar problemas de streaming em tempo real (ex.: latência)?",
-      enc: "Você aplica IA para encoding automático e otimizado em vídeos de suporte técnico?",
-      sec: "Como você utiliza IA para proteger vídeos técnicos com acesso restrito?",
-    },
-    expert: {
-      mul: "Você usa IA para gerenciar projetos multicâmera e cenários virtuais em vídeos técnicos?",
-      adv: "Quais ferramentas de IA você utiliza para resolver problemas avançados em edição de vídeos?",
-      api: "Como você integra APIs de IA para automação de publicação e análise de vídeos técnicos?",
-      big: "Com que frequência você utiliza IA para processar e otimizar vídeos extensos (1h+)?",
-      ai_: "Como você utiliza IA para análise ou legendagem automática em vídeos corporativos?",
-    },
-  },
-  "video"
-);
+});
+export const stN2PlnKeys = ObjectHelper.deepFreeze({
+  ...defPlnKeys,
+});
+export const stN2AiAdKeys = ObjectHelper.deepFreeze({
+  ...defAiAdKeys,
+});
+export const stN2AiImgKeys = ObjectHelper.deepFreeze({
+  ...defAiImgKeys,
+});
+export const stN2AiVdKeys = ObjectHelper.deepFreeze({
+  ...defAiVdKeys,
+});
 export const stN2LlmKeys = ObjectHelper.deepFreeze({
   ...stLlmKeys,
 });
-export const suporteTecnicoN2AddQuestions =
-  ObjectHelper.deepFreeze([
-    "suporteTecnicoN2",
-    new Map([
-      ["docs", stN2DocsKeys as any],
-      ["spreadSheets", stN2SsKeys],
-      ["formBuilders", stN2FmKeys],
-      ["cloudStorage", stN2CsKeys],
-      ["businessInteligence", stN2BiKeys],
-      ["Crms", stN2CrmsKeys],
-      ["Erps", stN2ErpsKeys],
-      ["planning", stN2PlnKeys],
-      ["audio", stN2AiAdKeys],
-      ["image", stN2AiImgKeys],
-      ["video", stN2AiVdKeys],
-      ["llms", stN2LlmKeys],
-    ]),
-  ]);
+export const stN2AddQuestions: [
+  roleType,
+  QuestionsMap<stN2ComplexityKeySet>
+] = ObjectHelper.deepFreeze([
+  "suporteTecnicoN2",
+  new Map([
+    ["docs", stN2DocsKeys as any],
+    ["spreadSheets", stN2SsKeys],
+    ["formBuilders", stN2FmKeys],
+    ["cloudStorage", stN2CsKeys],
+    ["businessInteligence", stN2BiKeys],
+    ["Crms", stN2CrmKeys],
+    ["Erps", stN2ErpKeys],
+    ["planning", stN2PlnKeys],
+    ["audio", stN2AiAdKeys],
+    ["image", stN2AiImgKeys],
+    ["video", stN2AiVdKeys],
+    ["llms", stN2LlmKeys],
+  ]),
+]);
 export const opDocsKeys = withFrozenLibreLabel(
   {
     beginner: {
       net: "Como você configura as permissões básicas de rede para que os usuários acessem um editor de texto?",
-      upd: "Com que frequência você atualiza softwares de edição (Office, LibreOffice) para corrigir falhas?",
+      upd: `${frq} você atualiza softwares de edição (Office, LibreOffice) para corrigir falhas?`,
       lnk: "De que modo você instala e vincula plugins ou complementos em servidores de arquivos locais?",
       prt: "Como você configura impressoras e controla spools de documentos em rede?",
       pat: "Qual sua prática para padronizar caminhos de salvamento (servidor/nuvem) e definir permissões de pasta?",
     },
     intermediate: {
-      gpo: "Quais destas ferramentas você utiliza para automatizar configurações de editores de texto?",
+      gpo: `${tls} você utiliza para automatizar configurações de editores de texto?`,
       tro: "Como você soluciona problemas de lentidão ao abrir documentos via rede (latência, DNS, compartilhamentos)?",
       vrs: "Você gerencia versionamento centralizado (ex.: SharePoint) e resolve conflitos de check-in/out?",
       scr: "De que forma você monitora logs de acesso e edição para auditoria de compliance em documentos?",
       pol: "Como você define políticas de backup e snapshot para evitar perdas de dados em arquivos críticos?",
     },
     expert: {
-      scc: "Quais destas técnicas e ferramentas você utiliza nas instalações em larga escala (SCCM) de editores de texto?.",
+      scc: `${tcn} e ferramentas você utiliza nas instalações em larga escala (SCCM) de editores de texto?.`,
       dlp: "Como você integra soluções de DLP para docs sensíveis na rede corporativa?",
       dfs: "Qual sua abordagem para replicação DFS entre múltiplos sites, evitando corrupção de documentos?",
       off: "Como você gerencia merges offline/online e problemas de credenciais em cenários desconectados?",
@@ -3393,7 +3280,7 @@ export const opSsKeys = withFrozenLibreLabel(
       per: "De que forma você configura permissões de pastas e arquivos compartilhados, assegurando acesso controlado às planilhas?",
       cpy: "Quais técnicas você recomenda para orientar a criação de cópias de planilhas para backup rápido no dia a dia?",
       bkp: "Quais práticas de backup simples você aplica para evitar perda em planilhas armazenadas em rede?",
-      col: "Com que frequência você ensina colaboração simultânea (co-edit) em Excel/Sheets via servidor ou Drive?",
+      col: `${frq} você ensina colaboração simultânea (co-edit) em Excel/Sheets via servidor ou Drive?`,
     },
     intermediate: {
       sec: "Quais recursos você usa para implementar senhas ou criptografia de arquivos relacionados a redes?",
@@ -3436,164 +3323,55 @@ export const opFmKeys = withFrozenLibreLabel(
 export const opCsKeys = ObjectHelper.deepFreeze({
   ...stN1CsKeys,
 });
-export const opBiKeys = withFrozenLibreLabel(
+export const opBiKeys = ObjectHelper.deepFreeze({
+  ...stBiKeys,
+});
+export const opCrmKeys = withFrozenLibreLabel(
   {
     beginner: {
-      vss: "Como você instala e configura ferramentas básicas de BI (ex.: Power BI Desktop) no parque de máquinas?",
-      con: "Você orienta usuários a conectar fontes simples (CSV, planilha) via rede local ou VPN?",
-      dsp: "De que forma gerencia display e resolução adequados para dashboards em monitores corporativos?",
-      frc: "Com que frequência você soluciona falhas de credenciais ou timeouts ao acessar dashboards?",
-      ext: "Você habilita extensões básicas ou resolve conflitos de antivírus/firewall com software de BI?",
+      ...crmBeginnerKeys,
+      opr: `Como você utiliza CRMs para monitorar operações básicas e registrar atividades de rotina?`,
     },
     intermediate: {
-      upd: "Como você controla updates de versão no software BI, evitando quebra de relatórios antigos?",
-      net: "Você lida com latência/baixa performance quando o BI puxa dados de um DB remoto via rede?",
-      adv: "De que modo você configura gateways ou conexões seguras (SSL) para dados intermediários?",
-      dep: "Você gerencia implantação de relatórios/dashboards em servidores internos (ex.: Power BI Report Server)?",
-      cch: "Qual sua abordagem ao lidar com caching e refresh, evitando sobrecarregar a rede corporativa?",
+      ...crmIntermediateKeys,
+      opi: `Como você utiliza CRMs para consolidar dados operacionais e gerar relatórios simples?`,
     },
     expert: {
-      scl: "Como você implementa escalabilidade para dashboards de alto volume de requisições simultâneas?",
-      clt: "Você integra cluster ou load balancing para ambientes de BI on-premise/híbrido?",
-      scr: "De que forma você executa scripts R/Python no servidor de BI, resolvendo dependências e possíveis falhas?",
-      sec: "Qual método você usa para gerenciar segurança avançada (RLS, logs de auditoria) em dashboards?",
-      big: "Você configura conectores Big Data (ex.: Hadoop, Spark) e lida com performance de queries maciças?",
-    },
-  },
-  "businessInteligence"
-);
-export const opCrmsKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ins: "Como você instala o cliente CRM localmente ou ajusta thin clients para acesso, definindo configurações mínimas?",
-      net: "Você orienta portas e firewall para permitir comunicação do CRM com banco remoto?",
-      usr: "Com que frequência você cria contas e permissões básicas no CRM para novos usuários?",
-      rep: "De que modo você ajuda a gerar relatórios simples (pipeline) localmente e resolver problemas de acesso?",
-      bck: "Você mantém backups do banco do CRM e restaura em casos de erro de configuração?",
-    },
-    intermediate: {
-      ext: "De que forma você integra o CRM com e-mail, VOIP ou chat, lidando com latências ou travamentos moderados?",
-      gpo: "Você usa GPO ou scripts para distribuir configurações (registry, addons) do CRM nos PCs?",
-      dbs: "Como você gerencia o DB do CRM (SQL, Oracle) para performance média?",
-      sec: "Você define logon com AD Federation (SSO) e resolve problemas de tokens expirando?",
-      upg: "Com que frequência você atualiza a versão on-premise do CRM e faz rollback se algo falhar?",
-    },
-    expert: {
-      ha_: "Como você implementa alta disponibilidade (failover cluster) no CRM para evitar downtime crítico?",
-      int: "Você integra CRM a ERP ou outro DB corporativo, criando ETLs complexos e resolvendo conflitos?",
-      api: "De que modo você expõe APIs do CRM para automações avançadas (ex.: scripts Python) e gerencia segurança?",
-      pch: "Você aplica patches regulares no core do CRM, testando em staging para evitar corromper dados?",
-      aud: "Qual é sua abordagem de auditoria e logs para atender compliance (LGPD, PCI) no banco do CRM?",
+      ...crmExpertKeys,
+      ope: `${rsc} avançados do CRM para otimizar processos operacionais e integrar informações de diferentes áreas?`,
     },
   },
   "Crms"
 );
-export const opErpsKeys = withFrozenLibreLabel(
+export const opErpKeys = withFrozenLibreLabel(
   {
     beginner: {
-      ins: "Como você instala o cliente ERP localmente ou configura thin clients (TS) para acesso inicial?",
-      lan: "Você lida com configurações de rede (DNS, portas) e permissões para acessar servidores ERP?",
-      usr: "De que maneira você gerencia criação de usuários e permissões básicas de módulo (financeiro, estoque)?",
-      bkp: "Como você realiza backups simples do DB do ERP e restaura em casos de erro de config?",
-      doc: "Você configura impressões de documentos fiscais (ex.: NF) e orienta drivers de impressoras no ERP?",
+      ...erpBeginnerKeys,
+      opb: `${frq} cuida de instalações e configurações simples (clients, impressoras) para o ERP no ambiente operacional?`,
     },
     intermediate: {
-      scl: "Você gerencia escalabilidade intermediária (ex.: load balancing do app ERP) em ambientes com vários usuários?",
-      wfl: "Como você configura fluxos e approvals no ERP que exigem integrações moderadas (ex.: e-mail)?",
-      gpo: "De que forma você aplica GPO ou scripts para distribuir configs do ERP (registry, .ini) nos PCs?",
-      mod: "Qual sua abordagem ao habilitar módulos extras e resolver conflitos de licenças ou dependências?",
-      rep: "Você gera relatórios custom (ex.: TOTVS, Crystal) e lida com permissões de impressão em rede?",
+      ...erpIntermediateKeys,
+      opi: `${mnn} resolve problemas intermediários (fluxos, permissões) e integra sistemas (ex.: e-mail) no ERP para equipes operacionais?`,
     },
     expert: {
-      adv: "Como você efetua tunning avançado do DB do ERP, analisando índices e queries para grande volume?",
-      mig: "Em que frequência você conduz migrações de versão (SAP ECC -> S/4HANA) resolvendo falhas de compatibilidade?",
-      sec: "Você define políticas de segurança, logs e compliance (SOX, LGPD) no ERP? Explique como.",
-      apx: "De que forma você integra apex scripts (Salesforce) ou ABAP (SAP) em ambientes muito customizados?",
-      ha_: "Você implementa cluster/HA no ERP e realiza failover sem interromper transações críticas?",
+      ...erpExpertKeys,
+      ope: `${sttg} são empregadas por você para otimizar alta demanda operacional, garantindo disponibilidade no ERP?`,
     },
   },
   "Erps"
 );
-export const opPlnKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      tch: "Como você instala ou orienta uso de Trello, Planner, Notion e configura perfis básicos?",
-      net: "Você habilita a comunicação dessas ferramentas (endpoints, portas) via firewall na rede local?",
-      syn: "Com que frequência resolve conflitos de sincronização offline/online nesses apps de planejamento?",
-      usr: "Qual sua prática ao criar usuários/grupos e permissões iniciais nos quadros/tarefas?",
-      upd: "Você orienta updates manuais ou automáticos do software, evitando versões defasadas?",
-    },
-    intermediate: {
-      scr: "De que forma você usa scripts ou GPO para fixar boards e fluxos para equipes específicas?",
-      adv: "Você configura automações que movem tarefas conforme prazos, integrando e-mail ou Slack?",
-      fil: "Como você define filtros intermediários (tarefas atrasadas) e lida com latência na rede?",
-      rep: "Você ajuda a gerar relatórios (Gantt, burn-down) ou extrair dados de planning para dashboards externos?",
-      cal: "Em que frequência integra calendários corporativos (Outlook/Google) com a ferramenta de planning?",
-    },
-    expert: {
-      scl: "Como você implementa escalabilidade ou múltiplos quadros para grandes equipes em Notion/Trello?",
-      wbh: "Você gerencia webhooks avançados (mover card -> notificar outro sistema) resolvendo falhas?",
-      sso: "De que modo configura SSO (AD, SAML) e soluciona problemas de token ou logon em planning de alto nível?",
-      mlt: "Você consolida vários boards em relatórios unificados via APIs ou scripts para gestores seniores?",
-      dev: "Como você integra planning a pipelines DevOps (commit fecha card) e resolve conflitos de status?",
-    },
-  },
-  "planning"
-);
-export const opAiAdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiAdBeginnerKeys,
-    },
-    intermediate: {
-      ...aiAdIntermediateKeys,
-    },
-    expert: {
-      ...aiAdExpertKeys,
-    },
-  },
-  "audio"
-);
-export const opAiImgKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiImgBeginnerKeys,
-    },
-    intermediate: {
-      ...aiImgIntermediateKeys,
-    },
-    expert: {
-      ...aiImgExpertKeys,
-    },
-  },
-  "image"
-);
-export const opAiVdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ply: "Você utiliza IA para gerenciar codecs e configurar players automaticamente para vídeos internos?",
-      rec: "Como a IA ajuda na gravação de tela para tutoriais de instalação e suporte?",
-      net: "Você utiliza IA para detectar e corrigir gargalos em streaming interno de vídeo?",
-      cat: "De que forma a IA auxilia na catalogação automática de vídeos em rede?",
-      msg: "Você usa IA para resolver erros de GPU ou DirectX ao reproduzir vídeos de alta resolução?",
-    },
-    intermediate: {
-      stp: "Como a IA otimiza editores intermediários (ex.: Camtasia) e previne travamentos frequentes?",
-      enc: "Você utiliza IA para converter formatos de vídeo e ajustar bitrates automaticamente?",
-      par: "Como a IA ajuda a configurar parâmetros de rede para evitar buffering em vídeos de treinamento?",
-      eff: "Você utiliza IA para inserir efeitos e legendas em vídeos de forma otimizada?",
-      aut: "Como a IA automatiza gravações de tela para auditorias ou demonstrações de infraestrutura?",
-    },
-    expert: {
-      srv: "Você gerencia servidores de streaming com suporte de IA para evitar gargalos em vídeos corporativos?",
-      sec: "Como a IA auxilia na proteção de vídeos confidenciais com DRM ou tokens de acesso temporários?",
-      adv: "Você utiliza IA para gerenciar edições multicâmera em vídeos 4K e resolver travamentos complexos?",
-      ai_: "De que forma você integra IA para remoção de fundo ou melhorias automáticas em vídeos?",
-      drm: "Você utiliza IA para aplicar restrições avançadas e monitorar acessos em players corporativos?",
-    },
-  },
-  "video"
-);
+export const opPlnKeys = ObjectHelper.deepFreeze({
+  ...defPlnKeys,
+});
+export const opAiAdKeys = ObjectHelper.deepFreeze({
+  ...defAiAdKeys,
+});
+export const opAiImgKeys = ObjectHelper.deepFreeze({
+  ...defAiImgKeys,
+});
+export const opAiVdKeys = ObjectHelper.deepFreeze({
+  ...defAiVdKeys,
+});
 export const opLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
@@ -3606,50 +3384,52 @@ export const opLlmKeys = withFrozenLibreLabel(
     expert: {
       ...llmExpertKeys,
       lvl: "Qual é o nível de utilidade que você considera que LLMs têm ou podem ter para seus processos de trabalho em redes e instalações?",
-      cus: "Com que frequência manipula modelos custom (fine-tuning local) e distribui para equipes especializadas?",
+      cus: `${frq} manipula modelos custom (fine-tuning local) e distribui para equipes especializadas?`,
     },
   },
   "llms"
 );
-export const operatorioAddQuestions =
-  ObjectHelper.deepFreeze([
-    "operatorio",
-    new Map([
-      ["docs", opDocsKeys as any],
-      ["spreadSheets", opSsKeys],
-      ["formBuilders", opFmKeys],
-      ["cloudStorage", opCsKeys],
-      ["businessInteligence", opBiKeys],
-      ["Crms", opCrmsKeys],
-      ["Erps", opErpsKeys],
-      ["planning", opPlnKeys],
-      ["audio", opAiAdKeys],
-      ["image", opAiImgKeys],
-      ["video", opAiVdKeys],
-      ["llms", opLlmKeys],
-    ]),
-  ]);
+export const opAddQuestions: [
+  roleType,
+  QuestionsMap<opComplexityKeySet>
+] = ObjectHelper.deepFreeze([
+  "operatorio",
+  new Map([
+    ["docs", opDocsKeys as any],
+    ["spreadSheets", opSsKeys],
+    ["formBuilders", opFmKeys],
+    ["cloudStorage", opCsKeys],
+    ["businessInteligence", opBiKeys],
+    ["Crms", opCrmKeys],
+    ["Erps", opErpKeys],
+    ["planning", opPlnKeys],
+    ["audio", opAiAdKeys],
+    ["image", opAiImgKeys],
+    ["video", opAiVdKeys],
+    ["llms", opLlmKeys],
+  ]),
+]);
 export const devDocsKeys = withFrozenLibreLabel(
   {
     beginner: {
       api: "Como você costuma documentar APIs ou funções simples diretamente no código ou em arquivos de texto?",
       pat: "Quais destes formatos você utiliza para registrar instruções de compilação ou uso?",
-      col: "Qual é o seu nível de experiência em compartilhamento de arquivos e versões de trabalhos?",
+      col: `${exp} em compartilhamento de arquivos e versões de trabalhos?`,
       ver: "Como você mantém histórico básico (versionamento) de documentos relacionados ao projeto?",
       sty: "De que forma você padroniza estilos de anotações nos arquivos?",
     },
     intermediate: {
-      rfc: "Com que frequência você costuma criar RFCs (Request for Comments) ou especificações técnicas intermediárias?",
-      sum: "Quais ferramentas você utiliza para gerar sumários automáticos e referências cruzadas para guias técnicos maiores?",
-      dev: "Qual é o seu nível de experiência com bibliotecas de testes automáticos?",
+      rfc: `${frq} você costuma criar RFCs (Request for Comments) ou especificações técnicas intermediárias?`,
+      sum: `${tls} você utiliza para gerar sumários automáticos e referências cruzadas para guias técnicos maiores?`,
+      dev: `${exp} com bibliotecas de testes automáticos?`,
       rev: "Como você lida com revisões colaborativas, incluindo comentários e sugestões de colegas?",
       pbl: "De que forma você publica ou disponibiliza esses documentos para equipes de QA, Ops?",
     },
     expert: {
       scp: "Você integra scripts que convertem doc em wiki/HTML/PDF automaticamente para distribuições?",
       col: "Como você mantém controle rigoroso de alterações em docs extensos (manual de arquitetura) via Git?",
-      arc: "De que maneira você descreve arquitetura de software avançada (ex.: diagramas UML) em docs e versiona?",
-      int: "Com que frequência você faz a integração com ferramentas de doc automatizada (ex.: MkDocs, Sphinx)?",
+      arc: `${mnn} descreve arquitetura de software avançada (ex.: diagramas UML) em docs e versiona?`,
+      int: `${frq} você faz a integração com ferramentas de doc automatizada (ex.: MkDocs, Sphinx)?`,
       pol: "Descreva livremente as suas políticas e padrões de documentação para lidar com conflitos de merge e pull requests",
     },
   },
@@ -3667,7 +3447,7 @@ export const devSsKeys = withFrozenLibreLabel(
     intermediate: {
       scr: "Quais tecnologias você utiliza para automatizar relatórios sobre builds?",
       mds: "Você usa planilhas de métricas (ex.: cobertura de testes, performance) para acompanhamento intermediário?",
-      con: "Com que frequência você consolida dados de múltiplos projetos numa planilha central e faz dashboards?",
+      con: `${frq} você consolida dados de múltiplos projetos numa planilha central e faz dashboards?`,
       link: "Você vincula planilhas a sistemas de CI/CD ou repositórios para atualizar informações de release?",
       sec: "Como você controla permissões, evitando que informações sensíveis fiquem expostas?",
     },
@@ -3690,14 +3470,14 @@ export const devFmKeys = withFrozenLibreLabel(
     intermediate: {
       ...fmIntermediateKeys,
       scp: "Quais dessas ferramentas de programação você utiliza para auxiliar no desenvolvimento e análise de formulários?",
-      rgx: "Com que frequência você adiciona Expressões Regulares na validação de campos em formulários?",
+      rgx: `${frq} você adiciona Expressões Regulares na validação de campos em formulários?`,
       cnd: "Quais critérios e técnicas você aplica na lógica condicional para otimizar a UX de formulários?",
     },
     expert: {
       ...fmExpertKeys,
       doc: "De que modo você gera relatórios avançados (Power BI, Data Studio) a partir de dados do form?",
       sec: "Como você lida com autenticação corporativa (SSO) e níveis de permissão diferenciados nos forms?",
-      adv: "Quais destas técnicas você usa no desenvolvimento de formulários avançados para criação de issues automáticas (como para plataformas corporativas e de versionamento)?",
+      adv: `${tcn} você usa no desenvolvimento de formulários avançados para criação de issues automáticas (como para plataformas corporativas e de versionamento)?`,
     },
   },
   "formBuilders"
@@ -3707,12 +3487,12 @@ export const devCsKeys = withFrozenLibreLabel(
     beginner: {
       ...csBeginnerKeys,
       nme: "Você define convenções de nome padrão (ex.: app_v1.0.zip) para facilitar identificação de builds?",
-      syn: "Qual é o seu nível de experiência com plataformas de versionamento em nuvem?",
+      syn: `${exp} com plataformas de versionamento em nuvem?`,
     },
     intermediate: {
       ...csIntermediateKeys,
-      lck: "Qual é o seu nível de experiência resolvendo conflitos de merge e rebase?",
-      ver: "Com que frequência você elabora versionamento intermediário (snapshots) para assets e integra esse fluxo com outros colaboradores?",
+      lck: `${exp} resolvendo conflitos de merge e rebase?`,
+      ver: `${frq} você elabora versionamento intermediário (snapshots) para assets e integra esse fluxo com outros colaboradores?`,
     },
     expert: {
       ...csExpertKeys,
@@ -3726,185 +3506,105 @@ export const devCsKeys = withFrozenLibreLabel(
 export const devBiKeys = withFrozenLibreLabel(
   {
     beginner: {
-      mtr: "Você gera métricas simples (ex.: commits por semana, bugs) para visualização em dashboards BI básicos?",
-      con: "Como você conecta planilhas ou CSVs de estatísticas de desenvolvimento ao BI (Power BI, Tableau)?",
-      dsp: "Qual é sua prática para exibir dashboards de dados do repositório (ex.: PRs abertos/fechados)?",
-      col: "Você coleta opiniões ou feedback dos devs via esse dashboard inicial para ajustes?",
-      sch: "Com que frequência você agenda refresh manual, evitando sobrecarga no servidor?",
+      ...biBeginnerKeys,
+      dsa: `${exp} desenvolvendo automações para plataformas de BI?`,
     },
     intermediate: {
-      mul: "Você consolida múltiplas fontes (ex.: Git, Jira, Jenkins) e cria relatórios integrados em BI?",
-      adv: "De que forma você elabora visualizações intermediárias (gráficos complexos, slicers) para gerentes?",
-      tmx: "Como você aplica DAX ou expressões de cálculo (ex.: no Power BI) para métricas de dev específicas?",
-      seg: "Você define segurança em nível de linha (RLS) para times distintos (frontend, backend)?",
-      cst: "Qual é sua prática para criar colunas ou medidas customizadas, ex.: 'velocidade de merges'? (Sim/Não)",
+      ...biIntermediateKeys,
+      dei: `${exp} desenvolvendo automação para integração contínua com ferramentas de BI?`,
+      dsa: `${exp} desenvolvendo automações para extrair dados usados diretamente em plataformas de BI?`,
     },
     expert: {
-      big: "Como você lida com grandes volumes de dados (logs, telemetria real-time) em dashboards de desenvolvimento?",
-      scr: "Você integra scripts R/Python para análises avançadas (previsões de backlog, tempo de correções)?",
-      api: "De que modo você utiliza APIs do BI (REST) para atualizar datasets ou acionar pipelines CI/CD?",
-      drl: "Você habilita drill-through avançado (ex.: clique em gráfico -> detalhes de commits) e gerencia performance?",
-      aud: "Qual sua estratégia para auditoria e logs de acesso em relatórios de dev, respeitando confidencialidade?",
+      ...biExpertKeys,
+      dee: `${frq} integra técnicas de análise preditiva e scripts customizados na ferramenta de BI para otimizar ciclos de desenvolvimento e identificar gargalos?`,
+      dex: `${exp} automações e dashboards dinâmicos para gerar insights estratégicos a partir dos dados de desenvolvimento?`,
     },
   },
   "businessInteligence"
 );
-export const devCrmsKeys = withFrozenLibreLabel(
+export const devCrmKeys = withFrozenLibreLabel(
   {
     beginner: {
-      trk: "Você usa CRM para acompanhar leads de parcerias de software? Em que nível faz registro básico?",
-      int: "Como você integra dados simples (planilha de contatos) ao CRM para organizar potenciais clientes?",
-      upd: "Com que frequência você atualiza manualmente status de negociações (orçamentos, demos) para software?",
-      cat: "Você categoriza clientes por tipo de solução (ex.: web, mobile) e mantém? (Sim/Não)",
-      rep: "De que forma você gera relatórios iniciais (ex.: pipeline) para entender quais negociações avançam?",
+      ...crmBeginnerKeys,
+      dev: `${exp} desenvolvendo customizações simples ou scripts para automatizar fluxos no CRM?`,
+      dco: `${exp} configurando ambientes de testes para validar suas customizações no CRM?`,
     },
     intermediate: {
-      scp: "Você cria campos customizados intermediários (versão de produto, data de entrega) no CRM?",
-      api: "Como você consome APIs do CRM para puxar oportunidades e integrá-las em um dashboard dev?",
-      aut: "Você automatiza e-mails de follow-up (ex.: test drive, POC) ao subir status de lead no CRM?",
-      sec: "Qual sua abordagem para definir permissões em times (marketing, dev) com visões diferentes do CRM?",
-      adv: "Você configura relatórios intermediários para correlacionar feature requests e interesse de clientes?",
+      ...crmIntermediateKeys,
+      dei: `${tcn} você utiliza para desenvolver integrações entre CRMs e ferramentas de desenvolvimento para automatizar processos?`,
+      des: `${exp} implementando scripts que consolidam dados de diferentes módulos do CRM para análise integrada?`,
+      din: `${exp} criando automações que conectam CRMs a repositórios de código ou sistemas de monitoramento?`,
     },
     expert: {
-      lnk: "Em que frequência você integra CRM e repositórios dev, criando links entre feature requests e leads?",
-      big: "Você usa Big Data/IA (scoring de leads) e customiza logic no CRM para priorizar projetos de software?",
-      ent: "De que forma você gerencia enterprise edition do CRM com fluxos avançados ou scripts no Salesforce?",
-      sso: "Você implementa SSO para devs e PMs acessarem o CRM sem credenciais extras?",
-      brk: "Como você resolve conflitos de dados (mesmo lead em times distintos) e garante integridade no CRM?",
+      ...crmExpertKeys,
+      dee: `${exp} integrando soluções avançadas de automação e customização no CRM (ex.: plugins, scripts complexos) para otimizar fluxos de trabalho?`,
+      dex: `${exp} desenvolvendo plataforma internas baseada em CRMs para consolidar dados e gerar insights em tempo real?`,
     },
   },
   "Crms"
 );
-export const devErpsKeys = withFrozenLibreLabel(
+export const devErpKeys = withFrozenLibreLabel(
   {
     beginner: {
-      dep: "Como você separa os ambientes de dev/test do ERP, evitando mexer em dados reais?",
-      syn: "Em que frequência você sincroniza tabelas de produtos, clientes, etc., para testar integrações no desenvolvimento?",
-      scp: "Você escreve pequenos scripts (ex.: TOTVS, ABAP) para automatizar rotinas de ERP? Explique um caso.",
-      doc: "De que forma você documenta configurações mínimas do ERP para devs que usam APIs dele?",
-      net: "Como você garante acesso ao ERP para devs sem expor credenciais sensíveis?",
+      ...erpBeginnerKeys,
+      dvb: `${frq} elabora scripts simples (ABAP, TOTVS) para automatizar rotinas no ERP em ambiente dev?`,
+      dvc: `${fam} com a separação de ambientes dev/test para evitar riscos no ERP de produção?`,
+      dvd: `${cts} observa ao documentar integrações mínimas do ERP para outros devs?`,
     },
     intermediate: {
-      wfl: "Você cria fluxos intermediários (ex.: requisição -> aprovação) e integra com APIs de front-end?",
-      mig: "Qual sua estratégia para migrar dados (dev -> staging -> prod) com minimal downtime?",
-      ext: "Você auxilia times de dev a estender módulos do ERP (ex.: custom BAPIs) e resolver conflitos de versão?",
-      sso: "De que modo você configura SSO ou AD Federation para logar no ERP e rastrear logs de dev?",
-      rep: "Você gera relatórios técnicos intermediários (ex.: debugging) para ajustes no ambiente dev?",
+      ...erpIntermediateKeys,
+      dvi: `${mnn} cria fluxos (ex.: approvals) e integra com front-ends via APIs REST/SOAP no ERP?`,
+      dvj: `${frq} realiza migrações de dados (dev -> staging -> prod) com minimal downtime no ERP?`,
+      dvk: `${tcn} utiliza para estender módulos do ERP (ex.: custom BAPIs) e resolver conflitos de versão?`,
     },
     expert: {
-      adv: "Como você lida com configurações avançadas de performance (cache, indexes) para ambientes dev de ERP?",
-      cst: "Você mantém repositório de customizações do ERP (scripts TOTVS, ABAP objects) versionado no Git?",
-      api: "De que forma você constrói APIs REST robustas no ERP para integrá-las com microserviços externos?",
-      hcl: "Você orquestra clusters HA/DR do ERP, validando cenários de failover em homolog e dev?",
-      sec: "Qual é a sua abordagem para compliance (ex.: LGPD) ao manipular dados reais no ambiente de desenvolvimento?",
+      ...erpExpertKeys,
+      dve: `${exp} em configurações avançadas (cache, indexes) para otimizar performance em ambientes dev do ERP?`,
+      dvf: `${mnn} versiona customizações do ERP (scripts TOTVS, ABAP) seguindo práticas DevOps?`,
+      dvg: `${rsc} de HA/DR são aplicados ao orquestrar failover e garantir compliance (LGPD) em dados reais?`,
     },
   },
   "Erps"
 );
-export const devPlnKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      brd: "Como você configura quadros básicos (Trello, Planner) para backlog de features no time de dev?",
-      sta: "Você define colunas (To Do, Doing, Done) e move cartões para acompanhar o fluxo de desenvolvimento?",
-      col: "Em que frequência você permite que vários devs editem os cartões simultaneamente?",
-      ann: "De que forma você avisa as tarefas diárias via e-mail ou notificação, mantendo todos alinhados?",
-      tmp: "Você utiliza modelos prontos para projetos pequenos e ensina o time a segui-los?",
-    },
-    intermediate: {
-      srm: "Qual sua prática para aplicar Scrum ou Kanban intermediários (sprints, WIP limit) nesses boards?",
-      rep: "Você gera relatórios de produtividade (burndown, velocity) e como lida com interpretações equivocadas?",
-      sec: "Como você controla permissões entre times de dev e outros setores (QA, design)?",
-      gnt: "Você integra algum recurso de Gantt ou timeline para planejamento de releases? (Sim/Não)",
-      wbh: "De que forma você utiliza webhooks para mover tickets ou atualizar status automaticamente?",
-    },
-    expert: {
-      adv: "Como você coordena múltiplos boards (microserviços, squads) em uma visão macro para liderança?",
-      crd: "Você configura rotinas complexas (ex.: mover cartão ao merge do PR) integrando repositórios Git?",
-      dev: "Em que frequência você gera relatórios executivos (Power BI, etc.) a partir dos boards de planning?",
-      scl: "Você escala boards para centenas de tarefas simultâneas sem perda de performance ou usabilidade?",
-      mlb: "Como você usa insights de IA ou analytics para prever prazos e gargalos em tasks de dev complexas?",
-    },
-  },
-  "planning"
-);
-export const devAiAdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiAdBeginnerKeys,
-    },
-    intermediate: {
-      ...aiAdIntermediateKeys,
-    },
-    expert: {
-      ...aiAdExpertKeys,
-    },
-  },
-  "audio"
-);
-export const devAiImgKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiImgBeginnerKeys,
-    },
-    intermediate: {
-      ...aiImgIntermediateKeys,
-    },
-    expert: {
-      ...aiImgExpertKeys,
-    },
-  },
-  "image"
-);
-export const devAiVdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      rec: "Como você usa IA para gravar vídeos curtos (ex.: screencasts) de demonstração de software?",
-      edt: "Você utiliza IA para edições básicas (corte, texto) de vídeos de tutoriais técnicos?",
-      pub: "De que forma a IA otimiza a publicação de vídeos em wikis ou drives internos?",
-      frq: "Como a IA ajuda a ajustar qualidade e resolução de capturas de IDE ou terminais?",
-      mic: "Você usa IA para integrar áudio e vídeo automaticamente em tutoriais passo a passo?",
-    },
-    intermediate: {
-      eff: "Como a IA insere efeitos e destaca trechos automaticamente em vídeos técnicos?",
-      scr: "Você utiliza scripts baseados em IA (ex.: FFmpeg) para converter vídeos de demonstração?",
-      col: "De que forma a IA otimiza a gravação e compartilhamento de replays de bugs?",
-      sub: "Você utiliza IA para adicionar legendas automáticas em vídeos técnicos para times globais?",
-      seg: "Como a IA ajuda a controlar permissões avançadas para vídeos técnicos internos?",
-    },
-    expert: {
-      adv: "Como você utiliza IA para gerenciar edições multicâmera em eventos técnicos (hackathons)?",
-      stp: "Você usa IA para otimizar streaming ao vivo de eventos do time dev sem travar redes locais?",
-      gpu: "De que forma a IA resolve problemas de encoding e GPU em vídeos longos?",
-      int: "Como você integra IA para criar capítulos automáticos vinculados a documentos técnicos?",
-      ai_: "Com que frequência você utiliza IA para gerar highlights ou legendas automáticas em vídeos?",
-    },
-  },
-  "video"
-);
+export const devPlnKeys = ObjectHelper.deepFreeze({
+  ...defPlnKeys,
+});
+export const devAiAdKeys = ObjectHelper.deepFreeze({
+  ...defAiAdKeys,
+});
+export const devAiImgKeys = ObjectHelper.deepFreeze({
+  ...defAiImgKeys,
+});
+export const devAiVdKeys = ObjectHelper.deepFreeze({
+  ...defAiVdKeys,
+});
 export const devLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
-      chat: 'Com que frequência você utiliza LLMs para gerar snippets ou "rascunhos" de código?',
+      chat: `${frq} você utiliza LLMs para gerar snippets ou "rascunhos" de código?`,
       tips: "Como você orienta perguntas básicas para obter exemplos de funções ou algoritmos?",
       ...llmBeginnerKeys,
     },
     intermediate: {
       ...llmIntermediateKeys,
-      int: "Com que frequência você integra a LLM em IDEs (ex.: GitHub Copilot)?",
+      int: `${frq} você integra a LLM em IDEs (ex.: GitHub Copilot)?`,
       exp: "Qual é o seu nível de conhecimento em algoritmos de Aprendizado de Máquina?",
-      ctx: "Com que frequência você armazena prompts para reiterações futuras?",
+      ctx: `${frq} você armazena prompts para reiterações futuras?`,
       stc: "Qual dessas prática você adota com modelos de chain-of-thought para orientações de tarefas com múltiplas camadas?",
     },
     expert: {
       ...llmExpertKeys,
-      ftu: "Qual é o seu nível de experiência realizando fine-tuning ou prompt engineering avançado para modelos open-source?",
+      ftu: `${exp} realizando fine-tuning ou prompt engineering avançado para modelos open-source?`,
       crt: "Selecione as classes de algoritmos de Aprendizado de Máquina que você mais tem experiência desenvolvendo",
       api: "Quais destas práticas você utiliza para integrar LLMs com pipelines CI/CD?",
     },
   },
   "llms"
 );
-export const devAddQuestions = ObjectHelper.deepFreeze([
+export const devAddQuestions: [
+  roleType,
+  QuestionsMap<devComplexityKeySet>
+] = ObjectHelper.deepFreeze([
   "desenvolvimento",
   new Map([
     ["docs", devDocsKeys as any],
@@ -3912,8 +3612,8 @@ export const devAddQuestions = ObjectHelper.deepFreeze([
     ["formBuilders", devFmKeys],
     ["cloudStorage", devCsKeys],
     ["businessInteligence", devBiKeys],
-    ["Crms", devCrmsKeys],
-    ["Erps", devErpsKeys],
+    ["Crms", devCrmKeys],
+    ["Erps", devErpKeys],
     ["planning", devPlnKeys],
     ["audio", devAiAdKeys],
     ["image", devAiImgKeys],
@@ -3925,16 +3625,16 @@ export const devOpsDocsKeys = withFrozenLibreLabel(
   {
     beginner: {
       sdr: "Como você documenta os passos de build ou scripts simples (Markdown, README) para que todos entendam?",
-      cco: "Com que frequência você adiciona comentários sobre configurações de CI/CD nos arquivos de doc?",
-      vrs: "Em que frequência você versiona a documentação junto com o código em repositórios Git?",
+      cco: `${frq} você adiciona comentários sobre configurações de CI/CD nos arquivos de doc?`,
+      vrs: `${frq} versiona a documentação junto com o código em repositórios Git?`,
       col: "De que forma você permite que vários membros do time editem simultaneamente o mesmo doc?",
-      cli: "Qual é o seu nível de experiência criando CLIs para que devs executem builds localmente?",
+      cli: `${exp} criando CLIs para que devs executem builds localmente?`,
     },
     intermediate: {
       arc: "Como você registra arquitetura de pipelines (desenhos, YAML samples) em docs de referência?",
       sec: "Quais destas práticas de segurança você documenta em detalhes para suas pipelines?",
       pol: "Quais são suas ferramentas preferenciais para descrever políticas de commits, branch naming e merges em um documento de convenções?",
-      ver: "Qual é o seu nível de experiência com automação de múltiplos containers?",
+      ver: `${exp} com automação de múltiplos containers?`,
       aut: "Descreva livremente como você apresentaria automações básicas (hooks, triggers) em pipelines para uma equipe de desenvolvimento",
     },
     expert: {
@@ -3942,7 +3642,7 @@ export const devOpsDocsKeys = withFrozenLibreLabel(
       gen: "Como você gera documentação automatizada (ex.: swagger de microserviços) e vincula a um repositório doc?",
       ext: "De que forma você integra doc com wikis corporativas (SharePoint, Confluence) a fim de manter sincronizações?",
       adv: "Qual é seu procedimento para diagramar pipelines DevOps complexos (multi-stage, multi-cloud) e revisar periodicamente?",
-      pol: "Quais destas técnicas você aplica para auditar seguindo normas de conformidade (ISO, PCI)?",
+      pol: `${tcn} você aplica para auditar seguindo normas de conformidade (ISO, PCI)?`,
     },
   },
   "docs"
@@ -3951,9 +3651,9 @@ export const devOpsSsKeys = withFrozenLibreLabel(
   {
     beginner: {
       pip: "Você utiliza planilhas para documentar as etapas de pipeline implementadas?",
-      env: "Com que frequência você registra variáveis de ambiente (ex.: URLs, keys) em uma planilha?",
+      env: `${frq} você registra variáveis de ambiente (ex.: URLs, keys) em uma planilha?`,
       job: "De que forma planilhas participam do desenvolvimento da sua pipeline?",
-      rep: "Em que frequência você gera relatórios em planilha sobre falhas e sucessos de build?",
+      rep: `${frq} gera relatórios em planilha sobre falhas e sucessos de build?`,
       acc: "Quais técnicas você utiliza para integrar planilhas diretamente no fluxo de fluxo DevOps?",
     },
     intermediate: {
@@ -3966,7 +3666,7 @@ export const devOpsSsKeys = withFrozenLibreLabel(
     expert: {
       big: "Como você lida com volumosas métricas (ex.: histórico de builds de meses/anos) e performance na planilha?",
       aut: "Que tipo de resultos e links de automação você registra em planilhas (scripts de rollback, escalonamento)?",
-      adv: "Com que frequência você gera dashboards complexos, cruzando dados de repositórios, monitoramento e falhas?",
+      adv: `${frq} você gera dashboards complexos, cruzando dados de repositórios, monitoramento e falhas?`,
       ver: "De que modo versiona planilhas importantes para não perder histórico?",
       aud: "Como você audita logs ou histórico de builds dentro de planilhas?",
     },
@@ -3982,7 +3682,7 @@ export const devOpsCsKeys = withFrozenLibreLabel(
     beginner: {
       ...csBeginnerKeys,
       nme: "Você define convenções de nome (ex.: app_v1.0.zip) para facilitar identificação de builds?",
-      syn: "Qual é o seu nível de experiência com plataformas de versionamento em nuvem?",
+      syn: `${exp} com plataformas de versionamento em nuvem?`,
     },
     intermediate: {
       ...csIntermediateKeys,
@@ -3995,181 +3695,64 @@ export const devOpsCsKeys = withFrozenLibreLabel(
       ...csExpertKeys,
       dpl: "Quais destas práticas você utiliza quando realiza replicações em múltiplos datacenters ou region endpoints para alta disponibilidade?",
       enc: "De que modo você encripta e protege artefatos sensíveis (chaves, libs privadas) no storage?",
-      scc: "Quais destas técnicas você utiliza para aplicar caching avançado ou solutions como Artifactory/Nexus?",
+      scc: `${tcn} você utiliza para aplicar caching avançado ou solutions como Artifactory/Nexus?`,
       mig: "Quais destas práticas você considera essenciais nas automações para migrar grandes volumes (ex.: repositório de artefatos) para outra infraestrutura em nuvem (ex.: S3) sem quebrar links?",
     },
   },
   "cloudStorage"
 );
-export const devOpsBiKeys = withFrozenLibreLabel(
+export const devOpsBiKeys = ObjectHelper.deepFreeze({
+  ...devBiKeys,
+});
+export const devOpsCrmKeys = ObjectHelper.deepFreeze({
+  ...devCrmKeys,
+});
+export const devOpsErpKeys = withFrozenLibreLabel(
   {
     beginner: {
-      mtr: "Como você coleta métricas simples de pipeline (tempo de build, número de falhas) e envia a dashboards BI?",
-      con: "Você conecta planilhas ou logs do Jenkins/GitLab a uma ferramenta de BI (Power BI, Tableau)?",
-      usu: "Em que frequência você gera visuais básicos (barras, pizza) para exibir estágios do pipeline?",
-      doc: "Você documenta esses dashboards e explica para o time o que cada métrica significa?",
-      ref: "De que forma você atualiza manualmente dados (refresh) e ensina a equipe a conferir?",
+      ...erpBeginnerKeys,
+      dob: `${frq} monta pipelines básicos para atualizar pacotes do ERP (SAP, TOTVS) com rollback simples?`,
+      dov: `${mnn} versiona scripts ABAP/TOTVS no repositório devOps e inclui documentação mínima?`,
+      dod: `${cts} define para organizar credenciais (url, DB user) do ERP em variáveis seguras (ex.: vault)?`,
     },
     intermediate: {
-      scp: "Você cria scripts para exportar logs e integrá-los automaticamente ao dataset do BI?",
-      cal: "Como você cria colunas ou medidas intermediárias (ex.: lead time) no BI para DevOps?",
-      mlt: "Você consolida múltiplas fontes (Git, Artifactory, Docker registry) num só relatório intermediário?",
-      seg: "Você define segurança em nível de relatório ou dataset, evitando expor logs sensíveis?",
-      das: "Em que frequência você monta dashboards com slice/dice para filtrar builds por data, branch, etc.?",
+      ...erpIntermediateKeys,
+      doi: `${mnn} configura SSO do ERP e orquestra automação de builds (ex.: triggers) no pipeline devOps?`,
+      doj: `${frq} gerencia integrações e logs do ERP (DB remoto) enviando dados para dashboards devOps?`,
+      dok: `${tcn} utiliza para migrar ambientes (desenv -> homolog -> prod) com minimal downtime no ERP?`,
     },
     expert: {
-      big: "Como você gerencia telemetria massiva (ex.: logs de contêiner, eventos de orquestrador) no BI, garantindo performance?",
-      ext: "Você executa análises avançadas (Machine Learning, R/Python) dentro do BI para prever falhas?",
-      apx: "De que forma integra APIs do BI (push dataset) ao seu pipeline e orquestra refresh em cada deploy?",
-      adv: "Você utiliza Dashboards complexos com drill-down (ex.: clique em falha -> logs do Jenkins) e retira insights?",
-      dsh: "Como você lida com a alta demanda de acessos a esse dashboard corporativo e evita lentidão?",
-    },
-  },
-  "businessInteligence"
-);
-export const devOpsCrmsKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      pip: "Como você registra demandas de clientes (ex.: pedidos de feature) no CRM e linka ao backlog DevOps?",
-      col: "Você orienta a colaboração básica entre equipe de vendas e devOps, trocando info de tickets?",
-      doc: "Com que frequência você cria docs simples de integração (CRM <-> pipelines) para orquestrar orçamentos?",
-      upg: "Você atualiza manualmente status de negociações quando há build pronto ou demo final?",
-      rep: "De que forma você gera relatórios básicos (quantidade de pedidos pendentes) para priorizar dev?",
-    },
-    intermediate: {
-      scp: "Você cria scripts para sincronizar dados do CRM (leads) com tasks do Trello/Planner do pipeline?",
-      sso: "Como você integra Single Sign-On do CRM e repositório dev, evitando credenciais duplicadas?",
-      api: "Você consome APIs do CRM para acionar gatilhos (ex.: feature request) e gera issues no repositório?",
-      sec: "Em que frequência você confere permissões de leitura/escrita para devs que consultam dados de clientes?",
-      das: "Você monta dashboards intermediários correlacionando metas de vendas e progresso do pipeline?",
-    },
-    expert: {
-      adv: "Como você consolida dados complexos do CRM com logs DevOps, gerando insights de tempo e custo?",
-      bck: "De que modo você lida com backups e restaurações de ambientes CRM ligados a ciclo de entrega de software?",
-      rls: "Você define releases conjuntas: quando uma feature atinge 'pronto' no devOps, o CRM muda o status do cliente?",
-      cux: "Você implementa custom code no CRM (ex.: Apex, TOTVS) para iniciar pipeline de build? Explique.",
-      hcl: "Qual sua estratégia de alta disponibilidade do CRM e notificação no Slack/Teams do devOps em caso de failover?",
-    },
-  },
-  "Crms"
-);
-export const devOpsErpsKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      int: "Como você orienta a integração básica do ERP (SAP, TOTVS) com repositórios de configs no devOps?",
-      acc: "Você cria acessos mínimos (somente leitura) para devOps examinar tabelas ou configurações do ERP?",
-      doc: "Em que frequência você documenta scripts de automação ABAP/TOTVS e versiona junto do pipeline?",
-      env: "De que forma você organiza variáveis (url, credentials ERP) para staging e production no devOps?",
-      bkp: "Você executa backups simples antes de cada atualização de pacotes do ERP para garantir rollback?",
-    },
-    intermediate: {
-      sso: "Como você implementa Single Sign-On do ERP e configura no pipeline de automação das builds?",
-      wfl: "Você cria workflows de transição no ERP que disparam eventos no devOps (ex.: webhooks)?",
-      ext: "Em que frequência você estende módulos (ex.: custom ABAP) e versiona esse código no Git?",
-      mig: "De que forma você lida com migrações de ambiente (desenv -> homolog -> prod) usando scripts devOps?",
-      sec: "Você controla permissões avançadas (roles SAP, TOTVS) e logs de acesso para cada mudança?",
-    },
-    expert: {
-      clt: "Como você orquestra clusters HA do ERP, definindo processos de deploy sem downtime no devOps?",
-      adv: "Você integra pipelines que compilam/traduzem código do ERP (ABAP, TOTVS) em estágios automatizados?",
-      pch: "Em que frequência você gerencia patches críticos do ERP e testa em um ambiente ephemeral do devOps?",
-      big: "Você cruza dados massivos do ERP com contêineres, usando infra-as-code e define workflows complexos?",
-      obs: "Qual sua abordagem para observabilidade (logs, métricas) do ERP dentro de dashboards devOps (Prometheus/Grafana)?",
+      ...erpExpertKeys,
+      doe: `${exp} em orquestrar clusters HA no ERP e definir deploys sem downtime no pipeline devOps?`,
+      dof: `${mnn} compila código do ERP (ex.: ABAP) em estágios automatizados, testando patches e traduções?`,
+      dog: `${rsc} de observabilidade (logs, métricas) são usados para monitorar o ERP em dashboards devOps (Prometheus/Grafana)?`,
     },
   },
   "Erps"
 );
-export const devOpsPlnKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      brd: "Como você cria quadros simples (Trello, Planner) para organizar releases e sprints?",
-      usr: "Você adiciona usuários do time dev, ops e QA, definindo tarefas básicas?",
-      stt: "Em que frequência você marca status (a fazer, em progresso, concluído) e revisa diariamente?",
-      ann: "De que forma você anuncia mudanças de prioridade ou prazos de forma visível no board?",
-      cyc: "Você define ciclos curtos (1 ou 2 semanas) para acompanhar entregas no pipeline?",
-    },
-    intermediate: {
-      aut: "Você cria automações (ex.: mover cartão ao fechar PR, disparar notificação) no board?",
-      met: "Como você mede velocidade da equipe (points, horas) e gera relatórios de sprint?",
-      sec: "Você controla permissões de acesso (ex.: apenas ops pode mover cartões críticos) no board?",
-      mul: "Em que frequência você integra diversos boards (ex.: microserviços) em uma visão mais ampla?",
-      scp: "Você une scripts que, ao abrir um card, já cria branch no Git e pipeline inicial? (Sim/Não)",
-    },
-    expert: {
-      adv: "Como você gerencia boards complexos, com múltiplos squads e fluxos (Scrum + Kanban) simultâneos?",
-      csl: "Você consolida dados de todos boards em dashboards executivos (ex.: Power BI) para diretoria?",
-      wbk: "De que forma você integra webhooks para orquestrar fluxos de dev, QA e release automation?",
-      lnk: "Você faz link entre card e PR do Git: ao mover card, o PR se atualiza? Cite um exemplo.",
-      tnp: "Em que frequência você aplica técnicas preditivas/IA para estimar prazos e gargalos em sprints grandes?",
-    },
-  },
-  "planning"
-);
-export const devOpsAiAdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiAdBeginnerKeys,
-    },
-    intermediate: {
-      ...aiAdIntermediateKeys,
-    },
-    expert: {
-      ...aiAdExpertKeys,
-    },
-  },
-  "audio"
-);
-export const devOpsAiImgKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiImgBeginnerKeys,
-    },
-    intermediate: {
-      ...aiImgIntermediateKeys,
-    },
-    expert: {
-      ...aiImgExpertKeys,
-    },
-  },
-  "image"
-);
-export const devOpsAiVdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      rec: "Você utiliza IA para gravar mini tutoriais de configurações de pipeline automaticamente?",
-      edb: "Como a IA auxilia na edição de vídeos básicos (ex.: corte e texto explicativo) para DevOps?",
-      upl: "Você usa IA para hospedar e organizar vídeos internos para treinamento rápido?",
-      frm: "De que forma a IA converte formatos de vídeo automaticamente para compatibilidade com wikis?",
-      aud: "Como a IA melhora a captura de áudio em vídeos técnicos com logs?",
-    },
-    intermediate: {
-      eff: "Você utiliza IA para inserir efeitos ou zoom que destacam partes do pipeline ou logs?",
-      arc: "De que forma a IA arquiva vídeos antigos de sprints e libera espaço em servidores?",
-      str: "Como a IA ajuda no streaming ao vivo de deploys e apresentações técnicas?",
-      sub: "Você utiliza IA para adicionar closed captions automaticamente a vídeos técnicos?",
-      rep: "Como a IA gera relatórios de visualizações e consultas em vídeos tutoriais internos?",
-    },
-    expert: {
-      adv: "Você usa IA para gerenciar gravações multicâmera em apresentações ou eventos de DevOps?",
-      cod: "Como a IA otimiza encoding avançado (bitrate, codecs) para vídeos longos e técnicos?",
-      drp: "Você utiliza pipelines baseados em IA para converter e distribuir vídeos de treinamento?",
-      ia_: "De que forma você integra IA para geração de legendas e análise de vídeos técnicos?",
-      scp: "Como você utiliza scripts e IA para pós-processar e publicar vídeos em portais internos?",
-    },
-  },
-  "video"
-);
+export const devOpsPlnKeys = ObjectHelper.deepFreeze({
+  ...defPlnKeys,
+});
+export const devOpsAiAdKeys = ObjectHelper.deepFreeze({
+  ...defAiAdKeys,
+});
+export const devOpsAiImgKeys = ObjectHelper.deepFreeze({
+  ...defAiImgKeys,
+});
+export const devOpsAiVdKeys = ObjectHelper.deepFreeze({
+  ...defAiVdKeys,
+});
 export const devOpsLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
       ...llmBeginnerKeys,
-      cmt: "Com que frequência você gera comentários de pipeline ou explicações automáticas via LLM?",
-      tip: "Com que frequência você usa LLMs para gerar esboços de scripts de CI/CD ou Dockerfiles simples?",
+      cmt: `${frq} você gera comentários de pipeline ou explicações automáticas via LLM?`,
+      tip: `${frq} você usa LLMs para gerar esboços de scripts de CI/CD ou Dockerfiles simples?`,
     },
     intermediate: {
       ...llmIntermediateKeys,
-      prp: "Com que frequência você elabora prompts detalhando environment, orquestrador e escalabilidade para auxílio de LLMs?",
-      ctx: "Com que frequência você armazena prompts para reiterações futuras?",
+      prp: `${frq} você elabora prompts detalhando environment, orquestrador e escalabilidade para auxílio de LLMs?`,
+      ctx: `${frq} você armazena prompts para reiterações futuras?`,
       stc: "Qual dessas prática você adota com modelos de chain-of-thought para orientações de tarefas com múltiplas camadas?",
     },
     expert: {
@@ -4181,7 +3764,10 @@ export const devOpsLlmKeys = withFrozenLibreLabel(
   },
   "llms"
 );
-export const devOpsAddQuestions = ObjectHelper.deepFreeze([
+export const devOpsAddQuestions: [
+  roleType,
+  QuestionsMap<devOpsComplexityKeySet>
+] = ObjectHelper.deepFreeze([
   "devOps",
   new Map([
     ["docs", devOpsDocsKeys as any],
@@ -4189,8 +3775,8 @@ export const devOpsAddQuestions = ObjectHelper.deepFreeze([
     ["formBuilders", devOpsFmKeys],
     ["cloudStorage", devOpsCsKeys],
     ["businessInteligence", devOpsBiKeys],
-    ["Crms", devOpsCrmsKeys],
-    ["Erps", devOpsErpsKeys],
+    ["Crms", devOpsCrmKeys],
+    ["Erps", devOpsErpKeys],
     ["planning", devOpsPlnKeys],
     ["audio", devOpsAiAdKeys],
     ["image", devOpsAiImgKeys],
@@ -4198,341 +3784,6 @@ export const devOpsAddQuestions = ObjectHelper.deepFreeze([
     ["llms", devOpsLlmKeys],
   ]),
 ]);
-export const defaultQuestionsDict: Readonly<{
-  beginner: {
-    df1: string;
-    df2: string;
-    df3: string;
-  };
-  intermediate: {
-    df4: string;
-    df5: string;
-  };
-  expert: {
-    df6: string;
-    df7: string;
-  };
-}> = ObjectHelper.deepFreeze({
-  beginner: {
-    df1: "O quanto você se considera iniciante em uso de ferramentas tecnológicas do dia a dia?",
-    df2: "Com que frequência você recorre a internet (tutoriais, vídeos) para resolver dúvidas simples?",
-    df3: "De que forma você organiza informações básicas em planilhas ou anotações?",
-  },
-  intermediate: {
-    df4: "Como você integra diferentes ferramentas (email, calendário, anotações) para maior eficiência?",
-    df5: "O quanto você domina uso de macros ou pequenos scripts para automação básica?",
-  },
-  expert: {
-    df6: "Descreva como você cria fluxos de trabalho complexos integrando múltiplas tecnologias:",
-    df7: "O quanto você planeja e gerencia soluções de TI em larga escala (várias equipes)?",
-  },
-});
-export const defDocsKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      fmt: repeated.fmt,
-      tem: repeated.tmp,
-      use: "Com que frequência você escreve textos simples (relatórios, anotações) em um editor de texto básico?",
-      col: "Como você compartilha ou colabora em documentos com outras pessoas? (Ex.: link, e-mail)",
-      exp: "Qual é seu nível de experiência em exportar documentos para PDF ou outros formatos?",
-    },
-    intermediate: {
-      rev: "Você controla revisões (histórico de versões, comentários) quando trabalha num documento?",
-      lay: "De que forma você organiza seções, sumário automático ou referências cruzadas em textos maiores?",
-      cmp: "Como você lida com compatibilidade (ex.: DOCX vs. ODT) e conversões de formato ao editar?",
-      mac: "Você utiliza macros ou funcionalidades automatizadas para padronizar formatação ou inserir campos?",
-      per: "Qual é sua prática para proteger documentos com senha ou restrição de edição?",
-    },
-    expert: {
-      vba: repeated.mcr,
-      idx: "Você já criou índices remissivos, estilos de parágrafo avançados ou capítulos em docs complexos?",
-      sec: "O quanto você manipula permissões avançadas, criptografia e controle de acesso em um editor de texto?",
-      api: "Como você integra APIs ou plugins externos para enriquecer a edição (ex.: checagem gramatical)?",
-      adv: "De que modo você gerencia documentos de alto volume (100+ páginas), mantendo consistência e performance?",
-    },
-  },
-  "docs"
-);
-export const defSsKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      mth: "Você realiza cálculos básicos (SOMA, MÉDIA) em planilhas para tarefas rotineiras?",
-      fmt: "Como você formata células (cores, bordas) para destacar dados importantes?",
-      fil: "Você sabe filtrar ou ordenar dados simples numa planilha? (Sim/Não)",
-      col: "Com que frequência você compartilha planilhas para que outros possam visualizar ou editar?",
-      bar: "Você cria gráficos básicos (barra, pizza) para ilustrar resultados ou tendências?",
-    },
-    intermediate: {
-      piv: repeated.tbd,
-      fml: "Você domina funções intermediárias (SE, PROCV, CONCAT) para automatizar cálculos mais complexos?",
-      val: "Em que frequência você aplica validações de dados (listas suspensas, restrições de valor) nas células?",
-      net: "Você integra ou importa dados externos (ex.: planilhas online, CSV) para comparar informações?",
-      sec: "De que modo você protege certas abas ou intervalos contra edições indevidas?",
-    },
-    expert: {
-      mcr: "Você cria macros ou scripts (VBA, Google Apps Script) para automatizar processos extensos?",
-      dbi: "Como você conecta planilhas a bancos de dados ou APIs e atualiza os dados periodicamente?",
-      prf: "Você realiza tuning ou otimização quando há muitas fórmulas e abas, evitando lentidão?",
-      big: "Você manipula dados volumosos (milhares de linhas) e os consolida em dashboards avançados?",
-      aud: "Qual é sua prática ao auditar ou rastrear mudanças em planilhas grandes (logs, versões anteriores)?",
-    },
-  },
-  "spreadSheets"
-);
-export const defFmKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      cre: "Você cria formulários básicos (Google Forms, etc.) para coletar informações simples?",
-      cmp: "Como você define campos múltipla escolha ou abertas em seus formulários?",
-      shr: "De que forma você compartilha o link do formulário com os participantes (e-mail, rede social)?",
-      rsp: "Com que frequência você verifica as respostas e gera algum relatório simples do que foi coletado?",
-      dsg: "Você personaliza a aparência (cores, imagens) ou usa configurações padrão?",
-    },
-    intermediate: {
-      cnd: "Você adiciona lógicas condicionais (pular certas perguntas) em formulários de complexidade média?",
-      val: "Como você valida tipos de resposta (ex.: número, e-mail) para evitar dados incorretos?",
-      seg: "Você cria seções ou blocos diferentes no mesmo formulário para organizar melhor as perguntas?",
-      col: "Em que frequência você colabora com outras pessoas na criação e edição do mesmo form?",
-      ext: "Você exporta as respostas para planilhas ou integra com outros serviços (ex.: Slack, Zapier)?",
-    },
-    expert: {
-      scr: "Você utiliza scripts (Apps Script, webhooks) para acionar processos automáticos a partir das respostas?",
-      sec: "Como você restringe o acesso (login corporativo, links protegidos) e garante privacidade dos dados?",
-      mul: "Você cria formulários multi-etapas, fluxos de aprovação ou workflows encadeados (N1->N2)?",
-      rep: "Você gera relatórios avançados (ex.: Data Studio, Power BI) a partir dos dados coletados?",
-      adv: "Em que frequência você embeda formulários em sites internos e customiza layout/JS adicional?",
-    },
-  },
-  "formBuilders"
-);
-export const defCsKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      upl: "Como você faz upload ou download de arquivos (ex.: Drive, Dropbox) para uso pessoal ou compartilhado?",
-      shr: "Você sabe compartilhar pastas com permissões básicas (visualizar, comentar, editar)?",
-      syn: "Em que frequência você sincroniza pastas locais com a nuvem, evitando versões desatualizadas?",
-      rec: "De que forma você restaura arquivos excluídos acidentalmente ou versões anteriores?",
-      nme: "Você segue algum padrão de nomeação de arquivos para facilitar buscas ou organização?",
-    },
-    intermediate: {
-      qta: "Você controla quotas de espaço (limites) e gerencia excedentes em pastas de compartilhamento?",
-      int: "Como você integra ferramentas de terceiros (ex.: editores online, automações) ao seu armazenamento?",
-      bkp: "Qual sua prática de backup automático (scripts, agendador) para não perder dados importantes?",
-      sec: "Você define criptografia ou senhas em certos arquivos/pastas, mantendo logs de acesso?",
-      ver: "Em que frequência você utiliza versionamento automático (snapshots, histórico) para reverter mudanças?",
-    },
-    expert: {
-      dfs: "Como você gerencia replicações ou sync avançado em vários dispositivos/sites de armazenamento?",
-      pol: "Você aplica políticas de retenção e governança (ex.: tempo de expiração) a certos arquivos confidenciais?",
-      aud: "De que modo você audita acessos (logs) e controla quem fez download ou exclusão de conteúdos críticos?",
-      mig: "Em que frequência você migra arquivos entre provedores (ex.: AWS S3, GDrive) e garante integridade?",
-      drp: "Qual sua estratégia de disaster recovery ou HA (alta disponibilidade) em caso de falha no storage principal?",
-    },
-  },
-  "cloudStorage"
-);
-export const defBiKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      con: "Como você conecta dados simples (planilhas, CSV) a uma ferramenta de BI (ex.: Power BI, Tableau)?",
-      grf: "Você gera gráficos básicos (barras, linhas) para visualizar informações de maneira inicial?",
-      seg: "De que forma você filtra dados ou faz pequenas segmentações para análises rápidas?",
-      col: "Em que frequência você compartilha relatórios de BI com colegas ou superiores?",
-      atz: "Você atualiza manualmente os dados (refresh) ou só carrega uma única vez?",
-    },
-    intermediate: {
-      src: "Você consolida múltiplas fontes de dados (ex.: planilha + DB) em um mesmo dashboard intermediário?",
-      calc: "Como você cria campos calculados (ex.: DAX, expressões) para análises mais avançadas?",
-      das: "Você configura dashboards com métricas-chave (ex.: vendas, produtividade) e organiza visuais custom?",
-      seg: "Em que frequência você define segurança em nível de linha ou permissões específicas por usuário?",
-      ref: "Como você lida com agendamentos de refresh, evitando que dados fiquem defasados?",
-    },
-    expert: {
-      adv: "Você resolve problemas de performance ao lidar com grandes volumes de dados (milhões de linhas)?",
-      ent: "Em que forma você integra scripts R/Python para análises estatísticas ou preditivas avançadas?",
-      wrk: "Você organiza workspaces compartilhados, governança e distribuição de relatórios em larga escala?",
-      big: "Como você lida com Big Data (ex.: Hadoop, Spark) e ferramentas de BI, conectando pipelines robustos?",
-      aud: "De que modo você audita acesso e mudanças em dashboards, garantindo rastreabilidade e compliance?",
-    },
-  },
-  "businessInteligence"
-);
-export const defCrmsKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      cad: "Você cadastra contatos ou leads básicos em um CRM (ex.: Salesforce, HubSpot)? (Sim/Não)",
-      upd: "Em que frequência você atualiza manualmente status de leads ou clientes (ex.: prospect, ativo)?",
-      seg: "De que forma você segmenta clientes (região, tipo de empresa) para campanhas iniciais?",
-      rep: "Você gera relatórios simples (pipeline de vendas) para entender oportunidades em aberto?",
-      com: "Como você anota conversas ou negociações diretamente no registro do cliente no CRM?",
-    },
-    intermediate: {
-      auto: "Você cria automações de envio de e-mail, mudança de status ou lembretes no CRM?",
-      scp: "Como você integra o CRM a outras ferramentas (ex.: e-mail marketing, planilhas) para sincronizar dados?",
-      prf: "Em que frequência você configura perfis ou grupos (ex.: time de vendas, suporte) com permissões diferentes?",
-      adv: "Você gera relatórios intermediários que cruzam dados de vendas, marketing e suporte? (Sim/Não)",
-      cst: "De que forma você adiciona campos personalizados para registrar informações específicas do cliente?",
-    },
-    expert: {
-      api: "Como você consome APIs do CRM para automações avançadas ou criação de dashboards externos?",
-      big: "Você lida com análises de Big Data (ex.: IA para scoring de leads) dentro do CRM?",
-      per: "Em que frequência você ajusta perfis de segurança complexos (ex.: ACL por campo) e audita logs de acesso?",
-      mig: "Você migra dados massivos (ex.: outro CRM -> atual) e resolve conflitos (duplicidade de leads)?",
-      adv: "De que modo você combina workflows multi-etapas (financeiro, suporte) para leads corporativos complexos?",
-    },
-  },
-  "Crms"
-);
-export const defErpsKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      nav: "Como você navega por módulos básicos (financeiro, estoque) em um ERP (ex.: TOTVS, SAP)?",
-      cad: "Você cadastra fornecedores, produtos ou clientes simples sem grande complexidade no ERP?",
-      rep: "Em que frequência você gera relatórios iniciais (vendas, pedidos) diretamente do ERP?",
-      sup: "Como você busca ajuda (ex.: manual, suporte interno) quando algo básico falha no ERP?",
-      doc: "De que forma você salva ou imprime documentos fiscais (ex.: notas) gerados no ERP?",
-    },
-    intermediate: {
-      wfl: "Você configura fluxos intermediários (aplicação de desconto, aprovação gerencial) dentro do ERP?",
-      rel: "Como você elabora relatórios customizados (ex.: Crystal, TOTVS Reports) para análises específicas?",
-      mig: "Em que frequência você importa dados de planilhas ou migra entre ambientes (homolog, produção)?",
-      sec: "Você define permissões intermediárias (ex.: apenas compras vê x, apenas vendas vê y)?",
-      int: "De que modo você integra o ERP com outras ferramentas (CRM, e-commerce) e resolve conflitos de dados?",
-    },
-    expert: {
-      mod: "Como você lida com customizações avançadas (scripts, ABAP) em cenários grandes e críticos?",
-      ha_: "Você implementa alta disponibilidade (cluster, failover) no ERP, evitando parada total?",
-      idx: "Em que frequência você otimiza índices no banco do ERP para ganho de performance?",
-      prc: "De que forma você orquestra processos complexos (ex.: MRP, produção) e audita logs?",
-      gov: "Você controla governança, compliance (LGPD, etc.) e auditoria avançada de transações no ERP?",
-    },
-  },
-  "Erps"
-);
-export const defPlnKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      brd: "Como você cria quadros ou listas de tarefas (Trello, Planner) para organizar atividades simples?",
-      sta: "Você define colunas (A fazer, Fazendo, Feito) e move cartões conforme evolui nas tarefas?",
-      prz: "Com que frequência você atribui prazos e avisa os envolvidos? (Ex.: data de entrega)",
-      col: "De que forma você colabora com colegas no mesmo board, trocando comentários ou menções?",
-      not: "Você habilita notificações (por e-mail, app) quando algo muda no quadro?",
-    },
-    intermediate: {
-      aut: "Você configura automações (ex.: mover cartão ao vencer prazo, enviar lembrete) no quadro?",
-      rep: "Em que nível você gera relatórios ou resumos (quantidade de tarefas concluídas) para acompanhamento?",
-      sec: "Você define permissões intermediárias (ex.: apenas gerentes podem fechar cartões) no board?",
-      int: "Com que frequência você integra a ferramenta de planejamento com e-mail, Slack ou outro software?",
-      tim: "Você controla tempo ou estimativas (story points, horas) e registra no card? (Sim/Não)",
-    },
-    expert: {
-      adv: "Como você coordena múltiplos quadros, squads e fluxos complexos (Scrum/Kanban) simultaneamente?",
-      wbh: "Você utiliza webhooks ou scripts para criar cartões automaticamente ou atualizar status?",
-      dsh: "Em que frequência você monta dashboards consolidados (ex.: Power BI) para ver progresso de várias equipes?",
-      apr: "Você lida com fluxos de aprovação encadeados (ex.: líder -> diretor) e notifica stakeholders externos?",
-      mlb: "De que forma você utiliza insights de IA ou métricas preditivas para planejar prazos e recursos?",
-    },
-  },
-  "planning"
-);
-export const defAiAdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiAdBeginnerKeys,
-    },
-    intermediate: {
-      ...aiAdIntermediateKeys,
-    },
-    expert: {
-      ...aiAdExpertKeys,
-    },
-  },
-  "audio"
-);
-export const defAiImgKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      ...aiImgBeginnerKeys,
-    },
-    intermediate: {
-      ...aiImgIntermediateKeys,
-    },
-    expert: {
-      ...aiImgExpertKeys,
-    },
-  },
-  "image"
-);
-export const defAiVdKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      rec: "Como você utiliza IA para gravar vídeos curtos (ex.: tutoriais simples ou demonstrações)?",
-      edb: "Você usa IA para realizar cortes automáticos em vídeos antes do compartilhamento?",
-      frq: "Como a IA facilita o upload e organização de vídeos em nuvem ou redes sociais?",
-      aud: "Você utiliza IA para melhorar a qualidade do áudio em vídeos explicativos?",
-      frm: "Como a IA ajusta formatos e resoluções de vídeos para garantir compatibilidade?",
-    },
-    intermediate: {
-      eff: "Você utiliza IA para adicionar efeitos ou transições automaticamente em vídeos?",
-      scr: "Como a IA ajuda a gravar screencasts com integração de áudio e vídeo?",
-      net: "Você usa IA para gerenciar conexões e reduzir latência durante transmissões ao vivo?",
-      col: "De que forma a IA colabora na edição e revisão de vídeos em equipe?",
-      ext: "Como a IA otimiza a resolução ou bitrate de vídeos sem comprometer a qualidade?",
-    },
-    expert: {
-      adv: "Você utiliza IA para edições avançadas (multi-track, efeitos complexos) em vídeos?",
-      mul: "Como a IA auxilia na integração de múltiplas câmeras e microfones em projetos de vídeo?",
-      ai_: "Você usa IA para legendagem automática ou remoção de ruídos em vídeos de alta qualidade?",
-      str: "De que forma a IA otimiza streaming de eventos ao vivo (ex.: webinars)?",
-      scp: "Como você usa IA para orquestrar conversões em lote de vídeos com scripts?",
-    },
-  },
-  "video"
-);
-export const defLlmKeys = withFrozenLibreLabel(
-  {
-    beginner: {
-      usr: "Você utiliza chatbots de IA (ChatGPT, etc.) para responder perguntas gerais ou curiosidades?",
-      prp: "Como você elabora perguntas (prompts) simples para obter respostas úteis na IA?",
-      cor: "Em que frequência você verifica a precisão das respostas obtidas, comparando com fontes confiáveis?",
-      lan: "Você conversa na IA em português ou inglês? Qual é seu grau de conforto nisso?",
-      alr: "Você está ciente de que as IA podem 'alucinar' respostas incorretas? (Sim/Não)",
-    },
-    intermediate: {
-      cxt: "Você utiliza contexto adicional (system, role messages) para guiar respostas mais personalizadas?",
-      scr: "De que forma você integra a IA em scripts ou apps simples (via API) para automatizar algumas consultas?",
-      seg: "Você filtra dados sensíveis (senhas, informações privadas) antes de inserir no prompt?",
-      rpd: "Você re-prompta a IA quando recebe algo incoerente e corrige a linha de raciocínio? (Sim/Não)",
-      col: "Em que frequência você colabora com colegas para elaborar prompts detalhados, focados em um assunto?",
-    },
-    expert: {
-      adv: "Como você realiza prompt engineering avançado (ex.: few-shot learning) para obter respostas complexas?",
-      fin: "Você lida com fine-tuning ou custom instructions em modelos open-source, localmente ou em cloud?",
-      aud: "De que forma você mantém logs de perguntas/respostas e evita expor dados confidenciais para a IA?",
-      mlb: "Em que frequência você avalia a qualidade (métricas) das respostas geradas pela IA e ajusta prompts?",
-      bch: "Você executa batch de perguntas automáticas (ex.: script chamando API) e processa resultados massivos?",
-    },
-  },
-  "llms"
-);
-export const defaultAddQuestions = ObjectHelper.deepFreeze([
-  "default",
-  new Map([
-    ["docs", defDocsKeys as any],
-    ["spreadSheets", defSsKeys],
-    ["formBuilders", defFmKeys],
-    ["cloudStorage", defCsKeys],
-    ["businessInteligence", defBiKeys],
-    ["Crms", defCrmsKeys],
-    ["Erps", defErpsKeys],
-    ["planning", defPlnKeys],
-    ["audio", defAiAdKeys],
-    ["image", defAiImgKeys],
-    ["video", defAiVdKeys],
-    ["llms", defLlmKeys],
-  ]),
-]);
-const required = true;
 export const repeatedDefinitions: Readonly<{
   [K in repeatingDefinitionKeys]: FieldDescription;
 }> = ObjectHelper.deepFreeze({
@@ -4568,7 +3819,7 @@ export const repeatedDefinitions: Readonly<{
     ],
   },
   frq: {
-    // "Com que frequência ...?"
+    // `${frq} ...?`
     type: "select-one",
     options: [
       "Nunca",
@@ -4622,7 +3873,7 @@ export const repeatedDefinitions: Readonly<{
     required,
   },
   dbi: {
-    // "De que maneira você puxa informações de bancos de dados ou APIs...?"
+    // `${mnn} puxa informações de bancos de dados ou APIs...?`
     type: "select-multiple",
     options: [
       "Conexão manual (copiar/colar dados)",
@@ -4742,7 +3993,7 @@ export const fmDefinitions: {
     required,
   },
   emb: {
-    //"Quais destas técnicas você utiliza com mais frequência para analisar resultados aglomerados por diversas submissões de um formulário?"
+    //`${tcn} você utiliza com mais frequência para analisar resultados aglomerados por diversas submissões de um formulário?`
     type: "select-multiple",
     options: [
       "Observação e análise direta",
@@ -4753,7 +4004,7 @@ export const fmDefinitions: {
     ],
   },
   plt: {
-    //"Quais destas ferramentas você utiliza para construção de formulários?"
+    //`${tls} você utiliza para construção de formulários?`
     type: "select-multiple",
     options: [
       "Google Forms",
@@ -4812,7 +4063,7 @@ export const fmExpertDefinitions: ROFieldRecord<
   },
 });
 export const opRepeatedDefinitions: Readonly<{
-  [K in complexityLabel]: KeysRecords<FormBuilderQuestionsKeys>;
+  [K in complexityLabel]: KeysRecords<FormBuilderQuestionKey>;
 }> = ObjectHelper.deepFreeze({
   beginner: {
     ...fmBeginnerDefinitions,
@@ -4897,12 +4148,12 @@ function withFrozenLib<T>(
     dict
   ) as EntryTypeDictionary<T>;
 }
-export const docEntryTypes: EntryTypeDictionary<DocsQuestionsKeys> =
+export const docEntryTypes: EntryTypeDictionary<DocsQuestionKey> =
   withFrozenLib({
     executivoAdministrativo: {
       beginner: {
         // eaDocsKeys.beginner
-        fmt: repeatedDefinitions.exp, // "Qual é sua familiaridade com formatações simples..."
+        fmt: repeatedDefinitions.exp, // `${fam} com formatações simples...`
         tmp: repeatedDefinitions.tmp, // "De que forma você aproveita modelos (templates) prontos..."
         cbb: repeatedDefinitions.colab,
         frq: repeatedDefinitions.frq,
@@ -5068,7 +4319,7 @@ export const docEntryTypes: EntryTypeDictionary<DocsQuestionsKeys> =
         trc: repeatedDefinitions.colab,
         ast: repeatedDefinitions.ast,
         dbl: {
-          // "De que maneira você integra dados de planilhas ou bancos de dados em documentos de texto?"
+          // `${mnn} integra dados de planilhas ou bancos de dados em documentos de texto?`
           type: "select-multiple",
           options: [
             "Copio/colo manualmente",
@@ -5269,7 +4520,7 @@ export const docEntryTypes: EntryTypeDictionary<DocsQuestionsKeys> =
       beginner: {
         syn: repeatedDefinitions.colab,
         cmp: {
-          // "Quais destas ferramentas de conversão de formatos de documentos você recomendaria para um usuário?",
+          // `${tls} de conversão de formatos de documentos você recomendaria para um usuário?`,
           type: "select-multiple",
           options: [
             "Conversão nativa do Word/Google Docs (Salvar como PDF, etc.)",
@@ -5282,7 +4533,7 @@ export const docEntryTypes: EntryTypeDictionary<DocsQuestionsKeys> =
         },
         plg: repeatedDefinitions.frq,
         pmt: {
-          // "Quais ferramentas você utiliza para intervir em problemas de permissão (arquivos bloqueados, somente leitura) em rede?"
+          // `${tls} você utiliza para intervir em problemas de permissão (arquivos bloqueados, somente leitura) em rede?`
           type: "select-multiple",
           options: [
             "Alteração manual de permissões (Propriedades do arquivo, Segurança, NTFS)",
@@ -5577,7 +4828,7 @@ export const docEntryTypes: EntryTypeDictionary<DocsQuestionsKeys> =
           required,
         },
         arc: {
-          // "De que maneira você descreve arquitetura de software avançada (ex.: diagramas UML) em docs e versiona?"
+          // `${mnn} descreve arquitetura de software avançada (ex.: diagramas UML) em docs e versiona?`
           type: "select-multiple",
           options: [
             "Diagramas salvos como imagens no repositório",
@@ -5678,7 +4929,7 @@ export const docEntryTypes: EntryTypeDictionary<DocsQuestionsKeys> =
       },
     },
   });
-export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionsKeys> =
+export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionKey> =
   withFrozenLib({
     executivoAdministrativo: {
       beginner: {
@@ -5709,7 +4960,7 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionsKeys> =
         fmt: repeatedDefinitions.frq,
         cpy: repeatedDefinitions.exp,
         ins: {
-          // "De que maneira você insere gráficos básicos para ilustrar dados?"
+          // `${mnn} insere gráficos básicos para ilustrar dados?`
           type: "select-multiple",
           options: [
             "Não insiro gráficos",
@@ -5855,7 +5106,7 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionsKeys> =
     comercial: {
       beginner: {
         lis: {
-          // "Quais destas técnicas você utiliza para manter listas de leads ou clientes...?"
+          // `${tcn} você utiliza para manter listas de leads ou clientes...?`
           type: "select-multiple",
           options: [
             "Planilhas simples (Excel, Google Sheets)",
@@ -5890,7 +5141,7 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionsKeys> =
     marketing: {
       beginner: {
         lis: {
-          // "Quais destas técnicas você utiliza para manter listas de leads ou clientes...?"
+          // `${tcn} você utiliza para manter listas de leads ou clientes...?`
           type: "select-multiple",
           options: [
             "Planilhas simples (Excel, Google Sheets)",
@@ -5956,7 +5207,7 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionsKeys> =
         frm: repeatedDefinitions.col,
         fil: repeatedDefinitions.fil,
         cbt: {
-          // "Quais destes recursos você utiliza para configurar proteções básicas de célula para evitar alterações indevidas?"
+          // `${rsc} você utiliza para configurar proteções básicas de célula para evitar alterações indevidas?`
           type: "radio",
           options: [
             "Proteção de células bloqueadas no Excel/Google Sheets",
@@ -6012,7 +5263,7 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionsKeys> =
         mcr: repeatedDefinitions.scp,
         sec: repeatedDefinitions.exp,
         prf: {
-          // "Quais destas técnicas você utiliza para otimizar performance em planilhas extensas..."
+          // `${tcn} você utiliza para otimizar performance em planilhas extensas...`
           type: "select-multiple",
           options: [
             "Não faço tuning",
@@ -6036,7 +5287,7 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionsKeys> =
     suporteTecnicoN2: {
       beginner: {
         net: {
-          // "Quais destas técnicas você orienta a configuração de planilhas em rede local ou via ferramentas de compartilhamento (Drive, OneDrive)?"
+          // `${tcn} você orienta a configuração de planilhas em rede local ou via ferramentas de compartilhamento (Drive, OneDrive)?`
           type: "select-multiple",
           options: [
             "Acesso via compartilhamento direto",
@@ -6047,7 +5298,7 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionsKeys> =
           required,
         },
         fmz: {
-          // "Quais destas técnicas você usa para evitar formatações que podem quebrar fórmulas ao abrir planilhas em versões distintas?"
+          // `${tcn} você usa para evitar formatações que podem quebrar fórmulas ao abrir planilhas em versões distintas?`
           type: "select-multiple",
           options: [
             "Formatos padronizados (ex.: .xlsx)",
@@ -6058,7 +5309,7 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionsKeys> =
           required,
         },
         cft: {
-          // "Quais destas técnicas você recomenda para fazer a conferência de dados em planilhas compartilhadas, resolvendo conflitos básicos de edição?"
+          // `${tcn} você recomenda para fazer a conferência de dados em planilhas compartilhadas, resolvendo conflitos básicos de edição?`
           type: "select-multiple",
           options: [
             "Uso de controle de versão e histórico",
@@ -6083,7 +5334,7 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionsKeys> =
       },
       intermediate: {
         piv: {
-          // "Quais destas técnicas você utiliza para intervir na criação ou troubleshooting de Tabelas Dinâmicas com múltiplas fontes de dados?"
+          // `${tcn} você utiliza para intervir na criação ou troubleshooting de Tabelas Dinâmicas com múltiplas fontes de dados?`
           type: "select-multiple",
           options: [
             "Não utilizo Tabelas Dinâmicas",
@@ -6095,7 +5346,7 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionsKeys> =
           required,
         },
         lnk: {
-          // "Quais destas técnicas você utiliza para solucionar problemas em planilhas que importam/ligam dados de outras pastas de trabalho?"
+          // `${tcn} você utiliza para solucionar problemas em planilhas que importam/ligam dados de outras pastas de trabalho?`
           type: "select-multiple",
           options: [
             "Ajuste de caminhos de arquivos vinculados",
@@ -6106,7 +5357,7 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionsKeys> =
           required,
         },
         val: {
-          // "Quais destas técnicas você usa para configurar validações e restrições (listas suspensas, intervalos bloqueados) para prevenir erros em planilhas?"
+          // `${tcn} você usa para configurar validações e restrições (listas suspensas, intervalos bloqueados) para prevenir erros em planilhas?`
           type: "select-multiple",
           options: [
             "Listas suspensas para evitar valores inválidos",
@@ -6132,7 +5383,7 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionsKeys> =
         },
         sec: repeatedDefinitions.exp,
         mcr: {
-          // "Quais destas técnicas para depurar macros avançadas (VBA) que causam lentidão ou bloqueiam recursos compartilhados?"
+          // `${tcn} para depurar macros avançadas (VBA) que causam lentidão ou bloqueiam recursos compartilhados?`
           type: "select-multiple",
           options: [
             "Não trabalho com macros avançadas",
@@ -6384,7 +5635,7 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionsKeys> =
       },
     },
   });
-export const fmEntryTypes: EntryTypeDictionary<FormBuilderQuestionsKeys> =
+export const fmEntryTypes: EntryTypeDictionary<FormBuilderQuestionKey> =
   withFrozenLib({
     executivoAdministrativo: {
       beginner: {
@@ -6553,7 +5804,7 @@ export const fmEntryTypes: EntryTypeDictionary<FormBuilderQuestionsKeys> =
 export const csDefinitions: ROFieldRecord<
   typeof csGeneralKeys
 > = ObjectHelper.deepFreeze({
-  //"Quais são suas formas preferenciar de habilitar o compartilhamento de arquivos em nuvem com outras colaboradores?",
+  //"Quais são suas formas preferenciar de habilitar o compartilhamento de arquivos em nuvem com outros colaboradores?",
   shr: {
     type: "select-multiple",
     options: [
@@ -6566,7 +5817,7 @@ export const csDefinitions: ROFieldRecord<
     ],
     required,
   },
-  //"Quais destas plaformas de armazenamento em nuvem você tem preferência em utilizar?",
+  //"Quais destas plataformas de armazenamento em nuvem você tem preferência por utilizar?",
   syn: {
     type: "select-multiple",
     options: [
@@ -6584,26 +5835,26 @@ export const csDefinitions: ROFieldRecord<
 });
 export const csBeginnerDefinitions: ROFieldRecord<
   typeof csBeginnerKeys
-> = {
+> = ObjectHelper.deepFreeze({
   upl: repeatedDefinitions.exp,
   ...csDefinitions,
   acc: repeatedDefinitions.yn,
-};
+});
 export const csIntermediateDefinitions: ROFieldRecord<
   typeof csIntermediateKeys
-> = {
+> = ObjectHelper.deepFreeze({
   ...csDefinitions,
   ver: repeatedDefinitions.colab,
   bck: repeatedDefinitions.frq,
   sch: repeatedDefinitions.txtl,
-};
+});
 export const csExpertDefinitions: ROFieldRecord<
   typeof csExpertKeys
-> = {
+> = ObjectHelper.deepFreeze({
   ...csDefinitions,
   scp: repeatedDefinitions.scp,
   sch: repeatedDefinitions.txtl,
-};
+});
 export const stCsKeys: Readonly<{
   [K in complexityLabel]: { [k: string]: FieldDescription };
 }> = ObjectHelper.deepFreeze({
@@ -6627,7 +5878,7 @@ export const stCsKeys: Readonly<{
   },
   intermediate: {
     ...csIntermediateDefinitions,
-    //"Quais destas técnicas você utiliza para gerenciar backups automáticos ou snapshots em storage de nuvem?"
+    //`${tcn} você utiliza para gerenciar backups automáticos ou snapshots em storage de nuvem?`
     bck: {
       type: "select-multiple",
       options: [
@@ -6655,7 +5906,7 @@ export const stCsKeys: Readonly<{
   expert: {
     ...csExpertDefinitions,
     mlt: repeatedDefinitions.exp,
-    //"Quais destas técnicas você adota para lidar com prevenção e recuperação de desastres de repositórios críticos em nuvem?"
+    //`${tcn} você adota para lidar com prevenção e recuperação de desastres de repositórios críticos em nuvem?`
     drp: {
       type: "select-multiple",
       options: [
@@ -6672,7 +5923,7 @@ export const stCsKeys: Readonly<{
     },
   },
 });
-export const csEntryTypes: EntryTypeDictionary<CloudStorageQuestionsKeys> =
+export const csEntryTypes: EntryTypeDictionary<CloudStorageQuestionKey> =
   withFrozenLib({
     executivoAdministrativo: {
       beginner: {
@@ -6723,7 +5974,7 @@ export const csEntryTypes: EntryTypeDictionary<CloudStorageQuestionsKeys> =
       },
       expert: {
         ...csExpertDefinitions,
-        //"Quais destas técnicas você adota para recuperar rapidamente documentos críticos em caso de desastre ou falha de acesso à nuvem?",
+        //`${tcn} você adota para recuperar rapidamente documentos críticos em caso de desastre ou falha de acesso à nuvem?`,
         drs: {
           type: "select-multiple",
           options: [
@@ -6762,7 +6013,7 @@ export const csEntryTypes: EntryTypeDictionary<CloudStorageQuestionsKeys> =
       },
       expert: {
         ...csExpertDefinitions,
-        //"Quais destas estratégias você adota para migrar grandes repositórios de documentos comerciais de um serviço um serviço em nuvem para outro?"
+        //`${sttg} você adota para migrar grandes repositórios de documentos comerciais de um serviço um serviço em nuvem para outro?`
         mig: {
           type: "select-multiple",
           options: [
@@ -6809,7 +6060,7 @@ export const csEntryTypes: EntryTypeDictionary<CloudStorageQuestionsKeys> =
       expert: {
         ...csExpertDefinitions,
         rep: repeatedDefinitions.exp,
-        //"Quais destas técnicas você utiliza para automatizar uploads e organização de assets e postagens?"
+        //`${tcn} você utiliza para automatizar uploads e organização de assets e postagens?`
         adv: {
           type: "select-multiple",
           options: [
@@ -6927,7 +6178,7 @@ export const csEntryTypes: EntryTypeDictionary<CloudStorageQuestionsKeys> =
           ],
           required,
         },
-        //"Quais destas técnicas você utiliza para aplicar caching avançado ou solutions como Artifactory/Nexus?"
+        //`${tcn} você utiliza para aplicar caching avançado ou solutions como Artifactory/Nexus?`
         scc: {
           type: "select-multiple",
           options: [
@@ -6958,15 +6209,1527 @@ export const csEntryTypes: EntryTypeDictionary<CloudStorageQuestionsKeys> =
       },
     },
   });
-//bi
-//crms
-//erps
-//planning
+export const biDefinitions: ROFieldRecord<
+  typeof biGeneralKeys
+> = ObjectHelper.deepFreeze({
+  //`${sttg} você usa para conectar suas fontes de dados (planilhas, CSV, bancos, etc.) nas ferramentas de BI?
+  con: {
+    type: "select-multiple",
+    options: [
+      `Utilização de drivers ODBC/JDBC para bancos de dados`,
+      `Importação direta de arquivos CSV com mapeamento automático`,
+      `Conectores prontos para planilhas (Google Sheets, Excel)`,
+      `Ferramentas ETL integradas (Pentaho, Talend)`,
+      `APIs nativas da própria plataforma de BI`,
+    ],
+    required,
+  },
+  grf: repeatedDefinitions.exp,
+  //`${tcn} você utiliza para aplicar filtros e segmentações nativas da ferramenta para refinar suas visualizações?`
+  fil: {
+    type: "select-multiple",
+    options: [
+      `Filtros predefinidos`,
+      `Segmentação por data e categoria`,
+      `Aplicação de filtros dinâmicos`,
+    ],
+    required,
+  },
+  atz: repeatedDefinitions.frq,
+  //`${rsc} você utiliza para compartilhar dashboards e relatórios diretamente pela ferramenta de BI?`
+  col: {
+    type: "select-multiple",
+    options: [
+      `Publicação de relatórios em links seguros ou intranet`,
+      `Uso de permissões granulares para cada usuário/role`,
+      `Integração com plataformas colaborativas (Teams, Slack)`,
+      `Exportação automatizada para PDF ou CSV`,
+      `Conexão a portais de self-service BI para visualização`,
+    ],
+    required,
+  },
+});
+export const biBeginnerDefinitions: ROFieldRecord<
+  typeof biBeginnerKeys
+> = ObjectHelper.deepFreeze({
+  ...biDefinitions,
+});
+export const biIntermediateDefinitions: ROFieldRecord<
+  typeof biIntermediateKeys
+> = ObjectHelper.deepFreeze({
+  mdl: repeatedDefinitions.exp,
+  aut: repeatedDefinitions.exp,
+  //`${sttg} você utiliza para integrar diferentes fontes de dados na ferramenta de BI para análises detalhadas?`
+  int: {
+    type: "select-multiple",
+    options: [
+      `Implementação de ETL (Extract, Transform, Load) com scripts dedicados`,
+      `Conexão nativa a bancos de dados e planilhas remotas`,
+      `Uso de APIs REST para sincronização de dados externos`,
+      `Automatização de importações via webhooks de serviços de terceiros`,
+      `Integrações com plataformas de armazenamento na nuvem (ex.: S3, Azure)`,
+    ],
+    required,
+  },
+  ...biDefinitions,
+});
+export const biExpertDefinitions: ROFieldRecord<
+  typeof biExpertKeys
+> = ObjectHelper.deepFreeze({
+  //`${sttg} você utiliza para otimizar a performance de consultas e visualizações em dashboards com grandes volumes de dados?`
+  adv: {
+    type: "select-multiple",
+    options: [
+      `Criação de partições em tabelas para agilizar consultas`,
+      `Indexação avançada para acelerar filtros e agregações`,
+      `Uso de caches de dados em camadas intermediárias`,
+      `Aplicação de técnicas de compressão para grandes datasets`,
+      `Monitoramento constante de métricas e logs para ajustes finos`,
+    ],
+    required,
+  },
+  gov: repeatedDefinitions.exp,
+  api: repeatedDefinitions.exp,
+  ...biDefinitions,
+});
+const stBiDefinitions = ObjectHelper.deepFreeze({
+    beginner: {
+      ...biBeginnerDefinitions,
+      stn: repeatedDefinitions.txtl,
+    },
+    intermediate: {
+      ...biIntermediateDefinitions,
+      stn: repeatedDefinitions.txtl,
+    },
+    expert: {
+      ...biExpertDefinitions,
+      stn: repeatedDefinitions.txtl,
+    },
+  }),
+  devBiDefinitions = ObjectHelper.deepFreeze({
+    beginner: {
+      dsa: repeatedDefinitions.exp,
+      ...biBeginnerDefinitions,
+    },
+    intermediate: {
+      dsa: repeatedDefinitions.exp,
+      dei: repeatedDefinitions.exp,
+      ...biIntermediateDefinitions,
+    },
+    expert: {
+      dee: repeatedDefinitions.frq,
+      dex: repeatedDefinitions.exp,
+      ...biExpertDefinitions,
+    },
+  });
+export const biEntryTypes: EntryTypeDictionary<BiQuestionKey> =
+  withFrozenLib({
+    executivoAdministrativo: {
+      beginner: {
+        ead: repeatedDefinitions.frq,
+        eas: repeatedDefinitions.frq,
+        ...biBeginnerDefinitions,
+      },
+      intermediate: {
+        //`${rsc} você utiliza para personaliza os dashboards para integrar dados administrativos e operacionais?`
+        eai: {
+          type: "select-multiple",
+          options: [
+            `Uso de layouts temáticos para cada área (financeiro, compras)`,
+            `Widgets interativos para cruzar dados de vendas e estoque`,
+            `Filtros dinâmicos para segmentar níveis hierárquicos (departamentos)`,
+            `Combinação de gráficos (linhas, barras) em visões consolidadas`,
+            `Agendamento de refresh automático para dados administrativos`,
+          ],
+          required,
+        },
+        eax: repeatedDefinitions.exp,
+        ...biIntermediateDefinitions,
+      },
+      expert: {
+        eae: repeatedDefinitions.exp,
+        eam: repeatedDefinitions.txts,
+        ...biExpertDefinitions,
+      },
+    },
+    financeiro: {
+      beginner: {
+        fin: repeatedDefinitions.exp,
+        fnc: repeatedDefinitions.exp,
+        fne: repeatedDefinitions.yn,
+        ...biBeginnerDefinitions,
+      },
+      intermediate: {
+        //`${sttg} você utiliza para modelar dados financeiros complexos para análises de rentabilidade?`
+        fim: {
+          type: "select-multiple",
+          options: [
+            `Uso de fórmulas e cálculos em planilhas pivotantes`,
+            `Adoção de scripts DAX ou M em ferramentas de BI`,
+            `Modelagem de entidades (ER) voltada a finanças (custos e receitas)`,
+            `Estruturação de cenários de simulação (best/worst case)`,
+            `Divisão de métricas de rentabilidade por segmento de negócio`,
+          ],
+          required,
+        },
+        fna: repeatedDefinitions.frq,
+        fic: repeatedDefinitions.exp,
+        ...biIntermediateDefinitions,
+      },
+      expert: {
+        fic: repeatedDefinitions.exp,
+        //`${sttg} você implanta quando realiza análises preditivas para projeções financeiras?`
+        fip: {
+          type: "select-multiple",
+          options: [
+            `Integração com algoritmos de machine learning`,
+            `Configuração de alertas preditivos`,
+            `Uso de dashboards interativos para simulação`,
+          ],
+          required,
+        },
+        //`${sttg} você utiliza para consolidar grandes volumes de dados financeiros em dashboards estratégicos?`
+        fis: {
+          type: "select-multiple",
+          options: [
+            `Criação de particionamento por períodos (ex.: trimestral, mensal)`,
+            `Indexação e compressão de tabelas contábeis`,
+            `Uso de OLAP cubes para análises multidimensionais`,
+            `Ferramentas de big data para consolidar históricos extensos`,
+            `Automação de auditoria para garantir consistência nos dados`,
+          ],
+          required,
+        },
+      },
+    },
+    comercial: {
+      beginner: {
+        com: repeatedDefinitions.exp,
+        cmr: repeatedDefinitions.frq,
+        cmx: repeatedDefinitions.frq,
+        ...biBeginnerDefinitions,
+      },
+      intermediate: {
+        //`${tcn} você usa para modelar dados de vendas em CRMs buscando identificar tendências?`
+        cmm: {
+          type: "select-multiple",
+          options: [
+            `Modelagem de funil de vendas segmentado por canal`,
+            `Criação de colunas calculadas para métricas (ex.: conversão, churn)`,
+            `Aplicação de técnicas de regressão simples ou ARIMA`,
+            `Configuração de tabelas de histórico de leads e previsões`,
+            `Segmentação por etapas do funil (prospecção, negociação, fechamento)`,
+          ],
+          required,
+        },
+        cma: repeatedDefinitions.frq,
+        cmc: repeatedDefinitions.exp,
+        ...biIntermediateDefinitions,
+      },
+      expert: {
+        //`${rsc} avançados de CRMs você utiliza para prever oportunidades de vendas?`
+        cme: {
+          type: "select-multiple",
+          options: [
+            `Algoritmos de pontuação de leads (machine learning)`,
+            `Análise histórica de performance de vendedores`,
+            `Técnicas de forecast baseadas em sazonalidade`,
+            `Integração com scripts R ou Python para previsões`,
+            `Dashboards especializados em funil e pipeline de vendas`,
+          ],
+          required,
+        },
+        //`${sttg} você usa para consolidar informações de múltiplos canais comerciais em dashboards avançados em CRMs?`
+        cmg: {
+          type: "select-multiple",
+          options: [
+            `Centralização de dados via data warehouse`,
+            `Conectores multicanal (ERP, e-commerce, marketplaces)`,
+            `Uso de pivot tables e agregações cruzadas`,
+            `Criação de dashboards unificados com segmentações avançadas`,
+            `Automação de rotinas de ETL para cargas diárias`,
+          ],
+          required,
+        },
+        // `${sttg} você utiliza para integrar dados de CRM com análises de mercado para insights estratégicos?`
+        cmf: {
+          type: "select-multiple",
+          options: [
+            `Integração com bases de dados externas (IBGE, benchmarking)`,
+            `Criação de perfis de mercado e cruzamento com leads`,
+            `Aplicação de técnicas de competitive intelligence`,
+            `Scripts que correlacionam dados econômicos e vendas`,
+            `Modelos de predição customizados para cenários de mercado`,
+          ],
+          required,
+        },
+        ...biExpertDefinitions,
+      },
+    },
+    marketing: {
+      beginner: {
+        mkt: repeatedDefinitions.exp,
+        mka: repeatedDefinitions.frq,
+        mkb: repeatedDefinitions.frq,
+        ...biBeginnerDefinitions,
+      },
+      intermediate: {
+        mkm: repeatedDefinitions.exp,
+        //`${sttg} Você segmenta dados de campanhas por canal e público usando recursos do BI?`
+        mkd: {
+          type: "select-multiple",
+          options: [
+            `Divisão por canal (redes sociais, e-mail)`,
+            `Segmentação por público-alvo`,
+            `Análise de desempenho por região`,
+          ],
+          required,
+        },
+        mke: repeatedDefinitions.yn,
+      },
+      expert: {
+        mkx: repeatedDefinitions.exp,
+        //`${sttg} você utiliza para consolidar dados de múltiplas campanhas em dashboards avançados?`
+        mkz: {
+          type: "select-multiple",
+          options: [
+            `Agregação de dados de campanhas`,
+            `Criação de dashboards customizados`,
+            `Integração com automação de marketing`,
+          ],
+          required,
+        },
+        mky: repeatedDefinitions.txts,
+      },
+    },
+    suporteTecnicoN1: {
+      ...stBiDefinitions,
+    },
+    suporteTecnicoN2: {
+      ...stBiDefinitions,
+    },
+    operatorio: {
+      ...stBiDefinitions,
+    },
+    desenvolvimento: {
+      ...devBiDefinitions,
+    },
+    devOps: { ...devBiDefinitions },
+  });
+export const crmDefinitions: ROFieldRecord<
+  typeof crmGeneralKeys
+> = ObjectHelper.deepFreeze({
+  vis: {
+    type: `select-multiple`,
+    options: [
+      `Uso de dashboards embarcados no CRM`,
+      `Aplicação de filtros dinâmicos nos funis`,
+      `Widgets ou gráficos prontos (barras, funil, pizza)`,
+      `Painéis responsivos para mobile`,
+      `Configuração de alertas quando metas são atingidas`,
+    ],
+    required,
+  },
+  seg: {
+    type: `select-multiple`,
+    options: [
+      `Definição de grupos por status do lead`,
+      `Segmentos por faixa de data de criação`,
+      `Segmentações geográficas ou setoriais`,
+      `Uso de labels/tags para diferentes perfis`,
+      `Criação de filtros automatizados em dashboards`,
+    ],
+    required,
+  },
+  rep: {
+    type: `select-multiple`,
+    options: [
+      `Agendamento de relatórios periódicos (diários, semanais)`,
+      `Criação de métricas personalizadas (ex.: pipeline value)`,
+      `Visualizações comparativas mês a mês`,
+      `Distribuição automática de relatórios por e-mail`,
+      `Uso de painéis interativos para drill-down de resultados`,
+    ],
+    required,
+  },
+  atz: repeatedDefinitions.frq,
+  con: repeatedDefinitions.txtl,
+});
+export const crmBeginnerDefinitions: ROFieldRecord<
+  typeof crmBeginnerKeys
+> = ObjectHelper.deepFreeze({
+  crt: repeatedDefinitions.exp,
+  ...crmDefinitions,
+});
+export const crmIntermediateDefinitions: ROFieldRecord<
+  typeof crmIntermediateKeys
+> = ObjectHelper.deepFreeze({
+  ...crmDefinitions,
+  //`${tcn} você utiliza para que as automações nativas dispararem alertas e atualizem o status dos leads?`
+  aut: {
+    type: "select-multiple",
+    options: [
+      `Gatilhos baseados em mudança de campo (ex.: lead -> prospect)`,
+      `Envio automático de e-mails de notificação`,
+      `Fluxos de trabalho escalonados por tempo (ex.: 72h sem resposta)`,
+      `Integração com bots de chat que confirmam status`,
+      `Scripts que ajustam pontuação do lead e geram alertas`,
+    ],
+    required,
+  },
+  //`${mnn} integra a plataforma de CRM com outras ferramentas (ex.: e-mail, marketing)?`
+  int: {
+    type: "select-multiple",
+    options: [
+      `Conectores nativos de e-mail marketing (MailChimp, SendGrid)`,
+      `API REST para sincronizar leads com landing pages`,
+      `Webhooks disparados a cada conversão ou clique`,
+      `Integração via iPaaS (ex.: Zapier, Workato)`,
+      `ETL automático para unificar leads de diversas origens`,
+    ],
+    required,
+  },
+  mdl: repeatedDefinitions.txtl,
+});
+export const crmExpertDefinitions: ROFieldRecord<
+  typeof crmExpertKeys
+> = ObjectHelper.deepFreeze({
+  ...crmDefinitions,
+  //`${sttg} você utiliza para recursos avançados da plataforma de CRM buscando prever oportunidades e personalizar campanhas?`
+  adv: {
+    type: "select-multiple",
+    options: [
+      `Machine learning para scoring avançado de leads`,
+      `Integração com scripts R/Python para previsões de vendas`,
+      `Gatilhos automáticos que criam campanhas segmentadas`,
+      `Dashboards de IA que sugerem próximos passos`,
+      `Modelos de propensão baseados em histórico de interações`,
+    ],
+    required,
+  },
+  //`${tcn} você utiliza para integrar APIs ou scripts personalizados buscando automatizar processos e customizar a plataforma de CRM?`
+  api: {
+    type: "select-multiple",
+    options: [
+      `Criação de endpoints REST para disparar eventos`,
+      `Uso de tokens seguros para validação do lado do servidor`,
+      `Geração de registros em batch via script Python`,
+      `Conexão com microservices internos para dados de clientes`,
+      `Automação de cargas e atualizações (CI/CD) no CRM`,
+    ],
+    required,
+  },
+  gov: repeatedDefinitions.txtl,
+});
+export const stCrmDefinitions = ObjectHelper.deepFreeze({
+    beginner: {
+      stn: repeatedDefinitions.exp,
+      ...crmBeginnerDefinitions,
+    },
+    intermediate: {
+      ...crmIntermediateDefinitions,
+      sti: repeatedDefinitions.txts,
+    },
+    expert: {
+      ste: repeatedDefinitions.frq,
+      ...crmExpertDefinitions,
+    },
+  }),
+  devCrmDefinitions = ObjectHelper.deepFreeze({
+    beginner: {
+      dev: repeatedDefinitions.exp,
+      dco: repeatedDefinitions.exp,
+      ...crmBeginnerDefinitions,
+    },
+    intermediate: {
+      des: repeatedDefinitions.exp,
+      din: repeatedDefinitions.exp,
+      //`${tcn} você utiliza para desenvolver integrações entre CRMs e ferramentas de desenvolvimento para automatizar processos?`
+      dei: {
+        type: "select-multiple" as const,
+        options: [
+          `APIs REST/GraphQL para sincronizar tickets e repos`,
+          `Uso de scripts CI/CD para atualizar campos no CRM`,
+          `Implantação de webhooks que disparam automações em PR merges`,
+          `Data pipelines que coletam logs e enviam ao CRM`,
+          `Integrações com plataformas de testes automáticos`,
+        ],
+        required,
+      },
+      ...crmIntermediateDefinitions,
+    },
+    expert: {
+      dee: repeatedDefinitions.exp,
+      dex: repeatedDefinitions.exp,
+      ...crmExpertDefinitions,
+    },
+  });
+export const crmEntryTypes: EntryTypeDictionary<CrmQuestionKey> =
+  withFrozenLib({
+    executivoAdministrativo: {
+      beginner: {
+        ead: repeatedDefinitions.frq,
+        eas: repeatedDefinitions.frq,
+        ...crmBeginnerDefinitions,
+      },
+      intermediate: {
+        //`${sttg} você usa para integrar dados administrativos ao CRM para obter insights estratégicos?`
+        eai: {
+          type: "select-multiple",
+          options: [
+            `Uso de dashboards customizados`,
+            `Integração de dados de ERP e CRM`,
+            `Automação de alertas para indicadores críticos`,
+            `Configuração de relatórios dinâmicos`,
+            `Integração via APIs nativas`,
+          ],
+          required,
+        },
+        eax: repeatedDefinitions.exp,
+        ...crmIntermediateDefinitions,
+      },
+      expert: {
+        eae: repeatedDefinitions.exp,
+        //`${sttg} você adota para consolidar dados de múltiplos setores em dashboards estratégicos no CRM?`
+        eam: {
+          type: "select-multiple",
+          options: [
+            `Criação de indicadores chaves (KPIs) para cada setor`,
+            `Reunião dos dados em data lakes ou data warehouses`,
+            `Recursos de drill-down para análise detalhada por setor`,
+            `Mapeamento de processos entre departamentos em um dashboard único`,
+            `Agregação de dados em níveis (executivo, gerencial, operacional)`,
+          ],
+          required,
+        },
+        ...crmExpertDefinitions,
+      },
+    },
+    financeiro: {
+      beginner: {
+        fin: repeatedDefinitions.exp,
+        fnc: repeatedDefinitions.exp,
+        fne: repeatedDefinitions.yn,
+        ...crmBeginnerDefinitions,
+      },
+      intermediate: {
+        // /`${tcn} você usa para modelar dados financeiros no CRM para análise de rentabilidade?`
+        fim: {
+          type: "select-multiple",
+          options: [
+            `Criação de campos calculados`,
+            `Uso de fórmulas avançadas (DAX, MDX)`,
+            `Modelagem preditiva simples`,
+            `Segmentação por período`,
+            `Análise de tendências históricas`,
+          ],
+          required,
+        },
+        fna: repeatedDefinitions.exp,
+        ...crmIntermediateDefinitions,
+      },
+      expert: {
+        ...crmExpertDefinitions,
+        //`${sttg} você para consolidar grandes volumes de dados financeiros em dashboards estratégicos?`
+        fis: {
+          type: "select-multiple",
+          options: [
+            `Agregação de dados em camadas`,
+            `Uso de técnicas de compressão de dados`,
+            `Indexação avançada de tabelas`,
+            `Implementação de OLAP cubes`,
+            `Automatização de refresh de dados`,
+          ],
+          required,
+        },
+        fic: repeatedDefinitions.exp,
+        fip: repeatedDefinitions.txtl,
+      },
+    },
+    comercial: {
+      beginner: {
+        com: repeatedDefinitions.exp,
+        cmr: repeatedDefinitions.frq,
+        cmx: repeatedDefinitions.frq,
+        ...crmBeginnerDefinitions,
+      },
+      intermediate: {
+        //cmm: `${tcn} você usa para modelar dados de vendas em CRMs buscando identificar tendências?`
+        cmm: {
+          type: "select-multiple",
+          options: [
+            `Criação de funis de vendas dinâmicos`,
+            `Análise de séries temporais`,
+            `Aplicação de regressão linear`,
+            `Segmentação de leads por desempenho`,
+            `Cálculo de métricas de conversão`,
+          ],
+          required,
+        },
+        cma: repeatedDefinitions.frq,
+        cmc: repeatedDefinitions.exp,
+        ...crmIntermediateDefinitions,
+      },
+      expert: {
+        //`${rsc} avançados de CRMs você utiliza para prever oportunidades de vendas?`
+        cme: {
+          type: "select-multiple",
+          options: [
+            `Modelos preditivos com machine learning`,
+            `Scoring avançado de leads`,
+            `Análise de comportamento histórico`,
+            `Integração com ferramentas de previsão`,
+            `Dashboards de previsão automatizados`,
+          ],
+          required,
+        },
+        //`${sttg} você usa para consolidar informações de múltiplos canais comerciais em dashboards avançados em CRMs?`
+        cmg: {
+          type: "select-multiple",
+          options: [
+            `Centralização de dados via ETL`,
+            `Integração de múltiplos sistemas via API`,
+            `Uso de data lakes para unificação de dados`,
+            `Criação de dashboards interativos`,
+            `Segmentação por canal e performance`,
+          ],
+          required,
+        },
+        //`${sttg} você utiliza para integrar dados de CRM com análises de mercado para insights estratégicos?`,
+        cmf: {
+          type: "select-multiple",
+          options: [
+            `Cross-referencing de dados internos e externos`,
+            `Integração com plataformas de BI avançadas`,
+            `Análise de benchmarking e competitividade`,
+            `Modelagem de cenários de mercado`,
+            `Automação de análises de ROI`,
+          ],
+          required,
+        },
+        ...crmExpertDefinitions,
+      },
+    },
+    marketing: {
+      beginner: {
+        mkt: repeatedDefinitions.exp,
+        mka: repeatedDefinitions.exp,
+        mkb: repeatedDefinitions.txts,
+        ...crmBeginnerDefinitions,
+      },
+      intermediate: {
+        // mkm => `${rsc} de CRMs você usa para modelar dados de campanhas buscando analisar o ROI?`
+        mkm: {
+          type: "select-multiple",
+          options: [
+            `Dashboards de comparativo de custo x retorno`,
+            `Estruturação de codificação de campanhas em leads`,
+            `Geração de funis específicos por canal e gasto`,
+            `Cross-selling e upselling automáticos em scripts`,
+            `Configuração de alertas automáticos ao ultrapassar budget`,
+          ],
+          required,
+        },
+        // mkd => `${tcn} você utiliza para integrar CRMs com plataformas de marketing buscando sincronizar dados de leads?`
+        mkd: {
+          type: "select-multiple",
+          options: [
+            `Automação via APIs REST (MailChimp, RD Station)`,
+            `Conectores nativos para plataformas de ads`,
+            `Uso de webhooks disparados a cada evento do lead`,
+            `ETLs incrementais de dados de leads para CRM`,
+            `Integração de campos personalizados (tracking UTM)`,
+          ],
+          required,
+        },
+        mke: repeatedDefinitions.frq,
+        ...crmIntermediateDefinitions,
+      },
+      expert: {
+        ...crmExpertDefinitions,
+        mkx: repeatedDefinitions.exp,
+        //`${sttg} você utiliza para consolidar dados de campanhas de marketing em relatórios estratégicos?`,
+        mkz: {
+          type: "select-multiple",
+          options: [
+            `Agregação de múltiplos canais (social, e-mail, inbound)`,
+            `Criação de visões de ROI e custo por lead em tempo real`,
+            `Exibição de funil de marketing com segmentações avançadas`,
+            `Filtros automáticos por datas e regiões em dashboards`,
+            `Comparativo histórico de campanhas e evolução de KPIs`,
+          ],
+          required,
+        },
+        mky: repeatedDefinitions.txtl,
+      },
+    },
+    suporteTecnicoN1: {
+      ...stCrmDefinitions,
+    },
+    suporteTecnicoN2: {
+      ...stCrmDefinitions,
+    },
+    operatorio: {
+      beginner: {
+        ...crmBeginnerDefinitions,
+        opr: repeatedDefinitions.txts,
+      },
+      intermediate: {
+        ...crmIntermediateDefinitions,
+        opi: repeatedDefinitions.txts,
+      },
+      expert: {
+        ...crmExpertDefinitions,
+        //`${rsc} avançados do CRM para otimizar processos operacionais e integrar informações de diferentes áreas?`
+        ope: {
+          type: "select-multiple",
+          options: [
+            `Automação de workflows interdepartamentais (help desk, financeiro)`,
+            `Uso de scripts para consolidar pedidos de compras e vendas`,
+            `Criação de dashboards operacionais com métricas de SLA`,
+            `Integração com chatbots para triagem de chamados operacionais`,
+            `Controle de permissões modulares para cada área (comercial, suporte)`,
+          ],
+          required,
+        },
+      },
+    },
+    desenvolvimento: {
+      ...devCrmDefinitions,
+    },
+    devOps: {
+      ...devCrmDefinitions,
+    },
+  });
+export const erpDefinitions: ROFieldRecord<
+  typeof erpGeneralKeys
+> = ObjectHelper.deepFreeze({
+  cad: repeatedDefinitions.frq,
+  rep: repeatedDefinitions.frq,
+  //`${rsc} você usa para salvar ou imprimir documentos fiscais gerados em ERPs?`
+  doc: {
+    type: `select-multiple`,
+    options: [
+      `Exportação direta em PDF`,
+      `Impressão através de spool interno do ERP`,
+      `Armazenamento em repositórios (SharePoint, Google Drive)`,
+      `Integração com sistemas de NF-e (nota fiscal eletrônica)`,
+      `Envio automático por e-mail a partir do ERP`,
+    ],
+    required,
+  },
+});
+export const erpBeginnerDefinitions: ROFieldRecord<
+  typeof erpBeginnerKeys
+> = ObjectHelper.deepFreeze({
+  crt: repeatedDefinitions.exp,
+  ...erpDefinitions,
+});
+export const erpIntermediateDefinitions: ROFieldRecord<
+  typeof erpIntermediateKeys
+> = ObjectHelper.deepFreeze({
+  //`${sttg} você considera para configurar fluxos intermediários (ex.: aprovação, descontos) dentro dos ERPs?`
+  wfl: {
+    type: "select-multiple",
+    options: [
+      `Criação de caminhos de aprovação com níveis hierárquicos`,
+      `Configuração de alertas e notificações em cada etapa`,
+      `Automação de descontos baseados em regras (ex.: volume de compra)`,
+      `Logs de histórico de aprovações para auditoria`,
+      `Uso de wizards ou scripts integrados para implantação dos fluxos`,
+    ],
+    required,
+  },
+  //`${sttg} você usa para elaborar relatórios customizados para análises específicas usando o ERP?`
+  rel: {
+    type: "select-multiple",
+    options: [
+      `Criação de queries ou SQL customizadas`,
+      `Uso de construtores de relatórios (Crystal, TOTVS Reports)`,
+      `Personalização de layouts e colunas dinâmicas`,
+      `Filtros e agrupamentos avançados para visualizações`,
+      `Combinação de templates visuais para relatórios finais`,
+    ],
+    required,
+  },
+  mig: repeatedDefinitions.frq,
+  //`${rsc} você usa para definir permissões específicas para diferentes áreas (ex.: compras, vendas) em ERPs?`
+  sec: {
+    type: "select-multiple",
+    options: [
+      `Configuração de perfis e grupos de usuários (RBAC)`,
+      `Políticas de autenticação (AD, LDAP) para cada módulo`,
+      `Atribuição de roles específicas para compras e vendas`,
+      `Logs de auditoria para ações sensíveis`,
+      `Segregação de funções (SoD) para evitar conflitos de interesse`,
+    ],
+    required,
+  },
+  //${mnn} integra o ERP com outras ferramentas (ex.: CRM, e-commerce)?
+  int: {
+    type: "select-multiple",
+    options: [
+      `Uso de conectores nativos para CRM ou e-commerce`,
+      `Scripts customizados (API REST) para sincronização`,
+      `Ferramentas de ETL agendadas para trocas de dados`,
+      `Webhooks disparados em eventos de estoque ou pedido`,
+      `Adoção de iPaaS (Zapier, Workato) para fluxos automatizados`,
+    ],
+    required,
+  },
+  ...erpDefinitions,
+});
+export const erpExpertDefinitions: ROFieldRecord<
+  typeof erpExpertKeys
+> = ObjectHelper.deepFreeze({
+  ha_: repeatedDefinitions.exp,
+  //`${rsc} você usa para orquestrar processos complexos (ex.: MRP, produção) e auditar logs em ERPs?`
+  prc: {
+    type: "select-multiple",
+    options: [
+      `Configuração de rotinas MRP e sequenciamento de produção`,
+      `Scripts de agendamento para etapas de fabricação`,
+      `Análise de logs detalhados em cada etapa do processo`,
+      `Gatilhos para integração com controle de qualidade`,
+      `Uso de dashboards para supervisão de todo o fluxo produtivo`,
+    ],
+    required,
+  },
+  //`${sttg} você usa para implementar governança, compliance (LGPD, etc.) e auditoria avançada em ERPs?`
+  gov: {
+    type: "select-multiple",
+    options: [
+      `Criação de políticas de retenção e descarte de dados`,
+      `Aplicação de logs imutáveis para auditoria`,
+      `Perfis de acesso restritos (principle of least privilege)`,
+      `Encriptação de dados sensíveis (ex.: CFO, RG)`,
+      `Procedimentos de aprovação para mudanças em produção`,
+    ],
+    required,
+  },
+  ...erpDefinitions,
+});
+export const erpEntryTypes: EntryTypeDictionary<ErpQuestionKey> =
+  withFrozenLib({
+    executivoAdministrativo: {
+      beginner: {
+        eab: repeatedDefinitions.frq,
+        //`${mnn} exporta dados (PDF, CSV) e compartilha com gestores ou outros departamentos?`
+        eac: {
+          type: "select-multiple",
+          options: [
+            `Geração de relatórios em formato CSV/PDF`,
+            `Publicação em intranet ou drive compartilhado`,
+            `Anexos automáticos via e-mail corporativo`,
+            `Integrações com portais internos de BI`,
+            `Uso de permissões para cada equipe (financeiro, compras)`,
+          ],
+          required,
+        },
+        ...erpBeginnerDefinitions,
+      },
+      intermediate: {
+        //`${mnn} alinha módulos administrativos (compras, vendas) para gerar visões consolidadas no ERP?`
+        eai: {
+          type: "select-multiple",
+          options: [
+            `Unificação de registros de compras e vendas em dashboards`,
+            `Cross-referencing de pedidos e faturas`,
+            `Configs de workflow de aprovação compartilhada`,
+            `Filtros combinados para análise gerencial`,
+            `Exportação consolidada de relatórios para liderança`,
+          ],
+          required,
+        },
+        eax: repeatedDefinitions.txts,
+        ...erpIntermediateDefinitions,
+      },
+      expert: {
+        eae: repeatedDefinitions.exp,
+        //`${mnn} consolida dashboards executivos (governança, compliance) unindo dados de múltiplos módulos?`
+        eaz: {
+          type: "select-multiple",
+          options: [
+            `Integração de relatórios de estoque, vendas e finanças`,
+            `Criação de KPIs executivos (margem, receita)`,
+            `Aplicação de filtros de compliance (LGPD, SOX)`,
+            `Uso de painéis temáticos por diretoria`,
+            `Combinação de fluxos entre diferentes departamentos`,
+          ],
+          required,
+        },
+        ...erpExpertDefinitions,
+      },
+    },
+    financeiro: {
+      beginner: {
+        fnb: repeatedDefinitions.frq,
+        fnc: repeatedDefinitions.exp,
+        //`${cts} seguem ao conferir notas fiscais ou integrações de pagamento no ERP?`
+        fnd: {
+          type: "select-multiple",
+          options: [
+            `Validação de dados fiscais (CNPJ, IE) em cadastros`,
+            `Checagem de status de pagamento (liquidação, pendente)`,
+            `Verificação de retenções e impostos (ISS, IR, etc.)`,
+            `Conferência de saldo bancário integrado`,
+            `Encerramento contábil para evitar duplicidades`,
+          ],
+          required,
+        },
+        ...erpBeginnerDefinitions,
+      },
+      intermediate: {
+        //`${mnn} cruza dados do ERP com planilhas/BI para análise de rentabilidade e previsão financeira?`
+        fni: {
+          type: "select-multiple",
+          options: [
+            `Uso de macros ou scripts de integração (Excel, Google Sheets)`,
+            `Dashboards analíticos com receitas e despesas`,
+            `Modelagem de cenários de fluxo de caixa`,
+            `Projeções de vendas cruzando histórico do ERP`,
+            `Exportação periódica de dados contábeis para BI`,
+          ],
+          required,
+        },
+        //${tcn} utiliza para configurar aprovações de despesas ou investimentos altos em módulos financeiros?
+        fnj: {
+          type: "select-multiple",
+          options: [
+            `Criação de workflows com níveis hierárquicos`,
+            `Automação de alertas por e-mail para aprovadores`,
+            `Regras de valor-limite para cada centro de custo`,
+            `Logs de auditoria para cada aprovação`,
+            `Integração com parâmetros de crédito do cliente`,
+          ],
+          required,
+        },
+        fnk: repeatedDefinitions.txtl,
+        ...erpIntermediateDefinitions,
+      },
+      expert: {
+        fne: repeatedDefinitions.exp,
+        //`${rsc} de HA em módulos financeiros são empregados para operações críticas (folha, tributos)?`
+        fnf: {
+          type: "select-multiple",
+          options: [
+            `Cluster ativo/ativo para alta disponibilidade`,
+            `Replicação síncrona de dados financeiros`,
+            `Failover automatizado em caso de falhas`,
+            `Monitoramento de desempenho (CPU, memória) em tempo real`,
+            `Scripts de rollback para operações contábeis`,
+          ],
+          required,
+        },
+        //`${mnn} gerencia logs e governança para rastrear movimentações de alto impacto no ERP financeiro?`
+        fng: {
+          type: "select-multiple",
+          options: [
+            `Ativação de logs de transações financeiras`,
+            `Validação de auditorias contábeis externas (SOX)`,
+            `Aplicação de regras de segregação de funções`,
+            `Monitoramento de perfis de acesso de gerentes e diretores`,
+            `Alertas automáticos para movimentações acima de um certo valor`,
+          ],
+          required,
+        },
+      },
+    },
+    comercial: {
+      beginner: {
+        cmb: repeatedDefinitions.frq,
+        cmc: repeatedDefinitions.exp,
+        //`${mnn} lida com cálculos de comissão ou descontos dentro do módulo comercial?`
+        cmd: {
+          type: "select-multiple",
+          options: [
+            `Parametrização de regras de comissão por faixa de produto`,
+            `Configuração de scripts para descontos progressivos`,
+            `Definição de fórmulas para metas de vendedores`,
+            `Revisão periódica de alíquotas e margens de lucro`,
+            `Logs de aprovação quando o desconto excede um limite`,
+          ],
+          required,
+        },
+        ...erpBeginnerDefinitions,
+      },
+      intermediate: {
+        //`${mnn} integra dados de vendas (ex.: estoque, financeiro) para agilizar processos no ERP?`
+        cmi: {
+          type: "select-multiple",
+          options: [
+            `Conexão entre módulo comercial e controle de estoque`,
+            `Atualizações automáticas de valores financeiros`,
+            `Utilização de ETL para consolidar dados de diferentes fontes`,
+            `Criação de gatilhos de reabastecimento ao fechar vendas`,
+            `Relatórios unificados de margens e faturamento`,
+          ],
+          required,
+        },
+        //`${cts} define ao configurar aprovações para pedidos de alto valor ou clientes especiais?`
+        cmj: {
+          type: "select-multiple",
+          options: [
+            `Autorização escalonada por gerente ou diretor`,
+            `Regra de valor mínimo para exigir aprovação extra`,
+            `Registro de histórico de aprovação para auditoria`,
+            `Integração com parâmetros de crédito do cliente`,
+            `Automação de alertas por e-mail ou notificação interna`,
+          ],
+          required,
+        },
+        //`${tcn} utiliza para customizar relatórios de vendas (ranking de vendedores, metas) e gerenciar permissões?`
+        cmk: {
+          type: "select-multiple",
+          options: [
+            `Uso de scripts de relatórios no módulo comercial`,
+            `Criação de campos calculados para comissões`,
+            `Definição de níveis de acesso (vendedor, gerente, ADM)`,
+            `Filtros por período e linha de produto`,
+            `Dashboards comparativos entre equipes de vendas`,
+          ],
+          required,
+        },
+        ...erpIntermediateDefinitions,
+      },
+      expert: {
+        cme: repeatedDefinitions.frq,
+        //`${mnn} emprega HA no módulo comercial para evitar downtime em períodos de alta demanda?`
+        cmf: {
+          type: "select-multiple",
+          options: [
+            `Configuração de clusters ativos/ativos`,
+            `Balanceamento de carga em servidores de aplicação`,
+            `Uso de cache distribuído para grandes volumes de vendas`,
+            `Sincronização de bancos em tempo real (replicação)`,
+            `Monitoramento constante de métricas (CPU, memória)`,
+          ],
+          required,
+        },
+        // `${cts} segue para compliance (LGPD) e auditoria de dados de clientes em processos de vendas complexos?`
+        cmg: {
+          type: "select-multiple",
+          options: [
+            `Registro de logs de acesso a dados de clientes`,
+            `Encriptação de campos sensíveis (RG, CPF)`,
+            `Configuração de perfis de acesso e segregação de funções`,
+            `Alertas de segurança ao exportar dados (relatórios)`,
+            `Política de retenção e descarte de registros antigos`,
+          ],
+          required,
+        },
+        ...erpExpertDefinitions,
+      },
+    },
+    marketing: {
+      beginner: {
+        mkb: repeatedDefinitions.frq,
+        //`${mnn} gera relatórios básicos de impactos de campanhas (ex.: pedidos gerados) no ERP?`
+        mkc: {
+          type: "select-multiple",
+          options: [
+            `Criação de consultas simples por data e campanha`,
+            `Agendamento periódico de relatórios de desempenho`,
+            `Monitoramento de conversões (cliques -> pedidos)`,
+            `Exportação de dados de vendas segmentadas`,
+            `Comparação de resultados entre campanhas ativas`,
+          ],
+          required,
+        },
+        ...erpBeginnerDefinitions,
+      },
+      intermediate: {
+        //`${mnn} integra plataformas de marketing (landing pages, leads) ao ERP para sincronizar dados?`
+        mki: {
+          type: "select-multiple",
+          options: [
+            `Uso de APIs REST para transferir leads`,
+            `Mapeamento de campos de campanhas no ERP`,
+            `Scripts automáticos de importação via cron`,
+            `Integração com chatbots de captação de leads`,
+            `Criação de workflows de aprovação para leads`,
+          ],
+          required,
+        },
+        //`${tcn} utiliza para adicionar campos de campanha (ex.: origem, ROI) no ERP?`
+        mkx: {
+          type: "select-multiple",
+          options: [
+            `Customização de layouts e tabelas de marketing`,
+            `SQL scripts para criação de colunas extras`,
+            `Campos calculados para ROI baseado em custo`,
+            `Uso de IDs de campanha para rastreamento`,
+            `Criação de triggers que validam dados de origem`,
+          ],
+          required,
+        },
+        ...erpIntermediateDefinitions,
+      },
+      expert: {
+        mke: repeatedDefinitions.exp,
+        //`${mnn} protege dados de leads e clientes (LGPD) em campanhas complexas integradas ao ERP?`
+        mkf: {
+          type: "select-multiple",
+          options: [
+            `Mascaramento de campos sensíveis (nome, endereço)`,
+            `Criptografia em repouso e em trânsito (SSL/TLS)`,
+            `Regras de acesso por perfil (marketing, financeiro)`,
+            `Logs de acesso para auditoria de manipulação de dados`,
+            `Configuração de aceite (opt-in) para uso dos dados`,
+          ],
+          required,
+        },
+        ...erpExpertDefinitions,
+      },
+    },
+    suporteTecnicoN1: {
+      beginner: {
+        //`${mnn} auxilia usuários em relatórios básicos (ex.: estoque, vendas) para chamados simples de ERP?`
+        snb: {
+          type: "select-multiple",
+          options: [
+            `Guias passo a passo para gerar relatórios`,
+            `Exemplos de consultas pré-definidas`,
+            `Suporte via chat ou ticket interno`,
+            `Documentação básica de erros comuns`,
+            `Lista de parâmetros frequentes (datas, produtos)`,
+          ],
+          required,
+        },
+        ...erpBeginnerDefinitions,
+      },
+      intermediate: {
+        sni: repeatedDefinitions.frq,
+        ...erpIntermediateDefinitions,
+      },
+      expert: {
+        //`${tcn} utiliza para configurações avançadas (API, tuning) em atendimentos críticos do ERP?`
+        sne: {
+          type: "select-multiple",
+          options: [
+            `Acesso a documentação interna de APIs do ERP`,
+            `Scripts de tunning para índices e caching`,
+            `Configurações de logs para troubleshooting avançado`,
+            `Ferramentas de análise de performance (ex.: Kibana, Splunk)`,
+            `Procedimentos de escalonamento para suporte nível 3`,
+          ],
+          required,
+        },
+        ...erpExpertDefinitions,
+      },
+    },
+    suporteTecnicoN2: {
+      beginner: {
+        //`${mnn} realiza configurações iniciais (login, rede) para usuários no ERP?`
+        s2b: {
+          type: "select-multiple",
+          options: [
+            `Assistência na criação de credenciais e grupos`,
+            `Configuração de rotas/ports no firewall interno`,
+            `Testes de ping e latência para servidores do ERP`,
+            `Documentação de passos de login e perfis`,
+            `Solicitação de chaves ou tokens de acesso inicial`,
+          ],
+          required,
+        },
+        ...erpBeginnerDefinitions,
+      },
+      intermediate: {
+        s2i: repeatedDefinitions.frq,
+        ...erpIntermediateDefinitions,
+      },
+      expert: {
+        //`${tcn} aplica ao executar scripts avançados (ABAP, TOTVS) ou integrações profundas para incidentes críticos no ERP?`
+        s2e: {
+          type: "select-multiple",
+          options: [
+            `Intervenções diretas em código-fonte do ERP`,
+            `Uso de debug e logs avançados para correções`,
+            `Scripts automatizados de rollback ou patches`,
+            `Consultoria interna de especialistas em ABAP/TOTVS`,
+            `Integração com sistemas de alta disponibilidade`,
+          ],
+          required,
+        },
+        ...erpExpertDefinitions,
+      },
+    },
+    operatorio: {
+      beginner: {
+        opb: repeatedDefinitions.frq,
+        ...erpBeginnerDefinitions,
+      },
+      //
+      intermediate: {
+        //`${mnn} resolve problemas intermediários (fluxos, permissões) e integra sistemas (ex.: e-mail) no ERP para equipes operacionais?`
+        opi: {
+          type: "select-multiple",
+          options: [
+            `Análise de permissões para usuários setoriais`,
+            `Criação de fluxos de aprovação básicos para solicitações`,
+            `Envio automático de notificação por e-mail ao finalizar processo`,
+            `Uso de templates de correio interno do ERP`,
+            `Scripts simples para importação de dados do e-mail`,
+          ],
+          required,
+        },
+        ...erpIntermediateDefinitions,
+      },
+      expert: {
+        //`${sttg} são empregadas por você para otimizar alta demanda operacional, garantindo disponibilidade no ERP?`
+        ope: {
+          type: "select-multiple",
+          options: [
+            `Configuração de load balancing e cluster de aplicação`,
+            `Rotinas de monitoramento de filas de processos`,
+            `Desativação de módulos ociosos em horários de pico`,
+            `Automação de escalonamento horizontal (containers)`,
+            `Adoção de scripts de limpeza de logs e histórico`,
+          ],
+          required,
+        },
+        ...erpIntermediateDefinitions,
+      },
+    },
+    desenvolvimento: {
+      beginner: {
+        dvb: repeatedDefinitions.frq,
+        dvc: repeatedDefinitions.exp,
+        //`${cts} observa ao documentar integrações mínimas do ERP para outros devs?`
+        dvd: {
+          type: "select-multiple",
+          options: [
+            `Descrever endpoints e parâmetros essenciais`,
+            `Incluir exemplos de configuração de usuário e ACL`,
+            `Manter repositório central de documentação (ex.: wiki)`,
+            `Explicar limitações de versão ou licenças do ERP`,
+            `Atualizar guias de integração conforme patches aplicados`,
+          ],
+          required,
+        },
+        ...erpBeginnerDefinitions,
+      },
+      intermediate: {
+        //`${mnn} cria fluxos (ex.: approvals) e integra com front-ends via APIs REST/SOAP no ERP?`
+        dvi: {
+          type: "select-multiple",
+          options: [
+            `Definição de endpoints REST para triggers de workflow`,
+            `Criação de telas customizadas no front-end`,
+            `Scripts de validação de dados no backend`,
+            `Sincronização de estados (aprovado, reprovado) no ERP`,
+            `Automação de logs e histórico de cada fluxo`,
+          ],
+          required,
+        },
+        dvj: repeatedDefinitions.frq,
+        //`${tcn} utiliza para estender módulos do ERP (ex.: custom BAPIs) e resolver conflitos de versão?`
+        dvk: {
+          type: "select-multiple",
+          options: [
+            `Desenvolvimento ABAP ou TOTVS com versionamento Git`,
+            `Revisões de pull requests para atualizar BAPIs`,
+            `Scripts de migração incremental no banco do ERP`,
+            `Ferramentas de diff para analisar conflitos`,
+            `Práticas de CI/CD para testes de regressão`,
+          ],
+          required,
+        },
+        ...erpIntermediateDefinitions,
+      },
+      expert: {
+        dve: repeatedDefinitions.exp,
+        //`${mnn} versiona customizações do ERP (scripts TOTVS, ABAP) seguindo práticas DevOps?`
+        dvf: {
+          type: "select-multiple",
+          options: [
+            `Uso de repositórios Git para cada personalização`,
+            `Criação de pipelines de build e teste automático`,
+            `Validação de diffs antes do merge em produção`,
+            `Automatização de rollback em caso de falha`,
+            `Documentação e tagging de cada release do ERP`,
+          ],
+          required,
+        },
+        //`${rsc} de HA/DR são aplicados ao orquestrar failover e garantir compliance (LGPD) em dados reais?`
+        dvg: {
+          type: "select-multiple",
+          options: [
+            `Clustering ativo/passivo com sincronização de dados`,
+            `Replicação assíncrona ou síncrona em múltiplas regiões`,
+            `Uso de scripts para failover automatizado`,
+            `Criptografia em repouso e em trânsito`,
+            `Auditoria de acessos e ações no ERP durante failover`,
+          ],
+          required,
+        },
+      },
+    },
+    devOps: {
+      beginner: {
+        dob: repeatedDefinitions.frq,
+        //`${mnn} versiona scripts ABAP/TOTVS no repositório devOps e inclui documentação mínima?`
+        dov: {
+          type: "select-multiple",
+          options: [
+            `Criação de branches por feature no Git`,
+            `Uso de commits frequentes com mensagens claras`,
+            `Inclui README para explicar o propósito do script`,
+            `Configuração de lint ou code review automático`,
+            `Linkagem entre tickets devOps e commits do ERP`,
+          ],
+          required,
+        },
+        //`${cts} define para organizar credenciais (url, DB user) do ERP em variáveis seguras (ex.: vault)?`
+        dod: {
+          type: "select-multiple",
+          options: [
+            `Uso de vaults centralizados (HashiCorp, CyberArk)`,
+            `Armazenamento de secrets em orquestradores (K8s)`,
+            `Restrição de acesso via RBAC e logs de consulta`,
+            `Rotação periódica de senhas e tokens`,
+            `Arquitetura de microserviços sem credenciais hard-coded`,
+          ],
+          required,
+        },
+        ...erpBeginnerDefinitions,
+      },
+      intermediate: {
+        doj: repeatedDefinitions.frq,
+        //`${mnn} configura SSO do ERP e orquestra automação de builds (ex.: triggers) no pipeline devOps?`
+        doi: {
+          type: "select-multiple",
+          options: [
+            `Integração com AD/LDAP ou SAML para autenticação`,
+            `Criação de jobs automáticos de build a cada commit`,
+            `Scripts de implantação que validam tokens SSO`,
+            `Registro de logs no pipeline para auditoria`,
+            `Monitoração de falhas na inicialização do ERP`,
+          ],
+          required,
+        },
+        //`${tcn} utiliza para migrar ambientes (desenv -> homolog -> prod) com minimal downtime no ERP?`
+        dok: {
+          type: "select-multiple",
+          options: [
+            `Blue/Green deploy entre ambientes`,
+            `Uso de containers para facil deployment`,
+            `Ferramentas de migração incremental (Liquibase)`,
+            `Scripts de rollback pré-planejados`,
+            `Coordenação com times de QA e infra para janelas de migração`,
+          ],
+          required,
+        },
+        ...erpIntermediateDefinitions,
+      },
+      expert: {
+        doe: repeatedDefinitions.exp,
+        //`${mnn} compila código do ERP (ex.: ABAP) em estágios automatizados, testando patches e traduções?`
+        dof: {
+          type: "select-multiple",
+          options: [
+            `Criação de pipelines de build (Jenkins, GitLab)`,
+            `Execução de testes unitários e de integração ABAP`,
+            `Uso de contêineres temporários para compilar pacotes`,
+            `Validação de traduções e i18n em cada push`,
+            `Snapshots de versão que podem ser promovidos a prod`,
+          ],
+          required,
+        },
+        //`${rsc} de observabilidade (logs, métricas) são usados para monitorar o ERP em dashboards devOps (Prometheus/Grafana)?`
+        dog: {
+          type: "select-multiple",
+          options: [
+            `Exportadores específicos para ERP (SAP, TOTVS)`,
+            `Coleta de logs via Fluentd ou Logstash`,
+            `Dashboards customizados com métricas de CPU e queries`,
+            `Alertas configurados para picos de latência`,
+            `Correlações de logs ERP e repositórios devOps`,
+          ],
+          required,
+        },
+        ...erpExpertDefinitions,
+      },
+    },
+  });
+export const plnDefinitions: ROFieldRecord<
+  typeof plnGeneralKeys
+> = ObjectHelper.deepFreeze({
+  tpl: repeatedDefinitions.frq,
+  //"Quais métodos você utiliza para colaborar e compartilhar quadros ou listas de tarefas?"
+  col: {
+    type: "select-multiple",
+    options: [
+      "Quadros Kanban (Trello, Jira, Asana, Monday.com)",
+      "Listas de tarefas compartilhadas (Microsoft To Do, Google Tasks, Todoist)",
+      "Documentos colaborativos (Google Docs, Notion, Confluence)",
+      "Planilhas compartilhadas (Google Sheets, Excel Online)",
+      "Plataformas de chat integradas (Slack, Microsoft Teams, Discord)",
+      "Integração com calendários (Google Calendar, Outlook)",
+      "Notificações automáticas por e-mail ou aplicativos de mensagem",
+      "Automação de tarefas e fluxos de trabalho (Zapier, Make, Power Automate)",
+      "Reuniões de acompanhamento e atualizações assíncronas",
+      "Ferramentas próprias ou customizadas para gerenciamento de tarefas",
+    ],
+    required,
+  },
+  //"Quais padrões de relatórios ou dashboards você gera para acompanhar o progresso das atividades?"
+  rep: {
+    type: "select-multiple",
+    options: [
+      "Relatórios de progresso por status (pendente, em andamento, concluído)",
+      "Dashboards visuais (Power BI, Google Data Studio, Tableau)",
+      "Relatórios semanais/mensais de produtividade",
+      "Gráficos de burn-down e burn-up (Scrum, Agile)",
+      "Análise de tempo gasto por tarefa (Time tracking)",
+      "Mapeamento de gargalos e eficiência de processos",
+      "Histórico de atividades e auditoria de ações",
+      "Comparação de metas planejadas vs. metas atingidas",
+      "Indicadores de performance (KPIs) personalizados",
+      "Automação de relatórios periódicos via scripts ou integrações",
+    ],
+    required,
+  },
+  sch: repeatedDefinitions.txtl,
+});
+const crt: FieldDescription = ObjectHelper.deepFreeze({
+  type: "select-multiple",
+  options: [
+    "Painéis de controle administrativos (ex.: Configurações, Permissões, Segurança)",
+    "Módulos de gestão de projetos (ex.: Kanban, Scrum, Roadmaps)",
+    "Ferramentas de automação e workflows (ex.: Zapier, Make, Power Automate)",
+    "Relatórios e Dashboards (ex.: Google Data Studio, Power BI, Tableau)",
+    "Integração com CRM e vendas (ex.: HubSpot, Salesforce, Pipedrive)",
+    "Ferramentas de colaboração e compartilhamento (ex.: Notion, Confluence, Google Docs)",
+    "Gerenciamento de tarefas e produtividade (ex.: Trello, Asana, Monday.com)",
+    "APIs e webhooks para integrações externas",
+    "Controle de acesso e logs de auditoria",
+    "Suporte a personalizações via código ou plugins",
+  ],
+  required,
+});
+export const plnBeginnerDefinitions: ROFieldRecord<
+  typeof plnBeginnerKeys
+> = ObjectHelper.deepFreeze({
+  ...plnDefinitions,
+  aut: repeatedDefinitions.frq,
+  //"Quais são as principais ferramentas e subpaineis utilizados por você nestas plataformas?"
+  crt,
+});
+export const plnIntermediateDefinitions: ROFieldRecord<
+  typeof plnIntermediateKeys
+> = ObjectHelper.deepFreeze({
+  crt,
+  //`${tls} você utiliza para integrar suas ferramentas de planejamento com outros sistemas?`
+  int: {
+    type: "select-multiple",
+    options: [
+      "APIs nativas das ferramentas de planejamento (ex.: Asana API, Trello API, Jira API)",
+      "Integração via plataformas de automação (ex.: Zapier, Make, Power Automate)",
+      "Conectores de dados para BI (ex.: Google Data Studio, Power BI, Tableau)",
+      "Integração com ferramentas de CRM (ex.: HubSpot, Salesforce, Pipedrive)",
+      "Conexão com planilhas automatizadas (Google Sheets, Excel, Airtable)",
+      "Webhooks para sincronização de eventos em tempo real",
+      "Integração com ERPs e sistemas internos da empresa",
+      "Uso de bancos de dados para armazenar e manipular informações centralizadas",
+      "Sincronização com calendários e agendas empresariais (Google Calendar, Outlook)",
+    ],
+    required,
+  },
+  //"Quais destas práticas você utiliza para gerenciar permissões e acessos para diferentes times nos seus quadros e agendas?"
+  sec: {
+    type: "select-multiple",
+    options: [
+      "Definição de permissões baseadas em função (RBAC - Role-Based Access Control)",
+      "Restrição de acesso por times, projetos ou departamentos",
+      "Configuração de níveis de permissão (ex.: visualização, edição, administração)",
+      "Autenticação multifator (MFA) para proteger acessos sensíveis",
+      "Monitoramento e logs de atividades para auditoria de acessos",
+      "Uso de grupos e listas de permissões pré-configuradas",
+      "Controle de compartilhamento externo (restringir ou liberar para terceiros)",
+      "Revisão periódica de acessos e revogação de permissões inativas",
+      "Integração com diretórios corporativos (ex.: Active Directory, Okta, Google Workspace)",
+    ],
+    required,
+  },
+  ...plnDefinitions,
+});
+export const plnExpertDefinitions: ROFieldRecord<
+  typeof plnExpertKeys
+> = ObjectHelper.deepFreeze({
+  ...plnDefinitions,
+  //"Quais práticas você utiliza para consolidar dados de múltiplos quadros para criar dashboards executivos?"
+  adv: {
+    type: "select-multiple",
+    options: [
+      "Uso de ferramentas de Business Intelligence (ex.: Power BI, Tableau, Google Data Studio)",
+      "Extração e manipulação de dados via planilhas (Google Sheets, Excel)",
+      "APIs para coleta e centralização de dados",
+      "Automação de relatórios usando scripts (ex.: Python, Apps Script, VBA)",
+      "Integração com bases de dados relacionais (ex.: SQL, BigQuery)",
+      "Uso de dashboards embutidos nas próprias ferramentas de gestão",
+      "Criação de painéis de visualização customizados em plataformas especializadas",
+      "Agrupamento e segmentação de métricas por times ou projetos",
+      "Consolidação manual de informações de diferentes fontes",
+    ],
+    required,
+  },
+  sci: repeatedDefinitions.yn,
+  api: repeatedDefinitions.txtl,
+});
+export const plnEntryTypes: EntryTypeDictionary<PlanningQuestionKey> =
+  withFrozenLib({
+    executivoAdministrativo: {
+      beginner: { ...plnBeginnerDefinitions },
+      intermediate: { ...plnIntermediateDefinitions },
+      expert: { ...plnExpertDefinitions },
+    },
+    financeiro: {
+      beginner: { ...plnBeginnerDefinitions },
+      intermediate: { ...plnIntermediateDefinitions },
+      expert: { ...plnExpertDefinitions },
+    },
+    comercial: {
+      beginner: { ...plnBeginnerDefinitions },
+      intermediate: { ...plnIntermediateDefinitions },
+      expert: { ...plnExpertDefinitions },
+    },
+    marketing: {
+      beginner: { ...plnBeginnerDefinitions },
+      intermediate: { ...plnIntermediateDefinitions },
+      expert: { ...plnExpertDefinitions },
+    },
+    suporteTecnicoN1: {
+      beginner: { ...plnBeginnerDefinitions },
+      intermediate: { ...plnIntermediateDefinitions },
+      expert: { ...plnExpertDefinitions },
+    },
+    suporteTecnicoN2: {
+      beginner: { ...plnBeginnerDefinitions },
+      intermediate: { ...plnIntermediateDefinitions },
+      expert: { ...plnExpertDefinitions },
+    },
+    operatorio: {
+      beginner: { ...plnBeginnerDefinitions },
+      intermediate: { ...plnIntermediateDefinitions },
+      expert: { ...plnExpertDefinitions },
+    },
+    desenvolvimento: {
+      beginner: { ...plnBeginnerDefinitions },
+      intermediate: { ...plnIntermediateDefinitions },
+      expert: { ...plnExpertDefinitions },
+    },
+    devOps: {
+      beginner: { ...plnBeginnerDefinitions },
+      intermediate: { ...plnIntermediateDefinitions },
+      expert: { ...plnExpertDefinitions },
+    },
+  });
 export const aiAdDefinitions: ROFieldRecord<
   typeof aiAdGeneralKeys
 > = ObjectHelper.deepFreeze({
   gen: repeatedDefinitions.exp,
-  //"Quais critérios você utiliza para avaliar e determinar a qualidade dos áudios gerados pela IA?"
+  //`${cts} utiliza para avaliar e determinar a qualidade dos áudios gerados pela IA?`
   evl: {
     type: "select-multiple",
     options: [
@@ -7023,7 +7786,7 @@ export const aiAdExpertDefinitions: ROFieldRecord<
   sec: repeatedDefinitions.sec,
   ...aiAdDefinitions,
 });
-export const aiAdEntryTypes: EntryTypeDictionary<AudioAiQuestionsKeys> =
+export const aiAdEntryTypes: EntryTypeDictionary<AudioAiQuestionKey> =
   withFrozenLib({
     executivoAdministrativo: {
       beginner: { ...aiAdBeginnerDefinitions },
@@ -7075,7 +7838,7 @@ export const aiImgDefinitions: ROFieldRecord<
   typeof aiImgGeneralKeys
 > = ObjectHelper.deepFreeze({
   gen: repeatedDefinitions.frq,
-  //"Quais critérios você utiliza para avaliar a qualidade das imagens geradas pelas IAs?"
+  //`${cts} utiliza para avaliar a qualidade das imagens geradas pelas IAs?`
   evl: {
     type: "select-multiple",
     options: [
@@ -7090,7 +7853,7 @@ export const aiImgDefinitions: ROFieldRecord<
     ],
     required,
   },
-  //"Quais ferramentas você utiliza para editar e otimizar a qualidade das imagens geradas pelas IAs?"
+  //`${tls} você utiliza para editar e otimizar a qualidade das imagens geradas pelas IAs?`
   opt: {
     type: "select-multiple",
     options: [
@@ -7107,7 +7870,7 @@ export const aiImgDefinitions: ROFieldRecord<
     ],
     required,
   },
-  //"Quais ferramentas você converter o formato das imagens geradas por IAs?"
+  //`${tls} você converter o formato das imagens geradas por IAs?`
   fmt: {
     type: "select-multiple",
     options: [
@@ -7147,7 +7910,7 @@ export const aiImgExpertDefinitions: ROFieldRecord<
   sec: repeatedDefinitions.sec,
   ...aiImgDefinitions,
 });
-export const aiImgEntryTypes: EntryTypeDictionary<ImageAiQuestionsKeys> =
+export const aiImgEntryTypes: EntryTypeDictionary<ImageAiQuestionKey> =
   withFrozenLib({
     executivoAdministrativo: {
       beginner: { ...aiImgBeginnerDefinitions },
@@ -7199,7 +7962,7 @@ export const aiVdDefinitions: ROFieldRecord<
   typeof aiVdGeneralKeys
 > = ObjectHelper.deepFreeze({
   gen: repeatedDefinitions.exp,
-  //"Quais critérios você utiliza para avaliar e determinar a qualidade dos vídeos gerados pela IA?"
+  //`${cts} utiliza para avaliar e determinar a qualidade dos vídeos gerados pela IA?`
   evl: {
     type: "select-multiple",
     options: [
@@ -7227,7 +7990,7 @@ export const aiVdBeginnerDefinitions: ROFieldRecord<
   set: repeatedDefinitions.exp,
   ...aiVdDefinitions,
 });
-const edt = ObjectHelper.deepFreeze({
+const edt: FieldDescription = ObjectHelper.deepFreeze({
   type: "select-multiple",
   options: [
     "Adobe Premiere Pro",
@@ -7262,7 +8025,7 @@ export const aiVdExpertDefinitions: ROFieldRecord<
   txt: repeatedDefinitions.txts,
   ...aiVdDefinitions,
 });
-export const aiVdEntryTypes: EntryTypeDictionary<VideoAiQuestionsKeys> =
+export const aiVdEntryTypes: EntryTypeDictionary<VideoAiQuestionKey> =
   withFrozenLib({
     executivoAdministrativo: {
       beginner: { ...aiVdBeginnerDefinitions },
@@ -7452,7 +8215,7 @@ const stc: FieldDescription = ObjectHelper.deepFreeze({
     ],
     required,
   });
-export const llmEntryTypes: EntryTypeDictionary<LLMQuestionsKeys> =
+export const llmEntryTypes: EntryTypeDictionary<LLMQuestionKey> =
   withFrozenLib({
     executivoAdministrativo: {
       beginner: {
@@ -7609,3 +8372,36 @@ export const llmEntryTypes: EntryTypeDictionary<LLMQuestionsKeys> =
       },
     },
   });
+//final
+export const questionsMap = new Map<
+  roleType,
+  QuestionsMap<complexityKeySet>
+>([
+  eaAddQuestions,
+  fnAddQuestions,
+  cmAddQuestions,
+  mktAddQuestions,
+  stN1AddQuestions,
+  stN2AddQuestions,
+  opAddQuestions,
+  devAddQuestions,
+  devOpsAddQuestions,
+  defAddQuestions,
+]);
+export const fieldsMap = new Map<
+  addQuestionsKey,
+  EntryTypeDictionary<QuestionKey>
+>([
+  ["docs", docEntryTypes],
+  ["spreadSheets", ssEntryTypes],
+  ["formBuilders", fmEntryTypes],
+  ["cloudStorage", csEntryTypes],
+  ["businessInteligence", biEntryTypes],
+  ["Crms", crmEntryTypes],
+  ["Erps", erpEntryTypes],
+  ["planning", plnEntryTypes],
+  ["audio", aiAdEntryTypes],
+  ["image", aiImgEntryTypes],
+  ["video", aiVdEntryTypes],
+  ["llms", llmEntryTypes],
+]);
