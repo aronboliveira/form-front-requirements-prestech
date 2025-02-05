@@ -9,6 +9,70 @@ export default class ObjectHelper {
     );
     return Object.freeze(obj);
   }
+  public static makeImmutable<T extends object>(
+    obj: T,
+    configurable = true
+  ): T {
+    for (const [k, v] of Object.entries(obj)) {
+      try {
+        const descriptor = Object.getOwnPropertyDescriptor(
+          obj,
+          k
+        );
+        if (
+          !descriptor?.writable ||
+          !descriptor.configurable
+        )
+          continue;
+        if (typeof v === "object" && v !== null)
+          Object.defineProperty(obj, k, {
+            value: ObjectHelper.makeImmutable(v),
+            writable: false,
+            configurable,
+          });
+        else
+          Object.defineProperty(obj, k, {
+            value: v,
+            writable: false,
+            configurable,
+          });
+      } catch (e) {
+        console.error(
+          `Failed to make immutable for ${k}:${v}`
+        );
+      }
+    }
+    return obj;
+  }
+  public static makeMutable<T extends object>(
+    obj: T,
+    configurable = true
+  ): T {
+    for (const [k, v] of Object.entries(obj)) {
+      try {
+        const descriptor = Object.getOwnPropertyDescriptor(
+          obj,
+          k
+        );
+        if (!descriptor?.configurable) continue;
+        if (typeof v === "object" && v !== null)
+          Object.defineProperty(obj, k, {
+            value: ObjectHelper.makeMutable(v),
+            writable: true,
+            configurable,
+          });
+        else
+          Object.defineProperty(obj, k, {
+            value: v,
+            writable: true,
+            configurable,
+          });
+      } catch (e) {
+        console.log(`Failed to makeMutable for ${k}:${v}`);
+      }
+    }
+    return obj;
+  }
   public static JSONSafeStringify(data: any): string {
     try {
       return JSON.stringify(data);

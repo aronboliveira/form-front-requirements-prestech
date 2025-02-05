@@ -498,7 +498,7 @@ export type QuestionsMap<T extends complexityKeySet> = Map<
   complexityDict<T>
 >;
 export type EntryTypeDictionary<T> = Readonly<{
-  [K in roleDefined]: {
+  [K in roleType]: {
     [L in complexityLabel]: KeysRecords<T>;
   };
 }>;

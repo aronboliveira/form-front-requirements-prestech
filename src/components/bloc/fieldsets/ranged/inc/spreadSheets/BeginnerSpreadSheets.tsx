@@ -1,59 +1,41 @@
 "use client";
-import { classes } from "@/lib/client/vars";
 import { AddInputSubFieldset } from "@/lib/definitions/client/interfaces/components";
-import { useEffect, useRef } from "react";
-import {
-  QuestionKey,
-  nlFs,
-} from "@/lib/definitions/client/helpers";
+import { useEffect, useRef, useMemo } from "react";
+import { nlFs } from "@/lib/definitions/client/helpers";
 import { protoName } from "@/lib/helpers/ObjectHelper";
 import StringHelper from "@/lib/helpers/StringHelper";
 import RenderHandler from "@/lib/client/handlers/RenderHandler";
-import { roleType } from "@/lib/definitions/foundations";
+import useRole from "@/lib/client/hooks/useRole";
 export default function BeginnerSpreadSheets({
-  prefix,
-  sufix,
-  questions,
+  sufix = "",
   additional = <></>,
 }: AddInputSubFieldset) {
-  const rolePrefix = prefix as roleType;
-  {
-    const r = useRef<nlFs>(null),
-      t = `${rolePrefix}__${sufix}`,
-      name = `${StringHelper.uncapitalize(
-        protoName(BeginnerSpreadSheets)
-      )}`;
-    useEffect(() => {}, [r]);
-    return (
-      <fieldset
-        className={`fsAddRanged`}
-        ref={r}
-        id={`fs__${t}`}
-      >
-        {questions.map(([ac, lab], i) => (
-          <div
-            data-ownnum={i}
-            id={`div__${rolePrefix}__${name}__${ac}`}
-            className={`divAddRanged ${classes.inpDivClasses}`}
-          >
-            <label
-              data-ownnum={i}
-              htmlFor={ac}
-              id={`lab__${rolePrefix}__${name}__${ac}`}
-              className={`labAddRanged ${classes.inpLabClasses}`}
-            >
-              {lab}
-            </label>
-            {new RenderHandler({
-              name,
-              _role: rolePrefix,
-              _complexity: "beginner",
-              _appType: "spreadSheets",
-            }).renderInput(ac as QuestionKey)}
-          </div>
-        ))}
-        {additional}
-      </fieldset>
+  sufix ||= protoName(BeginnerSpreadSheets);
+  const { role } = useRole();
+  const r = useRef<nlFs>(null),
+    t = `${role}__${sufix}`,
+    name = `${StringHelper.uncapitalize(
+      protoName(BeginnerSpreadSheets)
+    )}`,
+    handler = useMemo(
+      () =>
+        new RenderHandler({
+          name,
+          _role: role,
+          _complexity: "beginner",
+          _appType: "spreadSheets",
+        }),
+      [role]
     );
-  }
+  useEffect(() => {}, [r]);
+  return (
+    <fieldset
+      className={`fsAddRanged`}
+      ref={r}
+      id={`fs__${t}`}
+    >
+      {handler.renderInputs()}
+      {additional}
+    </fieldset>
+  );
 }

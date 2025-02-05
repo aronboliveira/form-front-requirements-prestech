@@ -74,7 +74,10 @@ select {
   margin-bottom: var(--spacing-sm);
   &:focus {
     font-weight: bold;
-    background-color: color.adjust(#cdd1d1, $lightness: 40%);
+    background-color: color.adjust(
+      #cdd1d1,
+      $lightness: 40%
+    );
     outline: none;
   }
 }
@@ -111,11 +114,17 @@ button {
   border: none;
   cursor: pointer;
   &:hover {
-    background-color: color.adjust(#001f3f, $lightness: -10%);
+    background-color: color.adjust(
+      #001f3f,
+      $lightness: -10%
+    );
     transform: translateY(-1px);
   }
   &:active {
-    background-color: color.adjust(#001f3f, $lightness: -5%);
+    background-color: color.adjust(
+      #001f3f,
+      $lightness: -5%
+    );
     transform: translateY(2px);
   }
 }
@@ -159,7 +168,8 @@ button {
   &::-webkit-slider-thumb,
   &::-moz-range-thumb,
   &::-ms-thumb {
-    transition: transform 0.3s ease, background-color 0.3s ease;
+    transition: transform 0.3s ease,
+      background-color 0.3s ease;
     background-color: red;
     color: red;
     &:focus {
@@ -202,6 +212,20 @@ button {
     }
   }
 }
+.inpCheckableRanged {
+  &:checked {
+    background-color: var(--success-green) !important;
+  }
+}
+.labAddRanged {
+  + .form-select,
+  + input.form-control {
+    margin-top: 0.5rem;
+  }
+  + .fsMultipleChekables {
+    margin-top: 0.75rem;
+  }
+}
 .rGap2v {
   row-gap: 2vh;
 }
@@ -216,12 +240,15 @@ button {
   }
   .react-tel-input {
     font-size: 1rem !important;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
-      "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji" !important;
+    font-family: system-ui, -apple-system, "Segoe UI",
+      Roboto, "Helvetica Neue", "Noto Sans",
+      "Liberation Sans", Arial, sans-serif,
+      "Apple Color Emoji" !important;
     .form-control {
       width: 6rem;
       height: 2.65rem;
-      border: var(--bs-border-width) solid var(--bs-border-color);
+      border: var(--bs-border-width) solid
+        var(--bs-border-color);
       font-size: inherit;
       font-style: inherit;
     }
@@ -229,7 +256,8 @@ button {
       font-size: inherit !important;
       font-style: inherit !important;
       &.button-secondary {
-        border: var(--bs-border-width) solid var(--bs-border-color);
+        border: var(--bs-border-width) solid
+          var(--bs-border-color);
       }
     }
   }

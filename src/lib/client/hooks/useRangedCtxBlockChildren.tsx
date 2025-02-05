@@ -6,9 +6,18 @@ import {
   complexityLevel,
   roleType,
 } from "@/lib/definitions/foundations";
-import { RefObject, useContext, useRef, useEffect, useMemo } from "react";
-import { addQuestionsMap } from "../addQuestions";
-import { RoleComplexities, nlHtEl } from "@/lib/definitions/client/helpers";
+import {
+  RefObject,
+  useContext,
+  useRef,
+  useEffect,
+  useMemo,
+} from "react";
+import { questionsMap } from "../vars";
+import {
+  RoleComplexities,
+  nlHtEl,
+} from "@/lib/definitions/client/helpers";
 import { appGroupsDict } from "../vars";
 import StyleHandler from "../handlers/StyleHandler";
 export default function useRangedCtxBlockChildren(
@@ -18,7 +27,9 @@ export default function useRangedCtxBlockChildren(
   r: RefObject<nlHtEl>;
   roleRef: RefObject<roleType>;
   levelTitle: complexityLabel;
-  questions: RoleComplexities[keyof RoleComplexities] | null;
+  questions:
+    | RoleComplexities[keyof RoleComplexities]
+    | null;
   mappedQuestions: Array<[string, string]>;
 } {
   const levelTitle = ((): complexityLabel => {
@@ -35,19 +46,27 @@ export default function useRangedCtxBlockChildren(
     })(),
     ctx = useContext<IFormCtx>(FormCtx),
     roleRef = useRef<roleType>(
-      ctx.role || sessionStorage.getItem("role") || "undefined"
+      ctx.role ||
+        sessionStorage.getItem("role") ||
+        "undefined"
     ),
     r = useRef<nlHtEl>(null),
     questions = useMemo(() => {
       if (roleRef.current === "undefined") return null;
-      const rqs = addQuestionsMap.get(roleRef.current);
+      const rqs = questionsMap.get(roleRef.current);
       if (!rqs) return null;
       const k = appGroupsDict[name];
       if (!k) return null;
       const rgqs = rqs.get(k);
       if (!rgqs) return null;
       return rgqs[levelTitle] || null;
-    }, [roleRef.current, addQuestionsMap, appGroupsDict, name, levelTitle]),
+    }, [
+      roleRef.current,
+      questionsMap,
+      appGroupsDict,
+      name,
+      levelTitle,
+    ]),
     mappedQuestions = questions
       ? (Object.entries(questions) as [string, string][])
       : [];

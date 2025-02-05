@@ -98,9 +98,9 @@ export interface Addable {
   additional?: React.ReactNode;
 }
 export interface AddInputSubFieldset extends Addable {
-  prefix: string;
-  sufix: string;
-  questions: Array<[string, string]>;
+  prefix?: string;
+  sufix?: string;
+  questions?: Array<[string, string]>;
 }
 export interface AddInputBlock
   extends Partial<
@@ -111,7 +111,15 @@ export interface AddInputBlock
     Addable,
     Required<Identifiable> {
   name: string;
-  descendants?: React.ReactNode;
+}
+export interface GroupedOpts {
+  [k: string]: {
+    friendly?: string;
+    grpOpts: string[];
+  };
+}
+export interface AddOptInputBlock extends AddInputBlock {
+  opts: GroupedOpts;
 }
 export interface LimitedAddInputBlock
   extends AddInputBlock {

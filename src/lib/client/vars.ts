@@ -55,6 +55,7 @@ export const classes: Readonly<Record<ClassesKey, string>> =
     inpDivClasses: `mb-3 inpDivClasses`,
     inpLabClasses: `form-label`,
     inpClasses: `${inps}`,
+    inpCheckables: `form-check-input`,
     textClasses: `${texts}`,
     contextualTextClasses: `${texts} contextualText`,
     ccClasses: `${inps} cc linked`,
@@ -93,7 +94,7 @@ export const fontColors: { [k: string]: string } = {};
 // General dictionaries
 export const jsErrorsFriendlyNames: Readonly<{
   [k: string]: Map<string, string>;
-}> = ObjectHelper.deepFreeze({
+}> = ObjectHelper.makeImmutable({
   EN: new Map<string, string>([
     ["TypeError", "Type Error"],
     ["SyntaxError", "Syntax Error"],
@@ -233,7 +234,7 @@ export enum AcronymsDefaults {
   ch = "Quais desafios você encontra ao utilizar as suas atuais tecnologias de trabalho? Comente comparando com outras tecnologias similares, se adequado, ou com maneiras como você gostaria de melhorar.",
   co = "De que forma você utiliza as tecnologias para colaborar e integrar com a sua equipe de trabalho?",
 }
-export enum friendlyAppName {
+export enum friendlyApp {
   bi = "Plataformas para Inteligência de Negócios (PowerBI, Tableau, Qlik Sense, etc.)",
   crm = "Plataformas de Gerenciamento de Relação com Clientes e Equipes (Monday.com, ClickUp, Slack, Jira, etc.)",
   doc = "Softwares de Redação (Microsoft Word, Google Docs, Libre Office Writter, etc.)",
@@ -251,8 +252,8 @@ export enum friendlyAiName {
 }
 export const AcronymsApps: Record<
   addQuestionsKey,
-  keyof typeof friendlyAppName | keyof typeof friendlyAiName
-> = ObjectHelper.deepFreeze({
+  keyof typeof friendlyApp | keyof typeof friendlyAiName
+> = ObjectHelper.makeImmutable({
   docs: "doc",
   spreadSheets: "ss",
   formBuilders: "fm",
@@ -388,16 +389,16 @@ export const dictLabelsRange: {
 } = {
   office: {
     apps: {
-      doc: friendlyAppName.doc,
-      form: friendlyAppName.fm,
-      spreadSheet: friendlyAppName.ss,
-      storage: friendlyAppName.stg,
+      doc: friendlyApp.doc,
+      form: friendlyApp.fm,
+      spreadSheet: friendlyApp.ss,
+      storage: friendlyApp.stg,
     },
     platforms: {
-      bi: friendlyAppName.bi,
-      crm: friendlyAppName.crm,
-      erp: friendlyAppName.erp,
-      planning: friendlyAppName.pln,
+      bi: friendlyApp.bi,
+      crm: friendlyApp.crm,
+      erp: friendlyApp.erp,
+      planning: friendlyApp.pln,
     },
   },
   ai: {
@@ -409,7 +410,7 @@ export const dictLabelsRange: {
 };
 export const groupedApps: Readonly<
   Record<roleType, Array<techAppKey[]>>
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   executivoAdministrativo: [
     ["office365", "outlook", "slack", "googleDrive"],
     ["zoom", "trello", "sapErp", "msDynamicsCrm"],
@@ -691,7 +692,7 @@ export const suggestionsGroupsMap: Readonly<
     keyof typeof friendlyRoles,
     Map<keyof typeof AcronymsDefaults, string[]>
   >
-> = ObjectHelper.deepFreeze(
+> = ObjectHelper.makeImmutable(
   new Map([
     [
       "executivoAdministrativo",
@@ -1476,7 +1477,7 @@ const required = true,
 export const appGroupsDict: Record<
   RangeCtxComponentNames,
   addQuestionsKey
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   AudioAis: "audio",
   ImageAis: "image",
   Llms: "llms",
@@ -1492,7 +1493,7 @@ export const appGroupsDict: Record<
 });
 export const libre: Readonly<
   Record<addQuestionsKey, string>
-> = ObjectHelper.deepFreeze(
+> = ObjectHelper.makeImmutable(
   Object.fromEntries(
     (
       [
@@ -1511,7 +1512,7 @@ export const libre: Readonly<
       ] as addQuestionsKey[]
     ).map(k => [
       k,
-      "Use esse espaço para incluir informações que desejar sobre o seu trabalho com" +
+      "Use esse espaço para incluir informações que desejar sobre o seu trabalho com " +
         `${((): string => {
           try {
             const acronym = AcronymsApps[k];
@@ -1521,280 +1522,298 @@ export const libre: Readonly<
               "image",
               "video",
               "llms",
-            ].includes(k)
+            ].includes(acronym)
               ? friendlyAiName[
-                  k as keyof typeof friendlyAiName
+                  acronym as keyof typeof friendlyAiName
                 ]
-              : friendlyAppName[
-                  k as keyof typeof friendlyAppName
+              : friendlyApp[
+                  acronym as keyof typeof friendlyApp
                 ];
             if (!friendly) return k;
             //@ts-ignore
             let reversed = friendly.split("").toReversed();
             return reversed
               .slice(reversed.indexOf("(") + 1)
-              .join();
+              .reverse()
+              .join("");
           } catch (e) {
             return k;
           }
         })()}` +
-        "(Ex.: Possíveis automações e melhorias em plataformas de trabalho).",
+        " (ex.: Possíveis automações e melhorias em plataformas de trabalho)",
     ])
   )
 ) as Readonly<Record<addQuestionsKey, string>>;
 export const repeated: Readonly<{
   [K in repeatingKeys]: string;
-}> = ObjectHelper.deepFreeze({
+}> = ObjectHelper.makeImmutable({
   fmt: `${fam} com formatações simples (negrito, itálico, cabeçalho)?`,
   sum: `${fam} com funções matemáticas básicas (ex.: SOMA, MÉDIA, SOMASE)?`,
   tmp: "De que forma você aproveita modelos (templates) prontos para criar documentos básicos?",
   mcr: "Que estratégias de scripts (VBA, AppScript, Python) você utiliza para automatizar tarefas repetitivas?",
-  big: `${frq} você integra ou exporta dados para ferramentas de BI (ex.: Power BI, Data Studio)?`,
+  big: `${frq} integra ou exporta dados para ferramentas de BI (ex.: Power BI, Data Studio)?`,
   arr: "Você domina ou utiliza fórmulas matriciais (ex.: ÍNDICE, CORRESP) para cálculos avançados?",
   tbd: "Como você utiliza tabelas dinâmicas para analisar grandes quantidades de dados?",
 });
 function withFrozenLibreLabel<
   T extends Record<string, any>
 >(dict: T, _case: addQuestionsKey): T {
+  dict = ObjectHelper.makeMutable(dict);
   Object.keys(dict).forEach(k => {
-    if (!libre[_case]) return;
-    if (!("lib" in dict))
-      (dict as any)[k] = {
-        ...dict[k],
-        lib: libre[_case],
-      };
+    try {
+      if (!libre[_case]) return;
+      if (!("lib" in dict))
+        (dict as any)[k] = {
+          ...dict[k],
+          lib: libre[_case],
+        };
+    } catch (e) {
+      console.error(
+        `Error including libre field for ${
+          ObjectHelper.JSONSafeStringify(dict) ||
+          dict.toString()
+        }:\n${(e as Error).message}`
+      );
+    }
   });
   return ObjectHelper.deepFreeze(dict);
 }
-export const fmGeneralKeys = ObjectHelper.deepFreeze({
-  tpl: `${frq} você utiliza templates prontos para elaborar questionários?`,
+export const fmGeneralKeys = ObjectHelper.makeImmutable({
+  tpl: `${frq} utiliza templates prontos para elaborar questionários?`,
   rsp: "Quais são suas formas preferenciais de salvar dados de um formulário?",
   emb: `${tcn} você utiliza com mais frequência para analisar resultados aglomerados de múltiplas submissões de um formulário?`,
   plt: `${tls} você utiliza para construção de formulários?`,
   slc: "Descreva livremente seu critério para escolher entre múltipla escolha (dropdowns, rádios, checkboxes) ou respostas paragrafadas",
 });
-export const fmBeginnerKeys = ObjectHelper.deepFreeze({
+export const fmBeginnerKeys = ObjectHelper.makeImmutable({
   crt: `${exp} criando formulários para coleta de dados?`,
   ...fmGeneralKeys,
 });
-export const fmIntermediateKeys = ObjectHelper.deepFreeze({
-  ...fmGeneralKeys,
-  aut: "Como você configura para envio de notificações ou respostas?",
-  api: `${frq} você integra formulários a APIs para coleta ou envio de dados?`,
-});
-export const fmExpertKeys = ObjectHelper.deepFreeze({
+export const fmIntermediateKeys =
+  ObjectHelper.makeImmutable({
+    ...fmGeneralKeys,
+    aut: "Como você configura para envio de notificações ou respostas?",
+    api: `${frq} integra formulários a APIs para coleta ou envio de dados?`,
+  });
+export const fmExpertKeys = ObjectHelper.makeImmutable({
   ...fmGeneralKeys,
   dsh: "Como você conecta formulários a dashboards para relatórios em tempo real?",
 });
-export const csGeneralKeys = ObjectHelper.deepFreeze({
+export const csGeneralKeys = ObjectHelper.makeImmutable({
   syn: "Quais destas plataformas de armazenamento em nuvem você tem preferência por utilizar?",
   shr: "Quais são suas formas preferidas de habilitar o compartilhamento de arquivos em nuvem com outros colaboradores?",
   org: "Descreva seus critérios para organizar pastas e arquivos armazenados em nuvem (ex.: Padrão de nomenclatura, Lógicas de Separação, etc.)",
 });
-export const csBeginnerKeys = ObjectHelper.deepFreeze({
+export const csBeginnerKeys = ObjectHelper.makeImmutable({
   upl: `${exp} em enviar arquivos para armazenamento em nuvem?`,
   ...csGeneralKeys,
   acc: "Você já configurou permissões básicas (somente leitura, edição, tipos de restrição) para arquivos em nuvem?",
 });
-export const csIntermediateKeys = ObjectHelper.deepFreeze({
-  ...csGeneralKeys,
-  ver: "Como você lida com controle de versões para evitar perda de dados?",
-  bck: `${frq} você executa backups de pastas ou arquivos importantes para nuvens?`,
-  sch: `${cts} utiliza para garantir conformidade com normas de gestão de dados compartilhados (ex.: LGPD) ao trabalhar na nuvem?`,
-});
-export const csExpertKeys = ObjectHelper.deepFreeze({
+export const csIntermediateKeys =
+  ObjectHelper.makeImmutable({
+    ...csGeneralKeys,
+    ver: "Como você lida com controle de versões para evitar perda de dados?",
+    bck: `${frq} executa backups de pastas ou arquivos importantes para nuvens?`,
+    sch: `${cts} utiliza para garantir conformidade com normas de gestão de dados compartilhados (ex.: LGPD) ao trabalhar na nuvem?`,
+  });
+export const csExpertKeys = ObjectHelper.makeImmutable({
   ...csGeneralKeys,
   scp: "Quais destas tecnologias você utiliza para automatizar procedimentos de gestão, controle e governança de dados em nuvem?",
   sch: `${cts} utiliza para garantir conformidade com normas de gestão de dados compartilhados (ex.: LGPD) ao trabalhar na nuvem?`,
 });
-export const biGeneralKeys = ObjectHelper.deepFreeze({
+export const biGeneralKeys = ObjectHelper.makeImmutable({
   con: `${sttg} você usa para conectar
   suas fontes de dados (planilhas, CSV, bancos, etc.) nas ferramentas de BI?`,
   grf: `${exp} utilizando os recursos nativos da ferramenta de BI para criar gráficos?`,
   fil: `${tcn} você utiliza para aplicar filtros e segmentações nativas da ferramenta para refinar suas visualizações?`,
-  atz: `${frq} você configura atualizações automáticas dos dados nas ferramentas de BI?`,
+  atz: `${frq} configura atualizações automáticas dos dados nas ferramentas de BI?`,
   col: `${rsc} você utiliza para compartilhar dashboards e relatórios diretamente pela ferramenta de BI?`,
 });
-export const biBeginnerKeys = ObjectHelper.deepFreeze({
+export const biBeginnerKeys = ObjectHelper.makeImmutable({
   ...biGeneralKeys,
 });
-export const biIntermediateKeys = ObjectHelper.deepFreeze({
-  ...biGeneralKeys,
-  mdl: `${exp} modelando e transformando dados usando os recursos da ferramenta de BI para criar dashboards robustos?`,
-  aut: `${exp} utilizando as automações nativas da ferramenta de BI para atualizar os dados?`,
-  int: `${sttg} você utiliza para integrar diferentes fontes de dados na ferramenta de BI para análises detalhadas?`,
-});
-export const biExpertKeys = ObjectHelper.deepFreeze({
+export const biIntermediateKeys =
+  ObjectHelper.makeImmutable({
+    ...biGeneralKeys,
+    mdl: `${exp} modelando e transformando dados usando os recursos da ferramenta de BI para criar dashboards robustos?`,
+    aut: `${exp} utilizando as automações nativas da ferramenta de BI para atualizar os dados?`,
+    int: `${sttg} você utiliza para integrar diferentes fontes de dados na ferramenta de BI para análises detalhadas?`,
+  });
+export const biExpertKeys = ObjectHelper.makeImmutable({
   ...biGeneralKeys,
   adv: `${sttg} você utiliza para otimizar a performance de consultas e visualizações em dashboards com grandes volumes de dados?`,
   gov: `${exp} usando recursos avançados de segurança e governança (ex.: RLS) das ferramenta de BI?`,
   api: `${exp} integrando APIs ou scripts personalizados nas ferramentas de BI para automação e customização?`,
 });
-export const crmGeneralKeys = ObjectHelper.deepFreeze({
+export const crmGeneralKeys = ObjectHelper.makeImmutable({
   con: `${mnn} conecta dados de clientes (leads, contatos) na plataforma de CRM (ex.: Salesforce, HubSpot)?`,
   vis: `${rsc} nativos da plataforma para visualizar pipelines e funis de vendas?`,
   seg: `${tcn} utiliza filtros predefinidos para segmentar clientes e leads?`,
   rep: `${mnn} gera relatórios e dashboards para monitorar o desempenho comercial?`,
   atz: `${frq} configura atualizações automáticas dos dados ou realiza importações manuais?`,
 });
-export const crmBeginnerKeys = ObjectHelper.deepFreeze({
+export const crmBeginnerKeys = ObjectHelper.makeImmutable({
   crt: `${fam} com as funcionalidades básicas de plataformas de CRM?`,
   ...crmGeneralKeys,
 });
-export const crmIntermediateKeys = ObjectHelper.deepFreeze({
-  ...crmGeneralKeys,
-  mdl: `${mnn} organiza e estrutura os dados de clientes para criar funis de vendas mais detalhados?`,
-  aut: `${tcn} você utiliza para que as automações nativas dispararem alertas e atualizem o status dos leads?`,
-  int: `${mnn} integra a plataforma de CRM com outras ferramentas (ex.: e-mail, marketing)?`,
-});
-export const crmExpertKeys = ObjectHelper.deepFreeze({
+export const crmIntermediateKeys =
+  ObjectHelper.makeImmutable({
+    ...crmGeneralKeys,
+    mdl: `${mnn} organiza e estrutura os dados de clientes para criar funis de vendas mais detalhados?`,
+    aut: `${tcn} você utiliza para que as automações nativas dispararem alertas e atualizem o status dos leads?`,
+    int: `${mnn} integra a plataforma de CRM com outras ferramentas (ex.: e-mail, marketing)?`,
+  });
+export const crmExpertKeys = ObjectHelper.makeImmutable({
   ...crmGeneralKeys,
   adv: `${sttg} você utiliza para recursos avançados da plataforma de CRM buscando prever oportunidades e personalizar campanhas?`,
   gov: `${cts} implementa para governança e segurança na gestão dos dados de clientes?`,
   api: `${tcn} você utiliza para integrar APIs ou scripts personalizados buscando automatizar processos e customizar a plataforma de CRM?`,
 });
-export const erpGeneralKeys = ObjectHelper.deepFreeze({
+export const erpGeneralKeys = ObjectHelper.makeImmutable({
   cad: `${frq} cadastra fornecedores, produtos ou clientes simples sem grande complexidade em ERPs?`,
   rep: `${frq} gera relatórios iniciais (vendas, pedidos) diretamente dos ERPs?`,
   doc: `${rsc} você usa para salvar ou imprimir documentos fiscais gerados em ERPs?`,
 });
-export const erpBeginnerKeys = ObjectHelper.deepFreeze({
+export const erpBeginnerKeys = ObjectHelper.makeImmutable({
   crt: `${fam} com as funcionalidades básicas de um ERP?`,
   ...erpGeneralKeys,
 });
-export const erpIntermediateKeys = ObjectHelper.deepFreeze({
-  wfl: `${sttg} você considera para configurar fluxos intermediários (ex.: aprovação, descontos) dentro dos ERPs?`,
-  rel: `${sttg} você usa para elaborar relatórios customizados para análises específicas usando o ERP?`,
-  mig: `${frq} importa dados de planilhas ou migra entre ambientes (homologação, produção) em ERPs?`,
-  sec: `${rsc} você usa para definir permissões específicas para diferentes áreas (ex.: compras, vendas) em ERPs?`,
-  int: `${mnn} integra o ERP com outras ferramentas (ex.: CRM, e-commerce)?`,
-  ...erpGeneralKeys,
-});
-export const erpExpertKeys = ObjectHelper.deepFreeze({
+export const erpIntermediateKeys =
+  ObjectHelper.makeImmutable({
+    wfl: `${sttg} você considera para configurar fluxos intermediários (ex.: aprovação, descontos) dentro dos ERPs?`,
+    rel: `${sttg} você usa para elaborar relatórios customizados para análises específicas usando o ERP?`,
+    mig: `${frq} importa dados de planilhas ou migra entre ambientes (homologação, produção) em ERPs?`,
+    sec: `${rsc} você usa para definir permissões específicas para diferentes áreas (ex.: compras, vendas) em ERPs?`,
+    int: `${mnn} integra o ERP com outras ferramentas (ex.: CRM, e-commerce)?`,
+    ...erpGeneralKeys,
+  });
+export const erpExpertKeys = ObjectHelper.makeImmutable({
   ha_: `${exp} implantando alta disponibilidade (cluster, failover) em ERPs para evitar interrupções?`,
   prc: `${rsc} você usa para orquestrar processos complexos (ex.: MRP, produção) e auditar logs em ERPs?`,
   gov: `${sttg} você usa para implementar governança, compliance (LGPD, etc.) e auditoria avançada em ERPs?`,
   ...erpGeneralKeys,
 });
-export const plnGeneralKeys = ObjectHelper.deepFreeze({
-  tpl: `${frq} você utiliza templates prontos para organizar suas tarefas e compromissos?`,
+export const plnGeneralKeys = ObjectHelper.makeImmutable({
+  tpl: `${frq} utiliza templates prontos para organizar suas tarefas e compromissos?`,
   col: "Quais métodos você utiliza para colaborar e compartilhar quadros ou listas de tarefas?",
   rep: "Quais padrões de relatórios ou dashboards você gera para acompanhar o progresso das atividades?",
-  sch: "Descreva seus principais critérios que voce~considera ao definir e revisar seus cronogramas e prazos nas suas ferramentas de planejamento",
+  sch: "Descreva seus principais critérios que você considera ao definir e revisar seus cronogramas e prazos nas suas ferramentas de planejamento",
 });
-export const plnBeginnerKeys = ObjectHelper.deepFreeze({
-  aut: `${frq} você cria automações para atualizar status ou enviar notificações em seus boards?`,
+export const plnBeginnerKeys = ObjectHelper.makeImmutable({
+  aut: `${frq} cria automações para atualizar status ou enviar notificações em seus boards?`,
   crt: "Quais são as principais ferramentas e subpaineis utilizados por você nestas plataformas?",
   ...plnGeneralKeys,
 });
-export const plnIntermediateKeys = ObjectHelper.deepFreeze({
-  int: `${tls} você utiliza para integrar suas ferramentas de planejamento com outros sistemas?`,
-  sec: "Quais destas práticas você utiliza para gerenciar permissões e acessos para diferentes times nos seus quadros e agendas?",
-  crt: "Quais são as principais ferramentas e subpaineis utilizados por você nestas plataformas?",
-  ...plnGeneralKeys,
-});
-export const plnExpertKeys = ObjectHelper.deepFreeze({
+export const plnIntermediateKeys =
+  ObjectHelper.makeImmutable({
+    int: `${tls} você utiliza para integrar suas ferramentas de planejamento com outros sistemas?`,
+    sec: "Quais destas práticas você utiliza para gerenciar permissões e acessos para diferentes times nos seus quadros e agendas?",
+    crt: "Quais são as principais ferramentas e subpaineis utilizados por você nestas plataformas?",
+    ...plnGeneralKeys,
+  });
+export const plnExpertKeys = ObjectHelper.makeImmutable({
   ...plnGeneralKeys,
   adv: "Quais práticas você utiliza para consolidar dados de múltiplos quadros para criar dashboards executivos?",
   sci: "Você utiliza ou participa de metodologias avançadas de gerência (Scrum, Kanban) para otimização da performance de times?",
   api: "Como você integra APIs ou scripts para automatizar a criação, movimentação e atualização de tarefas em massa?",
 });
-export const aiAdGeneralKeys = ObjectHelper.deepFreeze({
+export const aiAdGeneralKeys = ObjectHelper.makeImmutable({
   gen: `${exp} utilizando IA generativa para criar e manipular áudios?`,
   evl: `${cts} utiliza para avaliar e determinar a qualidade dos áudios gerados pela IA?`,
-  tts: `${frq} você utiliza IAs para recursos de text-to-spreech?`,
-  cln: `${frq} você utiliza IAs para "clonagem" de vozes?`,
+  tts: `${frq} utiliza IAs para recursos de text-to-spreech?`,
+  cln: `${frq} utiliza IAs para "clonagem" de vozes?`,
   int: "Quais são os principais casos de uso para IA em áudio na sua rotina específica de trabalho?",
 });
-export const aiAdBeginnerKeys = ObjectHelper.deepFreeze({
+export const aiAdBeginnerKeys = ObjectHelper.makeImmutable({
   set: "Você já configurou um ambiente básico para captura e conversão de áudio com IA?",
   ...aiAdGeneralKeys,
 });
-export const aiAdIntermediateKeys = ObjectHelper.deepFreeze(
-  {
+export const aiAdIntermediateKeys =
+  ObjectHelper.makeImmutable({
     ...aiAdGeneralKeys,
     edt: "Quais as principais ferramentas que você utiliza para editar ou ajustar os áudios gerados por IAs?",
     doc: "Você documenta os processos e configurações utilizados para trabalhar com áudios gerados por IA?",
     ing: "Como você integra a IA de áudio em fluxos de trabalho mais complexos?",
-  }
-);
-export const aiAdExpertKeys = ObjectHelper.deepFreeze({
+  });
+export const aiAdExpertKeys = ObjectHelper.makeImmutable({
   ...aiAdGeneralKeys,
-  adv: `${frq} você utiliza integrações avançadas ou APIs para otimização de áudio via IA?`,
+  adv: `${frq} utiliza integrações avançadas ou APIs para otimização de áudio via IA?`,
   vol: "Você automatiza a produção e análise de grandes volumes de áudios com IA?",
   sec: "Como você implementa medidas de segurança para proteger áudios gerados por IA?",
 });
-export const aiImgGeneralKeys = ObjectHelper.deepFreeze({
+export const aiImgGeneralKeys = ObjectHelper.makeImmutable({
   gen: `${exp} utilizando IA generativa para criar e manipular imagens?`,
   evl: `${cts} utiliza para avaliar a qualidade das imagens geradas pelas IAs?`,
   opt: `${tls} você utiliza para editar e otimizar a qualidade das imagens geradas pelas IAs?`,
-  fmt: `${tls} você converter o formato das imagens geradas por IAs?`,
-  col: `${frq} você utiliza IAs para aplicar ajustes automáticos de cor ou filtros em imagens?`,
+  fmt: `${tls} você utiliza para converter o formato das imagens geradas por IAs?`,
+  col: `${frq} utiliza IAs para aplicar ajustes automáticos de cor ou filtros em imagens?`,
   int: "Quais são os principais casos de uso para IA em imagens na sua rotina específica de trabalho?",
 });
-export const aiImgBeginnerKeys = ObjectHelper.deepFreeze({
-  set: "Você já configurou um ambiente básico para captura e edição simples de imagens com IA?",
-  ...aiImgGeneralKeys,
-});
+export const aiImgBeginnerKeys = ObjectHelper.makeImmutable(
+  {
+    set: "Você já configurou um ambiente básico para captura e edição simples de imagens com IA?",
+    ...aiImgGeneralKeys,
+  }
+);
 export const aiImgIntermediateKeys =
-  ObjectHelper.deepFreeze({
-    doc: `${frq} você documenta os processos e configurações utilizados para trabalhar com imagens geradas por IA?`,
+  ObjectHelper.makeImmutable({
+    doc: `${frq} documenta os processos e configurações utilizados para trabalhar com imagens geradas por IA?`,
     ing: "Como você integra as imagens geradas por IA em fluxos de trabalho mais complexos?",
     ...aiImgGeneralKeys,
   });
-export const aiImgExpertKeys = ObjectHelper.deepFreeze({
-  adv: `${frq} você utiliza integrações avançadas ou APIs para otimização de imagens via IA?`,
+export const aiImgExpertKeys = ObjectHelper.makeImmutable({
+  adv: `${frq} utiliza integrações avançadas ou APIs para otimização de imagens via IA?`,
   vol: "Você automatiza a produção e análise de grandes volumes de imagens (ao menos 1GB) com IAs?",
   sec: "Como você implementa medidas de segurança para proteger as imagens geradas por IA?",
   ...aiImgGeneralKeys,
 });
-export const aiVdGeneralKeys = ObjectHelper.deepFreeze({
+export const aiVdGeneralKeys = ObjectHelper.makeImmutable({
   gen: `${exp} utilizando IA generativa para criar e manipular vídeos?`,
   evl: `${cts} utiliza para avaliar e determinar a qualidade dos vídeos gerados pela IA?`,
-  tts: `${frq} você utiliza IAs Generativas com recursos de text-to-video?`,
-  cln: `${frq} você utiliza IAs para replicação de estilos visuais, como templates?`,
+  tts: `${frq} utiliza IAs Generativas com recursos de text-to-video?`,
+  cln: `${frq} utiliza IAs para replicação de estilos visuais, como templates?`,
   int: "Quais são os principais casos de uso para IA em vídeo na sua rotina específica de trabalho?",
 });
-export const aiVdBeginnerKeys = ObjectHelper.deepFreeze({
+export const aiVdBeginnerKeys = ObjectHelper.makeImmutable({
   cnt: "Você já utilizou IAs Generativas de Vídeo para transicionar diferentes imagens?",
   set: `${exp} utilizando ferramentas de roteirização ou storyboards com ferramentas de IAs Generativas?`,
   ...aiVdGeneralKeys,
 });
-export const aiVdIntermediateKeys = ObjectHelper.deepFreeze(
-  {
+export const aiVdIntermediateKeys =
+  ObjectHelper.makeImmutable({
     edt: "Quais as principais ferramentas que você utiliza para editar ou ajustar os vídeos gerados por IAs?",
     doc: "Você documenta os processos e configurações utilizados para trabalhar com vídeos gerados por IA?",
     ing: "Como você integra os vídeos gerados por IA em fluxos automáticos de trabalho?",
     ...aiVdGeneralKeys,
-  }
-);
-export const aiVdExpertKeys = ObjectHelper.deepFreeze({
-  adv: `${frq} você utiliza integrações avançadas (como chamadas de APIs) para envio automático de vídeos manipulados por IAs?`,
+  });
+export const aiVdExpertKeys = ObjectHelper.makeImmutable({
+  adv: `${frq} utiliza integrações avançadas (como chamadas de APIs) para envio automático de vídeos manipulados por IAs?`,
   edt: "Quais as principais ferramentas que você utiliza para editar ou ajustar os vídeos gerados por IAs?",
-  txt: "Descreva pontos críticos dos seus padrões de roteiração para geração de vídeos com IAs automáticas",
+  txt: "Descreva pontos críticos dos seus padrões de roteirização para geração de vídeos com IAs automáticas",
   ...aiVdGeneralKeys,
 });
-export const llmGeneralKeys = ObjectHelper.deepFreeze({
+export const llmGeneralKeys = ObjectHelper.makeImmutable({
   lan: "Em que idiomas você costuma interagir com LLMs?",
-  val: `${frq} você considera que as LLMs trazem retornos inadequados ou insatisfatórios?`,
+  val: `${frq} considera que as LLMs trazem retornos inadequados ou insatisfatórios?`,
   col: "Descreva, de forma geral, os seus principais casos de uso (possíveis ou em prática) de LLMs na rotina de trabalho",
 });
-export const llmBeginnerKeys = ObjectHelper.deepFreeze({
+export const llmBeginnerKeys = ObjectHelper.makeImmutable({
   use: `${exp} interagindo com LLMs (ChatGPT, Claude, DeepSeek, etc.)?`,
   sec: "Você mascara dados sensíveis (Chaves de API, Senhas, Dados pessoais) em prompts?",
   ...llmGeneralKeys,
 });
-export const llmIntermediateKeys = ObjectHelper.deepFreeze({
-  ...llmGeneralKeys,
-  ext: `${frq} você solicita para que as LLMs processem dados diretamente em formatos de imagens bitmap (.png, .jpeg) ou PDFs?`,
-  stp: "Descreva, de forma geral, as principais diferenças na forma como você solicita prompts para modelos baseados em chain-of-thought (ChatGPT o1, DeepSeek R1) vs. outras famílias de modelos",
-});
-export const llmExpertKeys = ObjectHelper.deepFreeze({
+export const llmIntermediateKeys =
+  ObjectHelper.makeImmutable({
+    ...llmGeneralKeys,
+    ext: `${frq} solicita para que as LLMs processem dados diretamente em formatos de imagens bitmap (.png, .jpeg) ou PDFs?`,
+    stp: "Descreva, de forma geral, as principais diferenças na forma como você solicita prompts para modelos baseados em chain-of-thought (ChatGPT o1, DeepSeek R1) vs. outras famílias de modelos",
+  });
+export const llmExpertKeys = ObjectHelper.makeImmutable({
   ...llmGeneralKeys,
   fin: "Quais destas práticas você adota para realizar o refinamento de resultados de prompts ao iniciar uma sessão com uma LLM?",
   int: "Você possui LLMs integradas em sistemas da sua rotina de trabalho, para uso de terceiros (ex.: como chatbots)?",
   mlt: "Você já participou ativamente do treinamento (aprendizado de máquina) de LLMs, seja no desenvolvimento direto ou estabelecimento de parâmetros?",
-  ext: `${frq} você solicita para que as LLMs processem dados diretamente em formatos de imagens bitmap (.png, .jpeg) ou PDFs?`,
+  ext: `${frq} solicita para que as LLMs processem dados diretamente em formatos de imagens bitmap (.png, .jpeg) ou PDFs?`,
 });
 export const defaultQuestionsDict: Readonly<{
   beginner: {
@@ -1810,10 +1829,10 @@ export const defaultQuestionsDict: Readonly<{
     df6: string;
     df7: string;
   };
-}> = ObjectHelper.deepFreeze({
+}> = ObjectHelper.makeImmutable({
   beginner: {
     df1: "O quanto você se considera iniciante em uso de ferramentas tecnológicas do dia a dia?",
-    df2: `${frq} você recorre a internet (tutoriais, vídeos) para resolver dúvidas simples?`,
+    df2: `${frq} recorre a internet (tutoriais, vídeos) para resolver dúvidas simples?`,
     df3: "De que forma você organiza informações básicas em planilhas ou anotações?",
   },
   intermediate: {
@@ -1830,21 +1849,21 @@ export const defDocsKeys = withFrozenLibreLabel(
     beginner: {
       fmt: repeated.fmt,
       tem: repeated.tmp,
-      use: `${frq} você escreve textos simples (relatórios, anotações) em um editor de texto básico?`,
-      col: "Como você compartilha ou colabora em documentos com outras pessoas? (Ex.: link, e-mail)",
+      use: `${frq} escreve textos simples (relatórios, anotações) em um editor de texto básico?`,
+      col: "Como você compartilha ou colabora em documentos com outras pessoas?",
       exp: `${exp} em exportar documentos para PDF ou outros formatos?`,
     },
     intermediate: {
-      rev: "Você controla revisões (histórico de versões, comentários) quando trabalha num documento?",
-      lay: "De que forma você organiza seções, sumário automático ou referências cruzadas em textos maiores?",
-      cmp: "Como você lida com compatibilidade (ex.: DOCX vs. ODT) e conversões de formato ao editar?",
+      rev: `${tcn} você usa para controlar revisões (histórico de versões, comentários) quando trabalha num documento?`,
       mac: "Você utiliza macros ou funcionalidades automatizadas para padronizar formatação ou inserir campos?",
+      cmp: `Quais destas ferramentas você utiliza para converter formatos de arquivos de documentos?`,
       per: "Qual é sua prática para proteger documentos com senha ou restrição de edição?",
+      lay: "De que forma você organiza seções, sumário automático ou referências cruzadas em textos maiores?",
     },
     expert: {
       vba: repeated.mcr,
-      idx: "Você já criou índices remissivos, estilos de parágrafo avançados ou capítulos em docs complexos?",
-      sec: "O quanto você manipula permissões avançadas, criptografia e controle de acesso em um editor de texto?",
+      sec: `${sttg} você utiliza para controlar o acesso em um editor de texto?`,
+      idx: `${exp} criando índices remissivos, estilos de parágrafo avançados ou capítulos em docs complexos?`,
       api: "Como você integra APIs ou plugins externos para enriquecer a edição (ex.: checagem gramatical)?",
       adv: "De que modo você gerencia documentos de alto volume (100+ páginas), mantendo consistência e performance?",
     },
@@ -1854,25 +1873,25 @@ export const defDocsKeys = withFrozenLibreLabel(
 export const defSsKeys = withFrozenLibreLabel(
   {
     beginner: {
-      mth: "Você realiza cálculos básicos (SOMA, MÉDIA) em planilhas para tarefas rotineiras?",
+      mth: `${frq} utiliza funções de cálculos básicos (ex.: SOMA, MÉDIA) em planilhas para tarefas rotineiras?`,
       fmt: "Como você formata células (cores, bordas) para destacar dados importantes?",
-      fil: "Você sabe filtrar ou ordenar dados simples numa planilha? (Sim/Não)",
-      col: `${frq} você compartilha planilhas para que outros possam visualizar ou editar?`,
-      bar: "Você cria gráficos básicos (barra, pizza) para ilustrar resultados ou tendências?",
+      fil: `${tcn} você utiliza para filtrar dados em uma planilha?`,
+      col: `${frq} compartilha planilhas para que outros possam visualizar ou editar?`,
+      bar: `${frq} cria gráficos para ilustrar resultados ou tendências?`,
     },
     intermediate: {
       piv: repeated.tbd,
-      fml: "Você domina funções intermediárias (SE, PROCV, CONCAT) para automatizar cálculos mais complexos?",
-      val: "Em que frequência você aplica validações de dados (listas suspensas, restrições de valor) nas células?",
-      net: "Você integra ou importa dados externos (ex.: planilhas online, CSV) para comparar informações?",
+      fml: `${exp} com funções intermediárias (ex.: SE, PROCV, CONCAT) para definir relações de dados complexas?`,
+      val: `${frq} aplica validações de dados (listas suspensas, restrições de valor) nas células?`,
+      net: `${frq} integra ou importa dados externos (ex.: planilhas online, CSV) para comparar informações?`,
       sec: "De que modo você protege certas abas ou intervalos contra edições indevidas?",
     },
     expert: {
-      mcr: "Você cria macros ou scripts (VBA, Google Apps Script) para automatizar processos extensos?",
-      dbi: "Como você conecta planilhas a bancos de dados ou APIs e atualiza os dados periodicamente?",
-      prf: "Você realiza tuning ou otimização quando há muitas fórmulas e abas, evitando lentidão?",
-      big: "Você manipula dados volumosos (milhares de linhas) e os consolida em dashboards avançados?",
+      mcr: `${exp} criando macros ou scripts (VBA, Google Apps Script) para automatizar processos extensos?`,
+      prf: `${exp} realizando tuning ou otimização quando há muitas fórmulas e abas, evitando lentidão?`,
+      big: `${frq} manipula dados volumosos (milhares de linhas) e os consolida em dashboards avançados?`,
       aud: "Qual é sua prática ao auditar ou rastrear mudanças em planilhas grandes (logs, versões anteriores)?",
+      dbi: "Como você conecta planilhas a bancos de dados ou APIs e atualiza os dados periodicamente?",
     },
   },
   "spreadSheets"
@@ -1880,25 +1899,13 @@ export const defSsKeys = withFrozenLibreLabel(
 export const defFmKeys = withFrozenLibreLabel(
   {
     beginner: {
-      cre: "Você cria formulários básicos (Google Forms, etc.) para coletar informações simples?",
-      cmp: "Como você define campos múltipla escolha ou abertas em seus formulários?",
-      shr: "De que forma você compartilha o link do formulário com os participantes (e-mail, rede social)?",
-      rsp: `${frq} você verifica as respostas e gera algum relatório simples do que foi coletado?`,
-      dsg: "Você personaliza a aparência (cores, imagens) ou usa configurações padrão?",
+      ...fmBeginnerKeys,
     },
     intermediate: {
-      cnd: "Você adiciona lógicas condicionais (pular certas perguntas) em formulários de complexidade média?",
-      val: "Como você valida tipos de resposta (ex.: número, e-mail) para evitar dados incorretos?",
-      seg: "Você cria seções ou blocos diferentes no mesmo formulário para organizar melhor as perguntas?",
-      col: "Em que frequência você colabora com outras pessoas na criação e edição do mesmo form?",
-      ext: "Você exporta as respostas para planilhas ou integra com outros serviços (ex.: Slack, Zapier)?",
+      ...fmIntermediateKeys,
     },
     expert: {
-      scr: "Você utiliza scripts (Apps Script, webhooks) para acionar processos automáticos a partir das respostas?",
-      sec: "Como você restringe o acesso (login corporativo, links protegidos) e garante privacidade dos dados?",
-      mul: "Você cria formulários multi-etapas, fluxos de aprovação ou workflows encadeados (N1->N2)?",
-      rep: "Você gera relatórios avançados (ex.: Data Studio, Power BI) a partir dos dados coletados?",
-      adv: "Em que frequência você embeda formulários em sites internos e customiza layout/JS adicional?",
+      ...fmExpertKeys,
     },
   },
   "formBuilders"
@@ -1906,25 +1913,13 @@ export const defFmKeys = withFrozenLibreLabel(
 export const defCsKeys = withFrozenLibreLabel(
   {
     beginner: {
-      upl: "Como você faz upload ou download de arquivos (ex.: Drive, Dropbox) para uso pessoal ou compartilhado?",
-      shr: "Você sabe compartilhar pastas com permissões básicas (visualizar, comentar, editar)?",
-      syn: "Em que frequência você sincroniza pastas locais com a nuvem, evitando versões desatualizadas?",
-      rec: "De que forma você restaura arquivos excluídos acidentalmente ou versões anteriores?",
-      nme: "Você segue algum padrão de nomeação de arquivos para facilitar buscas ou organização?",
+      ...csBeginnerKeys,
     },
     intermediate: {
-      qta: "Você controla quotas de espaço (limites) e gerencia excedentes em pastas de compartilhamento?",
-      int: "Como você integra ferramentas de terceiros (ex.: editores online, automações) ao seu armazenamento?",
-      bkp: "Qual sua prática de backup automático (scripts, agendador) para não perder dados importantes?",
-      sec: "Você define criptografia ou senhas em certos arquivos/pastas, mantendo logs de acesso?",
-      ver: "Em que frequência você utiliza versionamento automático (snapshots, histórico) para reverter mudanças?",
+      ...csIntermediateKeys,
     },
     expert: {
-      dfs: "Como você gerencia replicações ou sync avançado em vários dispositivos/sites de armazenamento?",
-      pol: "Você aplica políticas de retenção e governança (ex.: tempo de expiração) a certos arquivos confidenciais?",
-      aud: "De que modo você audita acessos (logs) e controla quem fez download ou exclusão de conteúdos críticos?",
-      mig: "Em que frequência você migra arquivos entre provedores (ex.: AWS S3, GDrive) e garante integridade?",
-      drp: "Qual sua estratégia de disaster recovery ou HA (alta disponibilidade) em caso de falha no storage principal?",
+      ...csExpertKeys,
     },
   },
   "cloudStorage"
@@ -2056,8 +2051,28 @@ export const defLlmKeys = withFrozenLibreLabel(
 export const defAddQuestions: [
   roleType,
   QuestionsMap<defComplexityKeySet>
-] = ObjectHelper.deepFreeze([
+] = Object.seal([
   "default",
+  new Map([
+    ["docs", defDocsKeys as any],
+    ["spreadSheets", defSsKeys],
+    ["formBuilders", defFmKeys],
+    ["cloudStorage", defCsKeys],
+    ["businessInteligence", defBiKeys],
+    ["Crms", defCrmKeys],
+    ["Erps", defErpKeys],
+    ["planning", defPlnKeys],
+    ["audio", defAiAdKeys],
+    ["image", defAiImgKeys],
+    ["video", defAiVdKeys],
+    ["llms", defLlmKeys],
+  ]),
+]) as any;
+export const undefinedAddQuestions: [
+  roleType,
+  QuestionsMap<defComplexityKeySet>
+] = Object.seal([
+  "undefined",
   new Map([
     ["docs", defDocsKeys as any],
     ["spreadSheets", defSsKeys],
@@ -2079,7 +2094,7 @@ export const eaDocsKeys = withFrozenLibreLabel(
       fmt: repeated.fmt,
       tmp: repeated.tmp,
       cbb: "Como você gerencia a colaboração de documentos entre membros de equipes?",
-      frq: `${frq} você compartilha documentos para edição com colegas?`,
+      frq: `${frq} compartilha documentos para edição com colegas?`,
       rdo: "Qual forma de resposta em formulário você tem preferência?",
       exp: "O quanto você é familizariado com exportações em diferentes formatos, como .pdf ou .txt?",
       prt: "Qual sua experiência em configurar documentos para impressão?",
@@ -2091,23 +2106,23 @@ export const eaDocsKeys = withFrozenLibreLabel(
       tpl: "Como você cria sumários automáticos ou referências cruzadas em documentos extensos?",
       rev: `${mnn} controla alterações e histórico de versões para múltiplos revisores?`,
       mac: "Quais tecnologias você utiliza parar criar macros ou automações para padronizar relatórios?",
-      sgn: `${frq} você assina documentos digitalmente?`,
+      sgn: `${frq} assina documentos digitalmente?`,
       stt: "Que tipo de estratégia e ferramentas você utiliza para formatação do layout de edição?",
       idx: "Qual é a sua familaridade gerando índices remissivos automaticamente?",
       fmt: `${mnn} utiliza estilos personalizados para padronizar relatórios?`,
-      crt: `${frq} você edita documentos colaborativos com permissões restritas por usuário?`,
+      crt: `${frq} edita documentos colaborativos com permissões restritas por usuário?`,
       exp: "Qual sua experiência em exportar documentos com configurações avançadas (marcas d’água, proteção)?",
-      api: `${frq} você integra editores de texto com APIs externas (ex.: para preenchimento automático)?`,
+      api: `${frq} integra editores de texto com APIs externas (ex.: para preenchimento automático)?`,
     },
     expert: {
       vba: repeated.mcr,
-      sec: `${frq} você lida com permissões avançadas, criptografia ou restrições de edição?`,
+      sec: `${frq} lida com permissões avançadas, criptografia ou restrições de edição?`,
       stl: "Descreva como você gerencia estilos de parágrafo, índice remissivo e formatação de layout altamente customizada.",
-      big: `${frq} você integra editores de texto a sistemas externos (APIs, bancos de dados)?`,
+      big: `${frq} integra editores de texto a sistemas externos (APIs, bancos de dados)?`,
       adv: "Que técnicas avançadas (campos dinâmicos, mala direta) você utiliza em documentos corporativos?",
       mlc: "Você já aplicou aprendizado de máquina para gerar ou analisar texto automaticamente?",
       int: `${frq} integração com plataformas como SharePoint, OneDrive ou GitHub para gerenciamento de documentos?`,
-      tem: `${frq} você gerencia templates corporativos com restrições para diferentes departamentos?`,
+      tem: `${frq} gerencia templates corporativos com restrições para diferentes departamentos?`,
       dig: "De que forma você implementa processos de assinatura digital ou certificação de documentos?",
       rpt: "Qual sua experiência em gerar relatórios analíticos automatizados com base em texto estruturado?",
     },
@@ -2118,7 +2133,7 @@ export const eaSsKeys = withFrozenLibreLabel(
   {
     beginner: {
       sum: repeated.sum,
-      frq: `${frq} você configura planilhas para controle de dados simples?`,
+      frq: `${frq} configura planilhas para controle de dados simples?`,
       col: "Como você colore ou categoriza células para destacar informações importantes?",
       spr: "Você prefere responder perguntas por meio de seletores (radio, select) ou textos longos?",
       fil: "De que modo você filtra ou classifica dados de forma simples?",
@@ -2130,14 +2145,14 @@ export const eaSsKeys = withFrozenLibreLabel(
     },
     intermediate: {
       piv: repeated.tbd,
-      adv: `${frq} você integra dados de outras fontes (CSV, BD) na planilha?`,
+      adv: `${frq} integra dados de outras fontes (CSV, BD) na planilha?`,
       prc: "Em que frequência você cria fórmulas intermediárias (SE, PROCV, CONCAT) para automação?",
       cht: "Que tipos de gráficos você costuma gerar para visualização?",
       col: "Como você colabora com outros usuários simultaneamente (co-edit, proteções)?",
       tbl: `${frq} voceê cria tabelas formatadas para facilitar análises e filtros?`,
       spl: "Como você divide dados em colunas separadas (Texto para Colunas)?",
       lnk: "Qual sua experiência em vincular células entre diferentes planilhas?",
-      imp: `${frq} você importa dados de fontes online para análises em tempo real?`,
+      imp: `${frq} importa dados de fontes online para análises em tempo real?`,
       aud: "De que forma você audita ou depura fórmulas para corrigir erros?",
     },
     expert: {
@@ -2145,8 +2160,8 @@ export const eaSsKeys = withFrozenLibreLabel(
       big: repeated.big,
       arr: repeated.arr,
       dbi: "Descreva como você conecta planilhas a bancos de dados SQL ou APIs, se aplicável.",
-      prf: `${frq} você faz tuning de performance em planilhas com dezenas de abas e fórmulas complexas?`,
-      sch: `${frq} você utiliza scripts para agendar atualizações automáticas de dados?`,
+      prf: `${frq} faz tuning de performance em planilhas com dezenas de abas e fórmulas complexas?`,
+      sch: `${frq} utiliza scripts para agendar atualizações automáticas de dados?`,
       mlc: "Você utiliza Aprendizado de máquina para prever ou categorizar dados?",
       api: "De que forma você utiliza APIs para buscar ou enviar dados automaticamente?",
       adv: "Que práticas avançadas você utiliza para validar e limpar grandes volumes de dados?",
@@ -2192,7 +2207,7 @@ export const eaBiKeys = withFrozenLibreLabel(
   {
     beginner: {
       ...biBeginnerKeys,
-      ead: `${frq} você utiliza os recursos básicos de exportação e compartilhamento dos dashboards da ferramenta?`,
+      ead: `${frq} utiliza os recursos básicos de exportação e compartilhamento dos dashboards da ferramenta?`,
       eas: `${frq} revisa os relatórios gerados para apoiar decisões administrativas?`,
     },
     intermediate: {
@@ -2248,16 +2263,16 @@ export const eaErpKeys = withFrozenLibreLabel(
   },
   "Erps"
 );
-export const eaPlnKeys = ObjectHelper.deepFreeze({
+export const eaPlnKeys = ObjectHelper.makeImmutable({
   ...defPlnKeys,
 });
-export const eaAiAdKeys = ObjectHelper.deepFreeze({
+export const eaAiAdKeys = ObjectHelper.makeImmutable({
   ...defAiAdKeys,
 });
-export const eaAiImgKeys = ObjectHelper.deepFreeze({
+export const eaAiImgKeys = ObjectHelper.makeImmutable({
   ...defAiImgKeys,
 });
-export const eaAiVdKeys = ObjectHelper.deepFreeze({
+export const eaAiVdKeys = ObjectHelper.makeImmutable({
   ...defAiVdKeys,
 });
 export const eaLlmKeys = withFrozenLibreLabel(
@@ -2268,12 +2283,12 @@ export const eaLlmKeys = withFrozenLibreLabel(
     intermediate: {
       ...llmIntermediateKeys,
       mon: "Como você considera que as LLMs podem beneficar suas práticas de monitoramento de equipes e designação de tarefas?",
-      doc: `${frq} você utiliza LLMs para produzir ou analisar relatórios e documentos corporativos?`,
+      doc: `${frq} utiliza LLMs para produzir ou analisar relatórios e documentos corporativos?`,
     },
     expert: {
       ...llmExpertKeys,
       mon: "Como você considera que as LLMs podem beneficar suas práticas de monitoramento de equipes e designação de tarefas?",
-      doc: `${frq} você utiliza LLMs para produzir ou analisar relatórios e documentos corporativos?`,
+      doc: `${frq} utiliza LLMs para produzir ou analisar relatórios e documentos corporativos?`,
     },
   },
   "llms"
@@ -2281,7 +2296,7 @@ export const eaLlmKeys = withFrozenLibreLabel(
 export const eaAddQuestions: [
   roleType,
   QuestionsMap<eaComplexityKeySet>
-] = ObjectHelper.deepFreeze([
+] = Object.seal([
   "executivoAdministrativo",
   new Map<
     addQuestionsKey,
@@ -2306,7 +2321,7 @@ export const fnDocsKeys = withFrozenLibreLabel(
     beginner: {
       frm: "Como você elabora documentos financeiros simples (propostas, orçamentos) e formata texto básico?",
       ref: "De que forma você insere referências internas ou notas explicativas em documentos?",
-      rev: `${frq} você revisa contratos ou relatórios de texto para ver se há erros de digitação ou valores trocados?`,
+      rev: `${frq} revisa contratos ou relatórios de texto para ver se há erros de digitação ou valores trocados?`,
       upg: `${tls} você utiliza para gerenciar versões de documentos e relatórios?`,
       cmt: "Quais recursos você utiliza para comentar e fazer sugestões em documentos e relatórios?",
     },
@@ -2331,7 +2346,7 @@ export const fnSsKeys = withFrozenLibreLabel(
   {
     beginner: {
       sum: repeated.sum,
-      frq: `${frq} você configura planilhas para registrar receitas e despesas?`,
+      frq: `${frq} configura planilhas para registrar receitas e despesas?`,
       col: "Como você marca células com cores para diferenciar gastos fixos de variáveis?",
       cat: "De que modo você categoriza transações (alimentação, transporte, etc.) de forma simples?",
       fil: "Como você utiliza filtros básicos para visualizar apenas certos períodos ou tipos de despesas?",
@@ -2339,7 +2354,7 @@ export const fnSsKeys = withFrozenLibreLabel(
     intermediate: {
       tab: repeated.tbd,
       adv: "Como você integra planilhas financeiras a outras fontes de dados, como extratos bancários?",
-      dev: `${frq} você usa fórmulas intermediárias (PROCV, SE, TIR) para simulações financeiras?`,
+      dev: `${frq} usa fórmulas intermediárias (PROCV, SE, TIR) para simulações financeiras?`,
       cht: "Que tipos de gráficos você gera para ilustrar resultados financeiros?",
       val: "Quais dessa técnicas você utilizar para validar dados de entrada para evitar erros em análises financeiras?",
     },
@@ -2383,7 +2398,7 @@ export const fnCsKeys = withFrozenLibreLabel(
     },
     expert: {
       ...csExpertKeys,
-      mid: `${frq} você integra dados financeiros armazenados na nuvem a mecanismos de BI ou machine learning?`,
+      mid: `${frq} integra dados financeiros armazenados na nuvem a mecanismos de BI ou machine learning?`,
       drs: `${tcn} você adota para recuperar rapidamente documentos críticos em caso de desastre ou falha de acesso à nuvem?`,
       org: "Descreva seus critérios gerais para organizar pastas de extratos, demonstrações e notas fiscais para facilitar a busca",
     },
@@ -2401,7 +2416,7 @@ export const fnBiKeys = withFrozenLibreLabel(
     intermediate: {
       ...biIntermediateKeys,
       fim: `${sttg} você utiliza para modelar dados financeiros complexos para análises de rentabilidade?`,
-      fna: `${frq} você integra fontes de dados financeiros (ERP, planilhas) nas ferramentas de BI?`,
+      fna: `${frq} integra fontes de dados financeiros (ERP, planilhas) nas ferramentas de BI?`,
       fic: `${exp} configurando automações e medidas calculadas para atualizar métricas em tempo real?`,
     },
     expert: {
@@ -2458,16 +2473,16 @@ export const fnErpKeys = withFrozenLibreLabel(
   },
   "Erps"
 );
-export const fnPlnKeys = ObjectHelper.deepFreeze({
+export const fnPlnKeys = ObjectHelper.makeImmutable({
   ...defPlnKeys,
 });
-export const fnAiAdKeys = ObjectHelper.deepFreeze({
+export const fnAiAdKeys = ObjectHelper.makeImmutable({
   ...defAiAdKeys,
 });
-export const fnAiImgKeys = ObjectHelper.deepFreeze({
+export const fnAiImgKeys = ObjectHelper.makeImmutable({
   ...defAiImgKeys,
 });
-export const fnAiVdKeys = ObjectHelper.deepFreeze({
+export const fnAiVdKeys = ObjectHelper.makeImmutable({
   ...defAiVdKeys,
 });
 export const fnLlmKeys = withFrozenLibreLabel(
@@ -2481,7 +2496,7 @@ export const fnLlmKeys = withFrozenLibreLabel(
     },
     expert: {
       ...llmExpertKeys,
-      ten: `${frq} você usa LLMs para prever vendas, estimar taxa de conversão ou analisar tendências do mercado?`,
+      ten: `${frq} usa LLMs para prever vendas, estimar taxa de conversão ou analisar tendências do mercado?`,
       rel: "Como você considera que LLMs podem auxiliar diretamente na produção de relatórios e documentos financeiros?",
     },
   },
@@ -2490,7 +2505,7 @@ export const fnLlmKeys = withFrozenLibreLabel(
 export const fnAddQuestions: [
   roleType,
   QuestionsMap<fnComplexityKeySet>
-] = ObjectHelper.deepFreeze([
+] = Object.seal([
   "financeiro",
   new Map([
     ["docs", fnDocsKeys as any],
@@ -2511,9 +2526,9 @@ export const cmDocsKeys = withFrozenLibreLabel(
   {
     beginner: {
       rfp: "Quais técnicas de formatação você prioriza no design gráficos de documentos para propostas comerciais?",
-      cpl: `${frq} você compila dados de vendas ou contatos em documentos textuais?`,
+      cpl: `${frq} compila dados de vendas ou contatos em documentos textuais?`,
       lbl: `${tcn} você utiliza para realçar segmentos de textos?`,
-      sig: `${frq} você utiliza assinaturas digitais?`,
+      sig: `${frq} utiliza assinaturas digitais?`,
       hst: "De que forma você mantém histórico de versões de ofertas enviadas a clientes?",
     },
     intermediate: {
@@ -2521,12 +2536,12 @@ export const cmDocsKeys = withFrozenLibreLabel(
       rev: "De que modo você controla comentários e revisões quando vários vendedores atualizam o mesmo arquivo?",
       mac: "Você utiliza macros ou scripts para preencher automaticamente dados de clientes em contratos?",
       sty: "Qual sua prática para padronizar estilos e layout em documentos de ofertas comerciais?",
-      adv: `${frq} você exporta os documentos em formato PDF?`,
+      adv: `${frq} exporta os documentos em formato PDF?`,
     },
     expert: {
       api: "De que forma você integra editores de texto a sistemas comerciais (ex.: CRM) para geração automática de contratos?",
       cnd: "Como você lida com campos dinâmicos e mala direta para dezenas de clientes simultaneamente?",
-      sec: `${frq} você aplica criptografia ou permissões avançadas em documentos de alto valor?`,
+      sec: `${frq} aplica criptografia ou permissões avançadas em documentos de alto valor?`,
       cmp: "Você faz comparação de versões para destacar alterações críticas em propostas?",
       mlc: "Já aplicou IA para redigir ou revisar cláusulas de documentos complexos (com várias condições)?",
     },
@@ -2545,7 +2560,7 @@ export const cmSsKeys = withFrozenLibreLabel(
     intermediate: {
       piv: repeated.tbd,
       adv: "Você integra planilhas com CRM ou outras fontes para atualizar dados de vendas (Sim/Não)?",
-      for: `${frq} você utiliza fórmulas intermediárias (PROCV, SE, SOMASE) para acompanhamento de metas?`,
+      for: `${frq} utiliza fórmulas intermediárias (PROCV, SE, SOMASE) para acompanhamento de metas?`,
       cht: "Que gráficos você gera para ilustrar desempenho comercial ou comparação de metas?",
       col: "Como você colabora com outros vendedores ou gerentes numa única planilha, sem sobrescrever dados?",
     },
@@ -2600,7 +2615,7 @@ export const cmBiKeys = withFrozenLibreLabel(
     },
     intermediate: {
       ...biIntermediateKeys,
-      cmm: `${frq} você modela dados de CRM e vendas para criar relatórios comerciais?`,
+      cmm: `${frq} modela dados de CRM e vendas para criar relatórios comerciais?`,
       cma: `${exp} integrando dados de diferentes canais comerciais na ferramenta de BI?`,
       cmc: `${exp} automatizando a consolidação de dados comerciais em dashboards?`,
     },
@@ -2624,7 +2639,7 @@ export const cmCrmKeys = withFrozenLibreLabel(
     intermediate: {
       ...crmIntermediateKeys,
       cmm: `${tcn} você usa para modelar dados de vendas em CRMs buscando identificar tendências?`,
-      cma: `${frq} você integra CRMs com ferramentas de marketing para alinhar estratégias de vendas?`,
+      cma: `${frq} integra CRMs com ferramentas de marketing para alinhar estratégias de vendas?`,
       cmc: `${exp} automatizando processos de atualização de status de leads em CRMs?`,
     },
     expert: {
@@ -2659,16 +2674,16 @@ export const cmErpKeys = withFrozenLibreLabel(
   },
   "Erps"
 );
-export const cmPlnKeys = ObjectHelper.deepFreeze({
+export const cmPlnKeys = ObjectHelper.makeImmutable({
   ...defPlnKeys,
 });
-export const cmAiAdKeys = ObjectHelper.deepFreeze({
+export const cmAiAdKeys = ObjectHelper.makeImmutable({
   ...defAiAdKeys,
 });
-export const cmAiImgKeys = ObjectHelper.deepFreeze({
+export const cmAiImgKeys = ObjectHelper.makeImmutable({
   ...defAiImgKeys,
 });
-export const cmAiVdKeys = ObjectHelper.deepFreeze({
+export const cmAiVdKeys = ObjectHelper.makeImmutable({
   ...defAiVdKeys,
 });
 export const cmLlmKeys = withFrozenLibreLabel(
@@ -2680,14 +2695,14 @@ export const cmLlmKeys = withFrozenLibreLabel(
     intermediate: {
       ...llmIntermediateKeys,
       pol: "Quais destes pontos críticos a cerca de políticas em relações comerciais você dá prioridade quando utilizando LLMs?",
-      nlp: `${frq} você analisa mensagens e documentos extensos de clientes usando LLMs?`,
-      doc: `${frq} você utiliza LLMs para produzir relatórios e documentos corporativos?`,
+      nlp: `${frq} analisa mensagens e documentos extensos de clientes usando LLMs?`,
+      doc: `${frq} utiliza LLMs para produzir relatórios e documentos corporativos?`,
     },
     expert: {
       ...llmExpertKeys,
-      api: `${frq} você conecta APIs de LLMs a sistemas de CRM ou plataformas de e-mail marketing?`,
+      api: `${frq} conecta APIs de LLMs a sistemas de CRM ou plataformas de e-mail marketing?`,
       adv: "Você já treinou modelos específicos com dados de negociações passadas para orientação de pricing?",
-      prv: `${frq} você usa LLMs para prever vendas, estimar taxa de conversão ou analisar tendências do mercado?`,
+      prv: `${frq} usa LLMs para prever vendas, estimar taxa de conversão ou analisar tendências do mercado?`,
     },
   },
   "llms"
@@ -2695,7 +2710,7 @@ export const cmLlmKeys = withFrozenLibreLabel(
 export const cmAddQuestions: [
   roleType,
   QuestionsMap<cmComplexityKeySet>
-] = ObjectHelper.deepFreeze([
+] = Object.seal([
   "comercial",
   new Map([
     ["docs", cmDocsKeys as any],
@@ -2717,15 +2732,15 @@ export const mktDocsKeys = withFrozenLibreLabel(
     beginner: {
       mch: "Como você redige materiais de marketing básicos (flyers, comunicados) com formatação simples?",
       chk: "Você utiliza checklists para revisar ortografia, imagens e coerência nos textos de marketing?",
-      pln: `${frq} você planeja conteúdo textual (ex.: posts) e compila num doc colaborativo?`,
+      pln: `${frq} planeja conteúdo textual (ex.: posts) e compila num doc colaborativo?`,
       cmd: "De que modo você adiciona comentários, sugestões e versões para aprovação?",
-      ext: `${frq} você exporta documentos no formato PDF?`,
+      ext: `${frq} exporta documentos no formato PDF?`,
     },
     intermediate: {
       mac: "Você criou macros ou modelos padronizados (layout, sumário) para relatórios de campanha?",
       rev: "De que forma você gerencia revisões vindas de gestores, designers e redatores ao mesmo tempo?",
       stl: `${rsc} gráficos você utiliza para destacar dados em documentos?`,
-      mlt: `${frq} você utiliza mala direta (ex.: para e-mails de campanha em massa)?`,
+      mlt: `${frq} utiliza mala direta (ex.: para e-mails de campanha em massa)?`,
       doc: "Como você vincula partes do texto a dados externos (ex.: planilhas de resultados)?",
     },
     expert: {
@@ -2804,8 +2819,8 @@ export const mktBiKeys = withFrozenLibreLabel(
     beginner: {
       ...biBeginnerKeys,
       mkt: `${exp} utilizando ferramentas de BI para monitorar métricas básicas de campanhas de marketing?`,
-      mka: `${frq} você configura gráficos para acompanhar resultados de campanhas?`,
-      mkb: `${frq} você compartilha dashboards de marketing com sua equipe?`,
+      mka: `${frq} configura gráficos para acompanhar resultados de campanhas?`,
+      mkb: `${frq} compartilha dashboards de marketing com sua equipe?`,
     },
     intermediate: {
       ...biIntermediateKeys,
@@ -2865,16 +2880,16 @@ export const mktErpKeys = withFrozenLibreLabel(
   },
   "Erps"
 );
-export const mktPlnKeys = ObjectHelper.deepFreeze({
+export const mktPlnKeys = ObjectHelper.makeImmutable({
   ...defPlnKeys,
 });
-export const mktAiAdKeys = ObjectHelper.deepFreeze({
+export const mktAiAdKeys = ObjectHelper.makeImmutable({
   ...defAiAdKeys,
 });
-export const mktAiImgKeys = ObjectHelper.deepFreeze({
+export const mktAiImgKeys = ObjectHelper.makeImmutable({
   ...defAiImgKeys,
 });
-export const mktAiVdKeys = ObjectHelper.deepFreeze({
+export const mktAiVdKeys = ObjectHelper.makeImmutable({
   ...defAiVdKeys,
 });
 export const mktLlmKeys = withFrozenLibreLabel(
@@ -2884,7 +2899,7 @@ export const mktLlmKeys = withFrozenLibreLabel(
     },
     intermediate: {
       ...llmIntermediateKeys,
-      pol: `${frq} você utiliza LLMs para intepretar e resumir dados de relatórios e feedback?`,
+      pol: `${frq} utiliza LLMs para intepretar e resumir dados de relatórios e feedback?`,
       nlp: "Você utiliza LLMs para sumarizar estatísticas de feedback de clientes ou reviews usando?",
       exc: "Você utiliza LLMs para criar planilhas de budget ou simular projeções de campanha?",
     },
@@ -2900,7 +2915,7 @@ export const mktLlmKeys = withFrozenLibreLabel(
 export const mktAddQuestions: [
   roleType,
   QuestionsMap<mktComplexityKeySet>
-] = ObjectHelper.deepFreeze([
+] = Object.seal([
   "marketing",
   new Map([
     ["docs", mktDocsKeys as any],
@@ -2922,7 +2937,7 @@ export const stN1DocsKeys = withFrozenLibreLabel(
     beginner: {
       fmt: repeated.fmt,
       syn: "De que forma você ensina a sincronizar documentos na nuvem ou em rede local?",
-      cpt: `${frq} você auxilia na compatibilidade de arquivos entre diferentes versões do software?`,
+      cpt: `${frq} auxilia na compatibilidade de arquivos entre diferentes versões do software?`,
       tmp: "Você recomenda modelos prontos para usuários inexperientes em edição de texto? (Sim/Não)",
       col: "Como você analisa a colaboração simultânea (multiusuário) em um mesmo documento?",
     },
@@ -2938,7 +2953,7 @@ export const stN1DocsKeys = withFrozenLibreLabel(
       cpy: `${tls} você instrui para o controle de versão dos documentos colaborativos?`,
       idx: "Como você instrui usuários a criarem índices remissivos ou seções avançadas em documentos extensos?",
       adv: "De que forma você soluciona conflitos de permissões avançadas e restrições de edição em rede?",
-      dbi: `${frq} você integra documentos a bancos de dados ou APIs (ex.: mail merge massivo)?`,
+      dbi: `${frq} integra documentos a bancos de dados ou APIs (ex.: mail merge massivo)?`,
     },
   },
   "docs"
@@ -2992,7 +3007,7 @@ export const stN1CsKeys = withFrozenLibreLabel(
   {
     beginner: {
       ...csBeginnerKeys,
-      upl: `${frq} você auxilia usuários com arquivos em plataformas baseadas em nuvem?`,
+      upl: `${frq} auxilia usuários com arquivos em plataformas baseadas em nuvem?`,
       syn: "Descreva em termos gerais suas técnicas para sincronizar pastas locais com o armazenamento em nuvems",
     },
     intermediate: {
@@ -3009,27 +3024,27 @@ export const stN1CsKeys = withFrozenLibreLabel(
   "cloudStorage"
 );
 const stn =
-    "Descreva, em suas palavras, sua experiência orientando usuários com a instalação e configuração de ferramentas de BI",
-  stBiKeys = withFrozenLibreLabel(
-    {
-      beginner: {
-        ...biBeginnerKeys,
-        stn,
-      },
-      intermediate: {
-        ...biIntermediateKeys,
-        stn,
-      },
-      expert: {
-        ...biExpertKeys,
-        stn,
-      },
+    "Descreva, em suas palavras, sua experiência orientando usuários com a instalação e configuração de ferramentas de BI" as const,
+  stBiKeys = ObjectHelper.makeImmutable({
+    beginner: {
+      ...biBeginnerKeys,
+      stn,
     },
-    "businessInteligence"
-  );
-export const stN1BiKeys = ObjectHelper.deepFreeze({
-  ...stBiKeys,
-});
+    intermediate: {
+      ...biIntermediateKeys,
+      stn,
+    },
+    expert: {
+      ...biExpertKeys,
+      stn,
+    },
+  });
+export const stN1BiKeys = withFrozenLibreLabel(
+  {
+    ...stBiKeys,
+  },
+  "businessInteligence"
+);
 export const stN1CrmKeys = withFrozenLibreLabel(
   {
     beginner: {
@@ -3064,16 +3079,16 @@ export const stN1ErpKeys = withFrozenLibreLabel(
   },
   "Erps"
 );
-export const stN1PlnKeys = ObjectHelper.deepFreeze({
+export const stN1PlnKeys = ObjectHelper.makeImmutable({
   ...defPlnKeys,
 });
-export const stN1AiAdKeys = ObjectHelper.deepFreeze({
+export const stN1AiAdKeys = ObjectHelper.makeImmutable({
   ...defAiAdKeys,
 });
-export const stN1AiImgKeys = ObjectHelper.deepFreeze({
+export const stN1AiImgKeys = ObjectHelper.makeImmutable({
   ...defAiImgKeys,
 });
-export const stN1AiVdKeys = ObjectHelper.deepFreeze({
+export const stN1AiVdKeys = ObjectHelper.makeImmutable({
   ...defAiVdKeys,
 });
 export const stLlmKeys = withFrozenLibreLabel(
@@ -3095,13 +3110,13 @@ export const stLlmKeys = withFrozenLibreLabel(
   },
   "llms"
 );
-export const stN1LlmKeys = ObjectHelper.deepFreeze({
+export const stN1LlmKeys = ObjectHelper.makeImmutable({
   ...stLlmKeys,
 });
 export const stN1AddQuestions: [
   roleType,
   QuestionsMap<stN1ComplexityKeySet>
-] = ObjectHelper.deepFreeze([
+] = Object.seal([
   "suporteTecnicoN1",
   new Map([
     ["docs", stN1DocsKeys as any],
@@ -3123,7 +3138,7 @@ export const stN2DocsKeys = withFrozenLibreLabel(
     beginner: {
       syn: `${tls} você utiliza para a sincronização de arquivos .doc entre servidores ou ferramentas na nuvem?`,
       cmp: `${tls} de conversão de formatos de documentos você recomendaria para um usuário?`,
-      plg: `${frq} você instala ou configura plugins básicos de formatação de documentos para usuários?`,
+      plg: `${frq} instala ou configura plugins básicos de formatação de documentos para usuários?`,
       pmt: `${tls} você utiliza para intervir em problemas de permissão (arquivos bloqueados, somente leitura) em rede?`,
       ori: "Que orientações básicas você dá quando o documento é corrompido ou não abre corretamente?",
     },
@@ -3164,7 +3179,7 @@ export const stN2SsKeys = withFrozenLibreLabel(
       arr: "Qual é o seu nível de familiaridade com funções matriciais avançadas (ex.: MATRIZDINAMICA, Fórmulas aninhadas complexas)?",
       sec: "Qual é sua prática ao configurar segurança (proteção de intervalos, permissões de usuário) em grandes planilhas de rede?",
       mcr: `${tcn} para depurar macros avançadas (VBA) que causam lentidão ou bloqueiam recursos compartilhados?`,
-      big: `${frq} você conecta planilhas a bancos de dados corporativos via ODBC/SQL e soluciona problemas de acesso?`,
+      big: `${frq} conecta planilhas a bancos de dados corporativos via ODBC/SQL e soluciona problemas de acesso?`,
       par: "Descreva técnicas que você utiliza para tuning de performance em planilhas muito grandes (milhares de linhas ou abas).",
     },
   },
@@ -3189,16 +3204,19 @@ export const stN2FmKeys = withFrozenLibreLabel(
   },
   "formBuilders"
 );
-export const stN2CsKeys = ObjectHelper.deepFreeze({
+export const stN2CsKeys = ObjectHelper.makeImmutable({
   ...stN1CsKeys,
 });
-export const stN2BiKeys = ObjectHelper.deepFreeze({
-  ...stBiKeys,
-});
-export const stN2CrmKeys = ObjectHelper.deepFreeze({
+export const stN2BiKeys = withFrozenLibreLabel(
+  {
+    ...stBiKeys,
+  },
+  "businessInteligence"
+);
+export const stN2CrmKeys = ObjectHelper.makeImmutable({
   ...stN1CrmKeys,
 });
-export const stN2ErpKeys = ObjectHelper.deepFreeze({
+export const stN2ErpKeys = ObjectHelper.makeImmutable({
   beginner: {
     ...erpBeginnerKeys,
     s2b: `${mnn} realiza configurações iniciais (login, rede) para usuários no ERP?`,
@@ -3212,25 +3230,25 @@ export const stN2ErpKeys = ObjectHelper.deepFreeze({
     s2e: `${tcn} aplica ao executar scripts avançados (ABAP, TOTVS) ou integrações profundas para incidentes críticos no ERP?`,
   },
 });
-export const stN2PlnKeys = ObjectHelper.deepFreeze({
+export const stN2PlnKeys = ObjectHelper.makeImmutable({
   ...defPlnKeys,
 });
-export const stN2AiAdKeys = ObjectHelper.deepFreeze({
+export const stN2AiAdKeys = ObjectHelper.makeImmutable({
   ...defAiAdKeys,
 });
-export const stN2AiImgKeys = ObjectHelper.deepFreeze({
+export const stN2AiImgKeys = ObjectHelper.makeImmutable({
   ...defAiImgKeys,
 });
-export const stN2AiVdKeys = ObjectHelper.deepFreeze({
+export const stN2AiVdKeys = ObjectHelper.makeImmutable({
   ...defAiVdKeys,
 });
-export const stN2LlmKeys = ObjectHelper.deepFreeze({
+export const stN2LlmKeys = ObjectHelper.makeImmutable({
   ...stLlmKeys,
 });
 export const stN2AddQuestions: [
   roleType,
   QuestionsMap<stN2ComplexityKeySet>
-] = ObjectHelper.deepFreeze([
+] = Object.seal([
   "suporteTecnicoN2",
   new Map([
     ["docs", stN2DocsKeys as any],
@@ -3251,7 +3269,7 @@ export const opDocsKeys = withFrozenLibreLabel(
   {
     beginner: {
       net: "Como você configura as permissões básicas de rede para que os usuários acessem um editor de texto?",
-      upd: `${frq} você atualiza softwares de edição (Office, LibreOffice) para corrigir falhas?`,
+      upd: `${frq} atualiza softwares de edição (Office, LibreOffice) para corrigir falhas?`,
       lnk: "De que modo você instala e vincula plugins ou complementos em servidores de arquivos locais?",
       prt: "Como você configura impressoras e controla spools de documentos em rede?",
       pat: "Qual sua prática para padronizar caminhos de salvamento (servidor/nuvem) e definir permissões de pasta?",
@@ -3280,7 +3298,7 @@ export const opSsKeys = withFrozenLibreLabel(
       per: "De que forma você configura permissões de pastas e arquivos compartilhados, assegurando acesso controlado às planilhas?",
       cpy: "Quais técnicas você recomenda para orientar a criação de cópias de planilhas para backup rápido no dia a dia?",
       bkp: "Quais práticas de backup simples você aplica para evitar perda em planilhas armazenadas em rede?",
-      col: `${frq} você ensina colaboração simultânea (co-edit) em Excel/Sheets via servidor ou Drive?`,
+      col: `${frq} ensina colaboração simultânea (co-edit) em Excel/Sheets via servidor ou Drive?`,
     },
     intermediate: {
       sec: "Quais recursos você usa para implementar senhas ou criptografia de arquivos relacionados a redes?",
@@ -3320,12 +3338,15 @@ export const opFmKeys = withFrozenLibreLabel(
   },
   "formBuilders"
 );
-export const opCsKeys = ObjectHelper.deepFreeze({
+export const opCsKeys = ObjectHelper.makeImmutable({
   ...stN1CsKeys,
 });
-export const opBiKeys = ObjectHelper.deepFreeze({
-  ...stBiKeys,
-});
+export const opBiKeys = withFrozenLibreLabel(
+  {
+    ...stBiKeys,
+  },
+  "businessInteligence"
+);
 export const opCrmKeys = withFrozenLibreLabel(
   {
     beginner: {
@@ -3360,16 +3381,16 @@ export const opErpKeys = withFrozenLibreLabel(
   },
   "Erps"
 );
-export const opPlnKeys = ObjectHelper.deepFreeze({
+export const opPlnKeys = ObjectHelper.makeImmutable({
   ...defPlnKeys,
 });
-export const opAiAdKeys = ObjectHelper.deepFreeze({
+export const opAiAdKeys = ObjectHelper.makeImmutable({
   ...defAiAdKeys,
 });
-export const opAiImgKeys = ObjectHelper.deepFreeze({
+export const opAiImgKeys = ObjectHelper.makeImmutable({
   ...defAiImgKeys,
 });
-export const opAiVdKeys = ObjectHelper.deepFreeze({
+export const opAiVdKeys = ObjectHelper.makeImmutable({
   ...defAiVdKeys,
 });
 export const opLlmKeys = withFrozenLibreLabel(
@@ -3392,7 +3413,7 @@ export const opLlmKeys = withFrozenLibreLabel(
 export const opAddQuestions: [
   roleType,
   QuestionsMap<opComplexityKeySet>
-] = ObjectHelper.deepFreeze([
+] = Object.seal([
   "operatorio",
   new Map([
     ["docs", opDocsKeys as any],
@@ -3419,7 +3440,7 @@ export const devDocsKeys = withFrozenLibreLabel(
       sty: "De que forma você padroniza estilos de anotações nos arquivos?",
     },
     intermediate: {
-      rfc: `${frq} você costuma criar RFCs (Request for Comments) ou especificações técnicas intermediárias?`,
+      rfc: `${frq} costuma criar RFCs (Request for Comments) ou especificações técnicas intermediárias?`,
       sum: `${tls} você utiliza para gerar sumários automáticos e referências cruzadas para guias técnicos maiores?`,
       dev: `${exp} com bibliotecas de testes automáticos?`,
       rev: "Como você lida com revisões colaborativas, incluindo comentários e sugestões de colegas?",
@@ -3429,7 +3450,7 @@ export const devDocsKeys = withFrozenLibreLabel(
       scp: "Você integra scripts que convertem doc em wiki/HTML/PDF automaticamente para distribuições?",
       col: "Como você mantém controle rigoroso de alterações em docs extensos (manual de arquitetura) via Git?",
       arc: `${mnn} descreve arquitetura de software avançada (ex.: diagramas UML) em docs e versiona?`,
-      int: `${frq} você faz a integração com ferramentas de doc automatizada (ex.: MkDocs, Sphinx)?`,
+      int: `${frq} faz a integração com ferramentas de doc automatizada (ex.: MkDocs, Sphinx)?`,
       pol: "Descreva livremente as suas políticas e padrões de documentação para lidar com conflitos de merge e pull requests",
     },
   },
@@ -3447,7 +3468,7 @@ export const devSsKeys = withFrozenLibreLabel(
     intermediate: {
       scr: "Quais tecnologias você utiliza para automatizar relatórios sobre builds?",
       mds: "Você usa planilhas de métricas (ex.: cobertura de testes, performance) para acompanhamento intermediário?",
-      con: `${frq} você consolida dados de múltiplos projetos numa planilha central e faz dashboards?`,
+      con: `${frq} consolida dados de múltiplos projetos numa planilha central e faz dashboards?`,
       link: "Você vincula planilhas a sistemas de CI/CD ou repositórios para atualizar informações de release?",
       sec: "Como você controla permissões, evitando que informações sensíveis fiquem expostas?",
     },
@@ -3470,7 +3491,7 @@ export const devFmKeys = withFrozenLibreLabel(
     intermediate: {
       ...fmIntermediateKeys,
       scp: "Quais dessas ferramentas de programação você utiliza para auxiliar no desenvolvimento e análise de formulários?",
-      rgx: `${frq} você adiciona Expressões Regulares na validação de campos em formulários?`,
+      rgx: `${frq} adiciona Expressões Regulares na validação de campos em formulários?`,
       cnd: "Quais critérios e técnicas você aplica na lógica condicional para otimizar a UX de formulários?",
     },
     expert: {
@@ -3492,7 +3513,7 @@ export const devCsKeys = withFrozenLibreLabel(
     intermediate: {
       ...csIntermediateKeys,
       lck: `${exp} resolvendo conflitos de merge e rebase?`,
-      ver: `${frq} você elabora versionamento intermediário (snapshots) para assets e integra esse fluxo com outros colaboradores?`,
+      ver: `${frq} elabora versionamento intermediário (snapshots) para assets e integra esse fluxo com outros colaboradores?`,
     },
     expert: {
       ...csExpertKeys,
@@ -3566,30 +3587,30 @@ export const devErpKeys = withFrozenLibreLabel(
   },
   "Erps"
 );
-export const devPlnKeys = ObjectHelper.deepFreeze({
+export const devPlnKeys = ObjectHelper.makeImmutable({
   ...defPlnKeys,
 });
-export const devAiAdKeys = ObjectHelper.deepFreeze({
+export const devAiAdKeys = ObjectHelper.makeImmutable({
   ...defAiAdKeys,
 });
-export const devAiImgKeys = ObjectHelper.deepFreeze({
+export const devAiImgKeys = ObjectHelper.makeImmutable({
   ...defAiImgKeys,
 });
-export const devAiVdKeys = ObjectHelper.deepFreeze({
+export const devAiVdKeys = ObjectHelper.makeImmutable({
   ...defAiVdKeys,
 });
 export const devLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
-      chat: `${frq} você utiliza LLMs para gerar snippets ou "rascunhos" de código?`,
+      chat: `${frq} utiliza LLMs para gerar snippets ou "rascunhos" de código?`,
       tips: "Como você orienta perguntas básicas para obter exemplos de funções ou algoritmos?",
       ...llmBeginnerKeys,
     },
     intermediate: {
       ...llmIntermediateKeys,
-      int: `${frq} você integra a LLM em IDEs (ex.: GitHub Copilot)?`,
+      int: `${frq} integra a LLM em IDEs (ex.: GitHub Copilot)?`,
       exp: "Qual é o seu nível de conhecimento em algoritmos de Aprendizado de Máquina?",
-      ctx: `${frq} você armazena prompts para reiterações futuras?`,
+      ctx: `${frq} armazena prompts para reiterações futuras?`,
       stc: "Qual dessas prática você adota com modelos de chain-of-thought para orientações de tarefas com múltiplas camadas?",
     },
     expert: {
@@ -3604,7 +3625,7 @@ export const devLlmKeys = withFrozenLibreLabel(
 export const devAddQuestions: [
   roleType,
   QuestionsMap<devComplexityKeySet>
-] = ObjectHelper.deepFreeze([
+] = Object.seal([
   "desenvolvimento",
   new Map([
     ["docs", devDocsKeys as any],
@@ -3625,7 +3646,7 @@ export const devOpsDocsKeys = withFrozenLibreLabel(
   {
     beginner: {
       sdr: "Como você documenta os passos de build ou scripts simples (Markdown, README) para que todos entendam?",
-      cco: `${frq} você adiciona comentários sobre configurações de CI/CD nos arquivos de doc?`,
+      cco: `${frq} adiciona comentários sobre configurações de CI/CD nos arquivos de doc?`,
       vrs: `${frq} versiona a documentação junto com o código em repositórios Git?`,
       col: "De que forma você permite que vários membros do time editem simultaneamente o mesmo doc?",
       cli: `${exp} criando CLIs para que devs executem builds localmente?`,
@@ -3651,7 +3672,7 @@ export const devOpsSsKeys = withFrozenLibreLabel(
   {
     beginner: {
       pip: "Você utiliza planilhas para documentar as etapas de pipeline implementadas?",
-      env: `${frq} você registra variáveis de ambiente (ex.: URLs, keys) em uma planilha?`,
+      env: `${frq} registra variáveis de ambiente (ex.: URLs, keys) em uma planilha?`,
       job: "De que forma planilhas participam do desenvolvimento da sua pipeline?",
       rep: `${frq} gera relatórios em planilha sobre falhas e sucessos de build?`,
       acc: "Quais técnicas você utiliza para integrar planilhas diretamente no fluxo de fluxo DevOps?",
@@ -3666,7 +3687,7 @@ export const devOpsSsKeys = withFrozenLibreLabel(
     expert: {
       big: "Como você lida com volumosas métricas (ex.: histórico de builds de meses/anos) e performance na planilha?",
       aut: "Que tipo de resultos e links de automação você registra em planilhas (scripts de rollback, escalonamento)?",
-      adv: `${frq} você gera dashboards complexos, cruzando dados de repositórios, monitoramento e falhas?`,
+      adv: `${frq} gera dashboards complexos, cruzando dados de repositórios, monitoramento e falhas?`,
       ver: "De que modo versiona planilhas importantes para não perder histórico?",
       aud: "Como você audita logs ou histórico de builds dentro de planilhas?",
     },
@@ -3674,7 +3695,7 @@ export const devOpsSsKeys = withFrozenLibreLabel(
   "spreadSheets"
 );
 export const devOpsFmKeys = withFrozenLibreLabel(
-  opFmKeys,
+  { ...opFmKeys },
   "formBuilders"
 );
 export const devOpsCsKeys = withFrozenLibreLabel(
@@ -3701,10 +3722,10 @@ export const devOpsCsKeys = withFrozenLibreLabel(
   },
   "cloudStorage"
 );
-export const devOpsBiKeys = ObjectHelper.deepFreeze({
+export const devOpsBiKeys = ObjectHelper.makeImmutable({
   ...devBiKeys,
 });
-export const devOpsCrmKeys = ObjectHelper.deepFreeze({
+export const devOpsCrmKeys = ObjectHelper.makeImmutable({
   ...devCrmKeys,
 });
 export const devOpsErpKeys = withFrozenLibreLabel(
@@ -3730,29 +3751,29 @@ export const devOpsErpKeys = withFrozenLibreLabel(
   },
   "Erps"
 );
-export const devOpsPlnKeys = ObjectHelper.deepFreeze({
+export const devOpsPlnKeys = ObjectHelper.makeImmutable({
   ...defPlnKeys,
 });
-export const devOpsAiAdKeys = ObjectHelper.deepFreeze({
+export const devOpsAiAdKeys = ObjectHelper.makeImmutable({
   ...defAiAdKeys,
 });
-export const devOpsAiImgKeys = ObjectHelper.deepFreeze({
+export const devOpsAiImgKeys = ObjectHelper.makeImmutable({
   ...defAiImgKeys,
 });
-export const devOpsAiVdKeys = ObjectHelper.deepFreeze({
+export const devOpsAiVdKeys = ObjectHelper.makeImmutable({
   ...defAiVdKeys,
 });
 export const devOpsLlmKeys = withFrozenLibreLabel(
   {
     beginner: {
       ...llmBeginnerKeys,
-      cmt: `${frq} você gera comentários de pipeline ou explicações automáticas via LLM?`,
-      tip: `${frq} você usa LLMs para gerar esboços de scripts de CI/CD ou Dockerfiles simples?`,
+      cmt: `${frq} gera comentários de pipeline ou explicações automáticas via LLM?`,
+      tip: `${frq} usa LLMs para gerar esboços de scripts de CI/CD ou Dockerfiles simples?`,
     },
     intermediate: {
       ...llmIntermediateKeys,
-      prp: `${frq} você elabora prompts detalhando environment, orquestrador e escalabilidade para auxílio de LLMs?`,
-      ctx: `${frq} você armazena prompts para reiterações futuras?`,
+      prp: `${frq} elabora prompts detalhando environment, orquestrador e escalabilidade para auxílio de LLMs?`,
+      ctx: `${frq} armazena prompts para reiterações futuras?`,
       stc: "Qual dessas prática você adota com modelos de chain-of-thought para orientações de tarefas com múltiplas camadas?",
     },
     expert: {
@@ -3767,7 +3788,7 @@ export const devOpsLlmKeys = withFrozenLibreLabel(
 export const devOpsAddQuestions: [
   roleType,
   QuestionsMap<devOpsComplexityKeySet>
-] = ObjectHelper.deepFreeze([
+] = Object.seal([
   "devOps",
   new Map([
     ["docs", devOpsDocsKeys as any],
@@ -3786,7 +3807,7 @@ export const devOpsAddQuestions: [
 ]);
 export const repeatedDefinitions: Readonly<{
   [K in repeatingDefinitionKeys]: FieldDescription;
-}> = ObjectHelper.deepFreeze({
+}> = ObjectHelper.makeImmutable({
   sum: {
     // "Você aplica SOMA, MÉDIA para ver resultados gerais de vendas em uma planilha?"
     type: "select-one",
@@ -3973,12 +3994,12 @@ export const repeatedDefinitions: Readonly<{
     minLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
   },
 });
-export const lib = ObjectHelper.deepFreeze(
+export const lib = ObjectHelper.makeImmutable(
   repeatedDefinitions.txtl
 );
 export const fmDefinitions: {
   [K in keyof typeof fmGeneralKeys]: FieldDescription;
-} = ObjectHelper.deepFreeze({
+} = ObjectHelper.makeImmutable({
   tpl: repeatedDefinitions.frq,
   rsp: {
     // "Quais são suas formas preferenciais de salvar dados de um formulário?"
@@ -4024,13 +4045,13 @@ export const fmDefinitions: {
 });
 export const fmBeginnerDefinitions: {
   [K in keyof typeof fmBeginnerKeys]: FieldDescription;
-} = ObjectHelper.deepFreeze({
+} = ObjectHelper.makeImmutable({
   crt: repeatedDefinitions.exp,
   ...fmDefinitions,
 });
 export const fmIntermediateDefinitions: ROFieldRecord<
   typeof fmIntermediateKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   ...fmDefinitions,
   aut: {
     type: "select-multiple",
@@ -4046,7 +4067,7 @@ export const fmIntermediateDefinitions: ROFieldRecord<
 });
 export const fmExpertDefinitions: ROFieldRecord<
   typeof fmExpertKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   ...fmDefinitions,
   dsh: {
     //"Como você conecta formulários a dashboards para relatórios em tempo real?"
@@ -4064,7 +4085,7 @@ export const fmExpertDefinitions: ROFieldRecord<
 });
 export const opRepeatedDefinitions: Readonly<{
   [K in complexityLabel]: KeysRecords<FormBuilderQuestionKey>;
-}> = ObjectHelper.deepFreeze({
+}> = ObjectHelper.makeImmutable({
   beginner: {
     ...fmBeginnerDefinitions,
     net: {
@@ -4125,28 +4146,27 @@ export const opRepeatedDefinitions: Readonly<{
 function withFrozenLib<T>(
   dict: EntryTypeDictionary<T>
 ): EntryTypeDictionary<T> {
+  dict = ObjectHelper.makeMutable(dict);
   Object.keys(dict).forEach(roleKey => {
     const roleData = dict[roleKey as keyof typeof dict];
     ["beginner", "intermediate", "expert"].forEach(
       levelKey => {
-        if (!roleData[levelKey as keyof typeof roleData])
-          return;
         if (
-          !(
-            "lib" in
+          !roleData[levelKey as keyof typeof roleData] ||
+          "lib" in
             roleData[levelKey as keyof typeof roleData]
-          )
         )
-          roleData[levelKey as keyof typeof roleData] = {
-            ...roleData[levelKey as keyof typeof roleData],
-            lib,
-          };
+          return;
+        roleData[levelKey as keyof typeof roleData] = {
+          ...roleData[levelKey as keyof typeof roleData],
+          lib,
+        };
       }
     );
   });
-  return ObjectHelper.deepFreeze(
-    dict
-  ) as EntryTypeDictionary<T>;
+  return ObjectHelper.deepFreeze(dict) as Readonly<
+    EntryTypeDictionary<T>
+  >;
 }
 export const docEntryTypes: EntryTypeDictionary<DocsQuestionKey> =
   withFrozenLib({
@@ -4928,6 +4948,45 @@ export const docEntryTypes: EntryTypeDictionary<DocsQuestionKey> =
         },
       },
     },
+    undefined: {
+      beginner: {
+        fmt: repeatedDefinitions.exp, // `${fam} com formatações simples...`
+        tem: repeatedDefinitions.tmp, // "De que forma você aproveita modelos (templates) prontos..."
+        use: repeatedDefinitions.frq,
+        col: repeatedDefinitions.colab,
+        exp: repeatedDefinitions.exp,
+      },
+      intermediate: {
+        rev: repeatedDefinitions.colab,
+        mac: repeatedDefinitions.yn,
+        //`Quais destas ferramentas você utiliza para converter formatos de arquivos de documentos?`
+        cmp: {
+          type: "select-multiple",
+          options: [
+            `Adobe Acrobat (PDF para Word/Excel)`,
+            `Microsoft Word (Salvar como PDF, DOCX, etc.)`,
+            `Google Docs (Exportação para diferentes formatos)`,
+            `LibreOffice (Conversão entre ODT, DOCX, PDF, etc.)`,
+            `Zamzar ou Online Convert (Conversores online)`,
+            `Pandoc (Conversão avançada de documentos via CLI)`,
+            `Calibre (Conversão de e-books para PDF, EPUB, MOBI)`,
+            `HandBrake (Conversão de documentos digitalizados em imagens/PDFs)`,
+            `ABBYY FineReader (OCR e conversão para textos editáveis)`,
+          ],
+          required,
+        },
+        per: repeatedDefinitions.sec,
+        lay: repeatedDefinitions.txtl,
+      },
+      expert: {
+        // eaDocsKeys.expert
+        vba: repeatedDefinitions.scp,
+        sec: repeatedDefinitions.sec,
+        idx: repeatedDefinitions.frq,
+        api: repeatedDefinitions.txts,
+        adv: repeatedDefinitions.txts,
+      },
+    },
   });
 export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionKey> =
   withFrozenLib({
@@ -5634,6 +5693,29 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionKey> =
         },
       },
     },
+    undefined: {
+      beginner: {
+        mth: repeatedDefinitions.frq,
+        fmt: repeatedDefinitions.col,
+        fil: repeatedDefinitions.fil,
+        col: repeatedDefinitions.frq,
+        bar: repeatedDefinitions.frq,
+      },
+      intermediate: {
+        fml: repeatedDefinitions.exp,
+        val: repeatedDefinitions.frq,
+        net: repeatedDefinitions.frq,
+        sec: repeatedDefinitions.sec,
+        piv: repeatedDefinitions.txts,
+      },
+      expert: {
+        mcr: repeatedDefinitions.exp,
+        prf: repeatedDefinitions.exp,
+        big: repeatedDefinitions.frq,
+        dbi: repeatedDefinitions.dbi,
+        aud: repeatedDefinitions.txtl,
+      },
+    },
   });
 export const fmEntryTypes: EntryTypeDictionary<FormBuilderQuestionKey> =
   withFrozenLib({
@@ -5800,10 +5882,34 @@ export const fmEntryTypes: EntryTypeDictionary<FormBuilderQuestionKey> =
       },
     },
     devOps: opRepeatedDefinitions,
+    undefined: {
+      beginner: {
+        ...fmBeginnerDefinitions,
+      },
+      intermediate: {
+        ...fmIntermediateDefinitions,
+      },
+      expert: {
+        ...fmExpertDefinitions,
+        adv: {
+          //"Descreva de forma geral as suas políticas de segurança para o tráfego de informação aglomeradas por formulários"
+          type: "select-multiple",
+          options: [
+            "Criptografia dos dados em repouso e em trânsito",
+            "Autenticação multifator para acesso aos relatórios",
+            "Permissões baseadas em função (RBAC) para visualização e edição",
+            "Uso de logs de auditoria para rastrear acessos e alterações",
+            "Anonimização ou pseudonimização de dados sensíveis",
+            "Restrição de IPs para limitar acessos externos",
+          ],
+          required,
+        },
+      },
+    },
   });
 export const csDefinitions: ROFieldRecord<
   typeof csGeneralKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   //"Quais são suas formas preferenciar de habilitar o compartilhamento de arquivos em nuvem com outros colaboradores?",
   shr: {
     type: "select-multiple",
@@ -5835,14 +5941,14 @@ export const csDefinitions: ROFieldRecord<
 });
 export const csBeginnerDefinitions: ROFieldRecord<
   typeof csBeginnerKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   upl: repeatedDefinitions.exp,
   ...csDefinitions,
   acc: repeatedDefinitions.yn,
 });
 export const csIntermediateDefinitions: ROFieldRecord<
   typeof csIntermediateKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   ...csDefinitions,
   ver: repeatedDefinitions.colab,
   bck: repeatedDefinitions.frq,
@@ -5850,14 +5956,14 @@ export const csIntermediateDefinitions: ROFieldRecord<
 });
 export const csExpertDefinitions: ROFieldRecord<
   typeof csExpertKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   ...csDefinitions,
   scp: repeatedDefinitions.scp,
   sch: repeatedDefinitions.txtl,
 });
 export const stCsKeys: Readonly<{
   [K in complexityLabel]: { [k: string]: FieldDescription };
-}> = ObjectHelper.deepFreeze({
+}> = ObjectHelper.makeImmutable({
   beginner: {
     ...csBeginnerDefinitions,
     upl: repeatedDefinitions.frq,
@@ -6208,10 +6314,21 @@ export const csEntryTypes: EntryTypeDictionary<CloudStorageQuestionKey> =
         },
       },
     },
+    undefined: {
+      beginner: {
+        ...csBeginnerDefinitions,
+      },
+      intermediate: {
+        ...csIntermediateDefinitions,
+      },
+      expert: {
+        ...csExpertDefinitions,
+      },
+    },
   });
 export const biDefinitions: ROFieldRecord<
   typeof biGeneralKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   //`${sttg} você usa para conectar suas fontes de dados (planilhas, CSV, bancos, etc.) nas ferramentas de BI?
   con: {
     type: "select-multiple",
@@ -6251,12 +6368,12 @@ export const biDefinitions: ROFieldRecord<
 });
 export const biBeginnerDefinitions: ROFieldRecord<
   typeof biBeginnerKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   ...biDefinitions,
 });
 export const biIntermediateDefinitions: ROFieldRecord<
   typeof biIntermediateKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   mdl: repeatedDefinitions.exp,
   aut: repeatedDefinitions.exp,
   //`${sttg} você utiliza para integrar diferentes fontes de dados na ferramenta de BI para análises detalhadas?`
@@ -6275,7 +6392,7 @@ export const biIntermediateDefinitions: ROFieldRecord<
 });
 export const biExpertDefinitions: ROFieldRecord<
   typeof biExpertKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   //`${sttg} você utiliza para otimizar a performance de consultas e visualizações em dashboards com grandes volumes de dados?`
   adv: {
     type: "select-multiple",
@@ -6292,7 +6409,7 @@ export const biExpertDefinitions: ROFieldRecord<
   api: repeatedDefinitions.exp,
   ...biDefinitions,
 });
-const stBiDefinitions = ObjectHelper.deepFreeze({
+const stBiDefinitions = ObjectHelper.makeImmutable({
     beginner: {
       ...biBeginnerDefinitions,
       stn: repeatedDefinitions.txtl,
@@ -6306,7 +6423,7 @@ const stBiDefinitions = ObjectHelper.deepFreeze({
       stn: repeatedDefinitions.txtl,
     },
   }),
-  devBiDefinitions = ObjectHelper.deepFreeze({
+  devBiDefinitions = ObjectHelper.makeImmutable({
     beginner: {
       dsa: repeatedDefinitions.exp,
       ...biBeginnerDefinitions,
@@ -6486,6 +6603,7 @@ export const biEntryTypes: EntryTypeDictionary<BiQuestionKey> =
           required,
         },
         mke: repeatedDefinitions.yn,
+        ...biIntermediateDefinitions,
       },
       expert: {
         mkx: repeatedDefinitions.exp,
@@ -6500,6 +6618,7 @@ export const biEntryTypes: EntryTypeDictionary<BiQuestionKey> =
           required,
         },
         mky: repeatedDefinitions.txts,
+        ...biExpertDefinitions,
       },
     },
     suporteTecnicoN1: {
@@ -6515,10 +6634,21 @@ export const biEntryTypes: EntryTypeDictionary<BiQuestionKey> =
       ...devBiDefinitions,
     },
     devOps: { ...devBiDefinitions },
+    undefined: {
+      beginner: {
+        ...biBeginnerDefinitions,
+      },
+      intermediate: {
+        ...biIntermediateDefinitions,
+      },
+      expert: {
+        ...biExpertDefinitions,
+      },
+    },
   });
 export const crmDefinitions: ROFieldRecord<
   typeof crmGeneralKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   vis: {
     type: `select-multiple`,
     options: [
@@ -6557,13 +6687,13 @@ export const crmDefinitions: ROFieldRecord<
 });
 export const crmBeginnerDefinitions: ROFieldRecord<
   typeof crmBeginnerKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   crt: repeatedDefinitions.exp,
   ...crmDefinitions,
 });
 export const crmIntermediateDefinitions: ROFieldRecord<
   typeof crmIntermediateKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   ...crmDefinitions,
   //`${tcn} você utiliza para que as automações nativas dispararem alertas e atualizem o status dos leads?`
   aut: {
@@ -6593,7 +6723,7 @@ export const crmIntermediateDefinitions: ROFieldRecord<
 });
 export const crmExpertDefinitions: ROFieldRecord<
   typeof crmExpertKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   ...crmDefinitions,
   //`${sttg} você utiliza para recursos avançados da plataforma de CRM buscando prever oportunidades e personalizar campanhas?`
   adv: {
@@ -6621,7 +6751,7 @@ export const crmExpertDefinitions: ROFieldRecord<
   },
   gov: repeatedDefinitions.txtl,
 });
-export const stCrmDefinitions = ObjectHelper.deepFreeze({
+export const stCrmDefinitions = ObjectHelper.makeImmutable({
     beginner: {
       stn: repeatedDefinitions.exp,
       ...crmBeginnerDefinitions,
@@ -6635,7 +6765,7 @@ export const stCrmDefinitions = ObjectHelper.deepFreeze({
       ...crmExpertDefinitions,
     },
   }),
-  devCrmDefinitions = ObjectHelper.deepFreeze({
+  devCrmDefinitions = ObjectHelper.makeImmutable({
     beginner: {
       dev: repeatedDefinitions.exp,
       dco: repeatedDefinitions.exp,
@@ -6900,10 +7030,21 @@ export const crmEntryTypes: EntryTypeDictionary<CrmQuestionKey> =
     devOps: {
       ...devCrmDefinitions,
     },
+    undefined: {
+      beginner: {
+        ...crmBeginnerDefinitions,
+      },
+      intermediate: {
+        ...crmIntermediateDefinitions,
+      },
+      expert: {
+        ...crmExpertDefinitions,
+      },
+    },
   });
 export const erpDefinitions: ROFieldRecord<
   typeof erpGeneralKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   cad: repeatedDefinitions.frq,
   rep: repeatedDefinitions.frq,
   //`${rsc} você usa para salvar ou imprimir documentos fiscais gerados em ERPs?`
@@ -6921,13 +7062,13 @@ export const erpDefinitions: ROFieldRecord<
 });
 export const erpBeginnerDefinitions: ROFieldRecord<
   typeof erpBeginnerKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   crt: repeatedDefinitions.exp,
   ...erpDefinitions,
 });
 export const erpIntermediateDefinitions: ROFieldRecord<
   typeof erpIntermediateKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   //`${sttg} você considera para configurar fluxos intermediários (ex.: aprovação, descontos) dentro dos ERPs?`
   wfl: {
     type: "select-multiple",
@@ -6981,7 +7122,7 @@ export const erpIntermediateDefinitions: ROFieldRecord<
 });
 export const erpExpertDefinitions: ROFieldRecord<
   typeof erpExpertKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   ha_: repeatedDefinitions.exp,
   //`${rsc} você usa para orquestrar processos complexos (ex.: MRP, produção) e auditar logs em ERPs?`
   prc: {
@@ -7551,10 +7692,21 @@ export const erpEntryTypes: EntryTypeDictionary<ErpQuestionKey> =
         ...erpExpertDefinitions,
       },
     },
+    undefined: {
+      beginner: {
+        ...erpBeginnerDefinitions,
+      },
+      intermediate: {
+        ...erpIntermediateDefinitions,
+      },
+      expert: {
+        ...erpExpertDefinitions,
+      },
+    },
   });
 export const plnDefinitions: ROFieldRecord<
   typeof plnGeneralKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   tpl: repeatedDefinitions.frq,
   //"Quais métodos você utiliza para colaborar e compartilhar quadros ou listas de tarefas?"
   col: {
@@ -7592,7 +7744,7 @@ export const plnDefinitions: ROFieldRecord<
   },
   sch: repeatedDefinitions.txtl,
 });
-const crt: FieldDescription = ObjectHelper.deepFreeze({
+const crt: FieldDescription = ObjectHelper.makeImmutable({
   type: "select-multiple",
   options: [
     "Painéis de controle administrativos (ex.: Configurações, Permissões, Segurança)",
@@ -7610,7 +7762,7 @@ const crt: FieldDescription = ObjectHelper.deepFreeze({
 });
 export const plnBeginnerDefinitions: ROFieldRecord<
   typeof plnBeginnerKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   ...plnDefinitions,
   aut: repeatedDefinitions.frq,
   //"Quais são as principais ferramentas e subpaineis utilizados por você nestas plataformas?"
@@ -7618,7 +7770,7 @@ export const plnBeginnerDefinitions: ROFieldRecord<
 });
 export const plnIntermediateDefinitions: ROFieldRecord<
   typeof plnIntermediateKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   crt,
   //`${tls} você utiliza para integrar suas ferramentas de planejamento com outros sistemas?`
   int: {
@@ -7656,7 +7808,7 @@ export const plnIntermediateDefinitions: ROFieldRecord<
 });
 export const plnExpertDefinitions: ROFieldRecord<
   typeof plnExpertKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   ...plnDefinitions,
   //"Quais práticas você utiliza para consolidar dados de múltiplos quadros para criar dashboards executivos?"
   adv: {
@@ -7724,10 +7876,15 @@ export const plnEntryTypes: EntryTypeDictionary<PlanningQuestionKey> =
       intermediate: { ...plnIntermediateDefinitions },
       expert: { ...plnExpertDefinitions },
     },
+    undefined: {
+      beginner: { ...plnBeginnerDefinitions },
+      intermediate: { ...plnIntermediateDefinitions },
+      expert: { ...plnExpertDefinitions },
+    },
   });
 export const aiAdDefinitions: ROFieldRecord<
   typeof aiAdGeneralKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   gen: repeatedDefinitions.exp,
   //`${cts} utiliza para avaliar e determinar a qualidade dos áudios gerados pela IA?`
   evl: {
@@ -7750,13 +7907,13 @@ export const aiAdDefinitions: ROFieldRecord<
 });
 export const aiAdBeginnerDefinitions: ROFieldRecord<
   typeof aiAdBeginnerKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   set: repeatedDefinitions.yn,
   ...aiAdDefinitions,
 });
 export const aiAdIntermediateDefinitions: ROFieldRecord<
   typeof aiAdIntermediateKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   // "Quais as principais ferramentas que você utiliza para editar ou ajustar os áudios gerados por IAs?"
   edt: {
     type: "select-multiple",
@@ -7780,7 +7937,7 @@ export const aiAdIntermediateDefinitions: ROFieldRecord<
 });
 export const aiAdExpertDefinitions: ROFieldRecord<
   typeof aiAdExpertKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   adv: repeatedDefinitions.frq,
   vol: repeatedDefinitions.yn,
   sec: repeatedDefinitions.sec,
@@ -7833,10 +7990,15 @@ export const aiAdEntryTypes: EntryTypeDictionary<AudioAiQuestionKey> =
       intermediate: { ...aiAdIntermediateDefinitions },
       expert: { ...aiAdExpertDefinitions },
     },
+    undefined: {
+      beginner: { ...aiAdBeginnerDefinitions },
+      intermediate: { ...aiAdIntermediateDefinitions },
+      expert: { ...aiAdExpertDefinitions },
+    },
   });
 export const aiImgDefinitions: ROFieldRecord<
   typeof aiImgGeneralKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   gen: repeatedDefinitions.frq,
   //`${cts} utiliza para avaliar a qualidade das imagens geradas pelas IAs?`
   evl: {
@@ -7891,20 +8053,20 @@ export const aiImgDefinitions: ROFieldRecord<
 });
 export const aiImgBeginnerDefinitions: ROFieldRecord<
   typeof aiImgBeginnerKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   set: repeatedDefinitions.yn,
   ...aiImgDefinitions,
 });
 export const aiImgIntermediateDefinitions: ROFieldRecord<
   typeof aiImgIntermediateKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   doc: repeatedDefinitions.frq,
   ing: repeatedDefinitions.txtl,
   ...aiImgDefinitions,
 });
 export const aiImgExpertDefinitions: ROFieldRecord<
   typeof aiImgExpertKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   adv: repeatedDefinitions.frq,
   vol: repeatedDefinitions.yn,
   sec: repeatedDefinitions.sec,
@@ -7957,10 +8119,15 @@ export const aiImgEntryTypes: EntryTypeDictionary<ImageAiQuestionKey> =
       intermediate: { ...aiImgIntermediateDefinitions },
       expert: { ...aiImgExpertDefinitions },
     },
+    undefined: {
+      beginner: { ...aiImgBeginnerDefinitions },
+      intermediate: { ...aiImgIntermediateDefinitions },
+      expert: { ...aiImgExpertDefinitions },
+    },
   });
 export const aiVdDefinitions: ROFieldRecord<
   typeof aiVdGeneralKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   gen: repeatedDefinitions.exp,
   //`${cts} utiliza para avaliar e determinar a qualidade dos vídeos gerados pela IA?`
   evl: {
@@ -7985,12 +8152,12 @@ export const aiVdDefinitions: ROFieldRecord<
 });
 export const aiVdBeginnerDefinitions: ROFieldRecord<
   typeof aiVdBeginnerKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   cnt: repeatedDefinitions.yn,
   set: repeatedDefinitions.exp,
   ...aiVdDefinitions,
 });
-const edt: FieldDescription = ObjectHelper.deepFreeze({
+const edt: FieldDescription = ObjectHelper.makeImmutable({
   type: "select-multiple",
   options: [
     "Adobe Premiere Pro",
@@ -8009,7 +8176,7 @@ const edt: FieldDescription = ObjectHelper.deepFreeze({
 });
 export const aiVdIntermediateDefinitions: ROFieldRecord<
   typeof aiVdIntermediateKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   //"Quais as principais ferramentas que você utiliza para editar ou ajustar os vídeos gerados por IAs?"
   edt,
   doc: repeatedDefinitions.yn,
@@ -8018,7 +8185,7 @@ export const aiVdIntermediateDefinitions: ROFieldRecord<
 });
 export const aiVdExpertDefinitions: ROFieldRecord<
   typeof aiVdExpertKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   adv: repeatedDefinitions.frq,
   //"Quais as principais ferramentas que você utiliza para editar ou ajustar os vídeos gerados por IAs?"
   edt,
@@ -8072,10 +8239,15 @@ export const aiVdEntryTypes: EntryTypeDictionary<VideoAiQuestionKey> =
       intermediate: { ...aiVdIntermediateDefinitions },
       expert: { ...aiVdExpertDefinitions },
     },
+    undefined: {
+      beginner: { ...aiVdBeginnerDefinitions },
+      intermediate: { ...aiVdIntermediateDefinitions },
+      expert: { ...aiVdExpertDefinitions },
+    },
   });
 export const llmDefinitions: ROFieldRecord<
   typeof llmGeneralKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   //"Em que idiomas você costuma interagir com LLMs? (focado no contexto brasileiro)"
   lan: {
     type: "select-multiple",
@@ -8095,21 +8267,21 @@ export const llmDefinitions: ROFieldRecord<
 });
 export const llmBeginnerDefinitions: ROFieldRecord<
   typeof llmBeginnerKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   use: repeatedDefinitions.exp,
   sec: repeatedDefinitions.yn,
   ...llmDefinitions,
 });
 export const llmIntermediateDefinitions: ROFieldRecord<
   typeof llmIntermediateKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   ext: repeatedDefinitions.frq,
   stp: repeatedDefinitions.txtl,
   ...llmDefinitions,
 });
 export const llmExpertDefinitions: ROFieldRecord<
   typeof llmExpertKeys
-> = ObjectHelper.deepFreeze({
+> = ObjectHelper.makeImmutable({
   // "Quais destas práticas você adota para realizar o refinamento de resultados de prompts ao iniciar uma sessão com uma LLM?"
   fin: {
     type: "select-multiple",
@@ -8139,7 +8311,7 @@ export const stLlmDefitinions: Readonly<{
   expert: {
     [K in keyof typeof stLlmKeys.expert]: FieldDescription;
   };
-}> = ObjectHelper.deepFreeze({
+}> = ObjectHelper.makeImmutable({
   beginner: {
     ...llmBeginnerDefinitions,
     //"Quais destas abordagens você utiliza para orientar usuários de LLMs?"
@@ -8186,7 +8358,7 @@ export const stLlmDefitinions: Readonly<{
     ...llmExpertDefinitions,
   },
 });
-const stc: FieldDescription = ObjectHelper.deepFreeze({
+const stc: FieldDescription = ObjectHelper.makeImmutable({
     type: "select-multiple",
     options: [
       "Divisão explícita da tarefa em etapas lógicas antes da execução",
@@ -8201,7 +8373,7 @@ const stc: FieldDescription = ObjectHelper.deepFreeze({
     ],
     required,
   }),
-  api: FieldDescription = ObjectHelper.deepFreeze({
+  api: FieldDescription = ObjectHelper.makeImmutable({
     type: "select-multiple",
     options: [
       "Não integro LLMs em pipelines CI/CD",
@@ -8371,37 +8543,50 @@ export const llmEntryTypes: EntryTypeDictionary<LLMQuestionKey> =
         ...llmExpertDefinitions,
       },
     },
+    undefined: {
+      beginner: {
+        ...llmBeginnerDefinitions,
+      },
+      intermediate: {
+        ...llmIntermediateDefinitions,
+      },
+      expert: {
+        ...llmExpertDefinitions,
+      },
+    },
   });
 //final
-export const questionsMap = new Map<
-  roleType,
-  QuestionsMap<complexityKeySet>
->([
-  eaAddQuestions,
-  fnAddQuestions,
-  cmAddQuestions,
-  mktAddQuestions,
-  stN1AddQuestions,
-  stN2AddQuestions,
-  opAddQuestions,
-  devAddQuestions,
-  devOpsAddQuestions,
-  defAddQuestions,
-]);
-export const fieldsMap = new Map<
-  addQuestionsKey,
-  EntryTypeDictionary<QuestionKey>
->([
-  ["docs", docEntryTypes],
-  ["spreadSheets", ssEntryTypes],
-  ["formBuilders", fmEntryTypes],
-  ["cloudStorage", csEntryTypes],
-  ["businessInteligence", biEntryTypes],
-  ["Crms", crmEntryTypes],
-  ["Erps", erpEntryTypes],
-  ["planning", plnEntryTypes],
-  ["audio", aiAdEntryTypes],
-  ["image", aiImgEntryTypes],
-  ["video", aiVdEntryTypes],
-  ["llms", llmEntryTypes],
-]);
+export const questionsMap = Object.freeze(
+  new Map<roleType, QuestionsMap<complexityKeySet>>([
+    eaAddQuestions,
+    fnAddQuestions,
+    cmAddQuestions,
+    mktAddQuestions,
+    stN1AddQuestions,
+    stN2AddQuestions,
+    opAddQuestions,
+    devAddQuestions,
+    devOpsAddQuestions,
+    defAddQuestions,
+    undefinedAddQuestions,
+  ])
+);
+export const fieldsMap = Object.freeze(
+  new Map<
+    addQuestionsKey,
+    EntryTypeDictionary<QuestionKey>
+  >([
+    ["docs", docEntryTypes],
+    ["spreadSheets", ssEntryTypes],
+    ["formBuilders", fmEntryTypes],
+    ["cloudStorage", csEntryTypes],
+    ["businessInteligence", biEntryTypes],
+    ["Crms", crmEntryTypes],
+    ["Erps", erpEntryTypes],
+    ["planning", plnEntryTypes],
+    ["audio", aiAdEntryTypes],
+    ["image", aiImgEntryTypes],
+    ["video", aiVdEntryTypes],
+    ["llms", llmEntryTypes],
+  ])
+);

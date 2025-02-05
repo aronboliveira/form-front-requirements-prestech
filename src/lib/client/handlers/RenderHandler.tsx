@@ -1,16 +1,15 @@
 import StringHelper from "@/lib/helpers/StringHelper";
 import AddTextArea from "@/components/bloc/fieldsets/ranged/inc/foundation/AddTextArea";
 import AddSelectOne from "@/components/bloc/fieldsets/ranged/inc/foundation/AddSelectOne";
-import AddSelectMultiple from "@/components/bloc/fieldsets/ranged/inc/foundation/AddSelectMultiple";
 import AddCheckable from "@/components/bloc/fieldsets/ranged/inc/foundation/AddCheckable";
 import AddFileInput from "@/components/bloc/fieldsets/ranged/inc/foundation/AddFileInput";
 import AddNumericInput from "@/components/bloc/fieldsets/ranged/inc/foundation/AddNumbericInput";
 import AddColorInput from "@/components/bloc/fieldsets/ranged/inc/foundation/AddColorInput";
 import {
   FieldDescription,
+  OptionFieldDescription,
   QuestionKey,
   QuestionsMap,
-  ROFieldRecord,
   ROFieldStringRecord,
   complexityDict,
   complexityKeySet,
@@ -29,6 +28,10 @@ import {
   roleType,
 } from "@/lib/definitions/foundations";
 import ExceptionHandler from "./ErrorHandler";
+import AddBlock from "@/components/bloc/fieldsets/ranged/inc/foundation/AddBlock";
+import { JSX, Fragment } from "react";
+import { GroupedOpts } from "@/lib/definitions/client/interfaces/components";
+import AddMultipleCheckable from "@/components/bloc/fieldsets/ranged/inc/foundation/AddMultipleCheckable";
 export default class RenderHandler {
   name: string;
   #role: roleType;
@@ -50,7 +53,7 @@ export default class RenderHandler {
     this.#complexity = _complexity;
     this.#appType = _appType;
   }
-  renderInput(ac: QuestionKey) {
+  renderInputs(): (JSX.Element[] | JSX.Element)[] {
     try {
       const questions = this.#getQuestions();
       if (!questions)
@@ -63,98 +66,204 @@ export default class RenderHandler {
           `Fields dictionary returned as nullish`
         );
       const qsAcronymsSet = new Set(
-          ...Object.keys(questions)
-        ),
-        fieldsAcronymsSet = new Set(...Object.keys(fields));
+          Object.keys(questions)
+        ) as Set<QuestionKey>,
+        fieldsAcronymsSet = new Set(
+          Object.keys(fields)
+        ) as Set<QuestionKey>;
       const acronyms = [
+        //@ts-ignore
         ...qsAcronymsSet.intersection(fieldsAcronymsSet),
-      ];
+      ] as Array<QuestionKey>;
       if (!acronyms?.length)
         throw new TypeError(
           `List of acronyms for questions:fields pairing was falsish`
         );
-      acronyms.map(a => {
-        const type = "textarea" as any,
+      return acronyms.map(a => {
+        const qt = questions[a];
+        if (!qt) return <></>;
+        const field = fields[a],
+          type = field.type,
+          uncomplexed = this.name.replace(
+            /beginner|intermediate|expert/i,
+            ""
+          ),
           n = `${StringHelper.uncapitalize(
-            StringHelper.camelToSnake(
-              this.name.replace(
-                /beginner|intermediate|expert/i,
-                ""
-              )
-            )
-          )}__${String(ac)}`,
+            StringHelper.camelToSnake(uncomplexed)
+          )}__${String(a)}`,
           id = `${StringHelper.uncapitalize(
-            this.name.replace(
-              /beginner|intermediate|expert/i,
-              ""
-            )
-          )}${StringHelper.capitalize(String(ac))}`;
+            uncomplexed
+          )}${StringHelper.capitalize(a.toString())}`;
         switch (type) {
           case "textarea":
-            return <AddTextArea id={id} name={n} />;
+            return (
+              <AddBlock
+                id={id}
+                label={qt}
+                key={`${id}__${qt}__${type}`}
+              >
+                <AddTextArea id={id} name={n} />
+              </AddBlock>
+            );
           case "select-one":
-            return <AddSelectOne id={id} name={n} />;
+            return (field as OptionFieldDescription).options
+              ?.length ? (
+              <AddBlock
+                id={id}
+                label={qt}
+                key={`${id}__${qt}__${type}`}
+              >
+                <AddSelectOne
+                  id={id}
+                  name={n}
+                  opts={{
+                    main: {
+                      grpOpts: (
+                        field as OptionFieldDescription
+                      ).options as string[],
+                    },
+                  }}
+                />
+              </AddBlock>
+            ) : (
+              <></>
+            );
           case "select-multiple":
-            return <AddSelectMultiple id={id} name={n} />;
+            return (field as OptionFieldDescription).options
+              ?.length ? (
+              <AddBlock
+                id={id}
+                label={qt}
+                key={`${id}__${qt}__${type}`}
+              >
+                <AddMultipleCheckable
+                  id={id}
+                  name={n}
+                  opts={{
+                    main: {
+                      grpOpts: (
+                        field as OptionFieldDescription
+                      ).options as string[],
+                    },
+                  }}
+                />
+              </AddBlock>
+            ) : (
+              <></>
+            );
           case "checkbox":
           case "radio":
-            return (
-              <AddCheckable id={id} name={n} type={type} />
+            return (field as OptionFieldDescription).options
+              ?.length ? (
+              (
+                (field as OptionFieldDescription)
+                  .options as string[]
+              )?.map(o => {
+                return (
+                  <AddBlock
+                    key={`${id}__${a}`}
+                    id={`${id}__${a}`}
+                    label={o}
+                  >
+                    <AddCheckable
+                      id={`${id}__${a}`}
+                      name={n}
+                      type={type}
+                    />
+                  </AddBlock>
+                );
+              })
+            ) : (
+              <></>
             );
           case "file":
-            return <AddFileInput id={id} name={n} />;
+            return (
+              <AddBlock
+                id={id}
+                label={qt}
+                key={`${id}__${qt}__${type}`}
+              >
+                <AddFileInput id={id} name={n} />;
+              </AddBlock>
+            );
           case "number":
           case "range":
             return (
-              <AddNumericInput
+              <AddBlock
                 id={id}
-                name={n}
-                type={type}
-              />
+                label={qt}
+                key={`${id}__${qt}__${type}`}
+              >
+                <AddNumericInput
+                  id={id}
+                  name={n}
+                  type={type}
+                />
+              </AddBlock>
             );
           case "color":
-            return <AddColorInput id={id} name={n} />;
+            return (
+              <AddBlock
+                id={id}
+                label={qt}
+                key={`${id}__${qt}__${type}`}
+              >
+                <AddColorInput id={id} name={n} />;
+              </AddBlock>
+            );
           case "date":
           case "datetime-local":
           case "month":
           case "week":
+            //TODO REAVALIAR
             return (
-              <>
+              <AddBlock
+                id={id}
+                label={qt}
+                key={`${id}__${qt}__${type}`}
+              >
                 <input
                   type={type}
                   id={id}
                   name={n}
                   className={`entryAddRanged inpAddRanged ${classes.inpClasses}`}
-                  data-role={role}
+                  data-role={this.#role}
                 />
-              </>
+              </AddBlock>
             );
           default:
             return (
-              <AddTextualInput
+              <AddBlock
                 id={id}
-                name={n}
-                type={type}
-              />
+                label={qt}
+                key={`${id}__${qt}__${type}`}
+              >
+                <AddTextualInput
+                  id={id}
+                  name={n}
+                  type={"text"}
+                />
+              </AddBlock>
             );
         }
       });
     } catch (e) {
       ExceptionHandler.logUnexpected(e as Error);
-      return (
-        <div>
+      return [
+        <div key={new Date().getTime()}>
           <strong>
             Ops... Não foi possível construir o campo de
             questões! 😨
           </strong>
-        </div>
-      );
+        </div>,
+      ];
     }
   }
-  #getQuestions(): complexityDict<complexityKeySet> | null {
+  #getQuestions(): { [K in QuestionKey]: string } | null {
     let handle = 0,
       roleMap: QuestionsMap<complexityKeySet> | undefined,
-      appDict: complexityDict<complexityKeySet> | undefined;
+      appDict: complexityDict<complexityKeySet> | undefined,
+      dict: { [K in QuestionKey]: string } | undefined;
     try {
       roleMap = questionsMap.get(this.#role);
       if (!roleMap) {
@@ -162,13 +271,20 @@ export default class RenderHandler {
         throw new TypeError(`Could not find the Map for the Role's dictionaries.
           Searched Role: ${this.#role}`);
       }
-      appDict = roleMap.get(this.#complexity);
+      appDict = roleMap.get(this.#appType);
       if (!appDict) {
-        handle = 2;
-        throw new TypeError(`Could not find the Dictionary for the questions labels
+        throw new TypeError(`Could not find the Dictionary for the App Types
           Searched App Group: ${this.#complexity}`);
       }
-      return appDict;
+      dict = appDict[this.#complexity] as {
+        [K in QuestionKey]: string;
+      };
+      if (!dict) {
+        handle = 2;
+        throw new TypeError(`Could not find the Dictionary for the questions labels
+        Searched Complexity: ${this.#complexity}`);
+      }
+      return dict;
     } catch (e) {
       try {
         switch (handle) {
@@ -193,23 +309,33 @@ export default class RenderHandler {
   }
   #fallbackAppDict(
     roleMap: QuestionsMap<complexityKeySet>
-  ): complexityDict<complexityKeySet> | voidish {
+  ): { [K in QuestionKey]: string } | voidish {
     let appDict:
       | complexityDict<complexityKeySet>
       | undefined;
-    appDict = roleMap.get(this.#complexity);
+    appDict = roleMap.get(this.#appType);
     if (!appDict) {
-      console.warn(`Failed to get Complexity Dictorinary for ${
+      console.warn(
+        `Failed to get App Dictionary for ${this.#role}.${
+          this.#complexity
+        }.`
+      );
+      return null;
+    }
+    let dict = appDict[this.#complexity] as {
+      [K in QuestionKey]: string;
+    };
+    if (!dict) {
+      console.warn(`Failed to get Complexity Dictionary for ${
         this.#role
       }.${this.#complexity}.
-        Defaulted to Beginner`);
-      appDict = roleMap.get("beginner");
-      if (appDict) return appDict;
-      else {
-        console.warn(`Failed to use Beginner Key.`);
-        return null;
-      }
+        Defaulted to Beginner.`);
+      dict = appDict["beginner"] as {
+        [K in QuestionKey]: string;
+      };
+      return dict ? dict : null;
     }
+    return dict;
   }
   #getFieldSet():
     | ROFieldStringRecord<QuestionKey>
@@ -267,7 +393,90 @@ export default class RenderHandler {
       }
     }
   }
-  #getField(ac: QuestionKey) {}
+  static renderOptionsCollection({
+    opts,
+    id = "",
+    checkables = false,
+    names = [],
+    type = "radio",
+  }: {
+    opts: GroupedOpts;
+    id?: string;
+    checkables?: boolean;
+    names?: string[];
+    type?: "radio" | "checkbox";
+  }): JSX.Element[] {
+    const firstOpt = Object.entries(opts)?.at(0)?.at(1);
+    if (typeof firstOpt !== "object")
+      return [
+        <Fragment key={crypto.randomUUID()}></Fragment>,
+      ];
+    if (firstOpt.grpOpts.length > names.length)
+      for (
+        let d = 0;
+        d <
+        Math.abs(firstOpt.grpOpts.length - names.length);
+        d++
+      )
+        names.push(crypto.randomUUID());
+    return Object.keys(opts).length === 1
+      ? firstOpt.grpOpts.map((o, i) => {
+          const snt = StringHelper.sanitizePropertyName(o);
+          return !checkables ? (
+            <option
+              key={`${snt}__${i}`}
+              value={snt}
+              data-name={names[i]}
+            >
+              {o}
+            </option>
+          ) : (
+            <AddBlock id={`${id}__${snt}`} label={o}>
+              <AddCheckable
+                id={`${id}__${snt}`}
+                name={names[i]}
+                type={type}
+              />
+            </AddBlock>
+          );
+        })
+      : Object.entries(opts).map(
+          ([gn, { friendly, grpOpts }]) => {
+            return (
+              <optgroup
+                id={`${id}__${gn}`}
+                label={friendly}
+              >
+                {grpOpts.map((o, i) => {
+                  const snt =
+                    StringHelper.sanitizePropertyName(o);
+                  return !checkables ? (
+                    <option
+                      id={`${id}__${gn}__${snt}`}
+                      key={`${snt}__${i}`}
+                      value={snt}
+                      data-name={names[i]}
+                    >
+                      {o}
+                    </option>
+                  ) : (
+                    <AddBlock
+                      id={`${id}__${snt}`}
+                      label={o}
+                    >
+                      <AddCheckable
+                        id={`${id}__${snt}`}
+                        name={names[i]}
+                        type={type}
+                      />
+                    </AddBlock>
+                  );
+                })}
+              </optgroup>
+            );
+          }
+        );
+  }
   get role(): roleType {
     return this.#role;
   }

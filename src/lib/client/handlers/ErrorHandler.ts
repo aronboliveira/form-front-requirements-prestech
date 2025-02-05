@@ -185,7 +185,7 @@ export default class ExceptionHandler {
     console.error(
       `An unexpected error as occurred: ${
         (e as Error).name
-      } (e as Error).message}`
+      } ${(e as Error).message}`
     );
   }
 }

@@ -11,7 +11,10 @@ import DOMValidator from "../validators/DOMValidator";
 import { borderColors, fontColors } from "../vars";
 import { PseudoNum } from "@/lib/definitions/foundations";
 import MathHandler from "./MathHandler";
-export const pseudos: Map<string, Map<string, Map<string, string>>> = new Map();
+export const pseudos: Map<
+  string,
+  Map<string, Map<string, string>>
+> = new Map();
 export default class StyleHandler {
   static placeholderCounter = 0.7;
   static alarmColor = "#811";
@@ -24,14 +27,22 @@ export default class StyleHandler {
     if (!StyleValidator.evaluateDisplay(visibleAs))
       element.style.display = "block";
     /* eslint-disable */
-    condition ? (element.style.display = visibleAs) : "none";
+    condition
+      ? (element.style.display = visibleAs)
+      : "none";
     /* eslint-enable */
   }
-  static blurOnChange(el: nlHtEl, curr: number = 0.8, prev: number = 1): void {
+  static blurOnChange(
+    el: nlHtEl,
+    curr: number = 0.8,
+    prev: number = 1
+  ): void {
     if (!(el instanceof HTMLElement)) return;
     const cps = getComputedStyle(el);
-    if (cps.transition === "") el.style.transition = "opacity 0.5s ease-in-out";
-    else el.style.transition += ", opacity 0.5s ease-in-out";
+    if (cps.transition === "")
+      el.style.transition = "opacity 0.5s ease-in-out";
+    else
+      el.style.transition += ", opacity 0.5s ease-in-out";
     setTimeout(() => {
       if (!(el instanceof HTMLElement)) return;
       el.style.opacity = curr.toString();
@@ -49,10 +60,17 @@ export default class StyleHandler {
       s => attr in s && (s as any)[attr]
     );
     if (!matchedSheets) return;
-    return matchedSheets.find(s => styleSheetIdentifier.test((s as any)[attr]));
+    return matchedSheets.find(s =>
+      styleSheetIdentifier.test((s as any)[attr])
+    );
   }
-  static findCssRule(sheet: CSSStyleSheet, ruleIdentifier: RegExp): number {
-    return [...sheet.cssRules].findIndex(r => ruleIdentifier.test(r.cssText));
+  static findCssRule(
+    sheet: CSSStyleSheet,
+    ruleIdentifier: RegExp
+  ): number {
+    return [...sheet.cssRules].findIndex(r =>
+      ruleIdentifier.test(r.cssText)
+    );
   }
   static replaceCssRule(
     sheet: CSSStyleSheet,
@@ -66,21 +84,29 @@ export default class StyleHandler {
     sheet.deleteRule(i);
     if (expand) {
       if (!previous) return false;
-      sheet.insertRule(`${previous.cssText.slice(0, -3)}; ${newRule}; }`, i);
+      sheet.insertRule(
+        `${previous.cssText.slice(0, -3)}; ${newRule}; }`,
+        i
+      );
     } else sheet.insertRule(newRule, i);
     return true;
   }
   static defineRangeThumbPseudoElement(): nlStr {
-    if (CompabilityValidator.isWebkit()) return "::-webkit-slider-thumb";
-    else if (CompabilityValidator.isFirefox()) return "::-moz-range-thumb";
-    else if (CompabilityValidator.isExplorer()) return "::-ms-thumb";
+    if (CompabilityValidator.isWebkit())
+      return "::-webkit-slider-thumb";
+    else if (CompabilityValidator.isFirefox())
+      return "::-moz-range-thumb";
+    else if (CompabilityValidator.isExplorer())
+      return "::-ms-thumb";
     else return null;
   }
   static defineRangeTrackPseudoElement(): nlStr {
     if (CompabilityValidator.isWebkit())
       return "::-webkit-slider-runnable-track";
-    else if (CompabilityValidator.isFirefox()) return "::-moz-range-track";
-    else if (CompabilityValidator.isExplorer()) return "::-ms-track";
+    else if (CompabilityValidator.isFirefox())
+      return "::-moz-range-track";
+    else if (CompabilityValidator.isExplorer())
+      return "::-ms-track";
     else return null;
   }
   static updatePseudos({
@@ -124,16 +150,27 @@ export default class StyleHandler {
     context: string = "both",
     double: boolean = false
   ): void {
-    if (!(el instanceof HTMLElement && typeof color === "string")) return;
+    if (
+      !(
+        el instanceof HTMLElement &&
+        typeof color === "string"
+      )
+    )
+      return;
     const id = DOMHandler.getIdentifier(el),
-      iniColor = id ? borderColors[id] : "rgb(222, 226, 230)",
-      iniFontColor = id ? fontColors[id] : "rgb(33, 37, 41)",
+      iniColor = id
+        ? borderColors[id]
+        : "rgb(222, 226, 230)",
+      iniFontColor = id
+        ? fontColors[id]
+        : "rgb(33, 37, 41)",
       pulseBColor = (): void => {
         setTimeout(() => {
           if (!id) return;
           const el = DOMHandler.queryByUniqueName(id);
           if (!el) return;
-          if (!el.style.transition) el.style.transition = "border 0.5s ease-in";
+          if (!el.style.transition)
+            el.style.transition = "border 0.5s ease-in";
           else el.style.transition += "border 0.5s ease-in";
           el.style.borderColor = color;
           setTimeout(() => {
@@ -148,7 +185,8 @@ export default class StyleHandler {
           if (!id) return;
           const el = DOMHandler.queryByUniqueName(id);
           if (!el) return;
-          if (el.style.transition) el.style.transition += "color 0.5s ease-in";
+          if (el.style.transition)
+            el.style.transition += "color 0.5s ease-in";
           else el.style.transition = "color 0.5s ease-in";
           el.style.color = color;
           setTimeout(() => {
@@ -183,8 +221,10 @@ export default class StyleHandler {
     const baseColor = borderColors[id];
     if (!baseColor) return;
     if (
-      (DOMValidator.isDefaultEntry(el) && !el.checkValidity()) ||
-      (DOMValidator.isCustomEntry(el) && el.dataset.invalid === "true")
+      (DOMValidator.isDefaultEntry(el) &&
+        !el.checkValidity()) ||
+      (DOMValidator.isCustomEntry(el) &&
+        el.dataset.invalid === "true")
     ) {
       el.style.borderColor = color;
       setTimeout(() => {
@@ -210,11 +250,15 @@ export default class StyleHandler {
       phs.id = idRef;
     }
     if (!phs.innerHTML)
-      phs.innerHTML = `${[...el.classList].map(c => `.${c}`)}${
+      phs.innerHTML = `${[...el.classList].map(
+        c => `.${c}`
+      )}${
         el.id ? `#${el.id}` : ""
       }::placeholder { color: ${newColor}; opacity: ${0.7}; }`;
     else
-      phs.innerHTML += `\n${[...el.classList].map(c => `.${c}`)}${
+      phs.innerHTML += `\n${[...el.classList].map(
+        c => `.${c}`
+      )}${
         el.id ? `#${el.id}` : ""
       }::placeholder { color: ${newColor}; opacity: ${0.7}; }`;
     const interv = setInterval(i => {
@@ -255,7 +299,6 @@ export default class StyleHandler {
   ): void {
     if (!el) return;
     const transition = getComputedStyle(el).transition;
-    console.log(transition);
     if (/opacity/gi.test(transition)) {
       if (transition.includes(","))
         el.style.transition = `${transition
@@ -274,7 +317,8 @@ export default class StyleHandler {
       el.style.opacity = "0";
       setTimeout(() => {
         let element = el;
-        if (!element?.isConnected) element = DOMHandler.queryByUniqueName(id);
+        if (!element?.isConnected)
+          element = DOMHandler.queryByUniqueName(id);
         if (!element?.isConnected) return;
         element.style.opacity = "1";
       }, 500);
@@ -297,9 +341,13 @@ export default class StyleHandler {
           getComputedStyle(el).opacity,
           MathHandler.parseNotNaN(prev)
         );
-        if (!/^(?=.*\d)\d+(\.\d+)?$/.test(newValue.toString())) return;
+        if (
+          !/^(?=.*\d)\d+(\.\d+)?$/.test(newValue.toString())
+        )
+          return;
         const ft = 0.025;
-        if (!acc && newValue % ft !== 0) newValue = newValue - (newValue % ft);
+        if (!acc && newValue % ft !== 0)
+          newValue = newValue - (newValue % ft);
         newValue += ft;
         if (newValue > limit) newValue = limit;
         el.style.opacity = newValue.toString();
