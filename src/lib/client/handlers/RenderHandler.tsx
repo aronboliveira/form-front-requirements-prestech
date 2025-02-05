@@ -421,7 +421,9 @@ export default class RenderHandler {
         names.push(crypto.randomUUID());
     return Object.keys(opts).length === 1
       ? firstOpt.grpOpts.map((o, i) => {
-          const snt = StringHelper.sanitizePropertyName(o);
+          const snt = StringHelper.slugify(
+            StringHelper.sanitizePropertyName(o)
+          );
           return !checkables ? (
             <option
               key={`${snt}__${i}`}
@@ -448,8 +450,9 @@ export default class RenderHandler {
                 label={friendly}
               >
                 {grpOpts.map((o, i) => {
-                  const snt =
-                    StringHelper.sanitizePropertyName(o);
+                  const snt = StringHelper.slugify(
+                    StringHelper.sanitizePropertyName(o)
+                  );
                   return !checkables ? (
                     <option
                       id={`${id}__${gn}__${snt}`}

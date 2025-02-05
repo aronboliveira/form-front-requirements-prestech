@@ -9,7 +9,8 @@ export default class StringHelper {
     return `${v.charAt(0).toLowerCase()}${v.slice(1)}`;
   }
   static camelToSnake(v: string): string {
-    if (!v || (typeof v === "string" && !/[A-Z]/.test(v))) return v;
+    if (!v || (typeof v === "string" && !/[A-Z]/.test(v)))
+      return v;
     v = this.spaceToUnderscore(v);
     return v.replace(
       /([a-z])([A-Z])/g,
@@ -20,7 +21,9 @@ export default class StringHelper {
     if (!v?.length) return "";
     v = this.spaceToUnderscore(v);
     if (!this.isUpperCase(v.charAt(0)))
-      return !this.isUpperCase(v) ? v : this.camelToSnake(v);
+      return !this.isUpperCase(v)
+        ? v
+        : this.camelToSnake(v);
     return `${v.charAt(0).toUpperCase()}${v
       .slice(1)
       .replace(
@@ -33,13 +36,18 @@ export default class StringHelper {
     if (c.length > 1) c = c.slice(0, 1);
     return c >= "A" && c <= "Z";
   }
-  static spaceToUnderscore(v: string, double: boolean = true): string {
+  static spaceToUnderscore(
+    v: string,
+    double: boolean = true
+  ): string {
     const spaceRegex = /\s/g;
     if (!spaceRegex.test(v)) return v;
     return v.replace(spaceRegex, double ? "__" : "_");
   }
   static removeDiacritical(v: string): string {
-    return v.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return v
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
   }
   static removeEmojis(v: string): string {
     return v.replace(
@@ -59,14 +67,24 @@ export default class StringHelper {
         .replace(/-/g, "_")
         .replace(/\s+/g, "__")
         /* eslint-disable */
-        .replace(/[^\p{L}\p{N}\p{Pc}\p{Mn}\u200C\u200D_]/gu, "")
+        .replace(
+          /[^\p{L}\p{N}\p{Pc}\p{Mn}\u200C\u200D_]/gu,
+          ""
+        )
         .replace(/^[^a-zA-Z_\u200C\u200D]/, s => `_${s}`)
     );
     /* eslint-enable */
   }
-  static unfriendlyName(v: string, pascal: boolean = false): string {
+  static unfriendlyName(
+    v: string,
+    pascal: boolean = false
+  ): string {
     return pascal
-      ? StringHelper.capitalize(StringHelper.sanitizePropertyName(v))
-      : StringHelper.uncapitalize(StringHelper.sanitizePropertyName(v));
+      ? StringHelper.capitalize(
+          StringHelper.sanitizePropertyName(v)
+        )
+      : StringHelper.uncapitalize(
+          StringHelper.sanitizePropertyName(v)
+        );
   }
 }
