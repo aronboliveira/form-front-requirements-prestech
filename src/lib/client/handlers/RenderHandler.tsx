@@ -60,17 +60,25 @@ export default class RenderHandler {
         throw new TypeError(
           `Questions dictionary returned as nullish`
         );
+      console.log(`QUESTIONS KEYS`);
+      console.log(Object.keys(questions));
       const fields = this.#getFieldSet();
       if (!fields)
         throw new TypeError(
           `Fields dictionary returned as nullish`
         );
+      console.log(`FIELDS KEYS`);
+      console.log(Object.keys(fields));
       const qsAcronymsSet = new Set(
           Object.keys(questions)
         ) as Set<QuestionKey>,
         fieldsAcronymsSet = new Set(
           Object.keys(fields)
         ) as Set<QuestionKey>;
+      console.log(`INTERSECTION`);
+      console.log([
+        ...qsAcronymsSet.intersection(fieldsAcronymsSet),
+      ]);
       const acronyms = [
         //@ts-ignore
         ...qsAcronymsSet.intersection(fieldsAcronymsSet),

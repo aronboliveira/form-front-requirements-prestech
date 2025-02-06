@@ -10,57 +10,40 @@
   export default function Erps(props: RangeCtxBlockProps): JSX.Element {
     const {
       r,
-      roleRef,
       levelTitle: lt,
-      mappedQuestions: qs,
+      mappedQuestions: qs
     } = useRangedCtxBlockChildren(props.lvl, "Erps");
     return (
       <FsOfficePlatforms id={protoName(Erps)} p={props} level={lt} ref={r}>
-        {qs.length ? (
-          (() => {
+          {(() => {
             const acronyms = qs.map(q => q[0]).join("__");
             switch (lt) {
               case "beginner":
                 return (
                   <BeginnerErps
-                    key={`${acronyms}__${lt}`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
                 );
               case "intermediate":
                 return (
                   <IntermediateErps
-                    key={`${acronyms}__${lt}`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
                 );
               case "expert":
                 return (
                   <ExpertErps
-                    key={`${acronyms}__${lt}`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
                 );
               default:
                 return (
                   <BeginnerErps
-                    key={`${acronyms}__${lt}`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
-                );
-            }
-          })()
-        ) : (
-          <></>
-        )}
+            );
+        }
+      })()}
       </FsOfficePlatforms>
     );
   }

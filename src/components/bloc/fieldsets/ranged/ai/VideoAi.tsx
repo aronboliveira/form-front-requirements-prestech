@@ -4,41 +4,41 @@
   import { protoName } from "@/lib/helpers/ObjectHelper";
   import { JSX } from "react/jsx-dev-runtime";
   import useRangedCtxBlockChildren from "@/lib/client/hooks/useRangedCtxBlockChildren";
-  import BeginnerAudioAi from "../inc/audioAi/BeginnerAudioAi";
-  import IntermediateAudioAi from "../inc/audioAi/IntermediateAudioAi";
-  import ExpertAudioAi from "../inc/audioAi/ExpertAudioAi";
-  export default function AudioAi(props: RangeCtxBlockProps): JSX.Element {
+  import BeginnerVideoAi from "../inc/videoAi/BeginnerVideoAi";
+  import IntermediateVideoAi from "../inc/videoAi/IntermediateVideoAi";
+  import ExpertVideoAi from "../inc/videoAi/ExpertVideoAi";
+  export default function VideoAi(props: RangeCtxBlockProps): JSX.Element {
     const {
       r,
       levelTitle: lt,
       mappedQuestions: qs
-    } = useRangedCtxBlockChildren(props.lvl, "AudioAi");
+    } = useRangedCtxBlockChildren(props.lvl, "VideoAi");
     return (
-      <FsAi id={protoName(AudioAi)} p={props} level={lt} ref={r}>
+      <FsAi id={protoName(VideoAi)} p={props} level={lt} ref={r}>
           {(() => {
             const acronyms = qs.map(q => q[0]).join("__");
             switch (lt) {
               case "beginner":
                 return (
-                  <BeginnerAudioAi
+                  <BeginnerVideoAi
                     key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
                 );
               case "intermediate":
                 return (
-                  <IntermediateAudioAi
+                  <IntermediateVideoAi
                     key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
                 );
               case "expert":
                 return (
-                  <ExpertAudioAi
+                  <ExpertVideoAi
                     key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
                 );
               default:
                 return (
-                  <BeginnerAudioAi
+                  <BeginnerVideoAi
                     key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
             );

@@ -15,8 +15,7 @@ const chalk = require("chalk"),
     additional = <></>,
   }: AddInputSubFieldset) {
     sufix ||= protoName({functionName});
-    const { role } = useRole();
-    const r = useRef<nlFs>(null),
+    const { role } = useRole(), r = useRef<nlFs>(null),
       t = \`\${role}__\${sufix}\`,
       name = \`\${StringHelper.uncapitalize(
         protoName({functionName})
@@ -71,13 +70,14 @@ const chalk = require("chalk"),
         filePath = path.join(
           groupDir,
           `${functionName}.tsx`
-        );
+        ),
+        filteredG = g.replace(/A[[iI]$/, "");
       fs.writeFileSync(
         filePath,
         contentTemplate
           .replace(/\{functionName\}/g, functionName)
           .replace(/\{level\}/g, level.toLowerCase())
-          .replace(/\{g\}/g, g),
+          .replace(/\{g\}/g, filteredG),
         "utf8"
       );
       chalk.green(console.log(`Written to ${filePath}`));

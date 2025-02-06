@@ -71,7 +71,7 @@ export default function useRangedCtxBlockChildren(
       ? (Object.entries(questions) as [string, string][])
       : [];
   useEffect(() => {
-    StyleHandler.tickFading(r.current, "0.5");
+    StyleHandler.tickFading(r.current, "0.3");
   }, [levelTitle]);
   return {
     r,

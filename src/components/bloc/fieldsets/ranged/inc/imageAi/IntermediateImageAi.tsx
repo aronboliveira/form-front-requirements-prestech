@@ -11,8 +11,7 @@
     additional = <></>,
   }: AddInputSubFieldset) {
     sufix ||= protoName(IntermediateImageAi);
-    const { role } = useRole();
-    const r = useRef<nlFs>(null),
+    const { role } = useRole(), r = useRef<nlFs>(null),
       t = `${role}__${sufix}`,
       name = `${StringHelper.uncapitalize(
         protoName(IntermediateImageAi)
@@ -23,7 +22,7 @@
             name,
             _role: role,
             _complexity: "intermediate",
-            _appType: "imageAi",
+            _appType: "image",
           }),
         [role]
       );

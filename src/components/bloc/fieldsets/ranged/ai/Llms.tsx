@@ -10,57 +10,40 @@
   export default function Llms(props: RangeCtxBlockProps): JSX.Element {
     const {
       r,
-      roleRef,
       levelTitle: lt,
-      mappedQuestions: qs,
+      mappedQuestions: qs
     } = useRangedCtxBlockChildren(props.lvl, "Llms");
     return (
       <FsAi id={protoName(Llms)} p={props} level={lt} ref={r}>
-        {qs.length ? (
-          (() => {
+          {(() => {
             const acronyms = qs.map(q => q[0]).join("__");
             switch (lt) {
               case "beginner":
                 return (
                   <BeginnerLlms
-                    key={`${acronyms}__${lt}`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
                 );
               case "intermediate":
                 return (
                   <IntermediateLlms
-                    key={`${acronyms}__${lt}`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
                 );
               case "expert":
                 return (
                   <ExpertLlms
-                    key={`${acronyms}__${lt}`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
                 );
               default:
                 return (
                   <BeginnerLlms
-                    key={`${acronyms}__${lt}`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
-                );
-            }
-          })()
-        ) : (
-          <></>
-        )}
+            );
+        }
+      })()}
       </FsAi>
     );
   }

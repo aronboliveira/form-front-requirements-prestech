@@ -10,57 +10,40 @@
   export default function Planning(props: RangeCtxBlockProps): JSX.Element {
     const {
       r,
-      roleRef,
       levelTitle: lt,
-      mappedQuestions: qs,
+      mappedQuestions: qs
     } = useRangedCtxBlockChildren(props.lvl, "Planning");
     return (
       <FsOfficePlatforms id={protoName(Planning)} p={props} level={lt} ref={r}>
-        {qs.length ? (
-          (() => {
+          {(() => {
             const acronyms = qs.map(q => q[0]).join("__");
             switch (lt) {
               case "beginner":
                 return (
                   <BeginnerPlanning
-                    key={`${acronyms}__${lt}`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
                 );
               case "intermediate":
                 return (
                   <IntermediatePlanning
-                    key={`${acronyms}__${lt}`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
                 );
               case "expert":
                 return (
                   <ExpertPlanning
-                    key={`${acronyms}__${lt}`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
                 );
               default:
                 return (
                   <BeginnerPlanning
-                    key={`${acronyms}__${lt}`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
-                );
-            }
-          })()
-        ) : (
-          <></>
-        )}
+            );
+        }
+      })()}
       </FsOfficePlatforms>
     );
   }

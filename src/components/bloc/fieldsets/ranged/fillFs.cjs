@@ -13,57 +13,40 @@ let contentTemplate = `"use client";
   export default function {group}(props: RangeCtxBlockProps): JSX.Element {
     const {
       r,
-      roleRef,
       levelTitle: lt,
-      mappedQuestions: qs,
+      mappedQuestions: qs
     } = useRangedCtxBlockChildren(props.lvl, "{ac}");
     return (
       <Fs{majorGroup} id={protoName({group})} p={props} level={lt} ref={r}>
-        {qs.length ? (
-          (() => {
+          {(() => {
             const acronyms = qs.map(q => q[0]).join("__");
             switch (lt) {
               case "beginner":
                 return (
                   <Beginner{group}
-                    key={\`\${acronyms}__\${lt}\`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={\`\${acronyms}__\${lt}__\${crypto.randomUUID()}\`}
                   />
                 );
               case "intermediate":
                 return (
                   <Intermediate{group}
-                    key={\`\${acronyms}__\${lt}\`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={\`\${acronyms}__\${lt}__\${crypto.randomUUID()}\`}
                   />
                 );
               case "expert":
                 return (
                   <Expert{group}
-                    key={\`\${acronyms}__\${lt}\`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={\`\${acronyms}__\${lt}__\${crypto.randomUUID()}\`}
                   />
                 );
               default:
                 return (
                   <Beginner{group}
-                    key={\`\${acronyms}__\${lt}\`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={\`\${acronyms}__\${lt}__\${crypto.randomUUID()}\`}
                   />
-                );
-            }
-          })()
-        ) : (
-          <></>
-        )}
+            );
+        }
+      })()}
       </Fs{majorGroup}>
     );
   }`;
@@ -109,7 +92,9 @@ let contentTemplate = `"use client";
         case "llms":
         case "docs":
         case "planning":
-          return `${g.charAt(0).toUpperCase()}${g.slice(1)}`;
+          return `${g.charAt(0).toUpperCase()}${g.slice(
+            1
+          )}`;
         case "spreadSheets":
           return "Spreadsheets";
         case "cloudStorage":
@@ -119,17 +104,26 @@ let contentTemplate = `"use client";
       }
     })();
     const subFolder = majorGroup === "Ai" ? "ai" : "office";
-    const groupDir = path.join(__dirname, subFolder, `${fileName}.tsx`);
+    const groupDir = path.join(
+      __dirname,
+      subFolder,
+      `${fileName}.tsx`
+    );
     const dir = path.dirname(groupDir);
     fs.mkdirSync(dir, { recursive: true });
     let template = contentTemplate
       .replace(/\{g\}/g, g)
-      .replace(/\{group\}/g, `${g.charAt(0).toUpperCase()}${g.slice(1)}`)
+      .replace(
+        /\{group\}/g,
+        `${g.charAt(0).toUpperCase()}${g.slice(1)}`
+      )
       .replace(/\{majorGroup\}/g, majorGroup)
       .replace(/\{ac\}/, fileName);
     fs.writeFileSync(groupDir, template, "utf8");
     chalk.green(console.log(`Written to ${groupDir}`));
   } catch (e) {
-    chalk.yellow(console.log(`Error creating file: ${e.message}`));
+    chalk.yellow(
+      console.log(`Error creating file: ${e.message}`)
+    );
   }
 });

@@ -1,49 +1,49 @@
 "use client";
   import { RangeCtxBlockProps } from "@/lib/definitions/client/interfaces/components";
-  import FsAi from "./FsAi";
+  import FsOfficeApp from "./FsOfficeApp";
   import { protoName } from "@/lib/helpers/ObjectHelper";
   import { JSX } from "react/jsx-dev-runtime";
   import useRangedCtxBlockChildren from "@/lib/client/hooks/useRangedCtxBlockChildren";
-  import BeginnerAudioAi from "../inc/audioAi/BeginnerAudioAi";
-  import IntermediateAudioAi from "../inc/audioAi/IntermediateAudioAi";
-  import ExpertAudioAi from "../inc/audioAi/ExpertAudioAi";
-  export default function AudioAi(props: RangeCtxBlockProps): JSX.Element {
+  import BeginnerFormBuilders from "../inc/formBuilders/BeginnerFormBuilders";
+  import IntermediateFormBuilders from "../inc/formBuilders/IntermediateFormBuilders";
+  import ExpertFormBuilders from "../inc/formBuilders/ExpertFormBuilders";
+  export default function FormBuilders(props: RangeCtxBlockProps): JSX.Element {
     const {
       r,
       levelTitle: lt,
       mappedQuestions: qs
-    } = useRangedCtxBlockChildren(props.lvl, "AudioAi");
+    } = useRangedCtxBlockChildren(props.lvl, "formBuilders");
     return (
-      <FsAi id={protoName(AudioAi)} p={props} level={lt} ref={r}>
+      <FsOfficeApp id={protoName(FormBuilders)} p={props} level={lt} ref={r}>
           {(() => {
             const acronyms = qs.map(q => q[0]).join("__");
             switch (lt) {
               case "beginner":
                 return (
-                  <BeginnerAudioAi
+                  <BeginnerFormBuilders
                     key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
                 );
               case "intermediate":
                 return (
-                  <IntermediateAudioAi
+                  <IntermediateFormBuilders
                     key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
                 );
               case "expert":
                 return (
-                  <ExpertAudioAi
+                  <ExpertFormBuilders
                     key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
                 );
               default:
                 return (
-                  <BeginnerAudioAi
+                  <BeginnerFormBuilders
                     key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
             );
         }
       })()}
-      </FsAi>
+      </FsOfficeApp>
     );
   }

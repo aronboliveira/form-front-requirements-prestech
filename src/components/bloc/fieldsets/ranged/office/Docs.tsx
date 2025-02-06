@@ -10,57 +10,40 @@
   export default function Docs(props: RangeCtxBlockProps): JSX.Element {
     const {
       r,
-      roleRef,
       levelTitle: lt,
-      mappedQuestions: qs,
+      mappedQuestions: qs
     } = useRangedCtxBlockChildren(props.lvl, "Docs");
     return (
       <FsOfficeApp id={protoName(Docs)} p={props} level={lt} ref={r}>
-        {qs.length ? (
-          (() => {
+          {(() => {
             const acronyms = qs.map(q => q[0]).join("__");
             switch (lt) {
               case "beginner":
                 return (
                   <BeginnerDocs
-                    key={`${acronyms}__${lt}`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
                 );
               case "intermediate":
                 return (
                   <IntermediateDocs
-                    key={`${acronyms}__${lt}`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
                 );
               case "expert":
                 return (
                   <ExpertDocs
-                    key={`${acronyms}__${lt}`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
                 );
               default:
                 return (
                   <BeginnerDocs
-                    key={`${acronyms}__${lt}`}
-                    prefix={roleRef.current}
-                    sufix={acronyms}
-                    questions={qs}
+                    key={`${acronyms}__${lt}__${crypto.randomUUID()}`}
                   />
-                );
-            }
-          })()
-        ) : (
-          <></>
-        )}
+            );
+        }
+      })()}
       </FsOfficeApp>
     );
   }
