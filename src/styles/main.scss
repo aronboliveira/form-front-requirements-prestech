@@ -90,7 +90,7 @@ input {
     @include transition-default();
     margin-right: 8px;
     cursor: pointer;
-    &:hover {
+    &:hover:not([role="switch"]) {
       transform: scale(1.05);
     }
     &:active {
@@ -141,6 +141,9 @@ button {
 }
 .countryCodeBlock {
   margin-bottom: var(--spacing-sm);
+}
+.disabled {
+  background-color: grey !important;
 }
 .fieldset-form {
   @include box-rounded-squary(6px);

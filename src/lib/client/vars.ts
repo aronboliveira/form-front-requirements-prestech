@@ -2029,13 +2029,13 @@ export const defLlmKeys = withFrozenLibreLabel(
       prp: "Como você elabora perguntas (prompts) simples para obter respostas úteis na IA?",
       cor: "Em que frequência você verifica a precisão das respostas obtidas, comparando com fontes confiáveis?",
       lan: "Você conversa na IA em português ou inglês? Qual é seu grau de conforto nisso?",
-      alr: "Você está ciente de que as IA podem 'alucinar' respostas incorretas? (Sim/Não)",
+      alr: "Você está ciente de que as IA podem 'alucinar' respostas incorretas?",
     },
     intermediate: {
       cxt: "Você utiliza contexto adicional (system, role messages) para guiar respostas mais personalizadas?",
       scr: "De que forma você integra a IA em scripts ou apps simples (via API) para automatizar algumas consultas?",
       seg: "Você filtra dados sensíveis (senhas, informações privadas) antes de inserir no prompt?",
-      rpd: "Você re-prompta a IA quando recebe algo incoerente e corrige a linha de raciocínio? (Sim/Não)",
+      rpd: "Você re-prompta a IA quando recebe algo incoerente e corrige a linha de raciocínio?",
       col: "Em que frequência você colabora com colegas para elaborar prompts detalhados, focados em um assunto?",
     },
     expert: {
@@ -2149,7 +2149,7 @@ export const eaSsKeys = withFrozenLibreLabel(
       prc: "Em que frequência você cria fórmulas intermediárias (SE, PROCV, CONCAT) para automação?",
       cht: "Que tipos de gráficos você costuma gerar para visualização?",
       col: "Como você colabora com outros usuários simultaneamente (co-edit, proteções)?",
-      tbl: `${frq} voceê cria tabelas formatadas para facilitar análises e filtros?`,
+      tbl: `${frq} cria tabelas formatadas para facilitar análises e filtros?`,
       spl: "Como você divide dados em colunas separadas (Texto para Colunas)?",
       lnk: "Qual sua experiência em vincular células entre diferentes planilhas?",
       imp: `${frq} importa dados de fontes online para análises em tempo real?`,
@@ -2330,7 +2330,7 @@ export const fnDocsKeys = withFrozenLibreLabel(
       trc: "Como você controla versões quando várias pessoas revisam o mesmo documento simultaneamente?",
       ast: "Você já configurou assinatura digital em relatórios financeiros? Como?",
       dbl: `${mnn} integra dados de planilhas ou bancos de dados em documentos de texto?`,
-      alt: "Você faz uso de texto alternativo ou marcações adicionais para facilitar auditorias? (Sim/Não)",
+      alt: "Você faz uso de texto alternativo ou marcações adicionais para facilitar auditorias?",
     },
     expert: {
       mac: repeated.mcr,
@@ -2559,7 +2559,7 @@ export const cmSsKeys = withFrozenLibreLabel(
     },
     intermediate: {
       piv: repeated.tbd,
-      adv: "Você integra planilhas com CRM ou outras fontes para atualizar dados de vendas (Sim/Não)?",
+      adv: "Você integra planilhas com CRM ou outras fontes para atualizar dados de vendas?",
       for: `${frq} utiliza fórmulas intermediárias (PROCV, SE, SOMASE) para acompanhamento de metas?`,
       cht: "Que gráficos você gera para ilustrar desempenho comercial ou comparação de metas?",
       col: "Como você colabora com outros vendedores ou gerentes numa única planilha, sem sobrescrever dados?",
@@ -2938,7 +2938,7 @@ export const stN1DocsKeys = withFrozenLibreLabel(
       fmt: repeated.fmt,
       syn: "De que forma você ensina a sincronizar documentos na nuvem ou em rede local?",
       cpt: `${frq} auxilia na compatibilidade de arquivos entre diferentes versões do software?`,
-      tmp: "Você recomenda modelos prontos para usuários inexperientes em edição de texto? (Sim/Não)",
+      tmp: "Você recomenda modelos prontos para usuários inexperientes em edição de texto?",
       col: "Como você analisa a colaboração simultânea (multiusuário) em um mesmo documento?",
     },
     intermediate: {

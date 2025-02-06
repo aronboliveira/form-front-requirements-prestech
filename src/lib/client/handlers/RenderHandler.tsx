@@ -102,7 +102,10 @@ export default class RenderHandler {
                 label={qt}
                 key={`${id}__${qt}__${type}`}
               >
-                <AddTextArea id={id} name={n} />
+                <AddTextArea
+                  id={`${this.#role}.${this.appType}__${a}`}
+                  name={n}
+                />
               </AddBlock>
             );
           case "select-one":
@@ -114,7 +117,7 @@ export default class RenderHandler {
                 key={`${id}__${qt}__${type}`}
               >
                 <AddSelectOne
-                  id={id}
+                  id={`${this.#role}.${this.appType}__${a}`}
                   name={n}
                   opts={{
                     main: {
@@ -135,9 +138,10 @@ export default class RenderHandler {
                 id={id}
                 label={qt}
                 key={`${id}__${qt}__${type}`}
+                cls='radiogroup'
               >
                 <AddMultipleCheckable
-                  id={id}
+                  id={`${this.#role}.${this.appType}__${a}`}
                   name={n}
                   opts={{
                     main: {
@@ -155,24 +159,37 @@ export default class RenderHandler {
           case "radio":
             return (field as OptionFieldDescription).options
               ?.length ? (
-              (
-                (field as OptionFieldDescription)
-                  .options as string[]
-              )?.map(o => {
-                return (
-                  <AddBlock
-                    key={`${id}__${a}`}
-                    id={`${id}__${a}`}
-                    label={o}
-                  >
-                    <AddCheckable
-                      id={`${id}__${a}`}
-                      name={n}
-                      type={type}
-                    />
-                  </AddBlock>
-                );
-              })
+              <AddBlock
+                label={qt}
+                key={`${id}__${a}__${crypto.randomUUID()}`}
+                id={`${id}__${a}`}
+                cls='radiogroup'
+              >
+                {(
+                  (field as OptionFieldDescription)
+                    .options as string[]
+                )?.map(o => {
+                  const snt =
+                    StringHelper.removeDiacritical(
+                      StringHelper.sanitizePropertyName(o)
+                    );
+                  return (
+                    <AddBlock
+                      key={`${id}__${snt}__${crypto.randomUUID()}`}
+                      id={`${id}__${snt}`}
+                      label={o}
+                    >
+                      <AddCheckable
+                        id={`${this.#role}.${
+                          this.appType
+                        }__${a}`}
+                        name={n}
+                        type={type}
+                      />
+                    </AddBlock>
+                  );
+                })}
+              </AddBlock>
             ) : (
               <></>
             );
@@ -183,7 +200,11 @@ export default class RenderHandler {
                 label={qt}
                 key={`${id}__${qt}__${type}`}
               >
-                <AddFileInput id={id} name={n} />;
+                <AddFileInput
+                  id={`${this.#role}.${this.appType}__${a}`}
+                  name={n}
+                />
+                ;
               </AddBlock>
             );
           case "number":
@@ -195,7 +216,7 @@ export default class RenderHandler {
                 key={`${id}__${qt}__${type}`}
               >
                 <AddNumericInput
-                  id={id}
+                  id={`${this.#role}.${this.appType}__${a}`}
                   name={n}
                   type={type}
                 />
@@ -208,7 +229,11 @@ export default class RenderHandler {
                 label={qt}
                 key={`${id}__${qt}__${type}`}
               >
-                <AddColorInput id={id} name={n} />;
+                <AddColorInput
+                  id={`${this.#role}.${this.appType}__${a}`}
+                  name={n}
+                />
+                ;
               </AddBlock>
             );
           case "date":
@@ -224,7 +249,7 @@ export default class RenderHandler {
               >
                 <input
                   type={type}
-                  id={id}
+                  id={`${this.#role}.${this.appType}__${a}`}
                   name={n}
                   className={`entryAddRanged inpAddRanged ${classes.inpClasses}`}
                   data-role={this.#role}
@@ -239,7 +264,7 @@ export default class RenderHandler {
                 key={`${id}__${qt}__${type}`}
               >
                 <AddTextualInput
-                  id={id}
+                  id={`${this.#role}.${this.appType}__${a}`}
                   name={n}
                   type={"text"}
                 />
@@ -421,19 +446,38 @@ export default class RenderHandler {
         names.push(crypto.randomUUID());
     return Object.keys(opts).length === 1
       ? firstOpt.grpOpts.map((o, i) => {
-          const snt = StringHelper.slugify(
+          const snt = StringHelper.removeDiacritical(
             StringHelper.sanitizePropertyName(o)
           );
           return !checkables ? (
             <option
-              key={`${snt}__${i}`}
+              key={`${snt}__${i}__${crypto.randomUUID}`}
               value={snt}
               data-name={names[i]}
             >
               {o}
             </option>
+          ) : o.startsWith("Nunca") ||
+            o.startsWith("Não") ? (
+            <AddBlock
+              id={`${id}__${snt}`}
+              label={o}
+              cls='form-check form-switch'
+              key={`${id}__${snt}__${crypto.randomUUID}`}
+            >
+              <AddCheckable
+                id={`${id}__${snt}`}
+                name={names[i]}
+                type={"toggle"}
+                multiple={true}
+              />
+            </AddBlock>
           ) : (
-            <AddBlock id={`${id}__${snt}`} label={o}>
+            <AddBlock
+              id={`${id}__${snt}`}
+              label={o}
+              key={`${id}__${snt}__${crypto.randomUUID}`}
+            >
               <AddCheckable
                 id={`${id}__${snt}`}
                 name={names[i]}
@@ -448,6 +492,7 @@ export default class RenderHandler {
               <optgroup
                 id={`${id}__${gn}`}
                 label={friendly}
+                key={`${id}__${gn}__${crypto.randomUUID}`}
               >
                 {grpOpts.map((o, i) => {
                   const snt = StringHelper.slugify(
@@ -456,7 +501,7 @@ export default class RenderHandler {
                   return !checkables ? (
                     <option
                       id={`${id}__${gn}__${snt}`}
-                      key={`${snt}__${i}`}
+                      key={`${snt}__${i}__${crypto.randomUUID}`}
                       value={snt}
                       data-name={names[i]}
                     >
@@ -466,6 +511,7 @@ export default class RenderHandler {
                     <AddBlock
                       id={`${id}__${snt}`}
                       label={o}
+                      key={`${snt}__${i}__${crypto.randomUUID}`}
                     >
                       <AddCheckable
                         id={`${id}__${snt}`}

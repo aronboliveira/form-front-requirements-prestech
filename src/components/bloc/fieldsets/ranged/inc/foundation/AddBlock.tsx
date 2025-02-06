@@ -1,6 +1,6 @@
 "use client";
 import useRole from "@/lib/client/hooks/useRole";
-import { useRef, JSX } from "react";
+import { useRef, JSX, useEffect } from "react";
 import { classes } from "@/lib/client/vars";
 import { HasChildren } from "@/lib/definitions/client/interfaces/components";
 import DefaultEntryBoundary from "@/components/bloc/errors/DefaultEntryBoundary";
@@ -26,6 +26,11 @@ export default function AddBlock({
     idf = StringHelper.capitalize(
       id ?? crypto.randomUUID()
     );
+  useEffect(() => {
+    if (!r.current) return;
+    if (r.current.classList.contains("radiogroup"))
+      r.current.role = "radiogroup";
+  }, [r]);
   return (
     <DefaultEntryBoundary>
       {label ? (

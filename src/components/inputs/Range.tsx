@@ -18,9 +18,9 @@ import StyleHandler from "@/lib/client/handlers/StyleHandler";
 import MathHandler from "@/lib/client/handlers/MathHandler";
 import StyleValidator from "@/lib/client/validators/StyleValidator";
 import {
+  addQuestionsKey,
   complexityLabel,
   complexityLevel,
-  rangeCtxId,
 } from "@/lib/definitions/foundations";
 import Bi from "../bloc/fieldsets/ranged/office/Bi";
 import StoragePlatforms from "../bloc/fieldsets/ranged/office/StoragePlatforms";
@@ -32,6 +32,10 @@ import Planning from "../bloc/fieldsets/ranged/office/Planning";
 import Spreadsheets from "../bloc/fieldsets/ranged/office/Spreadsheets";
 import { JSX } from "react/jsx-runtime";
 import DOMValidator from "@/lib/client/validators/DOMValidator";
+import AudioAi from "../bloc/fieldsets/ranged/ai/AudioAi";
+import ImageAi from "../bloc/fieldsets/ranged/ai/ImageAi";
+import VideoAi from "../bloc/fieldsets/ranged/ai/VIdeoAi";
+import Llms from "../bloc/fieldsets/ranged/ai/Llms";
 export const Range = memo(
   (props: RangeInputBlock): JSX.Element => {
     const min = 0,
@@ -85,7 +89,11 @@ export const Range = memo(
           lvl: complexityLevel,
           controller: string
         ): JSX.Element => {
-          switch (props.id as rangeCtxId) {
+          switch (
+            props.id
+              .replace("LLM", "llm")
+              .replace(/AIs$/, "") as addQuestionsKey
+          ) {
             case "businessInteligence":
               return (
                 <Bi lvl={lvl} controller={controller} />
@@ -129,6 +137,31 @@ export const Range = memo(
                   lvl={lvl}
                   controller={controller}
                 />
+              );
+            case "audio":
+              return (
+                <AudioAi
+                  lvl={lvl}
+                  controller={controller}
+                />
+              );
+            case "image":
+              return (
+                <ImageAi
+                  lvl={lvl}
+                  controller={controller}
+                />
+              );
+            case "video":
+              return (
+                <VideoAi
+                  lvl={lvl}
+                  controller={controller}
+                />
+              );
+            case "llms":
+              return (
+                <Llms lvl={lvl} controller={controller} />
               );
             default:
               return <></>;

@@ -4,7 +4,7 @@ import { classes } from "@/lib/client/vars";
 import { AddOptInputBlock } from "@/lib/definitions/client/interfaces/components";
 import DefaultEntryBoundary from "@/components/bloc/errors/DefaultEntryBoundary";
 import RenderHandler from "@/lib/client/handlers/RenderHandler";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, Fragment } from "react";
 import { nlFs } from "@/lib/definitions/client/helpers";
 import DOMValidator from "@/lib/client/validators/DOMValidator";
 import s from "@/styles/modules/rangeCtx.module.scss";
@@ -29,7 +29,9 @@ export default function AddMultipleCheckable({
   return (
     <DefaultEntryBoundary>
       {ks?.length ? (
-        <>
+        <Fragment
+          key={`${id}__${role}__${crypto.randomUUID()}`}
+        >
           <fieldset
             ref={r}
             id={id}
@@ -46,7 +48,7 @@ export default function AddMultipleCheckable({
             })}
           </fieldset>
           {additional}
-        </>
+        </Fragment>
       ) : (
         <></>
       )}
