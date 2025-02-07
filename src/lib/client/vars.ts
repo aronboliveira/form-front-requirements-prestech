@@ -1478,10 +1478,10 @@ export const appGroupsDict: Record<
   RangeCtxComponentNames,
   addQuestionsKey
 > = ObjectHelper.makeImmutable({
-  AudioAis: "audio",
-  ImageAis: "image",
+  AudioAi: "audio",
+  ImageAi: "image",
   Llms: "llms",
-  VideoAis: "video",
+  VideoAi: "video",
   Bi: "businessInteligence",
   Crms: "Crms",
   Docs: "docs",

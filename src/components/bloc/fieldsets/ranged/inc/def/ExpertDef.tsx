@@ -22,7 +22,7 @@
             name,
             _role: role,
             _complexity: "expert",
-            _appType: "def",
+            _appType: "businessInteligence",
           }),
         [role]
       );

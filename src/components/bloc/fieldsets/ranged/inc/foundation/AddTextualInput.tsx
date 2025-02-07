@@ -15,7 +15,7 @@ export default function AddTextualInput({
   placeholder = "Escreva aqui",
   initial = "",
   telType = "local",
-}: AddInputBlock & {
+}: Omit<AddInputBlock, "type"> & {
   type?:
     | "text"
     | "email"

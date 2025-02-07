@@ -71,9 +71,6 @@ export default function Watcher({
       for (const e of [...document.forms].flatMap(f =>
         [...f.elements].filter(e => DOMValidator.isEntry(e))
       )) {
-        if (DOMValidator.isCustomEntry(e)) {
-        } else if (DOMValidator.isDefaultEntry(e)) {
-        }
         if (!DOMValidator.isDefaultCheckable(e)) continue;
         if (e.name === "main") e.name = crypto.randomUUID();
       }

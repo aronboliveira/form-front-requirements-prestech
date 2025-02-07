@@ -7,15 +7,22 @@ import useRangedCtxBlockChildren from "@/lib/client/hooks/useRangedCtxBlockChild
 import BeginnerVideoAi from "../inc/videoAi/BeginnerVideoAi";
 import IntermediateVideoAi from "../inc/videoAi/IntermediateVideoAi";
 import ExpertVideoAi from "../inc/videoAi/ExpertVideoAi";
-export default function VideoAi(props: RangeCtxBlockProps): JSX.Element {
+export default function VideoAi(
+  props: RangeCtxBlockProps
+): JSX.Element {
   const {
     r,
     roleRef,
     levelTitle: lt,
     mappedQuestions: qs,
-  } = useRangedCtxBlockChildren(props.lvl, "VideoAis");
+  } = useRangedCtxBlockChildren(props.lvl, "VideoAi");
   return (
-    <FsAi id={protoName(VideoAi)} p={props} level={lt} ref={r}>
+    <FsAi
+      id={protoName(VideoAi)}
+      p={props}
+      level={lt}
+      ref={r}
+    >
       {qs.length ? (
         (() => {
           const acronyms = qs.map(q => q[0]).join("__");

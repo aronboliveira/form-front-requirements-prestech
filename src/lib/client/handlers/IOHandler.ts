@@ -19,7 +19,6 @@ import {
 } from "../vars";
 import DOMValidator from "../validators/DOMValidator";
 import { toast } from "react-hot-toast";
-import DOMHandler from "./DOMHandler";
 export default class IOHandler {
   static applyFieldConstraints(
     v: string,

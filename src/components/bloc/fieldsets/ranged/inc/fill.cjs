@@ -57,7 +57,7 @@ const chalk = require("chalk"),
   "videoAi",
   "llms",
   "def",
-].forEach((g, i) => {
+].forEach((g, i, a) => {
   let groupDir;
   try {
     groupDir = path.join(__dirname, g);
@@ -70,8 +70,10 @@ const chalk = require("chalk"),
         filePath = path.join(
           groupDir,
           `${functionName}.tsx`
-        ),
-        filteredG = g.replace(/A[[iI]$/, "");
+        );
+      let filteredG = g.replace(/A[[iI]$/, "");
+      const def = a.indexOf("def");
+      if (def >= 0 && filteredG === "def") filteredG = a[0];
       fs.writeFileSync(
         filePath,
         contentTemplate

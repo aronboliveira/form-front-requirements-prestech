@@ -90,10 +90,10 @@ export type rangeCtxId =
 export type aiGroups = "audio" | "image" | "llms" | "video";
 export type addQuestionsKey = rangeCtxId | aiGroups;
 export type RangeCtxComponentNames =
-  | "AudioAis"
-  | "ImageAis"
+  | "AudioAi"
+  | "ImageAi"
   | "Llms"
-  | "VideoAis"
+  | "VideoAi"
   | "Bi"
   | "Crms"
   | "Docs"

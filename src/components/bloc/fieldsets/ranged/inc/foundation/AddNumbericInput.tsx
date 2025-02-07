@@ -13,7 +13,7 @@ export default function AddNumericInput({
   max,
   step = "1",
   initialValue = 0,
-}: LimitedAddInputBlock & {
+}: Omit<LimitedAddInputBlock, "type"> & {
   type: "number" | "range";
   initialValue?: number;
 }) {
@@ -73,7 +73,9 @@ export default function AddNumericInput({
         value={s.value}
         onChange={ev => {
           const value = Number(ev.currentTarget.value);
-          value >= min && value <= normalizedMax && d({ type, payload: value });
+          value >= min &&
+            value <= normalizedMax &&
+            d({ type, payload: value });
         }}
       />
       {additional}

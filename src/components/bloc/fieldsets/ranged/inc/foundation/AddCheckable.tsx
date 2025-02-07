@@ -10,10 +10,10 @@ import DOMValidator from "@/lib/client/validators/DOMValidator";
 export default function AddCheckable({
   id,
   name,
+  multiple,
   type = "checkbox",
   additional = <></>,
-  multiple = false,
-}: AddInputBlock & {
+}: Omit<AddInputBlock, "type"> & {
   type: "radio" | "checkbox" | "toggle";
   multiple?: boolean;
 }) {
