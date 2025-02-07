@@ -30,8 +30,10 @@ export default function AddCheckable({
   }, [r]);
   useEffect(() => {
     if (!r.current) return;
-    r.current.style.transform = "translate(0, 0)";
-  }, []);
+    const d = r.current.closest(".divAddRanged");
+    if (multiple || !(d instanceof HTMLElement)) return;
+    d.style.marginLeft = "1.25rem";
+  }, [r]);
   useEffect(() => {
     if (!r.current || r.current.role !== "switch") return;
     const fs = r.current.closest("fieldset"),
@@ -58,19 +60,31 @@ export default function AddCheckable({
         role={type === "toggle" ? "switch" : type}
         className={`entryAddRanged inpAddRanged inpCheckableRanged ${classes.inpCheckables} ${s.checkable}`}
         data-role={role}
-        checked={v}
+        checked={multiple ? v : undefined}
         onClick={ev => {
           const t = ev.currentTarget;
-          if (t.checked && multiple) setV(false);
+          if (t.checked && multiple) {
+            t.checked = false;
+            setV(false);
+          }
+          if (!multiple) {
+            const ref =
+              t.closest('[role="radiogroup"') ||
+              t.closest(".radiogroup") ||
+              document;
+            ref
+              .querySelectorAll(`[name=${t.name}]`)
+              .forEach(r => {
+                if (DOMValidator.isDefaultCheckable(r))
+                  r.checked = false;
+              });
+            t.checked = true;
+            setV(true);
+          }
         }}
         onChange={ev => {
           const t = ev.currentTarget;
-          console.log("CHANGE " + ev.currentTarget.checked);
-          multiple
-            ? setV(t.checked)
-            : setV(prev =>
-                prev === t.checked ? !prev : t.checked
-              );
+          multiple && setV(!t.checked);
         }}
       />
       {additional}

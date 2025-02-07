@@ -27,9 +27,7 @@ export default function BeginnerDocs({
         }),
       [role]
     );
-  useEffect(() => {
-    console.log(`Rendered fieldset for add ranged`);
-  }, [r]);
+  useEffect(() => {}, [r]);
   return (
     <fieldset
       className={`fsAddRanged`}

@@ -5,6 +5,7 @@ import { classes } from "@/lib/client/vars";
 import { AddInputBlock } from "@/lib/definitions/client/interfaces/components";
 import DefaultEntryBoundary from "@/components/bloc/errors/DefaultEntryBoundary";
 import IOHandler from "@/lib/client/handlers/IOHandler";
+import StringHelper from "@/lib/helpers/StringHelper";
 export default function AddTextArea({
   id,
   name,
@@ -24,8 +25,18 @@ export default function AddTextArea({
         data-role={role}
         value={v}
         onChange={ev => {
-          const v = ev.currentTarget.value;
-          setV(IOHandler.applyFieldConstraints(v, r.current));
+          let v = ev.currentTarget.value;
+          setV(() => {
+            v = IOHandler.applyFieldConstraints(
+              v,
+              r.current
+            );
+            if (v.length === 1 || /^[a-z]/.test(v))
+              v = StringHelper.capitalize(v);
+            if (r.current && !r.current.autocapitalize)
+              r.current.autocapitalize = "sentences";
+            return v;
+          });
         }}
       ></textarea>
       {additional}

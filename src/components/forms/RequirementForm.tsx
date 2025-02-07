@@ -13,7 +13,10 @@ import { IOModel } from "@/lib/client/models/IOModel";
 import Email from "../inputs/Email";
 import LocalizedTelFs from "../bloc/fieldsets/etc/LocalizedTelFs";
 import withTelContext from "../highOrder/withTelContext";
-import { FormControl, nlFm } from "@/lib/definitions/client/helpers";
+import {
+  FormControl,
+  nlFm,
+} from "@/lib/definitions/client/helpers";
 import MathHandler from "@/lib/client/handlers/MathHandler";
 import ButtonsBlock from "../bloc/fieldsets/cta/ButtonsBlock";
 import Age from "../inputs/Age";
@@ -25,10 +28,17 @@ import Range from "../inputs/Range";
 import { ErrorBoundary } from "react-error-boundary";
 import GenericErrorComponent from "../bloc/errors/Error";
 import { IFormCtx } from "@/lib/definitions/client/interfaces/contexts";
-import { rangeCtxId, roleType } from "@/lib/definitions/foundations";
+import {
+  rangeCtxId,
+  roleType,
+} from "@/lib/definitions/foundations";
 import ContextualQuestions from "../bloc/fieldsets/professional/ContextualQuestions";
 import TabProvider from "@/lib/client/providers/TabProvider";
-import { classes, dictLabelsRange, flags } from "@/lib/client/vars";
+import {
+  classes,
+  dictLabelsRange,
+  flags,
+} from "@/lib/client/vars";
 import ContextValidator from "@/lib/client/validators/ContextValidator";
 import TechnologiesLists from "../bloc/fieldsets/professional/TechnologiesList";
 import DOMHandler from "@/lib/client/handlers/DOMHandler";
@@ -80,7 +90,9 @@ export default function RequirementForm({
             ctrl instanceof HTMLLegendElement
           )
       )
-      .forEach(ctrl => IOModel.setFormControlNameSufix(ctrl as FormControl));
+      .forEach(ctrl =>
+        IOModel.setFormControlNameSufix(ctrl as FormControl)
+      );
     setNames(true);
   }, [r]);
   useEffect(() => {
@@ -94,7 +106,10 @@ export default function RequirementForm({
     IOModel.setSpellChecks();
     cache.current = CacheProvider.construct(r.current);
     cache.current.setup();
-    r.current.key = MathHandler.generateRandomKey(r.current.key, 255);
+    r.current.key = MathHandler.generateRandomKey(
+      r.current.key,
+      255
+    );
     setTimeout(IOModel.setPlaceholders, 500);
     if (!flags.indexed) {
       new TabProvider([
@@ -104,9 +119,17 @@ export default function RequirementForm({
       flags.indexed = true;
     }
     const role = sessionStorage.getItem("role");
-    role && setRole(ContextValidator.isRoleType(role) ? role : "undefined");
+    role &&
+      setRole(
+        ContextValidator.isRoleType(role)
+          ? role
+          : "undefined"
+      );
     setTimeout(() => new StyleProvider().setup(), 500);
-    new LoggingHandler(r.current.id).logSubgroup(true, true);
+    new LoggingHandler(r.current.id).logSubgroup(
+      true,
+      true
+    );
   }, [r, idsSettled]);
   useEffect(() => {
     IOModel.setPlaceholders();
@@ -133,37 +156,65 @@ export default function RequirementForm({
           target='self'
           encType='application/x-www-form-urlencoded'
         >
-          <fieldset className={classes.mainFsClasses} id='fsId'>
-            <legend className={classes.mainFsLegClasses} id='legIdf'>
+          <fieldset
+            className={classes.mainFsClasses}
+            id='fsId'
+          >
+            <legend
+              className={classes.mainFsLegClasses}
+              id='legIdf'
+            >
               Dados Básicos
             </legend>
             <hr style={{ marginBlock: "2rem" }} />
             <section className={mainFsSect} id='sectIdf'>
-              <fieldset className={sectSubDiv_1} id='divPersonal'>
+              <fieldset
+                className={sectSubDiv_1}
+                id='divPersonal'
+              >
                 <FirstName />
                 <LastName />
                 <Age />
                 <Gender />
               </fieldset>
               <hr />
-              <fieldset className={sectSubDiv_1} id='divContact'>
-                <Email required={true} label='E-mail Primário' id='emailPrim' />
+              <fieldset
+                className={sectSubDiv_1}
+                id='divContact'
+              >
+                <Email
+                  required={true}
+                  label='E-mail Primário'
+                  id='emailPrim'
+                />
                 <Email
                   required={false}
                   label='E-mail Secundário'
                   id='emailSec'
                 />
-                <EnhancedTelFs required={true} label='prim' />
-                <EnhancedTelFs required={false} label='sec' />
+                <EnhancedTelFs
+                  required={true}
+                  label='prim'
+                />
+                <EnhancedTelFs
+                  required={false}
+                  label='sec'
+                />
               </fieldset>
               <hr />
-              <fieldset className={sectSubDiv_1} id='divWorkplace'>
+              <fieldset
+                className={sectSubDiv_1}
+                id='divWorkplace'
+              >
                 <Role />
                 <Worktime />
               </fieldset>
             </section>
           </fieldset>
-          <fieldset className={classes.mainFsClasses} id='divTechs'>
+          <fieldset
+            className={classes.mainFsClasses}
+            id='divTechs'
+          >
             <legend
               className={classes.mainFsLegClasses}
               id='legTechs'
@@ -173,16 +224,22 @@ export default function RequirementForm({
             </legend>
             <hr style={{ marginBlock: "2rem" }} />
             <section className={mainFsSect} id='sectOffice'>
-              <h2 className='sectHeading'>Documentação, Gestão e Análise</h2>
+              <h2 className='sectHeading'>
+                Documentação, Gestão e Análise
+              </h2>
               <ErrorBoundary
                 FallbackComponent={() => (
                   <GenericErrorComponent message='Erro ao carregar campos sobre Aplicativos' />
                 )}
               >
-                <fieldset className={sectSubDiv_1} id='fsOfficeApps'>
+                <fieldset
+                  className={sectSubDiv_1}
+                  id='fsOfficeApps'
+                >
                   {[
                     {
-                      t: dictLabelsRange.office.apps.spreadSheet,
+                      t: dictLabelsRange.office.apps
+                        .spreadSheet,
                       id: "spreadSheets",
                     },
                     {
@@ -194,7 +251,8 @@ export default function RequirementForm({
                       id: "formBuilders",
                     },
                     {
-                      t: dictLabelsRange.office.apps.storage,
+                      t: dictLabelsRange.office.apps
+                        .storage,
                       id: "cloudStorage",
                     },
                   ].map(({ t, id }, i) => (
@@ -212,22 +270,29 @@ export default function RequirementForm({
                   <GenericErrorComponent message='Erro ao carregar campos sobre Plataformas' />
                 )}
               >
-                <fieldset className={sectSubDiv_1} id='fsOfficePlatforms'>
+                <fieldset
+                  className={sectSubDiv_1}
+                  id='fsOfficePlatforms'
+                >
                   {[
                     {
-                      t: dictLabelsRange.office.platforms.crm,
+                      t: dictLabelsRange.office.platforms
+                        .crm,
                       id: "Crms",
                     },
                     {
-                      t: dictLabelsRange.office.platforms.erp,
+                      t: dictLabelsRange.office.platforms
+                        .erp,
                       id: "Erps",
                     },
                     {
-                      t: dictLabelsRange.office.platforms.planning,
+                      t: dictLabelsRange.office.platforms
+                        .planning,
                       id: "planning",
                     },
                     {
-                      t: dictLabelsRange.office.platforms.bi,
+                      t: dictLabelsRange.office.platforms
+                        .bi,
                       id: "businessInteligence",
                     },
                   ].map(({ t, id }, i) => (
@@ -250,7 +315,10 @@ export default function RequirementForm({
                   <GenericErrorComponent message='Erro ao carregar campos sobre Inteligências Artficiais' />
                 )}
               >
-                <fieldset className={sectSubDiv_1} id='fsAIs'>
+                <fieldset
+                  className={sectSubDiv_1}
+                  id='fsAIs'
+                >
                   {[
                     {
                       t: dictLabelsRange.ai.llms,

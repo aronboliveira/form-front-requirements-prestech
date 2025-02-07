@@ -60,6 +60,13 @@ label {
   margin-bottom: var(--spacing-sm);
   font-weight: 600;
 }
+input[type="range"] {
+  &::-webkit-slider-runnable-track {
+    @media (prefers-color-scheme: dark) {
+      background-color: rgb(210, 210, 210);
+    }
+  }
+}
 input[type="text"],
 input[type="email"],
 input[type="number"],
@@ -128,6 +135,12 @@ button {
     transform: translateY(2px);
   }
 }
+.body {
+  background-color: rgb(239 251 236 / 93%);
+  @media (prefers-color-scheme: dark) {
+    background-color: rgba(204, 204, 204, 0.93);
+  }
+}
 .bold {
   font-weight: bold;
 }
@@ -178,6 +191,13 @@ button {
     &:focus {
       transform: scale(1.2) !important;
     }
+  }
+}
+.formMainFs,
+.fsMultipleChekables.form-control {
+  background-color: #ffff;
+  @media (prefers-color-scheme: dark) {
+    background-color: #f1f1f1e9;
   }
 }
 .fsTechCb {

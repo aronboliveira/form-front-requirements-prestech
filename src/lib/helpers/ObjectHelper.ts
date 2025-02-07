@@ -68,7 +68,7 @@ export default class ObjectHelper {
             configurable,
           });
       } catch (e) {
-        console.log(`Failed to makeMutable for ${k}:${v}`);
+        console.warn(`Failed to makeMutable for ${k}:${v}`);
       }
     }
     return obj;

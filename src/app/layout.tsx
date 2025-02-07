@@ -53,9 +53,13 @@ export const metadata: Metadata = {
       "https://prestech.com.br/site/wp-content/uploads/2024/10/Favicon-Prestech-Fundo-Branco.svg",
   },
   openGraph: {
-    title: "Formulário de Requisitos in-house, Nova Prestech",
+    title:
+      "Formulário de Requisitos in-house, Nova Prestech",
     description: desc,
-    emails: ["suporte@prestech.com.br", "comercial@prestech.com.br"],
+    emails: [
+      "suporte@prestech.com.br",
+      "comercial@prestech.com.br",
+    ],
     phoneNumbers: ["+55 (21) 3860-7510"],
     siteName: "Nova Prestech",
     locale: "pt-BR",
@@ -75,8 +79,14 @@ export const metadata: Metadata = {
 };
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#e2dbdb" },
-    { media: "(prefers-color-scheme: dark)", color: "#000d1a" },
+    {
+      media: "(prefers-color-scheme: light)",
+      color: "#e2dbdb",
+    },
+    {
+      media: "(prefers-color-scheme: dark)",
+      color: "#000d1a",
+    },
   ],
   colorScheme: "dark light",
 };
@@ -89,8 +99,14 @@ export default function RootLayout({
     <html lang='pt-BR'>
       <head>
         <meta charSet='UTF-8' />
-        <meta httpEquiv='X-UA-Compatible' content='IE=edge' />
-        <meta httpEquiv='Content-Type' content='text/html; charset=UTF-8' />
+        <meta
+          httpEquiv='X-UA-Compatible'
+          content='IE=edge'
+        />
+        <meta
+          httpEquiv='Content-Type'
+          content='text/html; charset=UTF-8'
+        />
         <meta
           name='viewport'
           content='width=device-width, initial-scale=1.0, maximum-scale=2, minimum-scale=0.5, user-scalable=yes'
@@ -103,7 +119,9 @@ export default function RootLayout({
           id='bootstrapLink'
         />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} body`}
+      >
         {children}
         <span className='divModal' id='divModalSec'></span>
         <span className='divModal' id='divModalTerc'></span>
@@ -115,7 +133,11 @@ export default function RootLayout({
           integrity='sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz'
           crossOrigin='anonymous'
         />
-        <Script async strategy='lazyOnload' id='iconRounder'>
+        <Script
+          async
+          strategy='lazyOnload'
+          id='iconRounder'
+        >
           {`(() => {
           const link = document.getElementById("favicon");
           if (link) {

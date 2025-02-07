@@ -275,6 +275,7 @@ export type ClassesKey =
   | "inpLabClasses"
   | "inpClasses"
   | "textClasses"
+  | "inpCheckables"
   | "contextualTextClasses"
   | "ccClasses"
   | "dddClasses"

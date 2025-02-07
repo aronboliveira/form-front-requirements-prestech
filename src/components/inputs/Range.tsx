@@ -89,7 +89,6 @@ export const Range = memo(
           lvl: complexityLevel,
           controller: string
         ): JSX.Element => {
-          console.log(`Reached switch to render component`);
           switch (
             props.id
               .replace("LLM", "llm")

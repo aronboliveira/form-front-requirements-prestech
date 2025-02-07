@@ -37,8 +37,17 @@ export default function useRangedCtxBlock(): {
     setTimeout(() => {
       if (!r.current) return;
       Array.from(r.current.elements)
-        .filter(DOMValidator.isDefaultWritableInput)
-        .forEach(e => (e.placeholder = "Escreva aqui"));
+        .filter(
+          e =>
+            DOMValidator.isDefaultWritableInput(e) ||
+            e instanceof HTMLTextAreaElement
+        )
+        .forEach(
+          e =>
+            ((
+              e as HTMLInputElement | HTMLTextAreaElement
+            ).placeholder = "Escreva aqui")
+        );
     }, 500);
   }, [r]);
   return { r };

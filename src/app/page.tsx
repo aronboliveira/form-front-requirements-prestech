@@ -8,10 +8,20 @@ export default function Home() {
   return (
     <div>
       <Toaster position='top-center' />
-      <main className={`container`} style={{ marginBlock: "2%" }}>
+      <main
+        className={`container`}
+        style={{ marginBlock: "2%" }}
+      >
         <div id='mainHeadingDiv'>
-          <h1 id='mainTitle'>
-            Formulário de Levantamento de Requisitos — Nova Prestech
+          <h1
+            id='mainTitle'
+            style={{
+              fontWeight: "900",
+              fontSize: "1.6rem",
+            }}
+          >
+            Formulário de Levantamento de Requisitos — Nova
+            Prestech
           </h1>
           <AutoCorrectSwitch />
         </div>
