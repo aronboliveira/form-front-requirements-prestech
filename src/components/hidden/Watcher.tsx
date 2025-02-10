@@ -72,7 +72,14 @@ export default function Watcher({
         [...f.elements].filter(e => DOMValidator.isEntry(e))
       )) {
         if (!DOMValidator.isDefaultCheckable(e)) continue;
-        if (e.name === "main") e.name = crypto.randomUUID();
+        if (e.name === "main") {
+          e.before(
+            document.createComment(
+              "WARNING: Automatically generated name"
+            )
+          );
+          e.name = crypto.randomUUID();
+        }
       }
       if (document.body.dataset.xssprotected !== "true") {
         IOHandler.setXSSInputProtection();
@@ -86,6 +93,18 @@ export default function Watcher({
       sessionStorage.removeItem("timer");
       flags.failedTimeoutAttempts = 0;
     }, 3_600_000);
+    setTimeout(() => {
+      setInterval(() => {
+        const ids: string[] = [],
+          allEls = document.querySelectorAll("*");
+        for (let i = 0; i < allEls.length; i++) {
+          for (let j = 0; j < ids.length; i++)
+            ids[j] === allEls[i].id &&
+              MathHandler.generateRandomId(allEls[i]);
+          ids.push(allEls[i].id);
+        }
+      }, 1_000);
+    }, 5_000);
     document.body.dataset.oncount = "true";
   }, [_case]);
   useEffect(() => {

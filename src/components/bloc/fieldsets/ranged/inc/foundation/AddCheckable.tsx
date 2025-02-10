@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from "react";
 import s from "@/styles/modules/rangeCtx.module.scss";
 import { nlInp } from "@/lib/definitions/client/helpers";
 import DOMValidator from "@/lib/client/validators/DOMValidator";
+import useRandomId from "@/lib/client/hooks/useRandomId";
 export default function AddCheckable({
   id,
   name,
@@ -20,6 +21,7 @@ export default function AddCheckable({
   const { role } = useRole(),
     r = useRef<nlInp>(null),
     [v, setV] = useState<boolean>(false);
+  useRandomId(r, id);
   useEffect(() => {
     if (!r.current) return;
     const relDiv = r.current.closest(".divAddRanged");

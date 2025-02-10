@@ -29,33 +29,122 @@ export const patterns: Readonly<{
 });
 export const limits: Readonly<{
   tiny: {
-    MAX_UTF_16_SIGNED_SURROGATE: number;
-    MAX_UTF_16_SIGNED_NOTSURROGATE: number;
+    MAX_UTF8_SIGNED_SURROGATE: number;
+    MAX_UTF8_SIGNED_NOTSURROGATE: number;
+    MAX_UTF16_SIGNED_SURROGATE: number;
+    MAX_UTF16_SIGNED_NOTSURROGATE: number;
+    MAX_UTF8_UNSIGNED_SURROGATE: number;
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: number;
+    MAX_UTF16_UNSIGNED_SURROGATE: number;
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: number;
   };
   small: {
-    MAX_UTF_16_SIGNED_SURROGATE: number;
+    MAX_UTF8_SIGNED_SURROGATE: number;
+    MAX_UTF8_SIGNED_NOTSURROGATE: number;
+    MAX_UTF16_SIGNED_SURROGATE: number;
+    MAX_UTF16_SIGNED_NOTSURROGATE: number;
+    MAX_UTF8_UNSIGNED_SURROGATE: number;
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: number;
+    MAX_UTF16_UNSIGNED_SURROGATE: number;
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: number;
   };
   medium: {
-    MAX_UTF_16_SIGNED_SURROGATE: number;
+    MAX_UTF8_SIGNED_SURROGATE: number;
+    MAX_UTF8_SIGNED_NOTSURROGATE: number;
+    MAX_UTF16_SIGNED_SURROGATE: number;
+    MAX_UTF16_SIGNED_NOTSURROGATE: number;
+    MAX_UTF8_UNSIGNED_SURROGATE: number;
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: number;
+    MAX_UTF16_UNSIGNED_SURROGATE: number;
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: number;
+  };
+  large: {
+    MAX_UTF8_SIGNED_SURROGATE: number;
+    MAX_UTF8_SIGNED_NOTSURROGATE: number;
+    MAX_UTF16_SIGNED_SURROGATE: number;
+    MAX_UTF16_SIGNED_NOTSURROGATE: number;
+    MAX_UTF8_UNSIGNED_SURROGATE: number;
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: number;
+    MAX_UTF16_UNSIGNED_SURROGATE: number;
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: number;
+  };
+  huge: {
+    MAX_UTF8_SIGNED_SURROGATE: number;
+    MAX_UTF8_SIGNED_NOTSURROGATE: number;
+    MAX_UTF16_SIGNED_SURROGATE: number;
+    MAX_UTF16_SIGNED_NOTSURROGATE: number;
+    MAX_UTF8_UNSIGNED_SURROGATE: number;
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: number;
+    MAX_UTF16_UNSIGNED_SURROGATE: number;
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: number;
   };
 }> = ObjectHelper.deepFreeze({
   tiny: {
-    MAX_UTF_16_SIGNED_SURROGATE: 63,
-    MAX_UTF_16_SIGNED_NOTSURROGATE: 127,
+    MAX_UTF16_SIGNED_SURROGATE: 63,
+    MAX_UTF16_SIGNED_NOTSURROGATE: 127,
+    MAX_UTF8_SIGNED_SURROGATE: 127,
+    MAX_UTF8_SIGNED_NOTSURROGATE: 255,
+    MAX_UTF16_UNSIGNED_SURROGATE: 127,
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: 255,
+    MAX_UTF8_UNSIGNED_SURROGATE: 255,
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: 511,
   },
   small: {
-    MAX_UTF_16_SIGNED_SURROGATE: 16383,
+    MAX_UTF16_SIGNED_SURROGATE: 16_383,
+    MAX_UTF16_SIGNED_NOTSURROGATE: 32_767,
+    MAX_UTF8_SIGNED_SURROGATE: 32_767,
+    MAX_UTF8_SIGNED_NOTSURROGATE: 65_535,
+    MAX_UTF16_UNSIGNED_SURROGATE: 32_767,
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: 65_535,
+    MAX_UTF8_UNSIGNED_SURROGATE: 65_535,
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: 131_071,
   },
   medium: {
-    MAX_UTF_16_SIGNED_SURROGATE: 4194303,
+    MAX_UTF16_SIGNED_SURROGATE: 4_194_303,
+    MAX_UTF16_SIGNED_NOTSURROGATE: 8_388_607,
+    MAX_UTF8_SIGNED_SURROGATE: 8_388_607,
+    MAX_UTF8_SIGNED_NOTSURROGATE: 16_777_215,
+    MAX_UTF16_UNSIGNED_SURROGATE: 8_388_607,
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: 16_777_215,
+    MAX_UTF8_UNSIGNED_SURROGATE: 16_777_215,
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: 33_554_431,
+  },
+  large: {
+    MAX_UTF16_SIGNED_SURROGATE: 1_073_741_823,
+    MAX_UTF16_SIGNED_NOTSURROGATE: 2_147_483_647,
+    MAX_UTF8_SIGNED_SURROGATE: 2_147_483_647,
+    MAX_UTF8_SIGNED_NOTSURROGATE: 4_294_967_295,
+    MAX_UTF16_UNSIGNED_SURROGATE: 2_147_483_647,
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: 4_294_967_295,
+    MAX_UTF8_UNSIGNED_SURROGATE: 4_294_967_295,
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: 8_589_934_591,
+  },
+  huge: {
+    MAX_UTF16_SIGNED_SURROGATE: 27_487_906_943,
+    MAX_UTF16_SIGNED_NOTSURROGATE: 549_755_813_887,
+    MAX_UTF8_SIGNED_SURROGATE: 549_755_813_887,
+    MAX_UTF8_SIGNED_NOTSURROGATE: 1_099_511_627_775,
+    MAX_UTF16_UNSIGNED_SURROGATE: 54_975_813_887,
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: 1_099_511_627_775,
+    MAX_UTF8_UNSIGNED_SURROGATE: 1_099_511_627_775,
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: 2_199_023_255_551,
   },
 });
 export const HTTPResInfoMap = new Map<
   number,
-  ResponseLanguage<HTTPResponseInfoLabelPt, HTTPResponseInfoLabelEn>
+  ResponseLanguage<
+    HTTPResponseInfoLabelPt,
+    HTTPResponseInfoLabelEn
+  >
 >([
   [100, { en: "Continue", pt: "Continuar" }],
-  [101, { en: "Switching Protocols", pt: "Trocando Protocolos" }],
+  [
+    101,
+    {
+      en: "Switching Protocols",
+      pt: "Trocando Protocolos",
+    },
+  ],
   [102, { en: "Processing", pt: "Processando" }],
   [103, { en: "Early Hints", pt: "Primeiras Dicas" }],
 ]);
@@ -86,8 +175,14 @@ export const HTTPResSuccessfulMap: Readonly<
       },
     ],
     [204, { en: "No Content", pt: "Sem Conteúdo" }],
-    [205, { en: "Reset Content", pt: "Redefinir Conteúdo" }],
-    [206, { en: "Partial Content", pt: "Conteúdo Parcial" }],
+    [
+      205,
+      { en: "Reset Content", pt: "Redefinir Conteúdo" },
+    ],
+    [
+      206,
+      { en: "Partial Content", pt: "Conteúdo Parcial" },
+    ],
     [207, { en: "Multi-Status", pt: "Status Múltiplo" }],
     [208, { en: "Already Reported", pt: "Já Reportado" }],
     [226, { en: "IM Used", pt: "IM Usado" }],
@@ -96,21 +191,48 @@ export const HTTPResSuccessfulMap: Readonly<
 export const HTTPResRedirectMap: Readonly<
   Map<
     number,
-    ResponseLanguage<HTTPResponseRedirectLabelPt, HTTPResponseRedirectLabelEn>
+    ResponseLanguage<
+      HTTPResponseRedirectLabelPt,
+      HTTPResponseRedirectLabelEn
+    >
   >
 > = ObjectHelper.deepFreeze(
   new Map<
     number,
-    ResponseLanguage<HTTPResponseRedirectLabelPt, HTTPResponseRedirectLabelEn>
+    ResponseLanguage<
+      HTTPResponseRedirectLabelPt,
+      HTTPResponseRedirectLabelEn
+    >
   >([
-    [300, { en: "Multiple Choices", pt: "Múltiplas Escolhas" }],
-    [301, { en: "Moved Permanently", pt: "Movido Permanentemente" }],
+    [
+      300,
+      { en: "Multiple Choices", pt: "Múltiplas Escolhas" },
+    ],
+    [
+      301,
+      {
+        en: "Moved Permanently",
+        pt: "Movido Permanentemente",
+      },
+    ],
     [302, { en: "Found", pt: "Encontrado" }],
     [303, { en: "See Other", pt: "Ver Outro" }],
     [304, { en: "Not Modified", pt: "Não Modificado" }],
     [306, { en: "Unused", pt: "Não Usado" }],
-    [307, { en: "Temporary Redirect", pt: "Redirecionamento Temporário" }],
-    [308, { en: "Permanent Redirect", pt: "Redirecionamento Permanente" }],
+    [
+      307,
+      {
+        en: "Temporary Redirect",
+        pt: "Redirecionamento Temporário",
+      },
+    ],
+    [
+      308,
+      {
+        en: "Permanent Redirect",
+        pt: "Redirecionamento Permanente",
+      },
+    ],
   ])
 );
 export const HTTPResClientErrorMap: Readonly<
@@ -131,10 +253,28 @@ export const HTTPResClientErrorMap: Readonly<
   >([
     [400, { en: "Bad Request", pt: "Requisição Inválida" }],
     [401, { en: "Unauthorized", pt: "Não Autorizado" }],
-    [402, { en: "Payment Required", pt: "Pagamento Necessário" }],
+    [
+      402,
+      {
+        en: "Payment Required",
+        pt: "Pagamento Necessário",
+      },
+    ],
     [403, { en: "Forbidden", pt: "Proibido" }],
-    [404, { en: "Resource Not Found", pt: "Recurso não encontrado" }],
-    [405, { en: "Method Not Allowed", pt: "Método Não Permitido" }],
+    [
+      404,
+      {
+        en: "Resource Not Found",
+        pt: "Recurso não encontrado",
+      },
+    ],
+    [
+      405,
+      {
+        en: "Method Not Allowed",
+        pt: "Método Não Permitido",
+      },
+    ],
     [406, { en: "Not Acceptable", pt: "Não Aceitável" }],
     [
       407,
@@ -143,25 +283,97 @@ export const HTTPResClientErrorMap: Readonly<
         pt: "Autenticação de Proxy Necessária",
       },
     ],
-    [408, { en: "Request Timeout", pt: "Tempo Limite da Requisição" }],
+    [
+      408,
+      {
+        en: "Request Timeout",
+        pt: "Tempo Limite da Requisição",
+      },
+    ],
     [409, { en: "Conflict", pt: "Conflito" }],
     [410, { en: "Gone", pt: "Perdido" }],
-    [411, { en: "Length Required", pt: "Comprimento Necessário" }],
-    [412, { en: "Preconditional Failed", pt: "Pré-condição Falhou" }],
-    [413, { en: "Content Too Large", pt: "Conteúdo Muito Grande" }],
+    [
+      411,
+      {
+        en: "Length Required",
+        pt: "Comprimento Necessário",
+      },
+    ],
+    [
+      412,
+      {
+        en: "Preconditional Failed",
+        pt: "Pré-condição Falhou",
+      },
+    ],
+    [
+      413,
+      {
+        en: "Content Too Large",
+        pt: "Conteúdo Muito Grande",
+      },
+    ],
     [414, { en: "URI Too Long", pt: "URI Muito Longo" }],
-    [415, { en: "Unsupported Media Type", pt: "Tipo de Mídia Não Suportado" }],
-    [416, { en: "Range Not Satisfiable", pt: "Intervalo Não Satisfatório" }],
-    [417, { en: "Expectation Failed", pt: "Expectativa Falhou" }],
+    [
+      415,
+      {
+        en: "Unsupported Media Type",
+        pt: "Tipo de Mídia Não Suportado",
+      },
+    ],
+    [
+      416,
+      {
+        en: "Range Not Satisfiable",
+        pt: "Intervalo Não Satisfatório",
+      },
+    ],
+    [
+      417,
+      {
+        en: "Expectation Failed",
+        pt: "Expectativa Falhou",
+      },
+    ],
     [418, { en: "I'm a teapot", pt: "Eu sou um bule" }],
-    [421, { en: "Misdirected Request", pt: "Requisição Mal Direcionada" }],
-    [422, { en: "Unprocessable Content", pt: "Conteúdo Não Processável" }],
+    [
+      421,
+      {
+        en: "Misdirected Request",
+        pt: "Requisição Mal Direcionada",
+      },
+    ],
+    [
+      422,
+      {
+        en: "Unprocessable Content",
+        pt: "Conteúdo Não Processável",
+      },
+    ],
     [423, { en: "Locked", pt: "Bloqueado" }],
-    [424, { en: "Failed Dependency", pt: "Dependência Falhou" }],
+    [
+      424,
+      { en: "Failed Dependency", pt: "Dependência Falhou" },
+    ],
     [425, { en: "Too Early", pt: "Muito Cedo" }],
-    [426, { en: "Upgrade Required", pt: "Atualização Necessária" }],
-    [428, { en: "Precondition Required", pt: "Pré-condição Necessária" }],
-    [429, { en: "Too Many Requests", pt: "Muitas Requisições" }],
+    [
+      426,
+      {
+        en: "Upgrade Required",
+        pt: "Atualização Necessária",
+      },
+    ],
+    [
+      428,
+      {
+        en: "Precondition Required",
+        pt: "Pré-condição Necessária",
+      },
+    ],
+    [
+      429,
+      { en: "Too Many Requests", pt: "Muitas Requisições" },
+    ],
     [
       431,
       {
@@ -194,17 +406,53 @@ export const HTTPResServerErrorMap: Readonly<
       HTTPResponseServerErrorLabelEn
     >
   >([
-    [500, { en: "Internal Server Error", pt: "Erro Interno do Servidor" }],
-    [501, { en: "Not Implemented", pt: "Não Implementado" }],
+    [
+      500,
+      {
+        en: "Internal Server Error",
+        pt: "Erro Interno do Servidor",
+      },
+    ],
+    [
+      501,
+      { en: "Not Implemented", pt: "Não Implementado" },
+    ],
     [502, { en: "Bad Gateway", pt: "Gateway Inválido" }],
-    [503, { en: "Service Unavailable", pt: "Serviço Indisponível" }],
-    [504, { en: "Gateway Timeout", pt: "Tempo Limite do Gateway" }],
+    [
+      503,
+      {
+        en: "Service Unavailable",
+        pt: "Serviço Indisponível",
+      },
+    ],
+    [
+      504,
+      {
+        en: "Gateway Timeout",
+        pt: "Tempo Limite do Gateway",
+      },
+    ],
     [
       505,
-      { en: "HTTP Version Not Supported", pt: "Versão HTTP Não Suportada" },
+      {
+        en: "HTTP Version Not Supported",
+        pt: "Versão HTTP Não Suportada",
+      },
     ],
-    [506, { en: "Variant Also Negotiates", pt: "Variante Também Negocia" }],
-    [507, { en: "Insufficient Storage", pt: "Armazenamento Insuficiente" }],
+    [
+      506,
+      {
+        en: "Variant Also Negotiates",
+        pt: "Variante Também Negocia",
+      },
+    ],
+    [
+      507,
+      {
+        en: "Insufficient Storage",
+        pt: "Armazenamento Insuficiente",
+      },
+    ],
     [508, { en: "Loop Detected", pt: "Loop Detectado" }],
     [510, { en: "Not Extended", pt: "Não Estendido" }],
     [
@@ -230,19 +478,20 @@ export const HTTPRes: Readonly<{
   clientError: HTTPResClientErrorMap,
   serverError: HTTPResServerErrorMap,
 });
-export const StartingHTTPDigits: Readonly<{ [k: PseudoNum]: HTTPReturns }> =
-  Object.freeze({
-    "0": "serverError",
-    "1": "info",
-    "2": "successful",
-    "3": "redirect",
-    "4": "clientError",
-    "5": "serverError",
-    "6": "serverError",
-    "7": "serverError",
-    "8": "serverError",
-    "9": "serverError",
-  });
+export const StartingHTTPDigits: Readonly<{
+  [k: PseudoNum]: HTTPReturns;
+}> = Object.freeze({
+  "0": "serverError",
+  "1": "info",
+  "2": "successful",
+  "3": "redirect",
+  "4": "clientError",
+  "5": "serverError",
+  "6": "serverError",
+  "7": "serverError",
+  "8": "serverError",
+  "9": "serverError",
+});
 export enum HTTPReturnsFriendlyEn {
   i = "Information",
   s = "Successful",

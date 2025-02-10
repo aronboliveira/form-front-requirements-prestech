@@ -189,6 +189,25 @@ export const jsErrorsFriendlyNames: Readonly<{
     ["UnhandledException", "Exceção Não Manipulada"],
   ]),
 });
+export enum MonthDays {
+  "_01" = 31,
+  "_02" = ((): number => {
+    const y = new Date().getFullYear();
+    return (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0
+      ? 29
+      : 28;
+  })(),
+  "_03" = 31,
+  "_04" = 30,
+  "_05" = 31,
+  "_06" = 30,
+  "_07" = 31,
+  "_08" = 31,
+  "_09" = 30,
+  "_10" = 31,
+  "_11" = 30,
+  "_12" = 31,
+}
 export enum friendlyRoles {
   executivoAdministrativo = "Executivo | Administrativo",
   financeiro = "Financeiro",
@@ -3984,14 +4003,14 @@ export const repeatedDefinitions: Readonly<{
     required,
     spellCheck: true,
     writingSuggestions: true,
-    minLength: limits.small.MAX_UTF_16_SIGNED_SURROGATE,
+    minLength: limits.small.MAX_UTF16_SIGNED_SURROGATE,
   },
   txtl: {
     type: "textarea",
     required,
     spellCheck: true,
     writingSuggestions: true,
-    minLength: limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+    minLength: limits.medium.MAX_UTF16_SIGNED_SURROGATE,
   },
 });
 export const lib = ObjectHelper.makeImmutable(
@@ -4796,7 +4815,7 @@ export const docEntryTypes: EntryTypeDictionary<DocsQuestionKey> =
           // "De que forma você padroniza estilos de anotações nos arquivos?"
           type: "select-multiple",
           maxLength:
-            limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+            limits.medium.MAX_UTF16_SIGNED_SURROGATE,
           required,
         },
       },
@@ -5335,7 +5354,7 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionKey> =
           // "Com quais serviços externos você integra as suas planilhas?"
           type: "text",
           maxLength:
-            limits.small.MAX_UTF_16_SIGNED_SURROGATE,
+            limits.small.MAX_UTF16_SIGNED_SURROGATE,
           writingSuggestions: true,
           spellCheck: true,
         },

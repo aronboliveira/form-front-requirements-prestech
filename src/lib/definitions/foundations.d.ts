@@ -20,6 +20,10 @@ export type hexDigit =
   | "E"
   | "F";
 export type color = `#${string}`;
+export interface MinMaxed {
+  min: number;
+  max: number;
+}
 export interface Identifiable {
   id?: string;
 }

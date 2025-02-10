@@ -7,6 +7,7 @@ import DefaultEntryBoundary from "@/components/bloc/errors/DefaultEntryBoundary"
 import { nlDiv } from "@/lib/definitions/client/helpers";
 import { Identifiable } from "@/lib/definitions/foundations";
 import StringHelper from "@/lib/helpers/StringHelper";
+import useRandomId from "@/lib/client/hooks/useRandomId";
 export default function AddBlock({
   id = "",
   label = "",
@@ -26,6 +27,7 @@ export default function AddBlock({
     idf = StringHelper.capitalize(
       id ?? crypto.randomUUID()
     );
+  useRandomId(r, id);
   useEffect(() => {
     if (!r.current) return;
     if (r.current.classList.contains("radiogroup"))

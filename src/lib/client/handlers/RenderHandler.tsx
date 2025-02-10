@@ -16,7 +16,6 @@ import {
   voidish,
 } from "@/lib/definitions/client/helpers";
 import {
-  classes,
   questionsMap,
   defAddQuestions,
   fieldsMap,
@@ -32,6 +31,7 @@ import AddBlock from "@/components/bloc/fieldsets/ranged/inc/foundation/AddBlock
 import { JSX, Fragment } from "react";
 import { GroupedOpts } from "@/lib/definitions/client/interfaces/components";
 import AddMultipleCheckable from "@/components/bloc/fieldsets/ranged/inc/foundation/AddMultipleCheckable";
+import AddCalendar from "@/components/bloc/fieldsets/ranged/inc/foundation/AddDate";
 export default class RenderHandler {
   name: string;
   #role: roleType;
@@ -239,20 +239,19 @@ export default class RenderHandler {
           case "date":
           case "datetime-local":
           case "month":
+          case "time":
           case "week":
-            //TODO REAVALIAR
             return (
               <AddBlock
                 id={id}
                 label={qt}
                 key={`${id}__${qt}__${type}`}
               >
-                <input
+                <AddCalendar
                   type={type}
                   id={`${this.#role}.${this.appType}__${a}`}
                   name={n}
-                  className={`entryAddRanged inpAddRanged ${classes.inpClasses}`}
-                  data-role={this.#role}
+                  role={this.#role}
                 />
               </AddBlock>
             );

@@ -6,6 +6,7 @@ import { AddInputBlock } from "@/lib/definitions/client/interfaces/components";
 import DefaultEntryBoundary from "@/components/bloc/errors/DefaultEntryBoundary";
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import StringHelper from "@/lib/helpers/StringHelper";
+import useRandomId from "@/lib/client/hooks/useRandomId";
 export default function AddTextArea({
   id,
   name,
@@ -15,6 +16,7 @@ export default function AddTextArea({
   const { role } = useRole(),
     r = useRef<HTMLTextAreaElement>(null),
     [v, setV] = useState<string>(ini);
+  useRandomId(r, id);
   return (
     <DefaultEntryBoundary>
       <textarea

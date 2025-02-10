@@ -5,8 +5,12 @@ import { classes } from "@/lib/client/vars";
 import { useReducer, useRef } from "react";
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import { TelType } from "@/lib/definitions/foundations";
-import { nlInp } from "@/lib/definitions/client/helpers";
+import {
+  nlInp,
+  TextualInputType,
+} from "@/lib/definitions/client/helpers";
 import StringHelper from "@/lib/helpers/StringHelper";
+import useRandomId from "@/lib/client/hooks/useRandomId";
 export default function AddTextualInput({
   id,
   name,
@@ -16,14 +20,7 @@ export default function AddTextualInput({
   initial = "",
   telType = "local",
 }: Omit<AddInputBlock, "type"> & {
-  type?:
-    | "text"
-    | "email"
-    | "url"
-    | "search"
-    | "tel"
-    | "password";
-  placeholder?: string;
+  type?: TextualInputType;
   initial?: string;
   telType?: TelType;
 }) {
@@ -40,8 +37,14 @@ export default function AddTextualInput({
     type = "text";
   const { role } = useRole(),
     r = useRef<nlInp>(null),
-    [s, d] = useReducer(
-      (state, action) => {
+    [s, d] = useReducer<
+      { value: string },
+      [{ type: TextualInputType; payload: string }]
+    >(
+      (
+        state: { value: string },
+        action: { type: TextualInputType; payload: string }
+      ): { value: string } => {
         switch (action.type) {
           case "email":
             if (r.current && !r.current.autocomplete)
@@ -102,6 +105,7 @@ export default function AddTextualInput({
       },
       { value: initial }
     );
+  useRandomId(r, id);
   return (
     <DefaultEntryBoundary>
       <input
@@ -113,9 +117,10 @@ export default function AddTextualInput({
         data-role={role}
         placeholder={placeholder}
         value={s.value}
-        onChange={ev =>
-          d({ type, payload: ev.currentTarget.value })
-        }
+        onChange={ev => {
+          const t = ev.currentTarget;
+          d({ type, payload: t.value });
+        }}
       />
       {additional}
     </DefaultEntryBoundary>

@@ -288,28 +288,32 @@ export type ClassesKey =
   | "officePlatforms"
   | "officeApps"
   | "aiApps";
+export type TextualInputType =
+  | "text"
+  | "email"
+  | "url"
+  | "search"
+  | "tel"
+  | "password";
+export type CalendarInputType =
+  | "date"
+  | "datetime-local"
+  | "month"
+  | "week"
+  | "time";
 export type EntryInputType =
   | "checkbox"
   | "color"
-  | "date"
-  | "datetime-local"
-  | "email"
+  | TextualInputType
+  | CalendarInputType
   | "file"
-  | "month"
   | "number"
-  | "password"
   | "radio"
-  | "range"
-  | "search"
-  | "tel"
-  | "text"
-  | "time"
-  | "url"
-  | "week";
+  | "range";
 export type InputType =
-  | "button"
   | "hidden"
   | "image"
+  | "button"
   | "reset"
   | "submit"
   | EntryInputType;
@@ -323,6 +327,35 @@ export type VerboseEntryTypes =
   | "select-one"
   | "select-multiple"
   | "textarea";
+export interface YearLimits {
+  minYear: string;
+  maxYear: string;
+}
+export interface MonthLimits {
+  minMonth: string;
+  maxMonth: string;
+}
+export interface WeekLimits {
+  minWeek: string;
+  maxWeek: string;
+}
+export interface DayLimits {
+  minDay: string;
+  maxDay: string;
+}
+export interface CalendarLimits
+  extends Partial<MonthLimits>,
+    Partial<WeekLimits>,
+    Partial<DayLimits>,
+    YearLimits {}
+export interface ClockLimits {
+  minHour: string;
+  maxHour: string;
+  minMinute: string;
+  maxMinute: string;
+  minSecond?: string;
+  maxSecond?: string;
+}
 export interface DefaultFieldDescription {
   type: VerboseEntryTypes;
   required?: boolean;
@@ -340,6 +373,10 @@ export interface OptionFieldDescription
   extends DefaultFieldDescription {
   options?: string[];
 }
+export interface TimeFieldDescription
+  extends DefaultFieldDescription,
+    Partial<CalendarLimits>,
+    Partial<ClockLimits> {}
 export type roleDefined = Exclude<roleType, "undefined">;
 export type eaComplexityKeySet =
   | typeof eaDocsKeys
@@ -490,7 +527,8 @@ export type ROStringRecord = Readonly<
 >;
 export type FieldDescription =
   | TextFieldDescription
-  | OptionFieldDescription;
+  | OptionFieldDescription
+  | TimeFieldDescription;
 export type KeysRecords<T extends string> = Partial<
   Record<T, FieldDescription>
 >;

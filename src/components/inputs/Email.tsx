@@ -16,7 +16,8 @@ export default function Email({
   id ||= "email";
   useEffect(() => {
     if (!(r.current instanceof HTMLInputElement)) return;
-    if (r.current.value.startsWith("@")) StyleHandler.blurOnChange(r.current);
+    if (r.current.value.startsWith("@"))
+      StyleHandler.blurOnChange(r.current);
     IOHandler.syncLabel(r.current);
     required && StyleHandler.alarmBorder(r.current);
   }, [r, v, required]);
@@ -33,7 +34,7 @@ export default function Email({
         type='email'
         autoComplete='email'
         minLength={8}
-        maxLength={limits.small.MAX_UTF_16_SIGNED_SURROGATE}
+        maxLength={limits.small.MAX_UTF16_SIGNED_SURROGATE}
         pattern={patterns.email}
         required={required ? true : false}
         className={classes.inpClasses}

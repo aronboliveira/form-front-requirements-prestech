@@ -11,18 +11,25 @@ import { limits, patterns } from "@/lib/vars";
 import { z } from "zod";
 import MathHandler from "@/lib/client/handlers/MathHandler";
 export default class ZodHandler {
-  static strMin(min: number = 0, req: boolean = true): OptableZodStr {
-    return req ? z.string().min(min) : z.string().min(min).optional();
-  }
-  static strMax(
-    max: number = limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+  static strMin(
+    min: number = 0,
     req: boolean = true
   ): OptableZodStr {
-    return req ? z.string().max(max) : z.string().max(max).optional();
+    return req
+      ? z.string().min(min)
+      : z.string().min(min).optional();
+  }
+  static strMax(
+    max: number = limits.medium.MAX_UTF16_SIGNED_SURROGATE,
+    req: boolean = true
+  ): OptableZodStr {
+    return req
+      ? z.string().max(max)
+      : z.string().max(max).optional();
   }
   static strMinMax({
     min = 0,
-    max = limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+    max = limits.medium.MAX_UTF16_SIGNED_SURROGATE,
     req = true,
   }: MinMax): OptableZodStr {
     return req
@@ -31,7 +38,7 @@ export default class ZodHandler {
   }
   static strMinMaxPattern({
     min = 0,
-    max = limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+    max = limits.medium.MAX_UTF16_SIGNED_SURROGATE,
     exp = /^.*$/,
     req = true,
   }: MinMaxPattern): OptableZodStr {
@@ -42,11 +49,23 @@ export default class ZodHandler {
   static double(req = true): OptableZodNumEffect {
     return req
       ? z.preprocess(
-          v => MathHandler.parseNotNaN(String(v), 0, "float", 4),
+          v =>
+            MathHandler.parseNotNaN(
+              String(v),
+              0,
+              "float",
+              4
+            ),
           z.number()
         )
       : z.preprocess(
-          v => MathHandler.parseNotNaN(String(v), 0, "float", 4),
+          v =>
+            MathHandler.parseNotNaN(
+              String(v),
+              0,
+              "float",
+              4
+            ),
           z.number().optional()
         );
   }
@@ -56,11 +75,23 @@ export default class ZodHandler {
   ): OptableZodNumEffect {
     return req
       ? z.preprocess(
-          v => MathHandler.parseNotNaN(String(v), 0, "float", 4),
+          v =>
+            MathHandler.parseNotNaN(
+              String(v),
+              0,
+              "float",
+              4
+            ),
           z.number().min(min)
         )
       : z.preprocess(
-          v => MathHandler.parseNotNaN(String(v), 0, "float", 4),
+          v =>
+            MathHandler.parseNotNaN(
+              String(v),
+              0,
+              "float",
+              4
+            ),
           z.number().min(min).optional()
         );
   }
@@ -70,11 +101,23 @@ export default class ZodHandler {
   ): OptableZodNumEffect {
     return req
       ? z.preprocess(
-          v => MathHandler.parseNotNaN(String(v), 0, "float", 4),
+          v =>
+            MathHandler.parseNotNaN(
+              String(v),
+              0,
+              "float",
+              4
+            ),
           z.number().max(max)
         )
       : z.preprocess(
-          v => MathHandler.parseNotNaN(String(v), 0, "float", 4),
+          v =>
+            MathHandler.parseNotNaN(
+              String(v),
+              0,
+              "float",
+              4
+            ),
           z.number().max(max).optional()
         );
   }
@@ -85,11 +128,23 @@ export default class ZodHandler {
   }: MinMax): OptableZodNumEffect {
     return req
       ? z.preprocess(
-          v => MathHandler.parseNotNaN(String(v), 0, "float", 4),
+          v =>
+            MathHandler.parseNotNaN(
+              String(v),
+              0,
+              "float",
+              4
+            ),
           z.number().min(min).max(max)
         )
       : z.preprocess(
-          v => MathHandler.parseNotNaN(String(v), 0, "float", 4),
+          v =>
+            MathHandler.parseNotNaN(
+              String(v),
+              0,
+              "float",
+              4
+            ),
           z.number().min(min).max(max).optional()
         );
   }
@@ -150,14 +205,21 @@ export default class ZodHandler {
   static date(req = true): OptableZodDate {
     return req ? z.date() : z.date().optional();
   }
-  static dateMin(minDate: Date = new Date(), req = true): OptableZodDate {
-    return req ? z.date().min(minDate) : z.date().min(minDate).optional();
+  static dateMin(
+    minDate: Date = new Date(),
+    req = true
+  ): OptableZodDate {
+    return req
+      ? z.date().min(minDate)
+      : z.date().min(minDate).optional();
   }
   static dateMax(
     maxDate: Date = new Date(new Date().getFullYear() + 5),
     req = true
   ): OptableZodDate {
-    return req ? z.date().max(maxDate) : z.date().max(maxDate).optional();
+    return req
+      ? z.date().max(maxDate)
+      : z.date().max(maxDate).optional();
   }
   static dateMinMax({
     min = new Date(),
@@ -172,13 +234,16 @@ export default class ZodHandler {
       ? z.date().min(min).max(max)
       : z.date().min(min).max(max).optional();
   }
-  static emailMin(min: number = 0, req = true): OptableZodStr {
+  static emailMin(
+    min: number = 0,
+    req = true
+  ): OptableZodStr {
     return req
       ? z.string().email().min(min)
       : z.string().email().min(min).optional();
   }
   static emailMax(
-    max: number = limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+    max: number = limits.medium.MAX_UTF16_SIGNED_SURROGATE,
     req = true
   ): OptableZodStr {
     return req
@@ -187,7 +252,7 @@ export default class ZodHandler {
   }
   static emailMinMax({
     min = 0,
-    max = limits.medium.MAX_UTF_16_SIGNED_SURROGATE,
+    max = limits.medium.MAX_UTF16_SIGNED_SURROGATE,
     req = true,
   }: MinMax): OptableZodStr {
     return req

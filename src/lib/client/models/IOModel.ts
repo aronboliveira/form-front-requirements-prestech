@@ -1,4 +1,8 @@
-import { FormControl, nlEl, nlFm } from "@/lib/definitions/client/helpers";
+import {
+  FormControl,
+  nlEl,
+  nlFm,
+} from "@/lib/definitions/client/helpers";
 import { limits } from "@/lib/vars";
 import DOMValidator from "../validators/DOMValidator";
 export class IOModel {
@@ -15,29 +19,42 @@ export class IOModel {
           )
         )
           return;
-        if (inp.required && inp.minLength < 1) inp.minLength = 1;
+        if (inp.required && inp.minLength < 1)
+          inp.minLength = 1;
         const isMaxUndefined =
           inp.maxLength === 0 ||
           inp.maxLength === -1 ||
           inp.maxLength === Infinity;
         if (inp instanceof HTMLInputElement) {
-          if (inp.type === "tel" || inp.classList.contains(".tel")) {
-            const isAutoCompleteDefined = inp.autocomplete !== "",
+          if (
+            inp.type === "tel" ||
+            inp.classList.contains(".tel")
+          ) {
+            const isAutoCompleteDefined =
+                inp.autocomplete !== "",
               isPatternDefined = inp.pattern !== "";
             if (inp.classList.contains("localTel")) {
               if (isMaxUndefined) inp.maxLength = 11;
-              if (!isAutoCompleteDefined) inp.autocomplete = "tel-local";
-              if (!isPatternDefined) inp.pattern = "/^\\d{4,5}-?\\d{4}$/";
-            } else if (inp.classList.contains("nationalTel")) {
-              if (isMaxUndefined) inp.maxLength = 15;
-              if (!isAutoCompleteDefined) inp.autocomplete = "tel-national";
+              if (!isAutoCompleteDefined)
+                inp.autocomplete = "tel-local";
               if (!isPatternDefined)
-                inp.pattern = "/^\\d{2}\\s?\\d{4,5}-?\\d{4}$/";
+                inp.pattern = "/^\\d{4,5}-?\\d{4}$/";
+            } else if (
+              inp.classList.contains("nationalTel")
+            ) {
+              if (isMaxUndefined) inp.maxLength = 15;
+              if (!isAutoCompleteDefined)
+                inp.autocomplete = "tel-national";
+              if (!isPatternDefined)
+                inp.pattern =
+                  "/^\\d{2}\\s?\\d{4,5}-?\\d{4}$/";
             } else {
               if (isMaxUndefined) inp.maxLength = 20;
-              if (!isAutoCompleteDefined) inp.autocomplete = "tel";
+              if (!isAutoCompleteDefined)
+                inp.autocomplete = "tel";
               if (!isPatternDefined)
-                inp.pattern = "/^\\+?\\d{1,3}\\s?\\d{2}\\s?\\d{4,5}-?\\d{4}$/";
+                inp.pattern =
+                  "/^\\+?\\d{1,3}\\s?\\d{2}\\s?\\d{4,5}-?\\d{4}$/";
             }
           } else if (inp.classList.contains("name")) {
             const isMinDefined = inp.minLength !== 0;
@@ -47,10 +64,16 @@ export class IOModel {
                 inp.classList.contains("firstName") ||
                 inp.autocomplete === "given-name"
               )
-                inp.maxLength = limits.tiny.MAX_UTF_16_SIGNED_SURROGATE;
-              else inp.maxLength = limits.small.MAX_UTF_16_SIGNED_SURROGATE;
+                inp.maxLength =
+                  limits.tiny.MAX_UTF16_SIGNED_SURROGATE;
+              else
+                inp.maxLength =
+                  limits.small.MAX_UTF16_SIGNED_SURROGATE;
             }
-            if (!inp.dataset.patternon || inp.dataset.patternon !== "true") {
+            if (
+              !inp.dataset.patternon ||
+              inp.dataset.patternon !== "true"
+            ) {
               inp.addEventListener("input", ev => {
                 const t = ev.currentTarget;
                 if (
@@ -60,7 +83,11 @@ export class IOModel {
                   )
                 )
                   return;
-                if (/[0-9@#$%^&*()_+={}[\]:;"'<>,.?/\\|~`!]/.test(t.value))
+                if (
+                  /[0-9@#$%^&*()_+={}[\]:;"'<>,.?/\\|~`!]/.test(
+                    t.value
+                  )
+                )
                   t.dataset.invalid = "true";
                 else t.dataset.invalid = "false";
               });
@@ -68,11 +95,13 @@ export class IOModel {
             }
           } else {
             if (isMaxUndefined)
-              inp.maxLength = limits.small.MAX_UTF_16_SIGNED_SURROGATE;
+              inp.maxLength =
+                limits.small.MAX_UTF16_SIGNED_SURROGATE;
           }
         } else {
           if (isMaxUndefined)
-            inp.maxLength = limits.medium.MAX_UTF_16_SIGNED_SURROGATE;
+            inp.maxLength =
+              limits.medium.MAX_UTF16_SIGNED_SURROGATE;
         }
       });
     }
@@ -80,13 +109,18 @@ export class IOModel {
   static setFormDataLength(form: nlFm): void {
     try {
       if (!(form instanceof HTMLFormElement))
-        throw new TypeError("Could not validated form instance");
+        throw new TypeError(
+          "Could not validated form instance"
+        );
       const controls = form.elements;
       form.dataset.elements = controls.length.toString();
       form.dataset.namedElements = [...controls]
         .filter(
           el =>
-            !(el instanceof HTMLLabelElement || el instanceof HTMLLegendElement)
+            !(
+              el instanceof HTMLLabelElement ||
+              el instanceof HTMLLegendElement
+            )
         )
         .length.toString();
       form.dataset.listElements = [...controls]
@@ -115,7 +149,9 @@ export class IOModel {
       );
     }
   }
-  static setFormControlNameSufix(el: FormControl | null): void {
+  static setFormControlNameSufix(
+    el: FormControl | null
+  ): void {
     if (!el || !("name" in el)) return;
     const hasFormProp =
         DOMValidator.isDefaultDisableable(el) ||
@@ -129,7 +165,9 @@ export class IOModel {
     if (
       !(hasFormProp || isListControl) ||
       (hasFormProp && !el.form) ||
-      (isListControl && el instanceof HTMLElement && !el.closest("form"))
+      (isListControl &&
+        el instanceof HTMLElement &&
+        !el.closest("form"))
     )
       return;
     const fmName = hasFormProp
@@ -174,7 +212,8 @@ export class IOModel {
         }
       } else if (idAcc > 0) {
         c.id = `${baseId}__${idAcc}`;
-        if (c instanceof HTMLElement) c.dataset.idacc = idAcc.toString();
+        if (c instanceof HTMLElement)
+          c.dataset.idacc = idAcc.toString();
       }
       if (
         (c instanceof HTMLInputElement ||
@@ -188,26 +227,39 @@ export class IOModel {
           label.id = `${c.id}__label`;
         }
       idMap.set(baseId, idAcc + 1);
-      if (c.hasAttribute("name")) nameMap.set((c as any).name, nameAcc + 1);
+      if (c.hasAttribute("name"))
+        nameMap.set((c as any).name, nameAcc + 1);
     }
   }
   static setLinks(): void {
-    const allEls = Array.from(document.querySelectorAll("*"));
+    const allEls = Array.from(
+      document.querySelectorAll("*")
+    );
     for (const linked of allEls.filter(
-      el => el.classList.contains("linked") && el instanceof HTMLElement
+      el =>
+        el.classList.contains("linked") &&
+        el instanceof HTMLElement
     )) {
       if (!(linked instanceof HTMLElement)) continue;
       if (!linked.dataset.linkedto) {
         if (linked.classList.contains("ddd")) {
           const mainTel =
-            linked.closest("telBlock")?.querySelector(".tel") ??
-            document.getElementById(linked.id.replace("ddd", "tel"));
+            linked
+              .closest("telBlock")
+              ?.querySelector(".tel") ??
+            document.getElementById(
+              linked.id.replace("ddd", "tel")
+            );
           if (!mainTel) continue;
           linked.dataset.linkedto = mainTel.id;
         } else if (linked.classList.contains("cc")) {
           const ddd =
-            linked.closest("telBlock")?.querySelector(".ddd") ??
-            document.getElementById(linked.id.replace("cc", "ddd"));
+            linked
+              .closest("telBlock")
+              ?.querySelector(".ddd") ??
+            document.getElementById(
+              linked.id.replace("cc", "ddd")
+            );
           if (!ddd) continue;
           linked.dataset.linked = ddd.id;
         }
@@ -235,7 +287,8 @@ export class IOModel {
     for (const inp of inps) {
       if (inp.placeholder === "") {
         if (inp instanceof HTMLInputElement) {
-          if (inp.type === "tel") inp.placeholder = "Escreva aqui um número";
+          if (inp.type === "tel")
+            inp.placeholder = "Escreva aqui um número";
           else if (inp.type === "email")
             inp.placeholder = "Escreva aqui um e-mail.";
           else inp.placeholder = "Escreva aqui";
@@ -244,6 +297,8 @@ export class IOModel {
     }
   }
   static setSpellChecks(): void {
-    document.querySelectorAll("textarea").forEach(ta => (ta.spellcheck = true));
+    document
+      .querySelectorAll("textarea")
+      .forEach(ta => (ta.spellcheck = true));
   }
 }

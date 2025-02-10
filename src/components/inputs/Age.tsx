@@ -31,7 +31,7 @@ export default function Age() {
         minLength={1}
         maxLength={maxLength}
         min={0}
-        max={limits.tiny.MAX_UTF_16_SIGNED_NOTSURROGATE}
+        max={limits.tiny.MAX_UTF16_SIGNED_NOTSURROGATE}
         pattern={patterns.age}
         required
         type='number'
@@ -40,7 +40,7 @@ export default function Age() {
             IOHandler.applyNumRules(
               ev.currentTarget.value,
               maxLength,
-              limits.tiny.MAX_UTF_16_SIGNED_NOTSURROGATE
+              limits.tiny.MAX_UTF16_SIGNED_NOTSURROGATE
             ) as PseudoNum
           )
         }

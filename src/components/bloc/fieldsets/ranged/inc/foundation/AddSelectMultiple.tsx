@@ -3,8 +3,10 @@ import useRole from "@/lib/client/hooks/useRole";
 import { classes } from "@/lib/client/vars";
 import { AddOptInputBlock } from "@/lib/definitions/client/interfaces/components";
 import DefaultEntryBoundary from "@/components/bloc/errors/DefaultEntryBoundary";
-import { Fragment } from "react";
+import { Fragment, useRef } from "react";
 import RenderHandler from "@/lib/client/handlers/RenderHandler";
+import { nlSel } from "@/lib/definitions/client/helpers";
+import useRandomId from "@/lib/client/hooks/useRandomId";
 export default function AddSelectMultiple({
   id,
   name,
@@ -12,7 +14,9 @@ export default function AddSelectMultiple({
   opts = { main: { grpOpts: [] } },
 }: AddOptInputBlock) {
   const { role } = useRole(),
+    r = useRef<nlSel>(null),
     ks = Object.keys(opts);
+  useRandomId(r, id);
   return (
     <DefaultEntryBoundary>
       {ks?.length ? (
@@ -20,6 +24,7 @@ export default function AddSelectMultiple({
           key={`${id}__${role}__${crypto.randomUUID()}`}
         >
           <select
+            ref={r}
             id={id}
             name={name}
             className={`entryAddRanged selectAddRanged selectMultiple ${classes.selectClasses}`}

@@ -21,7 +21,7 @@ export default function Worktime() {
         minLength={1}
         maxLength={maxLength}
         min={1}
-        max={limits.small.MAX_UTF_16_SIGNED_SURROGATE}
+        max={limits.small.MAX_UTF16_SIGNED_SURROGATE}
         className={classes.inpClasses}
         id={id}
         name={id}
@@ -31,7 +31,7 @@ export default function Worktime() {
             IOHandler.applyNumRules(
               ev.currentTarget.value,
               maxLength,
-              limits.small.MAX_UTF_16_SIGNED_SURROGATE
+              limits.small.MAX_UTF16_SIGNED_SURROGATE
             ) as PseudoNum
           )
         }

@@ -2,8 +2,10 @@ import { LimitedAddInputBlock } from "@/lib/definitions/client/interfaces/compon
 import DefaultEntryBoundary from "@/components/bloc/errors/DefaultEntryBoundary";
 import { classes } from "@/lib/client/vars";
 import useRole from "@/lib/client/hooks/useRole";
-import { useReducer } from "react";
+import { useReducer, useRef } from "react";
 import IOHandler from "@/lib/client/handlers/IOHandler";
+import { nlInp } from "@/lib/definitions/client/helpers";
+import useRandomId from "@/lib/client/hooks/useRandomId";
 export default function AddNumericInput({
   id,
   name,
@@ -23,6 +25,7 @@ export default function AddNumericInput({
     ? 100
     : Number.MAX_SAFE_INTEGER;
   const { role } = useRole(),
+    r = useRef<nlInp>(null),
     [s, d] = useReducer(
       (
         state: { value: number },
@@ -59,9 +62,11 @@ export default function AddNumericInput({
       },
       { value: initialValue }
     );
+  useRandomId(r, id);
   return (
     <DefaultEntryBoundary>
       <input
+        ref={r}
         id={id}
         name={name}
         type={type}
