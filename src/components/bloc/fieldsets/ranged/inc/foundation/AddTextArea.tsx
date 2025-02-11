@@ -11,6 +11,7 @@ export default function AddTextArea({
   id,
   name,
   additional = <></>,
+  placeholder = "Escreva aqui",
   ini = "",
 }: AddInputBlock & { ini?: string }) {
   const { role } = useRole(),
@@ -24,6 +25,7 @@ export default function AddTextArea({
         id={id}
         name={name}
         className={`entryAddRanged textAddRanged ${classes.inpClasses}`}
+        placeholder={placeholder}
         data-role={role}
         value={v}
         onChange={ev => {

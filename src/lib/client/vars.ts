@@ -83,12 +83,24 @@ export const flags: {
   pt: boolean;
   isAutoCorrectOn: boolean;
   failedTimeoutAttempts: number;
+  MAX_ALLOWED_SHORT_PROCESS_TIME: number;
+  forbiddens: {
+    forbiddenTags: RegExp;
+    forbiddenPrefix: RegExp;
+  };
 } = {
   indexed: false,
   pt: true,
   isAutoCorrectOn: true,
   failedTimeoutAttempts: 0,
+  MAX_ALLOWED_SHORT_PROCESS_TIME: 500,
+  forbiddens: Object.freeze({
+    forbiddenTags:
+      /<\/?(no)?script.*>|<\/?embed.*>|<\/?source.*>|<\/?object.*>|<\/?applet.*>|<\/?i?frame(set)?.*>|<\/?meta.*>|<\/?base.*>|<\/?link.*>|<\/?svg.*>|<\/?style.*>|<\/?form.*>|<\/?input.*\/?>|\/?textarea.*?>|\/?select.*?>|\/?option.*?>|\/?optgroup.*?>|<\/?button.*>|href="/g,
+    forbiddenPrefix: /javascript:/gi,
+  }),
 };
+export const trackedIds: Set<string> = new Set();
 export const borderColors: { [k: string]: string } = {};
 export const fontColors: { [k: string]: string } = {};
 // General dictionaries
@@ -1897,6 +1909,11 @@ export const defSsKeys = withFrozenLibreLabel(
       fil: `${tcn} você utiliza para filtrar dados em uma planilha?`,
       col: `${frq} compartilha planilhas para que outros possam visualizar ou editar?`,
       bar: `${frq} cria gráficos para ilustrar resultados ou tendências?`,
+      date: `Date`,
+      datetimeLocal: `Datetime-local`,
+      month: `Month`,
+      week: `Week`,
+      time: `Time`,
     },
     intermediate: {
       piv: repeated.tbd,
@@ -4813,7 +4830,7 @@ export const docEntryTypes: EntryTypeDictionary<DocsQuestionKey> =
         ver: repeatedDefinitions.colab,
         sty: {
           // "De que forma você padroniza estilos de anotações nos arquivos?"
-          type: "select-multiple",
+          type: "textarea",
           maxLength:
             limits.medium.MAX_UTF16_SIGNED_SURROGATE,
           required,
@@ -5719,6 +5736,87 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionKey> =
         fil: repeatedDefinitions.fil,
         col: repeatedDefinitions.frq,
         bar: repeatedDefinitions.frq,
+        date: {
+          type: "date",
+          year: {
+            min: 2000,
+            max: 2019,
+          },
+          month: {
+            min: 6,
+            max: 10,
+          },
+          day: {
+            min: 10,
+            max: 20,
+          },
+        },
+        datetimeLocal: {
+          type: "datetime-local",
+          year: {
+            min: 1996,
+            max: 2025,
+          },
+          month: {
+            min: -3,
+            max: 15,
+          },
+          day: {
+            min: -10,
+            max: 35,
+          },
+          hour: {
+            min: -1,
+            max: 25,
+          },
+          minute: {
+            min: -50,
+            max: 60,
+          },
+          second: {
+            min: 25,
+            max: 80,
+          },
+          step: "10",
+        },
+        month: {
+          type: "month",
+          year: {
+            min: Number.MIN_SAFE_INTEGER,
+            max: Number.MAX_SAFE_INTEGER,
+          },
+          month: {
+            min: 2,
+            max: 6,
+          },
+        },
+        week: {
+          type: "week",
+          year: {
+            min: 1990,
+            max: 2500,
+          },
+          week: {
+            min: -1,
+            max: 50,
+          },
+        },
+        time: {
+          type: "time",
+          hour: {
+            min: 10,
+            max: 99,
+          },
+          minute: {
+            min: 0,
+            max: 10,
+          },
+          second: {
+            min: -10,
+            max: 9999999,
+          },
+          step: "20",
+        },
       },
       intermediate: {
         fml: repeatedDefinitions.exp,

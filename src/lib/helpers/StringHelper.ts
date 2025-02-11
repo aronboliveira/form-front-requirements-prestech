@@ -68,6 +68,13 @@ export default class StringHelper {
           .replace(/[^a-zA-Z0-9]+/g, "-")
           .replace(/^-+|-+$/g, "");
   }
+  public static isSaneAttrName(v: string): boolean {
+    return (
+      /^[a-zA-Z_:]/.test(v) &&
+      !/^[0-9]/.test(v) &&
+      !/[\s"'<>\/=~!@#$%^&*()+=|{}[\];"\\,<>?]/g.test(v)
+    );
+  }
   public static sanitizePropertyName(v: string): string {
     return (
       v

@@ -1,5 +1,6 @@
 import StringHelper from "@/lib/helpers/StringHelper";
 import { limits } from "@/lib/vars";
+import { flags } from "../vars";
 
 export default class MathHandler {
   public static parseNotNaN(
@@ -61,9 +62,15 @@ export default class MathHandler {
     limit: number = limits.tiny.MAX_UTF8_SIGNED_NOTSURROGATE
   ): string {
     let newKey = crypto.randomUUID(),
-      acc = 0;
+      acc = 0,
+      start = performance.now();
     while (newKey === previous) {
-      if (acc >= limit) break;
+      if (
+        performance.now() - start >
+          flags.MAX_ALLOWED_SHORT_PROCESS_TIME ||
+        acc >= limit
+      )
+        break;
       newKey = crypto.randomUUID();
       acc += 1;
     }
@@ -75,22 +82,34 @@ export default class MathHandler {
     limit: number = limits.tiny.MAX_UTF8_SIGNED_NOTSURROGATE
   ): string {
     let newKey = crypto.randomUUID(),
-      acc = 0;
+      acc = 0,
+      start = performance.now();
     while (
       newKey === previous ||
       document.getElementById(newKey)
     ) {
-      if (acc >= limit) break;
+      if (
+        performance.now() - start >
+          flags.MAX_ALLOWED_SHORT_PROCESS_TIME ||
+        acc >= limit
+      )
+        break;
       previous = newKey;
       newKey = crypto.randomUUID();
       acc += 1;
     }
     if (element) {
-      element.before(
-        document.createComment(
-          `WARNING: Automatically identified`
-        )
-      );
+      if (
+        element instanceof HTMLElement &&
+        element.dataset.idwarned !== "true"
+      ) {
+        element.before(
+          document.createComment(
+            `WARNING: Automatically identified`
+          )
+        );
+        element.dataset.idwarned = "true";
+      }
       element.id = `_${StringHelper.slugify(
         element.id,
         false

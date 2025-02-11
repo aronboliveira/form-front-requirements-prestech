@@ -124,7 +124,12 @@ import {
   stN2PlnKeys,
   stN2SsKeys,
 } from "@/lib/client/vars";
-import { complexityLabel, roleType } from "../foundations";
+import {
+  MinMaxed,
+  PseudoNum,
+  complexityLabel,
+  roleType,
+} from "../foundations";
 //primitives
 export type nlStr = string | null;
 export type voidish = undefined | null;
@@ -327,6 +332,21 @@ export type VerboseEntryTypes =
   | "select-one"
   | "select-multiple"
   | "textarea";
+export type yearLimit = "minyear" | "maxyear";
+export type monthLimit = "minmonth" | "maxmonth";
+export type weekLimit = "minweek" | "maxweek";
+export type dayLimit = "minday" | "maxday";
+export type calendarLimit =
+  | yearLimit
+  | monthLimit
+  | dayLimit;
+export type hourLimit = "minhour" | "maxhour";
+export type minuteLimit = "minminute" | "maxminute";
+export type secondLimit = "minsec" | "maxsec";
+export type clockLimit =
+  | hourLimit
+  | minuteLimit
+  | secondLimit;
 export interface YearLimits {
   minYear: string;
   maxYear: string;
@@ -343,11 +363,6 @@ export interface DayLimits {
   minDay: string;
   maxDay: string;
 }
-export interface CalendarLimits
-  extends Partial<MonthLimits>,
-    Partial<WeekLimits>,
-    Partial<DayLimits>,
-    YearLimits {}
 export interface ClockLimits {
   minHour: string;
   maxHour: string;
@@ -356,12 +371,28 @@ export interface ClockLimits {
   minSecond?: string;
   maxSecond?: string;
 }
+export interface ClockedCalendarLimits {
+  year?: Partial<MinMaxed>;
+  month?: Partial<MinMaxed>;
+  week?: Partial<MinMaxed>;
+  day?: Partial<MinMaxed>;
+  hour?: Partial<MinMaxed>;
+  minute?: Partial<MinMaxed>;
+  second?: Partial<MinMaxed>;
+}
 export interface DefaultFieldDescription {
   type: VerboseEntryTypes;
   required?: boolean;
 }
 export interface TextFieldDescription
   extends DefaultFieldDescription {
+  type:
+    | TextualInputType
+    | "textarea"
+    | "number"
+    | "range"
+    | "color"
+    | "file";
   minLength?: number;
   maxLength?: number;
   min?: number;
@@ -371,12 +402,20 @@ export interface TextFieldDescription
 }
 export interface OptionFieldDescription
   extends DefaultFieldDescription {
+  type:
+    | "radio"
+    | "checkbox"
+    | "toggle"
+    | "select-one"
+    | "select-multiple";
   options?: string[];
 }
 export interface TimeFieldDescription
   extends DefaultFieldDescription,
-    Partial<CalendarLimits>,
-    Partial<ClockLimits> {}
+    Partial<ClockedCalendarLimits> {
+  type: CalendarInputType;
+  step?: PseudoNum;
+}
 export type roleDefined = Exclude<roleType, "undefined">;
 export type eaComplexityKeySet =
   | typeof eaDocsKeys

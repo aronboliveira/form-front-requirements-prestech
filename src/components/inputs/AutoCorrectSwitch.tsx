@@ -23,7 +23,6 @@ export default function AutoCorrectSwitch() {
         display: "flex",
         alignContent: "center",
         justifyContent: "center",
-        paddingRight: "1.5rem",
         marginTop: "1rem",
       }}
     >

@@ -31,7 +31,7 @@ import AddBlock from "@/components/bloc/fieldsets/ranged/inc/foundation/AddBlock
 import { JSX, Fragment } from "react";
 import { GroupedOpts } from "@/lib/definitions/client/interfaces/components";
 import AddMultipleCheckable from "@/components/bloc/fieldsets/ranged/inc/foundation/AddMultipleCheckable";
-import AddCalendar from "@/components/bloc/fieldsets/ranged/inc/foundation/AddDate";
+import AddCalendar from "@/components/bloc/fieldsets/ranged/inc/foundation/AddCalendar";
 export default class RenderHandler {
   name: string;
   #role: roleType;
@@ -169,10 +169,10 @@ export default class RenderHandler {
                   (field as OptionFieldDescription)
                     .options as string[]
                 )?.map(o => {
-                  const snt =
-                    StringHelper.removeDiacritical(
-                      StringHelper.sanitizePropertyName(o)
-                    );
+                  const snt = "";
+                  StringHelper.removeDiacritical(
+                    StringHelper.sanitizePropertyName(o)
+                  );
                   return (
                     <AddBlock
                       key={`${id}__${snt}__${crypto.randomUUID()}`}
@@ -252,6 +252,16 @@ export default class RenderHandler {
                   id={`${this.#role}.${this.appType}__${a}`}
                   name={n}
                   role={this.#role}
+                  step={field.step}
+                  limits={{
+                    year: field.year,
+                    month: field.month,
+                    week: field.week,
+                    day: field.day,
+                    hour: field.hour,
+                    minute: field.minute,
+                    second: field.second,
+                  }}
                 />
               </AddBlock>
             );

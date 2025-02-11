@@ -7,11 +7,12 @@ import {
   useRef,
   useEffect,
   useCallback,
+  useMemo,
 } from "react";
-import { MinMaxed } from "../../../../../../lib/definitions/foundations";
 import { AddInputBlock } from "@/lib/definitions/client/interfaces/components";
 import {
   CalendarInputType,
+  ClockedCalendarLimits,
   nlInp,
   voidish,
 } from "@/lib/definitions/client/helpers";
@@ -26,16 +27,13 @@ import {
   WeekLimits,
   DayLimits,
   ClockLimits,
+  yearLimit,
+  monthLimit,
+  weekLimit,
+  calendarLimit,
+  clockLimit,
 } from "@/lib/definitions/client/helpers";
-type yearLimit = "minyear" | "maxyear";
-type monthLimit = "minmonth" | "maxmonth";
-type weekLimit = "minweek" | "maxweek";
-type dayLimit = "minday" | "maxday";
-type calendarLimit = yearLimit | monthLimit | dayLimit;
-type hourLimit = "minhour" | "maxhour";
-type minuteLimit = "minminute" | "maxminute";
-type secondLimit = "minsec" | "maxsec";
-type clockLimit = hourLimit | minuteLimit | secondLimit;
+import { PseudoNum } from "@/lib/definitions/foundations";
 export default function AddCalendar({
   id,
   name,
@@ -44,18 +42,12 @@ export default function AddCalendar({
   placeholder,
   initial = "",
   limits,
+  step,
 }: Omit<AddInputBlock, "type"> & {
   type?: CalendarInputType;
+  step?: PseudoNum;
   initial?: string;
-  limits?: {
-    year?: Partial<MinMaxed>;
-    month?: Partial<MinMaxed>;
-    week?: Partial<MinMaxed>;
-    day?: Partial<MinMaxed>;
-    hour?: Partial<MinMaxed>;
-    minute?: Partial<MinMaxed>;
-    second?: Partial<MinMaxed>;
-  };
+  limits?: ClockedCalendarLimits;
 }): JSX.Element {
   if (
     ![
@@ -67,6 +59,11 @@ export default function AddCalendar({
     ].includes(type)
   )
     type = "date";
+  if (!step) {
+    if (type === "datetime-local" || type === "time")
+      step == "60";
+    else step = "1";
+  } else step = step.replace(/[^0-9]/g, "") as PseudoNum;
   let mapper: DateMapper;
   const { role } = useRole(),
     r = useRef<nlInp>(null),
@@ -266,6 +263,26 @@ export default function AddCalendar({
       ...getMonthlyDateLimits(),
       ...getDayLimits(),
     }),
+    fullDateLimitsMemo = useMemo(getFullDateLimits, [
+      limits,
+      getFullDateLimits,
+    ]),
+    clockLimitsMemo = useMemo(getClockLimits, [
+      limits,
+      getClockLimits,
+    ]),
+    monthlyDateLimitsMemo = useMemo(getMonthlyDateLimits, [
+      limits,
+      getMonthlyDateLimits,
+    ]),
+    weekLimitsMemo = useMemo(getWeekLimits, [
+      limits,
+      getWeekLimits,
+    ]),
+    yearLimitsMemo = useMemo(getYearLimits, [
+      limits,
+      getYearLimits,
+    ]),
     [s, d] = useReducer<
       { v: string },
       [{ type: CalendarInputType; payload: string }]
@@ -320,7 +337,7 @@ export default function AddCalendar({
             maxMonth,
             minDay,
             maxDay,
-          } = getFullDateLimits(),
+          } = fullDateLimitsMemo,
           dateLimits: Array<{
             k: calendarLimit;
             v: string;
@@ -349,7 +366,7 @@ export default function AddCalendar({
             maxMonth,
             minDay,
             maxDay,
-          } = getFullDateLimits(),
+          } = fullDateLimitsMemo,
           {
             minHour,
             maxHour,
@@ -357,7 +374,7 @@ export default function AddCalendar({
             maxMinute,
             minSecond,
             maxSecond,
-          } = getClockLimits();
+          } = clockLimitsMemo;
         const dateTimeLimits: Array<{
           k: calendarLimit | clockLimit;
           v: string | undefined;
@@ -391,7 +408,7 @@ export default function AddCalendar({
       case "month": {
         if (!limits) return;
         const { minYear, maxYear, minMonth, maxMonth } =
-            getMonthlyDateLimits(),
+            monthlyDateLimitsMemo,
           monthLimits: Array<{
             k: yearLimit | monthLimit;
             v: string;
@@ -413,8 +430,8 @@ export default function AddCalendar({
       }
       case "week": {
         if (!limits) return;
-        const { minWeek, maxWeek } = getWeekLimits(),
-          { minYear, maxYear } = getYearLimits();
+        const { minWeek, maxWeek } = weekLimitsMemo,
+          { minYear, maxYear } = yearLimitsMemo;
         const weekLimits: Array<{
           k: yearLimit | weekLimit;
           v: string;
@@ -441,7 +458,7 @@ export default function AddCalendar({
           maxMinute,
           minSecond,
           maxSecond,
-        } = getClockLimits();
+        } = clockLimitsMemo;
         const clockLimits: Array<{
           k: clockLimit;
           v: string | undefined;
@@ -492,6 +509,7 @@ export default function AddCalendar({
         className={`entryAddRanged dateInput dateAddInput date${StringHelper.capitalize(
           type
         )}AddInput ${classes.inpClasses}`}
+        step={step}
         placeholder={placeholder}
         data-role={role}
         value={s.v}

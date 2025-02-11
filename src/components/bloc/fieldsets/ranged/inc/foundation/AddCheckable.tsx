@@ -61,9 +61,17 @@ export default function AddCheckable({
         type={type === "radio" ? "radio" : "checkbox"}
         role={type === "toggle" ? "switch" : type}
         className={`entryAddRanged inpAddRanged inpCheckableRanged ${classes.inpCheckables} ${s.checkable}`}
+        style={
+          type === "toggle"
+            ? { transform: "translate(0, -1px)" }
+            : {}
+        }
         data-role={role}
-        checked={multiple ? v : undefined}
+        checked={
+          multiple && type !== "toggle" ? v : undefined
+        }
         onClick={ev => {
+          if (type === "toggle") return;
           const t = ev.currentTarget;
           if (t.checked && multiple) {
             t.checked = false;

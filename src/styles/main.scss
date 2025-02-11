@@ -100,7 +100,7 @@ input {
     &:hover:not([role="switch"]) {
       transform: scale(1.05);
     }
-    &:active {
+    &:active:not([role="switch"]) {
       transform: scale(0.95);
     }
   }
@@ -200,6 +200,12 @@ button {
     background-color: #f1f1f1e9;
   }
 }
+.fsRanged {
+  padding-inline: 1rem;
+  select {
+    max-width: 75%;
+  }
+}
 .fsTechCb {
   margin: var(--spacing-base) auto;
   max-width: 95vw;
@@ -246,7 +252,7 @@ button {
     margin-top: 0.5rem;
   }
   + .fsMultipleChekables {
-    margin-top: 0.75rem;
+    margin-top: 0.1rem;
   }
 }
 .rGap2v {
@@ -291,6 +297,16 @@ button {
 .wsBs {
   white-space: pre-wrap;
 }
+#autofillDiv {
+  padding-right: 1.5rem;
+  @media (max-width: 1200px) and (min-width: 1001px) {
+    padding-right: 0;
+    transform: translateX(3rem);
+  }
+  @media (max-width: 100px) {
+    margin-bottom: 2rem !important;
+  }
+}
 #ctaBtnsBlock {
   display: flex;
   column-gap: var(--spacing-lg);
@@ -314,7 +330,7 @@ button {
     box-shadow: none;
     margin-block: 1rem 2rem;
     font-size: 1.3rem;
-    text-align: center;
+    text-align: start;
     @media screen and (max-width: 1000px) {
       text-align: start;
       margin-block: 1rem;

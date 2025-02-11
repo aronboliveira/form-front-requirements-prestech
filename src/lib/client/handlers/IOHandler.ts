@@ -13,6 +13,7 @@ import {
 import MathHandler from "./MathHandler";
 import {
   AcronymsDefaults,
+  flags,
   friendlyRoles,
   suggestionsDict,
   suggestionsGroupsMap,
@@ -402,40 +403,46 @@ export default class IOHandler {
     if (!ctxGrp) return;
     return ctxGrp.get(k);
   }
-  static forbiddens = Object.freeze({
-    forbiddenTags:
-      /<\/?(no)?script.*>|<\/?embed.*>|<\/?source.*>|<\/?object.*>|<\/?applet.*>|<\/?i?frame(set)?.*>|<\/?meta.*>|<\/?base.*>|<\/?link.*>|<\/?svg.*>|<\/?style.*>|<\/?form.*>|<\/?input.*\/?>|\/?textarea.*?>|\/?select.*?>|\/?option.*?>|\/?optgroup.*?>|<\/?button.*>|href="/g,
-    forbiddenPrefix: /javascript:/gi,
-  });
   static setXSSInputProtection(): void {
     const c = Array.from(
-      document.querySelectorAll("*")
-    ).filter(e => DOMValidator.isEntry(e));
-    const trial = (el: HTMLElement | string) => {
-      let v =
-        el instanceof HTMLInputElement ||
-        el instanceof HTMLTextAreaElement
-          ? el.value
-          : el instanceof HTMLElement
-          ? el.textContent || ""
-          : el;
-      if (this.forbiddens.forbiddenTags.test(v)) {
-        v = v.replace(this.forbiddens.forbiddenTags, "");
-        if (
+        document.querySelectorAll("*")
+      ).filter(e => DOMValidator.isEntry(e)),
+      trial = (el: HTMLElement | string) => {
+        let v =
           el instanceof HTMLInputElement ||
           el instanceof HTMLTextAreaElement
-        )
-          el.dispatchEvent(
-            new Event("change", {
-              bubbles: false,
-              cancelable: false,
-            })
+            ? el.value
+            : el instanceof HTMLElement
+            ? el.textContent || ""
+            : el;
+        if (flags.forbiddens.forbiddenTags.test(v)) {
+          v = v.replace(flags.forbiddens.forbiddenTags, "");
+          if (
+            el instanceof HTMLInputElement ||
+            el instanceof HTMLTextAreaElement
+          ) {
+            el.value = v;
+            el.dispatchEvent(
+              new Event("change", {
+                bubbles: false,
+                cancelable: false,
+              })
+            );
+          } else if (el instanceof Element)
+            el.innerText = v;
+          toast.error(
+            `Dangerous code detected and removed`
           );
-        toast.error(`Dangerous code detected and removed`);
-      }
-    };
+        }
+      },
+      start = performance.now();
     for (let i = 0; i < c.length; i++) {
       const e = c[i];
+      if (
+        performance.now() - start >
+        flags.MAX_ALLOWED_SHORT_PROCESS_TIME
+      )
+        break;
       if (
         !(e instanceof HTMLElement) ||
         e.dataset.xssmonitored === "true"

@@ -1,7 +1,7 @@
 "use client";
 import MathHandler from "@/lib/client/handlers/MathHandler";
-import { flags } from "@/lib/client/vars";
-import { useCallback, useEffect } from "react";
+import { flags, trackedIds } from "@/lib/client/vars";
+import { useCallback, useEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import TimeoutModal from "../modals/TimeoutModal";
 import withModalDispatch from "../highOrder/withModalDispatch";
@@ -9,31 +9,34 @@ import { WatcherProps } from "@/lib/definitions/client/interfaces/components";
 import ContextValidator from "@/lib/client/validators/ContextValidator";
 import DOMValidator from "@/lib/client/validators/DOMValidator";
 import IOHandler from "@/lib/client/handlers/IOHandler";
+import StringHelper from "@/lib/helpers/StringHelper";
+import { limits } from "@/lib/vars";
 export default function Watcher({
   _case,
   d,
   v,
 }: WatcherProps) {
   const cycle = useCallback(() => {
-    if (!d) return;
-    let role = sessionStorage.getItem("role");
-    if (!role) {
-      const roleEl = document.getElementById("role");
-      if (
-        !roleEl ||
-        !(roleEl && DOMValidator.isDefaultEntry(roleEl))
-      )
-        return;
-      role = roleEl.value;
-    }
-    /* eslint-disable */
-    ContextValidator.isRoleType(role) &&
-      (!v ||
-        !ContextValidator.isRoleType(v) ||
-        v !== role) &&
-      d(role);
-    /* eslint-enable */
-  }, [_case, d, v]);
+      if (!d) return;
+      let role = sessionStorage.getItem("role");
+      if (!role) {
+        const roleEl = document.getElementById("role");
+        if (
+          !roleEl ||
+          !(roleEl && DOMValidator.isDefaultEntry(roleEl))
+        )
+          return;
+        role = roleEl.value;
+      }
+      /* eslint-disable */
+      ContextValidator.isRoleType(role) &&
+        (!v ||
+          !ContextValidator.isRoleType(v) ||
+          v !== role) &&
+        d(role);
+      /* eslint-enable */
+    }, [_case, d, v]),
+    loopCounter = useRef<number>(0);
   useEffect(() => {
     if (
       _case !== "mainForm" ||
@@ -73,18 +76,23 @@ export default function Watcher({
       )) {
         if (!DOMValidator.isDefaultCheckable(e)) continue;
         if (e.name === "main") {
-          e.before(
-            document.createComment(
-              "WARNING: Automatically generated name"
-            )
+          if (e.dataset.namewarned !== "true") {
+            e.before(
+              document.createComment(
+                "WARNING: Automatically generated name"
+              )
+            );
+            e.dataset.namewarned = "true";
+          }
+          e.name = StringHelper.sanitizePropertyName(
+            crypto.randomUUID()
           );
-          e.name = crypto.randomUUID();
         }
       }
       if (document.body.dataset.xssprotected !== "true") {
         IOHandler.setXSSInputProtection();
-        setInterval(IOHandler.setXSSInputProtection, 1000);
-        document.body.dataset.xssprotected === "true";
+        setInterval(IOHandler.setXSSInputProtection, 1_000);
+        document.body.dataset.xssprotected = "true";
       }
       sessionStorage.setItem("timer", newTimer.toString());
     }, 1_000);
@@ -94,16 +102,63 @@ export default function Watcher({
       flags.failedTimeoutAttempts = 0;
     }, 3_600_000);
     setTimeout(() => {
-      setInterval(() => {
-        const ids: string[] = [],
-          allEls = document.querySelectorAll("*");
-        for (let i = 0; i < allEls.length; i++) {
-          for (let j = 0; j < ids.length; i++)
-            ids[j] === allEls[i].id &&
-              MathHandler.generateRandomId(allEls[i]);
-          ids.push(allEls[i].id);
-        }
-      }, 1_000);
+      if (document.body.dataset.idprotected !== "true") {
+        setInterval(interv => {
+          if (
+            loopCounter.current >
+            limits.small.MAX_UTF16_SIGNED_SURROGATE
+          ) {
+            clearInterval(interv);
+            return;
+          }
+          loopCounter.current = 0;
+          trackedIds.clear();
+          const allEls = document.querySelectorAll("*"),
+            start = performance.now();
+          for (let i = 0; i < allEls.length; i++) {
+            if (
+              performance.now() - start >
+              flags.MAX_ALLOWED_SHORT_PROCESS_TIME
+            ) {
+              console.warn(
+                `Process exceded time. Exiting main loop`
+              );
+              break;
+            }
+            for (let j = 0; j < trackedIds.size; j++) {
+              if (
+                performance.now() - start >
+                flags.MAX_ALLOWED_SHORT_PROCESS_TIME
+              ) {
+                console.warn(
+                  `Process exceded time. Exiting inner loop`
+                );
+                loopCounter.current = ++loopCounter.current;
+                break;
+              }
+              if (!allEls[j].id) continue;
+              if (
+                trackedIds.has(allEls[j].id) &&
+                (document.querySelectorAll(
+                  `#${allEls[j].id}`
+                ).length > 1 ||
+                  !StringHelper.isSaneAttrName(
+                    allEls[j].id
+                  ))
+              )
+                allEls[j].id =
+                  StringHelper.sanitizePropertyName(
+                    MathHandler.generateRandomId(
+                      allEls[j],
+                      allEls[j].id
+                    )
+                  );
+            }
+            trackedIds.add(allEls[i].id);
+          }
+        }, 1_500);
+        document.body.dataset.idprotected = "true";
+      }
     }, 5_000);
     document.body.dataset.oncount = "true";
   }, [_case]);
