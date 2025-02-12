@@ -412,22 +412,25 @@ button {
   html {
     color-scheme: dark;
   }
-  // .body {
-  //   background-color: var(--background);
-  // }
-  // .deActBtn {
-  //   filter: invert(1);
-  // }
-  // .form-control,
-  // .form-select {
-  //   background-color: #cccccc !important;
-  // }
-  // .formMainFs,
-  // .fsMultipleChekables.form-control {
-  //   background-color: #f1f1f1e9;
-  // }
-  // #autofillDiv,
-  // #mainTitle {
-  //   color: var(--foreground);
-  // }
+  .body {
+    background-color: var(--background);
+  }
+  .deActBtn {
+    filter: invert(1);
+  }
+  .form-control,
+  .form-select {
+    background-color: #cccccc !important;
+  }
+  .fsMultipleChekables.form-control {
+    background-color: #f1f1f1e9;
+  }
+  .formMainFs {
+    background-color: #e0e0e0;
+    border: groove 0.15rem #1e1e1e !important;
+  }
+  #autofillDiv,
+  #mainTitle {
+    color: var(--foreground);
+  }
 }
