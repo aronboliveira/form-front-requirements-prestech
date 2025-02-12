@@ -34,8 +34,8 @@ import { JSX } from "react/jsx-runtime";
 import DOMValidator from "@/lib/client/validators/DOMValidator";
 import AudioAi from "../bloc/fieldsets/ranged/ai/AudioAi";
 import ImageAi from "../bloc/fieldsets/ranged/ai/ImageAi";
-import VideoAi from "../bloc/fieldsets/ranged/ai/VIdeoAi";
 import Llms from "../bloc/fieldsets/ranged/ai/Llms";
+import VideoAi from "../bloc/fieldsets/ranged/ai/VideoAi";
 export const Range = memo(
   (props: RangeInputBlock): JSX.Element => {
     const min = 0,
