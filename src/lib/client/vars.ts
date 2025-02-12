@@ -64,7 +64,7 @@ export const classes: Readonly<Record<ClassesKey, string>> =
     selectClasses: `form-select`,
     btnSec: `${btn} btn-secondary`,
     btnPrim: `${btn} btn-primary`,
-    mainFsClasses: `border p-4 mb-3 formMainFs`,
+    mainFsClasses: `p-4 mb-3 formMainFs`,
     mainFsLegClasses: `legMainFs bold`,
     officePlatforms: `${officeRangeds} fsOfficePlatforms`,
     officeApps: `${officeRangeds} fsOfficeApps`,
@@ -100,6 +100,11 @@ export const flags: {
     forbiddenPrefix: /javascript:/gi,
   }),
 };
+export const segments: Readonly<{
+  conjunctions: Set<string>;
+}> = ObjectHelper.deepFreeze({
+  conjunctions: new Set(["da", "de", "di", "do", "du"]),
+});
 export const trackedIds: Set<string> = new Set();
 export const borderColors: { [k: string]: string } = {};
 export const fontColors: { [k: string]: string } = {};
@@ -201,25 +206,25 @@ export const jsErrorsFriendlyNames: Readonly<{
     ["UnhandledException", "Exceção Não Manipulada"],
   ]),
 });
-export enum MonthDays {
-  "_01" = 31,
-  "_02" = ((): number => {
+export const MonthDays = ObjectHelper.deepFreeze({
+  _01: 31,
+  _02: ((): number => {
     const y = new Date().getFullYear();
     return (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0
       ? 29
       : 28;
   })(),
-  "_03" = 31,
-  "_04" = 30,
-  "_05" = 31,
-  "_06" = 30,
-  "_07" = 31,
-  "_08" = 31,
-  "_09" = 30,
-  "_10" = 31,
-  "_11" = 30,
-  "_12" = 31,
-}
+  _03: 31,
+  _04: 30,
+  _05: 31,
+  _06: 30,
+  _07: 31,
+  _08: 31,
+  _09: 30,
+  _10: 31,
+  _11: 30,
+  _12: 31,
+});
 export enum friendlyRoles {
   executivoAdministrativo = "Executivo | Administrativo",
   financeiro = "Financeiro",
@@ -5758,24 +5763,24 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionKey> =
             max: 2025,
           },
           month: {
-            min: -3,
-            max: 15,
+            min: 2,
+            max: 10,
           },
           day: {
-            min: -10,
-            max: 35,
+            min: 5,
+            max: 21,
           },
           hour: {
-            min: -1,
-            max: 25,
+            min: 3,
+            max: 10,
           },
           minute: {
-            min: -50,
-            max: 60,
+            min: 5,
+            max: 10,
           },
           second: {
             min: 25,
-            max: 80,
+            max: 50,
           },
           step: "10",
         },
@@ -5797,23 +5802,23 @@ export const ssEntryTypes: EntryTypeDictionary<SpreadsheetsQuestionKey> =
             max: 2500,
           },
           week: {
-            min: -1,
-            max: 50,
+            min: 3,
+            max: 20,
           },
         },
         time: {
           type: "time",
           hour: {
             min: 10,
-            max: 99,
+            max: 11,
           },
           minute: {
-            min: 0,
+            min: 5,
             max: 10,
           },
           second: {
-            min: -10,
-            max: 9999999,
+            min: 5,
+            max: 55,
           },
           step: "20",
         },

@@ -15,6 +15,8 @@ export default function GenericErrorComponent({
         textAlign: "center",
         width: "100vw",
         height: "100vh",
+        maxWidth: "100%",
+        minWidth: "100%",
         paddingInline: "10vw",
         backgroundColor: "#afa3a396",
       }}
@@ -24,7 +26,11 @@ export default function GenericErrorComponent({
           Oops, algo deu errado! 😨
         </strong>
       </h2>
-      <h4 style={{ fontSize: "0.8rem", marginBlock: "1rem" }}>{message}</h4>
+      <h4
+        style={{ fontSize: "0.8rem", marginBlock: "1rem" }}
+      >
+        {message}
+      </h4>
       <button
         style={{ fontWeight: "bold" }}
         className='btn btn-info'

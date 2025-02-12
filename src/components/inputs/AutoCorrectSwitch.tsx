@@ -24,6 +24,7 @@ export default function AutoCorrectSwitch() {
         alignContent: "center",
         justifyContent: "center",
         marginTop: "1rem",
+        marginBottom: "1.5rem",
       }}
     >
       <input

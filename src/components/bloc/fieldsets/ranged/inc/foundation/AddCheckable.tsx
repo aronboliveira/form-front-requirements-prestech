@@ -37,6 +37,15 @@ export default function AddCheckable({
     d.style.marginLeft = "1.25rem";
   }, [r]);
   useEffect(() => {
+    if (!r.current || type !== "toggle") return;
+    r.current.click();
+    r.current.dispatchEvent(new MouseEvent("click"));
+    r.current.checked = true;
+    r.current?.click();
+    r.current?.dispatchEvent(new MouseEvent("click"));
+    r.current.checked = false;
+  }, [r]);
+  useEffect(() => {
     if (!r.current || r.current.role !== "switch") return;
     const fs = r.current.closest("fieldset"),
       id = r.current.id;
@@ -45,13 +54,21 @@ export default function AddCheckable({
       .filter(e => DOMValidator.isDefaultEntry(e))
       .filter(e => e.id !== id)
       .forEach(e => {
-        if (!DOMValidator.isDefaultEntry(e)) return;
-        e.disabled = !!(r.current && r.current.checked);
-        e.classList.toggle("disabled");
-        DOMValidator.isDefaultCheckable(e) &&
-          (e.checked = false);
+        setTimeout(() => {
+          if (!r.current || !DOMValidator.isDefaultEntry(e))
+            return;
+          if (r.current.checked) {
+            e.disabled = true;
+            e.classList.add("disabled");
+            DOMValidator.isDefaultCheckable(e) &&
+              (e.checked = false);
+          } else {
+            e.disabled = false;
+            e.classList.remove("disabled");
+          }
+        }, 300);
       });
-  }, [v]);
+  }, [r.current?.checked]);
   return (
     <DefaultEntryBoundary>
       <input

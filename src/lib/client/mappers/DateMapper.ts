@@ -3,6 +3,7 @@ import { RefObject } from "react";
 import MathHandler from "../handlers/MathHandler";
 import { MonthDays } from "../vars";
 import StringHelper from "@/lib/helpers/StringHelper";
+import DOMValidator from "../validators/DOMValidator";
 export default class DateMapper {
   ref: RefObject<nlInp>;
   constructor(_ref: RefObject<nlInp>) {
@@ -93,7 +94,7 @@ export default class DateMapper {
           let [h, m, s = "00"] = v.split(":");
           h = this.#limitByHour(h);
           m = this.#limitByMinute(m);
-          const hasSeconds = this.ref.current.step === "60";
+          const hasSeconds = this.ref.current.step !== "60";
           if (hasSeconds) s = this.#limitBySecond(s);
           return !hasSeconds
             ? `${h}:${m}`
@@ -101,7 +102,7 @@ export default class DateMapper {
         }
         case "datetime-local": {
           let [y, mon, d, h, min, sec = "00"] =
-            v.split(/[\-\:]/g);
+            v.split(/[\-\:T]/g);
           y = this.#limitByYear(y);
           mon = this.#limitByMonth(mon);
           d = this.#limitByWeekDay(
@@ -111,11 +112,11 @@ export default class DateMapper {
           );
           h = this.#limitByHour(h);
           min = this.#limitByMinute(min);
-          const hasSeconds = this.ref.current.step === "60";
+          const hasSeconds = this.ref.current.step !== "60";
           if (hasSeconds) sec = this.#limitBySecond(sec);
           return !hasSeconds
-            ? `${y}:${mon}:${d}T${h}:${min}`
-            : `${y}:${mon}:${d}T${h}:${min}:${sec}`;
+            ? `${y}-${mon}-${d}T${h}:${min}`
+            : `${y}-${mon}-${d}T${h}:${min}:${sec}`;
         }
         default:
           return this.ref.current.value;
@@ -129,32 +130,41 @@ export default class DateMapper {
       !this.ref.current?.dataset.minyear &&
       !this.ref.current?.dataset.maxyear
     )
-      return y;
+      return y ?? "0001";
     const base = new Date().getFullYear(),
       rx = /\d{4}/;
-    let ny = MathHandler.parseNotNaN(y, base, "int");
+    let ny = MathHandler.parseNotNaN(y, base, "int") || 1;
     const checkPattern = (): void => {
       let sny = ny.toString();
-      if (sny.length > 4) sny = sny.slice(0, 4);
-      if (sny.length < 4)
-        sny = StringHelper.padToISO(sny, 4);
+      if (!this.ref.current) return;
+      if (!DOMValidator.isYearInput(this.ref.current)) {
+        if (sny.length > 4) sny = sny.slice(0, 4);
+        if (sny.length < 4)
+          sny = StringHelper.padToISO(sny, 4);
+      }
       if (rx.test(sny)) y = sny;
     };
     if (this.ref.current.dataset.minyear) {
-      const min = MathHandler.parseNotNaN(
-        this.ref.current.dataset.minyear,
-        base,
-        "int"
-      );
-      if (ny < min) ny = min;
+      const min =
+        MathHandler.parseNotNaN(
+          this.ref.current.dataset.minyear,
+          base,
+          "int"
+        ) || 1;
+      if (
+        ny < min &&
+        ny.toString().length === min.toString().length
+      )
+        ny = min;
       checkPattern();
     }
     if (this.ref.current.dataset.maxyear) {
-      const max = MathHandler.parseNotNaN(
-        this.ref.current.dataset.maxyear,
-        base + 1,
-        "int"
-      );
+      const max =
+        MathHandler.parseNotNaN(
+          this.ref.current.dataset.maxyear,
+          base + 1,
+          "int"
+        ) || 1;
       if (ny > max) ny = max;
       checkPattern();
     }
@@ -165,10 +175,10 @@ export default class DateMapper {
       !this.ref.current?.dataset.minmonth &&
       !this.ref.current?.dataset.maxmonth
     )
-      return m;
+      return m ?? "01";
     const base = new Date().getMonth() + 1,
       rx = /\d{2}/;
-    let nm = MathHandler.parseNotNaN(m, base, "int");
+    let nm = MathHandler.parseNotNaN(m, base, "int") || 1;
     const checkPattern = (
       limit: number,
       max: boolean = false
@@ -178,8 +188,12 @@ export default class DateMapper {
       if (max && nm > limit) nm = limit;
       else if (!max && nm < limit) nm = limit;
       let snm = nm.toString();
-      if (snm.length > 2) snm = snm.slice(0, 2);
-      if (snm.length < 2) snm = StringHelper.padToISO(snm);
+      if (!this.ref.current) return;
+      if (!DOMValidator.isMonthInput(this.ref.current)) {
+        if (snm.length > 2) snm = snm.slice(0, 2);
+        if (snm.length < 2)
+          snm = StringHelper.padToISO(snm);
+      }
       if (rx.test(snm)) m = snm;
     };
     if (this.ref.current.dataset.minmonth)
@@ -188,7 +202,7 @@ export default class DateMapper {
           this.ref.current.dataset.minmonth,
           base,
           "int"
-        )
+        ) || 1
       );
     if (this.ref.current.dataset.maxmonth)
       checkPattern(
@@ -196,7 +210,7 @@ export default class DateMapper {
           this.ref.current.dataset.maxmonth,
           base + 1,
           "int"
-        ),
+        ) || 1,
         true
       );
     return m;
@@ -206,10 +220,10 @@ export default class DateMapper {
       !this.ref.current?.dataset.minmonthday &&
       !this.ref.current?.dataset.minmaxday
     )
-      return d;
+      return d ?? "01";
     const base = new Date().getDate(),
       rx = /\d{2}/;
-    let nd = MathHandler.parseNotNaN(d, base, "int");
+    let nd = MathHandler.parseNotNaN(d, base, "int") || 1;
     const checkPattern = (
       limit: number,
       max: boolean = false
@@ -225,8 +239,12 @@ export default class DateMapper {
       if (max && nd > limit) nd = limit;
       else if (!max && nd < limit) nd = limit;
       let snd = nd.toString();
-      if (snd.length > 2) snd = snd.slice(0, 2);
-      if (snd.length < 2) snd = StringHelper.padToISO(snd);
+      if (!this.ref.current) return;
+      if (!DOMValidator.isDayInput(this.ref.current)) {
+        if (snd.length > 2) snd = snd.slice(0, 2);
+        if (snd.length < 2)
+          snd = StringHelper.padToISO(snd);
+      }
       if (rx.test(snd)) d = snd;
     };
     if (this.ref.current.dataset.minmonthday)
@@ -235,7 +253,7 @@ export default class DateMapper {
           this.ref.current.dataset.minmonthday,
           base,
           "int"
-        )
+        ) || 1
       );
     if (this.ref.current.dataset.maxmonthday)
       checkPattern(
@@ -243,7 +261,7 @@ export default class DateMapper {
           this.ref.current.dataset.maxmonthday,
           base,
           "int"
-        ),
+        ) || 1,
         true
       );
     return d;
@@ -253,35 +271,41 @@ export default class DateMapper {
       !this.ref.current?.dataset.minweekday &&
       !this.ref.current?.dataset.maxweekday
     )
-      return d;
+      return d ?? "01";
     y = this.#limitByYear(y);
     m = this.#limitByMonth(m);
     d = this.#limitByMonthDay(m, d);
     const currDate = new Date(),
       base = 1,
       rx = /\d{2}/,
-      ny = MathHandler.parseNotNaN(
-        y,
-        currDate.getFullYear(),
-        "int"
-      ),
-      nm = MathHandler.parseNotNaN(
-        m,
-        currDate.getMonth() + 1,
-        "int"
-      ),
-      nd = MathHandler.parseNotNaN(
-        d,
-        currDate.getDate(),
-        "int"
-      );
+      ny =
+        MathHandler.parseNotNaN(
+          y,
+          currDate.getFullYear(),
+          "int"
+        ) || 1,
+      nm =
+        MathHandler.parseNotNaN(
+          m,
+          currDate.getMonth() + 1,
+          "int"
+        ) || 1,
+      nd =
+        MathHandler.parseNotNaN(
+          d,
+          currDate.getDate(),
+          "int"
+        ) || 1;
     let wd = new Date(ny, nm - 1, nd).getDay();
     const checkPattern = (limit: number): void => {
       const correctedWk = nd - (wd - limit);
       let snwd = correctedWk.toString();
-      if (snwd.length > 2) snwd = snwd.slice(0, 2);
-      if (snwd.length < 2)
-        snwd = StringHelper.padToISO(snwd);
+      if (!this.ref.current) return;
+      if (!DOMValidator.isDayInput(this.ref.current)) {
+        if (snwd.length > 2) snwd = snwd.slice(0, 2);
+        if (snwd.length < 2)
+          snwd = StringHelper.padToISO(snwd);
+      }
       if (rx.test(snwd)) d = snwd;
     };
     if (this.ref.current.dataset.minweekday)
@@ -290,7 +314,7 @@ export default class DateMapper {
           this.ref.current.dataset.minweekday,
           base,
           "int"
-        )
+        ) || 1
       );
     if (this.ref.current.dataset.maxweekday)
       checkPattern(
@@ -298,7 +322,7 @@ export default class DateMapper {
           this.ref.current.dataset.maxweekday,
           base,
           "int"
-        )
+        ) || 1
       );
     return d;
   }
@@ -309,10 +333,10 @@ export default class DateMapper {
       !this.ref.current?.dataset.minmonth &&
       !this.ref.current?.dataset.maxmonth
     )
-      return w;
+      return w ?? "01";
     const currY = new Date().getFullYear(),
-      ny = MathHandler.parseNotNaN(y, currY, "int");
-    let nw = MathHandler.parseNotNaN(w, 1, "int");
+      ny = MathHandler.parseNotNaN(y, currY, "int") || 1;
+    let nw = MathHandler.parseNotNaN(w, 1, "int") || 1;
     const base = 1,
       rx = /\d{2}/;
     if (
@@ -327,7 +351,7 @@ export default class DateMapper {
               this.ref.current.dataset.minmonth,
               1,
               "int"
-            )
+            ) || 1
           )[0]
         );
       this.ref.current.dataset.minweek =
@@ -340,11 +364,12 @@ export default class DateMapper {
       this.ref.current.dataset.minweek &&
       !this.ref.current.dataset.minmonth
     ) {
-      const minWeek = MathHandler.parseNotNaN(
-        this.ref.current.dataset.minweek,
-        1,
-        "int"
-      );
+      const minWeek =
+        MathHandler.parseNotNaN(
+          this.ref.current.dataset.minweek,
+          1,
+          "int"
+        ) || 1;
       this.ref.current.dataset.minmonth =
         StringHelper.padToISO(
           DateMapper.getMonthForISOWeek(ny, minWeek) + 1
@@ -365,7 +390,7 @@ export default class DateMapper {
           this.ref.current.dataset.maxmonth,
           1,
           "int"
-        )
+        ) || 1
       );
       this.ref.current.dataset.maxweek =
         StringHelper.padToISO(
@@ -381,11 +406,12 @@ export default class DateMapper {
       this.ref.current.dataset.maxweek &&
       !this.ref.current.dataset.maxmonth
     ) {
-      const maxWeek = MathHandler.parseNotNaN(
-        this.ref.current.dataset.maxweek,
-        53,
-        "int"
-      );
+      const maxWeek =
+        MathHandler.parseNotNaN(
+          this.ref.current.dataset.maxweek,
+          53,
+          "int"
+        ) || 1;
       this.ref.current.dataset.maxmonth =
         StringHelper.padToISO(
           DateMapper.getMonthForISOWeek(ny, maxWeek) + 1
@@ -406,8 +432,12 @@ export default class DateMapper {
       if (isMax && nw > limit) nw = limit;
       else if (!isMax && nw < limit) nw = limit;
       let snw = nw.toString();
-      if (snw.length > 2) snw = snw.slice(0, 2);
-      if (snw.length < 2) snw = StringHelper.padToISO(snw);
+      if (!this.ref.current) return;
+      if (this.ref.current.type !== "week") {
+        if (snw.length > 2) snw = snw.slice(0, 2);
+        if (snw.length < 2)
+          snw = StringHelper.padToISO(snw);
+      }
       if (rx.test(snw)) w = snw;
     };
     if (this.ref.current.dataset.minweek)
@@ -416,7 +446,7 @@ export default class DateMapper {
           this.ref.current.dataset.minweek,
           base,
           "int"
-        )
+        ) || 1
       );
     if (this.ref.current.dataset.maxweek)
       checkPattern(
@@ -424,7 +454,7 @@ export default class DateMapper {
           this.ref.current.dataset.maxweek,
           53,
           "int"
-        ),
+        ) || 1,
         true
       );
     let minMonth = 1,
@@ -432,21 +462,23 @@ export default class DateMapper {
     const validWeeksForMinMonth: number[] = [],
       validWeeksForMaxMonth: number[] = [];
     if (this.ref.current.dataset.minmonth) {
-      minMonth = MathHandler.parseNotNaN(
-        this.ref.current.dataset.minmonth,
-        1,
-        "int"
-      );
+      minMonth =
+        MathHandler.parseNotNaN(
+          this.ref.current.dataset.minmonth,
+          1,
+          "int"
+        ) || 1;
       DateMapper.getISOWeeksForMonth(ny, minMonth).forEach(
         w => validWeeksForMinMonth.push(w)
       );
     }
     if (this.ref.current.dataset.maxmonth) {
-      maxMonth = MathHandler.parseNotNaN(
-        this.ref.current.dataset.maxmonth,
-        12,
-        "int"
-      );
+      maxMonth =
+        MathHandler.parseNotNaN(
+          this.ref.current.dataset.maxmonth,
+          12,
+          "int"
+        ) || 1;
       DateMapper.getISOWeeksForMonth(ny, maxMonth).forEach(
         w => validWeeksForMaxMonth.push(w)
       );
@@ -469,10 +501,10 @@ export default class DateMapper {
       !this.ref.current?.dataset.minhour &&
       !this.ref.current?.dataset.maxhour
     )
-      return h;
+      return h ?? "01";
     const base = 0,
       rx = /\d{2}/;
-    let nh = MathHandler.parseNotNaN(h, base, "int");
+    let nh = MathHandler.parseNotNaN(h, base, "int") || 1;
     const checkPattern = (
       limit: number,
       isMax: boolean = false
@@ -482,8 +514,12 @@ export default class DateMapper {
       if (isMax && nh > limit) nh = limit;
       else if (!isMax && nh < limit) nh = limit;
       let snh = nh.toString();
-      if (snh.length > 2) snh = snh.slice(0, 2);
-      if (snh.length < 2) snh = StringHelper.padToISO(snh);
+      if (!this.ref.current) return;
+      if (!DOMValidator.isHourInput(this.ref.current)) {
+        if (snh.length > 2) snh = snh.slice(0, 2);
+        if (snh.length < 2)
+          snh = StringHelper.padToISO(snh);
+      }
       if (rx.test(snh)) h = snh;
     };
     if (this.ref.current.dataset.minhour)
@@ -492,7 +528,7 @@ export default class DateMapper {
           this.ref.current.dataset.minhour,
           base,
           "int"
-        )
+        ) || 1
       );
     if (this.ref.current.dataset.maxhour)
       checkPattern(
@@ -500,7 +536,7 @@ export default class DateMapper {
           this.ref.current.dataset.maxhour,
           24,
           "int"
-        ),
+        ) || 1,
         true
       );
     return h;
@@ -510,10 +546,10 @@ export default class DateMapper {
       !this.ref.current?.dataset.minminute &&
       !this.ref.current?.dataset.maxminute
     )
-      return m;
+      return m ?? "01";
     const base = 0,
       rx = /\d{2}/;
-    let nm = MathHandler.parseNotNaN(m, base, "int");
+    let nm = MathHandler.parseNotNaN(m, base, "int") || 1;
     const checkPattern = (
       limit: number,
       isMax: boolean = false
@@ -523,8 +559,12 @@ export default class DateMapper {
       if (isMax && nm > limit) nm = limit;
       else if (!isMax && nm < limit) nm = limit;
       let snm = nm.toString();
-      if (snm.length > 2) snm = snm.slice(0, 2);
-      if (snm.length < 2) snm = StringHelper.padToISO(snm);
+      if (!this.ref.current) return;
+      if (!DOMValidator.isHourInput(this.ref.current)) {
+        if (snm.length > 2) snm = snm.slice(0, 2);
+        if (snm.length < 2)
+          snm = StringHelper.padToISO(snm);
+      }
       if (rx.test(snm)) m = snm;
     };
     if (this.ref.current.dataset.minminute)
@@ -533,7 +573,7 @@ export default class DateMapper {
           this.ref.current.dataset.minminute,
           base,
           "int"
-        )
+        ) || 1
       );
     if (this.ref.current.dataset.maxminute)
       checkPattern(
@@ -541,7 +581,7 @@ export default class DateMapper {
           this.ref.current.dataset.maxminute,
           60,
           "int"
-        ),
+        ) || 1,
         true
       );
     return m;
@@ -551,10 +591,10 @@ export default class DateMapper {
       !this.ref.current?.dataset.minsec &&
       !this.ref.current?.dataset.maxsec
     )
-      return s;
+      return s ?? "01";
     const base = 0,
       rx = /\d{2}/;
-    let ns = MathHandler.parseNotNaN(s, base, "int");
+    let ns = MathHandler.parseNotNaN(s, base, "int") || 1;
     const checkPattern = (
       limit: number,
       isMax: boolean = false
@@ -564,8 +604,12 @@ export default class DateMapper {
       if (isMax && ns > limit) ns = limit;
       else if (!isMax && ns < limit) ns = limit;
       let sns = ns.toString();
-      if (sns.length > 2) sns = sns.slice(0, 2);
-      if (sns.length < 2) sns = StringHelper.padToISO(sns);
+      if (!this.ref.current) return;
+      if (!DOMValidator.isHourInput(this.ref.current)) {
+        if (sns.length > 2) sns = sns.slice(0, 2);
+        if (sns.length < 2)
+          sns = StringHelper.padToISO(sns);
+      }
       if (rx.test(sns)) s = sns;
     };
     if (this.ref.current.dataset.minsec)
@@ -574,7 +618,7 @@ export default class DateMapper {
           this.ref.current.dataset.minsec,
           base,
           "int"
-        )
+        ) || 1
       );
     if (this.ref.current.dataset.maxsec)
       checkPattern(
@@ -582,7 +626,7 @@ export default class DateMapper {
           this.ref.current.dataset.maxsec,
           60,
           "int"
-        ),
+        ) || 1,
         true
       );
     return s;

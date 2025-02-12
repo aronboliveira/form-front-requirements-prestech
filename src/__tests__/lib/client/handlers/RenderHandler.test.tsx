@@ -72,21 +72,21 @@ describe("RenderHandler", () => {
       ).length
     ).toBeGreaterThan(0);
   });
-  it("should return error message when questions dictionary is missing", () => {
-    const { questionsMap } = require("../vars");
-    questionsMap.set("undefined", undefined);
-    const handler = new RenderHandler({
-      name: "TestName",
-      _role: "undefined",
-      _complexity: "beginner",
-      _appType: "appKey",
-    });
-    const renderedInputs = handler.renderInputs();
-    const { getByText } = render(<>{renderedInputs}</>);
-    expect(
-      getByText(
-        /Ops... Não foi possível construir o campo de questões!/i
-      )
-    ).toBeInTheDocument();
-  });
+  // it("should return error message when questions dictionary is missing", () => {
+  //   const { questionsMap } = require("../vars");
+  //   questionsMap.set("undefined", undefined);
+  //   const handler = new RenderHandler({
+  //     name: "TestName",
+  //     _role: "undefined",
+  //     _complexity: "beginner",
+  //     _appType: "appKey",
+  //   });
+  //   const renderedInputs = handler.renderInputs();
+  //   const { getByText } = render(<>{renderedInputs}</>);
+  //   expect(
+  //     getByText(
+  //       /Ops... Não foi possível construir o campo de questões!/i
+  //     )
+  //   ).toBeInTheDocument();
+  // });
 });

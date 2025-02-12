@@ -103,7 +103,7 @@ export default class RenderHandler {
                 key={`${id}__${qt}__${type}`}
               >
                 <AddTextArea
-                  id={`${this.#role}.${this.appType}__${a}`}
+                  id={`${this.#role}_${this.appType}__${a}`}
                   name={n}
                 />
               </AddBlock>
@@ -117,7 +117,7 @@ export default class RenderHandler {
                 key={`${id}__${qt}__${type}`}
               >
                 <AddSelectOne
-                  id={`${this.#role}.${this.appType}__${a}`}
+                  id={`${this.#role}_${this.appType}__${a}`}
                   name={n}
                   opts={{
                     main: {
@@ -141,7 +141,7 @@ export default class RenderHandler {
                 cls='radiogroup'
               >
                 <AddMultipleCheckable
-                  id={`${this.#role}.${this.appType}__${a}`}
+                  id={`${this.#role}_${this.appType}__${a}`}
                   name={n}
                   opts={{
                     main: {
@@ -201,7 +201,7 @@ export default class RenderHandler {
                 key={`${id}__${qt}__${type}`}
               >
                 <AddFileInput
-                  id={`${this.#role}.${this.appType}__${a}`}
+                  id={`${this.#role}_${this.appType}__${a}`}
                   name={n}
                 />
                 ;
@@ -216,7 +216,7 @@ export default class RenderHandler {
                 key={`${id}__${qt}__${type}`}
               >
                 <AddNumericInput
-                  id={`${this.#role}.${this.appType}__${a}`}
+                  id={`${this.#role}_${this.appType}__${a}`}
                   name={n}
                   type={type}
                 />
@@ -230,7 +230,7 @@ export default class RenderHandler {
                 key={`${id}__${qt}__${type}`}
               >
                 <AddColorInput
-                  id={`${this.#role}.${this.appType}__${a}`}
+                  id={`${this.#role}_${this.appType}__${a}`}
                   name={n}
                 />
                 ;
@@ -249,7 +249,7 @@ export default class RenderHandler {
               >
                 <AddCalendar
                   type={type}
-                  id={`${this.#role}.${this.appType}__${a}`}
+                  id={`${this.#role}_${this.appType}__${a}`}
                   name={n}
                   role={this.#role}
                   step={field.step}
@@ -273,7 +273,7 @@ export default class RenderHandler {
                 key={`${id}__${qt}__${type}`}
               >
                 <AddTextualInput
-                  id={`${this.#role}.${this.appType}__${a}`}
+                  id={`${this.#role}_${this.appType}__${a}`}
                   name={n}
                   type={"text"}
                 />

@@ -125,38 +125,41 @@ export default function Watcher({
               );
               break;
             }
-            for (let j = 0; j < trackedIds.size; j++) {
-              if (
-                performance.now() - start >
-                flags.MAX_ALLOWED_SHORT_PROCESS_TIME
-              ) {
-                console.warn(
-                  `Process exceded time. Exiting inner loop`
-                );
-                loopCounter.current = ++loopCounter.current;
-                break;
-              }
-              if (!allEls[j].id) continue;
-              if (
-                trackedIds.has(allEls[j].id) &&
-                (document.querySelectorAll(
-                  `#${allEls[j].id}`
-                ).length > 1 ||
-                  !StringHelper.isSaneAttrName(
-                    allEls[j].id
-                  ))
-              )
-                allEls[j].id =
-                  StringHelper.sanitizePropertyName(
-                    MathHandler.generateRandomId(
-                      allEls[j],
-                      allEls[j].id
-                    )
+            setTimeout(() => {
+              for (let j = 0; j < trackedIds.size; j++) {
+                if (
+                  performance.now() - start >
+                  flags.MAX_ALLOWED_SHORT_PROCESS_TIME
+                ) {
+                  console.warn(
+                    `Process exceded time. Exiting inner loop`
                   );
-            }
-            trackedIds.add(allEls[i].id);
+                  loopCounter.current =
+                    ++loopCounter.current;
+                  break;
+                }
+                if (!allEls[j].id) continue;
+                if (
+                  trackedIds.has(allEls[j].id) &&
+                  (document.querySelectorAll(
+                    `#${allEls[j].id}`
+                  ).length > 1 ||
+                    !StringHelper.isSaneAttrName(
+                      allEls[j].id
+                    ))
+                )
+                  allEls[j].id =
+                    StringHelper.sanitizePropertyName(
+                      MathHandler.generateRandomId(
+                        allEls[j],
+                        allEls[j].id
+                      )
+                    );
+              }
+              trackedIds.add(allEls[i].id);
+            }, 500);
           }
-        }, 1_500);
+        }, 3_000);
         document.body.dataset.idprotected = "true";
       }
     }, 5_000);

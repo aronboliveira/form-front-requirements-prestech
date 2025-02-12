@@ -61,7 +61,7 @@ export default function AddCalendar({
     type = "date";
   if (!step) {
     if (type === "datetime-local" || type === "time")
-      step == "60";
+      step === "60";
     else step = "1";
   } else step = step.replace(/[^0-9]/g, "") as PseudoNum;
   let mapper: DateMapper;
@@ -80,7 +80,8 @@ export default function AddCalendar({
     }): string | number => {
       if (typeof limit === "number") {
         if (max && limit > threshold) limit = threshold;
-        else if (limit < threshold) limit = threshold;
+        else if (!max && limit < threshold)
+          limit = threshold;
       }
       return limit || StringHelper.padToISO(threshold, pad);
     },
@@ -173,15 +174,15 @@ export default function AddCalendar({
           };
     }, [limits, getMaxMonthDay]),
     getClockLimits = useCallback((): ClockLimits => {
-      const hasSeconds = r.current?.step === "60";
+      const hasSeconds = step !== "60";
       return !limits
         ? {
             minHour: "00",
             maxHour: "23",
             minMinute: "00",
             maxMinute: "59",
-            minSecond: !hasSeconds ? undefined : "00",
-            maxSecond: !hasSeconds ? undefined : "00",
+            minSecond: !hasSeconds ? "" : "00",
+            maxSecond: !hasSeconds ? "" : "00",
           }
         : {
             minHour: StringHelper.padToISO(
@@ -209,14 +210,14 @@ export default function AddCalendar({
               })
             ),
             minSecond: !hasSeconds
-              ? undefined
+              ? ""
               : StringHelper.padToISO(
                   clampTime({
                     limit: limits.second?.min,
                   })
                 ),
             maxSecond: !hasSeconds
-              ? undefined
+              ? ""
               : StringHelper.padToISO(
                   clampTime({
                     limit: limits.second?.max,
@@ -288,38 +289,49 @@ export default function AddCalendar({
       [{ type: CalendarInputType; payload: string }]
     >(
       (s: { v: string }, a: any) => {
+        mapper ??= new DateMapper(r);
         switch (a.type) {
           case "date":
+            console.log(mapper?.limitByDate() || "VAZIO");
             return {
-              v: mapper.limitByDate(),
+              v: mapper
+                ?.limitByDate()
+                .replace(/undefined|null|NaN/g, "01"),
             };
           case "datetime-local":
             return {
-              v: mapper.limitByDate(),
+              v: mapper
+                ?.limitByDate()
+                .replace(/undefined|null|NaN/g, "01"),
             };
           case "month":
             return {
-              v: mapper.limitByDate(),
+              v: mapper
+                ?.limitByDate()
+                .replace(/undefined|null|NaN/g, "01"),
             };
           case "week":
             return {
-              v: mapper.limitByDate(),
+              v: mapper
+                ?.limitByDate()
+                .replace(/undefined|null|NaN/g, "01"),
             };
           case "time":
             return {
-              v: mapper.limitByDate(),
+              v: mapper
+                ?.limitByDate()
+                .replace(/undefined|null|NaN/g, "01"),
             };
           default:
-            return s;
+            return Object.assign(s, {
+              v: s.v.replace(/undefined|null|NaN/g, "01"),
+            });
         }
       },
       {
         v: initial,
       }
     );
-  useEffect(() => {
-    mapper = new DateMapper(r);
-  }, [r]);
   useEffect(() => {
     id ||= MathHandler.generateRandomKey(id);
     r.current ??= document.getElementById(id) as nlInp;
@@ -396,7 +408,7 @@ export default function AddCalendar({
           if (!r.current) return;
           r.current.dataset[k] = v;
         });
-        const hasSeconds = r.current.step === "60";
+        const hasSeconds = r.current.step !== "60";
         r.current.min = !hasSeconds
           ? `${minYear}-${minMonth}-${minDay}T${minHour}:${minMinute}`
           : `${minYear}-${minMonth}-${minDay}T${minHour}:${minMinute}:${minSecond}`;
@@ -485,7 +497,7 @@ export default function AddCalendar({
             r.current.dataset[k] = v;
           }
         );
-        const hasSeconds = r.current.step === "60";
+        const hasSeconds = r.current.step !== "60";
         r.current.min = !hasSeconds
           ? `${minHour}:${minMinute}`
           : `${minHour}:${minMinute}:${minSecond}`;
@@ -499,6 +511,12 @@ export default function AddCalendar({
       }
     }
   }, [r]);
+  useEffect(() => {
+    if (!r.current) return;
+    if (r.current.value.length === 0)
+      r.current.style.color = "rgba(26, 26, 26, 0.6)";
+    else r.current.style.color = "rgb(33, 37, 41)";
+  }, [r, s.v]);
   return (
     <DefaultEntryBoundary>
       <input
@@ -506,16 +524,19 @@ export default function AddCalendar({
         id={id || crypto.randomUUID()}
         name={name}
         type={type}
-        className={`entryAddRanged dateInput dateAddInput date${StringHelper.capitalize(
+        className={`entryAddRanged dateInput calendarAddInput calendar${StringHelper.capitalize(
           type
         )}AddInput ${classes.inpClasses}`}
         step={step}
         placeholder={placeholder}
         data-role={role}
         value={s.v}
-        onChange={ev => {
+        onInput={ev => {
           const t = ev.currentTarget;
           d({ type, payload: t.value });
+        }}
+        style={{
+          backgroundColor: "#ffff",
         }}
       />
       {additional}
