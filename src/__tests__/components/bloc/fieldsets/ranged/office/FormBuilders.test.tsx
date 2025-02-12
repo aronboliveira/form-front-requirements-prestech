@@ -1,6 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import FormBuilders from "../../../../../../components/bloc/fieldsets/ranged/office/FormBuilders";
+import "@testing-library/jest-dom";
 describe("FormBuilders", () => {
   const props = {
     lvl: 1,
@@ -9,9 +10,14 @@ describe("FormBuilders", () => {
   };
   it("renders the correct fieldset with attributes", () => {
     render(<FormBuilders {...props} />);
-    const fieldset = screen.getByRole("group", { name: /formbuilders/i });
+    const fieldset = screen.getByRole("group", {
+      name: /formbuilders/i,
+    });
     expect(fieldset).toBeInTheDocument();
-    expect(fieldset).toHaveAttribute("data-controlledby", "testController");
+    expect(fieldset).toHaveAttribute(
+      "data-controlledby",
+      "testController"
+    );
   });
   it("renders BeginnerFormBuilders for 'beginner' level", () => {
     render(<FormBuilders {...props} />);
