@@ -93,7 +93,7 @@ export const flags: {
   pt: true,
   isAutoCorrectOn: true,
   failedTimeoutAttempts: 0,
-  MAX_ALLOWED_SHORT_PROCESS_TIME: 500,
+  MAX_ALLOWED_SHORT_PROCESS_TIME: 1000,
   forbiddens: Object.freeze({
     forbiddenTags:
       /<\/?(no)?script.*>|<\/?embed.*>|<\/?source.*>|<\/?object.*>|<\/?applet.*>|<\/?i?frame(set)?.*>|<\/?meta.*>|<\/?base.*>|<\/?link.*>|<\/?svg.*>|<\/?style.*>|<\/?form.*>|<\/?input.*\/?>|\/?textarea.*?>|\/?select.*?>|\/?option.*?>|\/?optgroup.*?>|<\/?button.*>|href="/g,
