@@ -38,8 +38,12 @@ export default function Role() {
         name={id}
         id={id}
         ref={r}
+        data-fixed='true'
         value={role}
-        onChange={ev => setRole && setRole(ev.currentTarget.value as roleType)}
+        onChange={ev =>
+          setRole &&
+          setRole(ev.currentTarget.value as roleType)
+        }
       >
         <optgroup label='Gestão' id='optGrpGestao'>
           {[
@@ -53,7 +57,10 @@ export default function Role() {
               id={StringHelper.unfriendlyName(l)}
               className='optGestao'
               value={StringHelper.removeDiacritical(
-                StringHelper.unfriendlyName(l).replace(/_/g, "")
+                StringHelper.unfriendlyName(l).replace(
+                  /_/g,
+                  ""
+                )
               )}
             >
               {l}
@@ -75,7 +82,10 @@ export default function Role() {
               )}
               className='optTecnico'
               value={StringHelper.removeDiacritical(
-                StringHelper.unfriendlyName(l).replace(/_/g, "")
+                StringHelper.unfriendlyName(l).replace(
+                  /_/g,
+                  ""
+                )
               )}
             >
               {l}

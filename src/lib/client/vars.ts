@@ -64,7 +64,7 @@ export const classes: Readonly<Record<ClassesKey, string>> =
     selectClasses: `form-select`,
     btnSec: `${btn} btn-secondary`,
     btnPrim: `${btn} btn-primary`,
-    mainFsClasses: `p-4 mb-3 formMainFs`,
+    mainFsClasses: `mb-3 formMainFs`,
     mainFsLegClasses: `legMainFs bold`,
     officePlatforms: `${officeRangeds} fsOfficePlatforms`,
     officeApps: `${officeRangeds} fsOfficeApps`,

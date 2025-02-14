@@ -19,6 +19,7 @@
     "react-error-boundary": "^5.0.0",
     "react-hot-toast": "^2.4.1",
     "react-phone-input-2": "^2.15.1",
+    "xlsx": "^0.18.5",
     "zod": "^3.24.1"
   },
   "devDependencies": {

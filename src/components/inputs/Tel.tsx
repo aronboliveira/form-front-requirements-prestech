@@ -28,7 +28,9 @@ export default function Tel({
     required && StyleHandler.alarmBorder(r.current);
   }, [v, r]);
   return (
-    <div className={`${classes.inpDivClasses} telMainBlock`}>
+    <div
+      className={`${classes.inpDivClasses} telMainBlock`}
+    >
       <label className={classes.inpLabClasses} htmlFor={id}>
         {label}
       </label>
@@ -38,6 +40,7 @@ export default function Tel({
         type='tel'
         name={id}
         id={id}
+        data-fixed='true'
         autoComplete={(() => {
           switch (type) {
             case "national":
@@ -53,7 +56,8 @@ export default function Tel({
         onChange={ev => {
           const t = ev.currentTarget;
           setV(prev => {
-            if (!flags.isAutoCorrectOn) return t.value as ValidPhonePattern;
+            if (!flags.isAutoCorrectOn)
+              return t.value as ValidPhonePattern;
             const curr = IOHandler.applyTelExtension(
               t.value,
               type

@@ -44,13 +44,13 @@ import TechnologiesLists from "../bloc/fieldsets/professional/TechnologiesList";
 import DOMHandler from "@/lib/client/handlers/DOMHandler";
 import StyleProvider from "@/lib/client/providers/StyleProvider";
 import LoggingHandler from "@/lib/client/handlers/LoggingHandler";
-import Spinner from "../bloc/transicional/Spinner";
 import Watcher from "../hidden/Watcher";
 export const FormCtx = createContext<IFormCtx>({
   role: "undefined",
   setRole: null,
   ctxLabels: new Map(),
   setTransition: null,
+  isTransitioning: false,
 });
 export default function RequirementForm({
   labels: ctxLabels,
@@ -67,8 +67,15 @@ export default function RequirementForm({
         setRole,
         ctxLabels,
         setTransition,
+        isTransitioning,
       }),
-      [role, setRole, ctxLabels, setTransition]
+      [
+        role,
+        setRole,
+        ctxLabels,
+        setTransition,
+        isTransitioning,
+      ]
     );
   useEffect(() => {
     const f = "bypassedTimer",
@@ -144,7 +151,6 @@ export default function RequirementForm({
       )}
     >
       <FormCtx.Provider value={contextValue}>
-        {isTransitioning && <Spinner />}
         <form
           ref={r}
           key={crypto.randomUUID()}
@@ -348,7 +354,6 @@ export default function RequirementForm({
               </ErrorBoundary>
             </section>
           </fieldset>
-          <hr />
           {role !== "undefined" && (
             <ErrorBoundary
               FallbackComponent={() => (
@@ -358,9 +363,7 @@ export default function RequirementForm({
               <ContextualQuestions />
             </ErrorBoundary>
           )}
-          <hr />
           <TechnologiesLists />
-          <hr />
           <ButtonsBlock />
         </form>
         <Watcher _case='mainForm' />

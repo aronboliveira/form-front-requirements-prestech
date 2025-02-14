@@ -389,6 +389,7 @@ export const Range = memo(
           <input
             ref={r}
             type='range'
+            data-fixed='true'
             min={min}
             max={max}
             data-slideable='false'

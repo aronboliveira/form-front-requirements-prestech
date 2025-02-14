@@ -1,4 +1,9 @@
-import { mapLabels, nlElRef, nlRDispatch, roleType } from "../../foundations";
+import {
+  mapLabels,
+  nlElRef,
+  nlRDispatch,
+  roleType,
+} from "../../foundations";
 export interface ITelCtx {
   required: boolean;
   label:
@@ -14,4 +19,5 @@ export interface IFormCtx {
   setRole: nlRDispatch<roleType>;
   ctxLabels: Map<mapLabels, Map<any, any>>;
   setTransition: React.TransitionStartFunction | null;
+  isTransitioning: boolean;
 }

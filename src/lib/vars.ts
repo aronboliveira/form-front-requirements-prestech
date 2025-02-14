@@ -29,105 +29,255 @@ export const patterns: Readonly<{
 });
 export const limits: Readonly<{
   tiny: {
-    MAX_UTF8_SIGNED_SURROGATE: number;
-    MAX_UTF8_SIGNED_NOTSURROGATE: number;
     MAX_UTF16_SIGNED_SURROGATE: number;
-    MAX_UTF16_SIGNED_NOTSURROGATE: number;
-    MAX_UTF8_UNSIGNED_SURROGATE: number;
-    MAX_UTF8_UNSIGNED_NOTSURROGATE: number;
-    MAX_UTF16_UNSIGNED_SURROGATE: number;
-    MAX_UTF16_UNSIGNED_NOTSURROGATE: number;
+    MAX_UTF16_SIGNED_NOTSURROGATE: () => number;
+    MAX_UTF8_SIGNED_SURROGATE: () => number;
+    MAX_UTF8_SIGNED_NOTSURROGATE: () => number;
+    MAX_UTF16_UNSIGNED_SURROGATE: () => number;
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: () => number;
+    MAX_UTF8_UNSIGNED_SURROGATE: () => number;
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: () => number;
   };
   small: {
-    MAX_UTF8_SIGNED_SURROGATE: number;
-    MAX_UTF8_SIGNED_NOTSURROGATE: number;
     MAX_UTF16_SIGNED_SURROGATE: number;
-    MAX_UTF16_SIGNED_NOTSURROGATE: number;
-    MAX_UTF8_UNSIGNED_SURROGATE: number;
-    MAX_UTF8_UNSIGNED_NOTSURROGATE: number;
-    MAX_UTF16_UNSIGNED_SURROGATE: number;
-    MAX_UTF16_UNSIGNED_NOTSURROGATE: number;
+    MAX_UTF16_SIGNED_NOTSURROGATE: () => number;
+    MAX_UTF8_SIGNED_SURROGATE: () => number;
+    MAX_UTF8_SIGNED_NOTSURROGATE: () => number;
+    MAX_UTF16_UNSIGNED_SURROGATE: () => number;
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: () => number;
+    MAX_UTF8_UNSIGNED_SURROGATE: () => number;
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: () => number;
   };
   medium: {
-    MAX_UTF8_SIGNED_SURROGATE: number;
-    MAX_UTF8_SIGNED_NOTSURROGATE: number;
     MAX_UTF16_SIGNED_SURROGATE: number;
-    MAX_UTF16_SIGNED_NOTSURROGATE: number;
-    MAX_UTF8_UNSIGNED_SURROGATE: number;
-    MAX_UTF8_UNSIGNED_NOTSURROGATE: number;
-    MAX_UTF16_UNSIGNED_SURROGATE: number;
-    MAX_UTF16_UNSIGNED_NOTSURROGATE: number;
+    MAX_UTF16_SIGNED_NOTSURROGATE: () => number;
+    MAX_UTF8_SIGNED_SURROGATE: () => number;
+    MAX_UTF8_SIGNED_NOTSURROGATE: () => number;
+    MAX_UTF16_UNSIGNED_SURROGATE: () => number;
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: () => number;
+    MAX_UTF8_UNSIGNED_SURROGATE: () => number;
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: () => number;
   };
   large: {
-    MAX_UTF8_SIGNED_SURROGATE: number;
-    MAX_UTF8_SIGNED_NOTSURROGATE: number;
     MAX_UTF16_SIGNED_SURROGATE: number;
-    MAX_UTF16_SIGNED_NOTSURROGATE: number;
-    MAX_UTF8_UNSIGNED_SURROGATE: number;
-    MAX_UTF8_UNSIGNED_NOTSURROGATE: number;
-    MAX_UTF16_UNSIGNED_SURROGATE: number;
-    MAX_UTF16_UNSIGNED_NOTSURROGATE: number;
+    MAX_UTF16_SIGNED_NOTSURROGATE: () => number;
+    MAX_UTF8_SIGNED_SURROGATE: () => number;
+    MAX_UTF8_SIGNED_NOTSURROGATE: () => number;
+    MAX_UTF16_UNSIGNED_SURROGATE: () => number;
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: () => number;
+    MAX_UTF8_UNSIGNED_SURROGATE: () => number;
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: () => number;
   };
   huge: {
-    MAX_UTF8_SIGNED_SURROGATE: number;
-    MAX_UTF8_SIGNED_NOTSURROGATE: number;
     MAX_UTF16_SIGNED_SURROGATE: number;
-    MAX_UTF16_SIGNED_NOTSURROGATE: number;
-    MAX_UTF8_UNSIGNED_SURROGATE: number;
-    MAX_UTF8_UNSIGNED_NOTSURROGATE: number;
-    MAX_UTF16_UNSIGNED_SURROGATE: number;
-    MAX_UTF16_UNSIGNED_NOTSURROGATE: number;
+    MAX_UTF16_SIGNED_NOTSURROGATE: () => number;
+    MAX_UTF8_SIGNED_SURROGATE: () => number;
+    MAX_UTF8_SIGNED_NOTSURROGATE: () => number;
+    MAX_UTF16_UNSIGNED_SURROGATE: () => number;
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: () => number;
+    MAX_UTF8_UNSIGNED_SURROGATE: () => number;
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: () => number;
+  };
+  services: {
+    MAX_REQUEST_TIMER: number;
+    MAX_SERVICE_TIMER: () => number;
   };
 }> = ObjectHelper.deepFreeze({
   tiny: {
     MAX_UTF16_SIGNED_SURROGATE: 63,
-    MAX_UTF16_SIGNED_NOTSURROGATE: 127,
-    MAX_UTF8_SIGNED_SURROGATE: 127,
-    MAX_UTF8_SIGNED_NOTSURROGATE: 255,
-    MAX_UTF16_UNSIGNED_SURROGATE: 127,
-    MAX_UTF16_UNSIGNED_NOTSURROGATE: 255,
-    MAX_UTF8_UNSIGNED_SURROGATE: 255,
-    MAX_UTF8_UNSIGNED_NOTSURROGATE: 511,
+    MAX_UTF16_SIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 2
+      );
+    },
+    MAX_UTF8_SIGNED_SURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 2
+      );
+    },
+    MAX_UTF8_SIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 4
+      );
+    },
+    MAX_UTF16_UNSIGNED_SURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 2
+      );
+    },
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 4
+      );
+    },
+    MAX_UTF8_UNSIGNED_SURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 4
+      );
+    },
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 8
+      );
+    },
   },
   small: {
-    MAX_UTF16_SIGNED_SURROGATE: 16_383,
-    MAX_UTF16_SIGNED_NOTSURROGATE: 32_767,
-    MAX_UTF8_SIGNED_SURROGATE: 32_767,
-    MAX_UTF8_SIGNED_NOTSURROGATE: 65_535,
-    MAX_UTF16_UNSIGNED_SURROGATE: 32_767,
-    MAX_UTF16_UNSIGNED_NOTSURROGATE: 65_535,
-    MAX_UTF8_UNSIGNED_SURROGATE: 65_535,
-    MAX_UTF8_UNSIGNED_NOTSURROGATE: 131_071,
+    MAX_UTF16_SIGNED_SURROGATE: 16383,
+    MAX_UTF16_SIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 2
+      );
+    },
+    MAX_UTF8_SIGNED_SURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 2
+      );
+    },
+    MAX_UTF8_SIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 4
+      );
+    },
+    MAX_UTF16_UNSIGNED_SURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 2
+      );
+    },
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 4
+      );
+    },
+    MAX_UTF8_UNSIGNED_SURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 4
+      );
+    },
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 8
+      );
+    },
   },
   medium: {
-    MAX_UTF16_SIGNED_SURROGATE: 4_194_303,
-    MAX_UTF16_SIGNED_NOTSURROGATE: 8_388_607,
-    MAX_UTF8_SIGNED_SURROGATE: 8_388_607,
-    MAX_UTF8_SIGNED_NOTSURROGATE: 16_777_215,
-    MAX_UTF16_UNSIGNED_SURROGATE: 8_388_607,
-    MAX_UTF16_UNSIGNED_NOTSURROGATE: 16_777_215,
-    MAX_UTF8_UNSIGNED_SURROGATE: 16_777_215,
-    MAX_UTF8_UNSIGNED_NOTSURROGATE: 33_554_431,
+    MAX_UTF16_SIGNED_SURROGATE: 4194303,
+    MAX_UTF16_SIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 2
+      );
+    },
+    MAX_UTF8_SIGNED_SURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 2
+      );
+    },
+    MAX_UTF8_SIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 4
+      );
+    },
+    MAX_UTF16_UNSIGNED_SURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 2
+      );
+    },
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 4
+      );
+    },
+    MAX_UTF8_UNSIGNED_SURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 4
+      );
+    },
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 8
+      );
+    },
   },
   large: {
-    MAX_UTF16_SIGNED_SURROGATE: 1_073_741_823,
-    MAX_UTF16_SIGNED_NOTSURROGATE: 2_147_483_647,
-    MAX_UTF8_SIGNED_SURROGATE: 2_147_483_647,
-    MAX_UTF8_SIGNED_NOTSURROGATE: 4_294_967_295,
-    MAX_UTF16_UNSIGNED_SURROGATE: 2_147_483_647,
-    MAX_UTF16_UNSIGNED_NOTSURROGATE: 4_294_967_295,
-    MAX_UTF8_UNSIGNED_SURROGATE: 4_294_967_295,
-    MAX_UTF8_UNSIGNED_NOTSURROGATE: 8_589_934_591,
+    MAX_UTF16_SIGNED_SURROGATE: 1073741823,
+    MAX_UTF16_SIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 2
+      );
+    },
+    MAX_UTF8_SIGNED_SURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 2
+      );
+    },
+    MAX_UTF8_SIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 4
+      );
+    },
+    MAX_UTF16_UNSIGNED_SURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 2
+      );
+    },
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 4
+      );
+    },
+    MAX_UTF8_UNSIGNED_SURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 4
+      );
+    },
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 8
+      );
+    },
   },
   huge: {
-    MAX_UTF16_SIGNED_SURROGATE: 27_487_906_943,
-    MAX_UTF16_SIGNED_NOTSURROGATE: 549_755_813_887,
-    MAX_UTF8_SIGNED_SURROGATE: 549_755_813_887,
-    MAX_UTF8_SIGNED_NOTSURROGATE: 1_099_511_627_775,
-    MAX_UTF16_UNSIGNED_SURROGATE: 54_975_813_887,
-    MAX_UTF16_UNSIGNED_NOTSURROGATE: 1_099_511_627_775,
-    MAX_UTF8_UNSIGNED_SURROGATE: 1_099_511_627_775,
-    MAX_UTF8_UNSIGNED_NOTSURROGATE: 2_199_023_255_551,
+    MAX_UTF16_SIGNED_SURROGATE: 274877906943,
+    MAX_UTF16_SIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 2
+      );
+    },
+    MAX_UTF8_SIGNED_SURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 2
+      );
+    },
+    MAX_UTF8_SIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 4
+      );
+    },
+    MAX_UTF16_UNSIGNED_SURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 2
+      );
+    },
+    MAX_UTF16_UNSIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 4
+      );
+    },
+    MAX_UTF8_UNSIGNED_SURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 4
+      );
+    },
+    MAX_UTF8_UNSIGNED_NOTSURROGATE: function (): number {
+      return Math.floor(
+        this.MAX_UTF16_SIGNED_SURROGATE * 8
+      );
+    },
+  },
+  services: {
+    MAX_REQUEST_TIMER: 60000,
+    MAX_SERVICE_TIMER: function (): number {
+      return this.MAX_REQUEST_TIMER * 5;
+    },
   },
 });
 export const HTTPResInfoMap = new Map<

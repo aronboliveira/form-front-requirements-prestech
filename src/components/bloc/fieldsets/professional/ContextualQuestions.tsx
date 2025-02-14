@@ -9,7 +9,10 @@ import {
   classes,
 } from "@/lib/client/vars";
 import { IFormCtx } from "@/lib/definitions/client/interfaces/contexts";
-import { officeTopicType, roleType } from "@/lib/definitions/foundations";
+import {
+  officeTopicType,
+  roleType,
+} from "@/lib/definitions/foundations";
 import StringHelper from "@/lib/helpers/StringHelper";
 import { memo, useContext, useMemo, useState } from "react";
 import { appGroups } from "@/lib/definitions/foundations";
@@ -24,9 +27,16 @@ const ContextualQuestions = memo(() => {
       () =>
         Object.fromEntries(
           [
-            ...["dt", "mt", "ms", "as", "pr", "op", "ch", "co"].map(
-              a => (Acronyms as any)[a]
-            ),
+            ...[
+              "dt",
+              "mt",
+              "ms",
+              "as",
+              "pr",
+              "op",
+              "ch",
+              "co",
+            ].map(a => (Acronyms as any)[a]),
           ].map<[officeTopicType, string]>(t => {
             const map = CtxLabels.get(t);
             if (!map) return [t, ""];
@@ -106,34 +116,44 @@ const ContextualQuestions = memo(() => {
       }>;
     }>;
   return (
-    <span key={key}>
-      {data.map(({ g, sgs }, i) => (
-        <fieldset
-          key={`${g}-${i}`}
-          id={`fs${g}${cRole}`}
-          className={`border p-4 mb-3 formMainFs fsCtxQuestions fs${cRole}`}
-        >
-          <legend
-            className={classes.mainFsLegClasses}
-            style={{ marginBottom: "0.5rem", paddingBottom: "1rem" }}
+    <>
+      <hr />
+      <span key={key}>
+        {data.map(({ g, sgs }, i) => (
+          <fieldset
+            key={`${g}-${i}`}
+            id={`fs${g}${cRole}`}
+            className={`border p-4 mb-3 formMainFs fsCtxQuestions fs${cRole}`}
           >
-            Tecnologias Gerais: {g === "Tasks" ? "Aplicativos" : "Plataformas"}
-          </legend>
-          <hr style={{ marginBlock: "2rem" }} />
-          {sgs.map(({ a, t, r, l }, j) => (
-            <ContextualText
-              key={`${g}__${j}`}
-              acronym={a}
-              topic={t}
-              role={role}
-              required={r}
-              label={l as string}
-            />
-          ))}
-        </fieldset>
-      ))}
-      <Watcher _case='role' d={setKey} />
-    </span>
+            <legend
+              className={classes.mainFsLegClasses}
+              style={{
+                marginBottom: "0.5rem",
+                paddingBottom: "1rem",
+              }}
+            >
+              Tecnologias Gerais:{" "}
+              {g === "Tasks"
+                ? "Aplicativos"
+                : "Plataformas"}
+            </legend>
+            <hr style={{ marginBlock: "2rem" }} />
+            {sgs.map(({ a, t, r, l }, j) => (
+              <ContextualText
+                key={`${g}__${j}`}
+                acronym={a}
+                topic={t}
+                role={role}
+                required={r}
+                label={l as string}
+              />
+            ))}
+          </fieldset>
+        ))}
+        <Watcher _case='role' d={setKey} />
+      </span>
+      <hr />
+    </>
   );
 });
 export default ContextualQuestions;

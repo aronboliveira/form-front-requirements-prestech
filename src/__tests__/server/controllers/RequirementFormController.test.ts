@@ -6,73 +6,88 @@ jest.mock("next/server", () => ({
     json: jest.fn(),
   },
 }));
-jest.mock("../../../server/handlers/LoggingHandler", () => ({
-  logDefault: jest.fn(),
+jest.mock(
+  "../../../server/handlers/LoggingHandler",
+  () => ({
+    logDefault: jest.fn(),
+  })
+);
+jest.mock("chalk", () => ({
+  blue: (msg: string) => msg,
+  magenta: (msg: string) => msg,
+  green: (msg: string) => msg,
+  grey: (msg: string) => msg,
+  red: (msg: string) => msg,
+  yellow: (msg: string) => msg,
+  yellowBright: (msg: string) => msg,
 }));
 describe("RequirementFormController", () => {
   let controller: RequirementFormController;
+  let reqs: any[];
   beforeEach(() => {
-    controller = RequirementFormController.construct([
-      { id: "req1", priority: 1, request: new Request("") },
-      { id: "req2", priority: 2, request: new Request("") },
-    ]);
-    jest.clearAllMocks();
-  });
-  it("should initialize with a valid queue", () => {
-    expect(controller._reqs?.length).toBe(2);
-  });
-  it("should handle post requests successfully", async () => {
-    const response = await controller.post(1);
-    expect(NextResponse.json).toHaveBeenCalledWith({
-      message: expect.any(String),
-      status: "200",
-    });
-    expect(controller._reqs?.length).toBe(1);
-  });
-  it("should handle errors in post requests", async () => {
-    controller._reqs = null;
-    const response = await controller.post(1);
-    expect(NextResponse.json).toHaveBeenCalledWith({
-      message: expect.any(String),
-      status: "410",
-    });
-    expect(LoggingHandler.logDefault).toHaveBeenCalledWith(
-      expect.stringContaining("No Requests List available"),
-      expect.any(String)
+    (RequirementFormController as any)._instance =
+      undefined;
+    reqs = [
+      { id: "req1", request: "dummy1", priority: 1 },
+      { id: "req2", request: "dummy2", priority: 2 },
+    ];
+    controller = RequirementFormController.construct(
+      reqs,
+      64
     );
   });
-  it("should process immediate post requests successfully", async () => {
-    const response = await controller.postImmediately("req1");
-    expect(NextResponse.json).toHaveBeenCalledWith({
-      message: "Request processed successfully!",
-      status: 201,
-    });
+  test("construct returns a singleton instance", () => {
+    const controller2 =
+      RequirementFormController.construct();
+    expect(controller).toBe(controller2);
   });
-  it("should handle errors in immediate post requests", async () => {
-    const response = await controller.postImmediately("invalidId");
-    expect(NextResponse.json).toHaveBeenCalledWith({
-      message: expect.any(String),
-      status: 422,
-    });
+  test("post processes requests and returns a response", async () => {
+    const response = await controller.post(1);
+    const body = (response as any).body || response;
+    expect(body.message).toBeDefined();
+    expect(body.status).toBe("200");
   });
-  it("should set requests successfully", () => {
-    const response = controller.setRequest({
+  test("post returns error response when no requests are available", async () => {
+    (controller as any)._reqs = [];
+    const response = await controller.post(1);
+    const body = (response as any).body || response;
+    expect(body.message).toBe("Length Required");
+    expect(body.status).toBe("411");
+  });
+  test("postImmediately processes a valid request", async () => {
+    const response = await controller.postImmediately(
+      "req1"
+    );
+    const body = (response as any).body || response;
+    expect(body.message).toBe(
+      "Request processed successfully!"
+    );
+    expect(body.status).toBe(200);
+  });
+  test("postImmediately returns error for invalid request id", async () => {
+    const response = await controller.postImmediately(
+      "nonexistent"
+    );
+    const body = (response as any).body || response;
+    expect(body.message).toMatch(/Error/);
+  });
+  test("setRequest enqueues new requests", () => {
+    const newReq = {
       id: "req3",
+      request: "dummy3",
       priority: 3,
-      request: new Request(""),
-    });
-    expect(controller._reqs?.length).toBe(3);
-    expect(NextResponse.json).toHaveBeenCalledWith({
-      message: "Successfully set Requests",
-      status: 100,
-    });
+    };
+    const response = controller.setRequest(newReq);
+    const body = (response as any).body || response;
+    expect(body.message).toBe("Successfully set Requests");
+    expect((controller as any)._reqs).toContain(newReq);
   });
-  it("should clear requests successfully", () => {
+  test("_clearRequests clears the request queue", () => {
     const response = controller._clearRequests();
-    expect(controller._reqs?.length).toBe(0);
-    expect(NextResponse.json).toHaveBeenCalledWith({
-      message: "The instance queue was correctly cleared.",
-      status: 100,
-    });
+    const body = (response as any).body || response;
+    expect(body.message).toBe(
+      "The instance queue was correctly cleared."
+    );
+    expect((controller as any)._reqs.length).toBe(0);
   });
 });

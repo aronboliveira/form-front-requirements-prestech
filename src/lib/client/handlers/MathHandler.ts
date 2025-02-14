@@ -59,7 +59,7 @@ export default class MathHandler {
   }
   public static generateRandomKey(
     previous: string = "",
-    limit: number = limits.tiny.MAX_UTF8_SIGNED_NOTSURROGATE
+    limit: number = limits.tiny.MAX_UTF8_SIGNED_NOTSURROGATE()
   ): string {
     let newKey = crypto.randomUUID(),
       acc = 0,
@@ -79,7 +79,7 @@ export default class MathHandler {
   public static generateRandomId(
     element?: Element,
     previous: string = "",
-    limit: number = limits.tiny.MAX_UTF8_SIGNED_NOTSURROGATE
+    limit: number = limits.tiny.MAX_UTF8_SIGNED_NOTSURROGATE()
   ): string {
     let newKey = crypto.randomUUID(),
       acc = 0,

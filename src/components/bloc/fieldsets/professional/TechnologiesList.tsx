@@ -1,10 +1,22 @@
 "use client";
 import { FormCtx } from "@/components/forms/RequirementForm";
-import { classes, friendlyRoles, groupedApps } from "@/lib/client/vars";
+import {
+  classes,
+  friendlyRoles,
+  groupedApps,
+} from "@/lib/client/vars";
 import { IFormCtx } from "@/lib/definitions/client/interfaces/contexts";
-import { PseudoNum, roleType } from "@/lib/definitions/foundations";
+import {
+  PseudoNum,
+  roleType,
+} from "@/lib/definitions/foundations";
 import StringHelper from "@/lib/helpers/StringHelper";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import TechCheckboxes from "./TechCheckboxes";
 import { ErrorBoundary } from "react-error-boundary";
 import GenericErrorComponent from "../../errors/Error";
@@ -44,7 +56,10 @@ export default function TechnologiesLists() {
         <legend
           className={`${classes.mainFsLegClasses} ${legBase}`}
           id={`${legBase}${cRole}`}
-          style={{ paddingBottom: "1rem", marginBottom: "0.5rem" }}
+          style={{
+            paddingBottom: "1rem",
+            marginBottom: "0.5rem",
+          }}
         >
           Tecnologias Específicas:{" "}
           {friendlyRoles[role] || friendlyRoles.undefined}
@@ -59,6 +74,7 @@ export default function TechnologiesLists() {
         ))}
       </fieldset>
       <Watcher _case='role' d={setRole ?? setKey} />
+      <hr />
     </ErrorBoundary>
   );
 }

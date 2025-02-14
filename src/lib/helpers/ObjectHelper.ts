@@ -1,3 +1,5 @@
+import StringHelper from "./StringHelper";
+
 export default class ObjectHelper {
   public static deepFreeze<T extends object>(obj: T): T {
     Object.keys(obj).forEach(
@@ -92,6 +94,56 @@ export default class ObjectHelper {
       );
       return null;
     }
+  }
+  public static getDepths(
+    obj: Record<string, any>,
+    currentDepth: number = 1
+  ): { max: number; depths: number[] } {
+    let result = {
+      max: currentDepth,
+      depths: [currentDepth],
+    };
+    if (typeof obj !== "object" || obj === null)
+      return result;
+    const vs = Object.values(obj);
+    for (let i = 0; vs.length; i++) {
+      //if it's reached the loop, it means it is a dict, so +1 and new evaluation
+      const childResults = ObjectHelper.getDepths(
+        obj[i],
+        currentDepth + 1
+      );
+      result = {
+        max: Math.max(result.max, childResults.max),
+        depths: [...result.depths, ...childResults.depths],
+      };
+    }
+    return result;
+  }
+  public static flattenObject(
+    obj: Record<string, any>,
+    prefix: string = ""
+  ): Record<string, Exclude<any, "object">> {
+    const initialKeys = Object.entries(obj),
+      entries: { [k: string]: {} } = {};
+    for (let i = 0; i < initialKeys.length; i++) {
+      const newKey = !prefix
+        ? StringHelper.sanitizePropertyName(
+            `${prefix}${initialKeys[i][0]}`
+          )
+        : initialKeys[i][0];
+      typeof initialKeys[i][1] === "object" &&
+      initialKeys[i] !== null &&
+      !Array.isArray(initialKeys[i][1])
+        ? Object.assign(
+            entries,
+            ObjectHelper.flattenObject(
+              initialKeys[i][1],
+              newKey
+            )
+          )
+        : (entries[newKey] = initialKeys[i][1]);
+    }
+    return entries;
   }
 }
 export function protoName(f: any): string {

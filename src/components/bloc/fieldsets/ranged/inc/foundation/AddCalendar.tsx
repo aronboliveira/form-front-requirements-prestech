@@ -292,7 +292,6 @@ export default function AddCalendar({
         mapper ??= new DateMapper(r);
         switch (a.type) {
           case "date":
-            console.log(mapper?.limitByDate() || "VAZIO");
             return {
               v: mapper
                 ?.limitByDate()

@@ -6,9 +6,16 @@ import { TelFragmentOptInput } from "@/lib/definitions/client/interfaces/compone
 import { classes } from "@/lib/client/vars";
 import "react-phone-input-2/lib/style.css";
 import StringHelper from "@/lib/helpers/StringHelper";
-import { nlDiv, nlHtEl, nlInp } from "@/lib/definitions/client/helpers";
+import {
+  nlDiv,
+  nlHtEl,
+  nlInp,
+} from "@/lib/definitions/client/helpers";
 import StyleHandler from "@/lib/client/handlers/StyleHandler";
-export default function TelCountryCode({ required, id }: TelFragmentOptInput) {
+export default function TelCountryCode({
+  required,
+  id,
+}: TelFragmentOptInput) {
   id ||= "countryCode";
   const [v, setV] = useState<string>(""),
     dr = useRef<nlDiv>(null),
@@ -19,8 +26,12 @@ export default function TelCountryCode({ required, id }: TelFragmentOptInput) {
     r.current = document.querySelector(".cc");
     if (!(r.current instanceof HTMLInputElement)) return;
     linkedTo.current =
-      r.current.closest(".telBlock")?.querySelector(".ddd") ??
-      document.getElementById(r.current.id.replace("cc", "ddd"));
+      r.current
+        .closest(".telBlock")
+        ?.querySelector(".ddd") ??
+      document.getElementById(
+        r.current.id.replace("cc", "ddd")
+      );
     if (
       !(
         linkedTo.current instanceof HTMLInputElement ||
@@ -29,7 +40,11 @@ export default function TelCountryCode({ required, id }: TelFragmentOptInput) {
     )
       return;
     if (r.current.value.length > 3) {
-      IOHandler.moveCursorFocus(r.current, linkedTo.current, 4);
+      IOHandler.moveCursorFocus(
+        r.current,
+        linkedTo.current,
+        4
+      );
       r.current.blur();
       dr.current.click();
       linkedTo.current.focus();
@@ -38,7 +53,10 @@ export default function TelCountryCode({ required, id }: TelFragmentOptInput) {
     required && StyleHandler.alarmBorder(r.current);
   }, [r, v]);
   return (
-    <div ref={dr} className={`${classes.inpDivClasses} countryCodeBlock`}>
+    <div
+      ref={dr}
+      className={`${classes.inpDivClasses} countryCodeBlock`}
+    >
       <label className={classes.inpLabClasses} htmlFor={id}>
         Código
       </label>
@@ -60,6 +78,7 @@ export default function TelCountryCode({ required, id }: TelFragmentOptInput) {
           minLength: 1,
           maxLength: 4,
           pattern: "^\\+[0-9]{2,4}s?$",
+          "data-fixed": "true",
         }}
         containerStyle={{
           width: "6rem",
@@ -75,7 +94,9 @@ export default function TelCountryCode({ required, id }: TelFragmentOptInput) {
         enableSearch={true}
         countryCodeEditable={true}
         disableDropdown={false}
-        onChange={val => setV(IOHandler.adjustTelCountryCode(val))}
+        onChange={val =>
+          setV(IOHandler.adjustTelCountryCode(val))
+        }
       />
     </div>
   );

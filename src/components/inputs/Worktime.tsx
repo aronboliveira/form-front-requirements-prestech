@@ -23,6 +23,7 @@ export default function Worktime() {
         min={1}
         max={limits.small.MAX_UTF16_SIGNED_SURROGATE}
         className={classes.inpClasses}
+        data-fixed='true'
         id={id}
         name={id}
         type='number'

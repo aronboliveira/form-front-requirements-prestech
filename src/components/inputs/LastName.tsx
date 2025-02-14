@@ -32,11 +32,17 @@ export default function LastName() {
         id={id}
         name={StringHelper.camelToSnake(id)}
         required
+        data-fixed='true'
         autoComplete='family-name'
         className={`${classes.inpClasses} name autocorrectAll`}
         onChange={ev =>
           ev.currentTarget.value.length === 1
-            ? setV(IOHandler.applyUpperCase(ev.currentTarget.value, 1))
+            ? setV(
+                IOHandler.applyUpperCase(
+                  ev.currentTarget.value,
+                  1
+                )
+              )
             : setV(autoCapitalizeInputs(ev.currentTarget))
         }
       />

@@ -378,7 +378,38 @@ button {
 #ctaBtnsBlock {
   display: flex;
   column-gap: var(--spacing-lg);
-  margin-top: var(--spacing-lg);
+  button {
+    &:nth-of-type(1) {
+      margin-left: 1rem;
+    }
+    width: 10rem;
+    font-weight: 700;
+    &:hover {
+      font-weight: 900;
+    }
+  }
+  [id*="Submit"] {
+    &:hover {
+      background: linear-gradient(
+        90deg,
+        rgba(51, 138, 87, 0.686),
+        rgba(0, 89, 43, 0.373)
+      ) !important;
+      border-color: rgba(7, 191, 96, 0.373);
+      color: #fffdfd;
+    }
+  }
+  [id*="Reset"] {
+    &:hover {
+      background: linear-gradient(
+        to right,
+        rgba(213, 167, 2, 0.506),
+        rgba(255, 153, 44, 0.6705882353)
+      );
+      border-color: rgba(255, 153, 44, 0.6705882353);
+      color: red;
+    }
+  }
 }
 #legIdf {
   margin-bottom: var(--spacing-md);
@@ -407,6 +438,8 @@ button {
 }
 .formMainFs {
   border: groove 0.2rem var(--bs-modal-footer-border-color) !important;
+  border-radius: 0.4rem;
+  padding: 2.5rem !important;
 }
 @media (prefers-color-scheme: dark) {
   html {

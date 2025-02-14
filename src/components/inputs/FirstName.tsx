@@ -12,7 +12,8 @@ export default function FirstName() {
     [v, setV] = useState<string>("");
   useEffect(() => {
     if (!(r.current instanceof HTMLInputElement)) return;
-    if (!CompabilityValidator.isSafari()) r.current.autocapitalize = "words";
+    if (!CompabilityValidator.isSafari())
+      r.current.autocapitalize = "words";
   }, [r]);
   useEffect(() => {
     if (!r.current) return;
@@ -33,6 +34,7 @@ export default function FirstName() {
         autoComplete='given-name'
         // autoFocus
         className={`${classes.inpClasses} name firstName`}
+        data-fixed='true'
         onChange={ev => {
           const t = ev.currentTarget;
           flags.isAutoCorrectOn

@@ -38,6 +38,7 @@ export default function Email({
         pattern={patterns.email}
         required={required ? true : false}
         className={classes.inpClasses}
+        data-fixed='true'
         onChange={ev => {
           const t = ev.currentTarget;
           /* eslint-disable */

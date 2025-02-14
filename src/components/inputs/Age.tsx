@@ -31,16 +31,17 @@ export default function Age() {
         minLength={1}
         maxLength={maxLength}
         min={0}
-        max={limits.tiny.MAX_UTF16_SIGNED_NOTSURROGATE}
+        max={limits.tiny.MAX_UTF16_SIGNED_NOTSURROGATE()}
         pattern={patterns.age}
         required
         type='number'
+        data-fixed='true'
         onChange={ev =>
           setV(
             IOHandler.applyNumRules(
               ev.currentTarget.value,
               maxLength,
-              limits.tiny.MAX_UTF16_SIGNED_NOTSURROGATE
+              limits.tiny.MAX_UTF16_SIGNED_NOTSURROGATE()
             ) as PseudoNum
           )
         }

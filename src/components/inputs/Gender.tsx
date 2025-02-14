@@ -12,7 +12,13 @@ export default function Gender() {
       <label className={classes.inpLabClasses} htmlFor={id}>
         Gênero
       </label>
-      <select ref={r} className={classes.selectClasses} id={id} name={id}>
+      <select
+        data-fixed='true'
+        ref={r}
+        className={classes.selectClasses}
+        id={id}
+        name={id}
+      >
         <option value='feminino'>Feminino</option>
         <option value='masculino'>Masculino</option>
         <option value='nb'>Não-Binário</option>

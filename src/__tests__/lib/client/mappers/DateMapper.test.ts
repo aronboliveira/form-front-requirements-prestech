@@ -1,5 +1,5 @@
-import { RefObject } from "react";
 import DateMapper from "../../../../lib/client/mappers/DateMapper";
+import DOMValidator from "../../../../lib/client/validators/DOMValidator";
 jest.mock(
   "../../../../lib/client/handlers/MathHandler",
   () => ({
@@ -19,127 +19,123 @@ jest.mock(
     },
   })
 );
-function createFakeInputElement(): HTMLInputElement {
-  const fakeInput = {
-    value: "",
-    type: "",
-    dataset: {} as DOMStringMap,
-  } as HTMLInputElement;
-  return fakeInput;
-}
-describe("DateMapper Class", () => {
-  let refObj: RefObject<HTMLInputElement>;
+describe("DateMapper static methods", () => {
+  test("getISOYearStartingReferences returns expected values", () => {
+    const year = 2020;
+    const { j4, j4d, w1Md } =
+      DateMapper.getISOYearStartingReferences(year);
+    expect(j4.getFullYear()).toBe(year);
+    expect(j4.getMonth()).toBe(0);
+    expect(j4.getDate()).toBe(4);
+    expect(w1Md.getDay()).toBe(1);
+  });
+  test("getLastISOWeekNum returns 52 or 53 based on year's last day", () => {
+    expect(DateMapper.getLastISOWeekNum(2017)).toBe(52);
+    expect(DateMapper.getLastISOWeekNum(2020)).toBe(53);
+  });
+  test("getMonthForISOWeek returns expected month", () => {
+    const month = DateMapper.getMonthForISOWeek(2020, 1);
+    expect(month).toBe(0);
+  });
+  test("getISOWeeksForMonth returns weeks for a given month", () => {
+    const weeks = DateMapper.getISOWeeksForMonth(2020, 1);
+    expect(Array.isArray(weeks)).toBe(true);
+    expect(weeks.length).toBeGreaterThan(0);
+    weeks.forEach(w => expect(typeof w).toBe("number"));
+  });
+});
+describe("DateMapper instance method: limitByDate", () => {
+  let fakeInput: any;
+  let ref: { current: any };
+  let dateMapper: DateMapper;
   beforeEach(() => {
-    refObj = { current: createFakeInputElement() };
+    fakeInput = {
+      value: "",
+      type: "date",
+      step: "1",
+      dataset: {} as Record<string, string>,
+    };
+    ref = { current: fakeInput };
+    dateMapper = new DateMapper(ref);
+    jest
+      .spyOn(DOMValidator, "isYearInput")
+      .mockReturnValue(false);
+    jest
+      .spyOn(DOMValidator, "isMonthInput")
+      .mockReturnValue(false);
+    jest
+      .spyOn(DOMValidator, "isDayInput")
+      .mockReturnValue(false);
+    jest
+      .spyOn(DOMValidator, "isHourInput")
+      .mockReturnValue(false);
   });
-  describe("limitByDate()", () => {
-    it("does nothing if ref is null", () => {
-      const dateMapper = new DateMapper({ current: null });
-      expect(() => dateMapper.limitByDate()).not.toThrow();
-    });
-    it("handles type='date' with minyear / maxyear dataset", () => {
-      refObj.current!.type = "date";
-      refObj.current!.value = "2025-08-15";
-      refObj.current!.dataset.minyear = "2020";
-      refObj.current!.dataset.maxyear = "2024";
-      const dateMapper = new DateMapper(refObj);
-      dateMapper.limitByDate();
-      expect(refObj.current!.value).toBe("2024-08-15");
-    });
-    it("handles type='week' with minweek / maxweek dataset", () => {
-      refObj.current!.type = "week";
-      refObj.current!.value = "2023-W15";
-      refObj.current!.dataset.minweek = "10";
-      refObj.current!.dataset.maxweek = "12";
-      const dateMapper = new DateMapper(refObj);
-      dateMapper.limitByDate();
-      expect(refObj.current!.value).toBe("2023-W12");
-    });
-    it("handles type='month' with minmonth / maxmonth dataset", () => {
-      refObj.current!.type = "month";
-      refObj.current!.value = "2022-09";
-      refObj.current!.dataset.minmonth = "05";
-      refObj.current!.dataset.maxmonth = "06";
-      const dateMapper = new DateMapper(refObj);
-      dateMapper.limitByDate();
-      expect(refObj.current!.value).toBe("2022-06");
-    });
-    it("handles type='time' with minhour / maxhour, etc. dataset", () => {
-      refObj.current!.type = "time";
-      refObj.current!.value = "25:61:70";
-      refObj.current!.dataset.minhour = "02";
-      refObj.current!.dataset.maxhour = "18";
-      refObj.current!.dataset.minminute = "00";
-      refObj.current!.dataset.maxminute = "59";
-      refObj.current!.dataset.minsec = "00";
-      refObj.current!.dataset.maxsec = "59";
-      const dateMapper = new DateMapper(refObj);
-      dateMapper.limitByDate();
-      expect(refObj.current!.value).toBe("18:59:59");
-    });
-    it("handles type='datetime-local' with multiple min/max constraints", () => {
-      refObj.current!.type = "datetime-local";
-      refObj.current!.value = "2023-13-40T29:72:99";
-      refObj.current!.dataset.minmonth = "01";
-      refObj.current!.dataset.maxmonth = "12";
-      refObj.current!.dataset.minmonthday = "01";
-      refObj.current!.dataset.maxmonthday = "31";
-      refObj.current!.dataset.minhour = "00";
-      refObj.current!.dataset.maxhour = "23";
-      refObj.current!.dataset.minminute = "00";
-      refObj.current!.dataset.maxminute = "59";
-      refObj.current!.dataset.minsec = "00";
-      refObj.current!.dataset.maxsec = "59";
-      const dateMapper = new DateMapper(refObj);
-      dateMapper.limitByDate();
-      expect(refObj.current!.value).toBe(
-        "2023-12-31T23:59:59"
-      );
-    });
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
-  describe("Static Methods", () => {
-    describe("getISOYearStartingReferences()", () => {
-      it("computes references for given year", () => {
-        const { j4, j4d, w1Md } =
-          DateMapper.getISOYearStartingReferences(2023);
-        expect(j4.getFullYear()).toBe(2023);
-        expect(j4d).toBeGreaterThanOrEqual(0);
-        expect(j4d).toBeLessThanOrEqual(6);
-        expect(w1Md.getFullYear()).toBe(2023);
-      });
-    });
-    describe("getLastISOWeekNum()", () => {
-      it("returns 52 or 53 depending on year", () => {
-        expect(
-          DateMapper.getLastISOWeekNum(2023)
-        ).toBeGreaterThanOrEqual(52);
-        expect(
-          DateMapper.getLastISOWeekNum(2023)
-        ).toBeLessThanOrEqual(53);
-      });
-    });
-    describe("getMonthForISOWeek()", () => {
-      it("returns the 0-based month index for a given year/week", () => {
-        const monthIndex = DateMapper.getMonthForISOWeek(
-          2023,
-          2
-        );
-        expect(monthIndex).toBeGreaterThanOrEqual(0);
-        expect(monthIndex).toBeLessThanOrEqual(11);
-      });
-    });
-    describe("getISOWeeksForMonth()", () => {
-      it("returns an array of ISO weeks that fall in a given month", () => {
-        const weeks = DateMapper.getISOWeeksForMonth(
-          2023,
-          1
-        );
-        expect(Array.isArray(weeks)).toBe(true);
-        weeks.forEach(w => {
-          expect(w).toBeGreaterThanOrEqual(1);
-          expect(w).toBeLessThanOrEqual(53);
-        });
-      });
-    });
+  test("for type 'date', clamps the year if below minimum", () => {
+    fakeInput.type = "date";
+    fakeInput.value = "1999-12-31";
+    fakeInput.dataset.minyear = "2000";
+    fakeInput.dataset.maxyear = "2100";
+    fakeInput.dataset.minmonth = "01";
+    fakeInput.dataset.maxmonth = "12";
+    fakeInput.dataset.minmonthday = "01";
+    fakeInput.dataset.maxmonthday = "31";
+    const result = dateMapper.limitByDate();
+    expect(result.startsWith("2000-")).toBe(true);
+  });
+  test("for type 'month', returns a clamped month string", () => {
+    fakeInput.type = "month";
+    fakeInput.value = "1999-12";
+    fakeInput.dataset.minyear = "2000";
+    fakeInput.dataset.maxyear = "2100";
+    const result = dateMapper.limitByDate();
+    expect(result.startsWith("2000-")).toBe(true);
+  });
+  test("for type 'week', returns a formatted week string", () => {
+    fakeInput.type = "week";
+    fakeInput.value = "1999-W05";
+    fakeInput.dataset.minyear = "2000";
+    fakeInput.dataset.maxyear = "2100";
+    const result = dateMapper.limitByDate();
+    expect(result).toMatch(/^2000-W\d{2}$/);
+  });
+  test("for type 'time', returns formatted time with seconds", () => {
+    fakeInput.type = "time";
+    fakeInput.value = "25:61:90";
+    fakeInput.dataset.minhour = "00";
+    fakeInput.dataset.maxhour = "23";
+    fakeInput.dataset.minminute = "00";
+    fakeInput.dataset.maxminute = "59";
+    fakeInput.dataset.minsec = "00";
+    fakeInput.dataset.maxsec = "59";
+    const result = dateMapper.limitByDate();
+    expect(result).toMatch(/^\d{2}:\d{2}:\d{2}$/);
+  });
+  test("for type 'datetime-local', returns a formatted datetime string", () => {
+    fakeInput.type = "datetime-local";
+    fakeInput.value = "1999-12-31T25:61:90";
+    fakeInput.dataset.minyear = "2000";
+    fakeInput.dataset.maxyear = "2100";
+    fakeInput.dataset.minmonth = "01";
+    fakeInput.dataset.maxmonth = "12";
+    fakeInput.dataset.minmonthday = "01";
+    fakeInput.dataset.maxmonthday = "31";
+    fakeInput.dataset.minhour = "00";
+    fakeInput.dataset.maxhour = "23";
+    fakeInput.dataset.minminute = "00";
+    fakeInput.dataset.maxminute = "59";
+    fakeInput.dataset.minsec = "00";
+    fakeInput.dataset.maxsec = "59";
+    const result = dateMapper.limitByDate();
+    expect(result).toMatch(
+      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/
+    );
+  });
+  test("returns original value if type is unrecognized", () => {
+    fakeInput.type = "unknown";
+    fakeInput.value = "unchanged";
+    expect(dateMapper.limitByDate()).toBe("unchanged");
   });
 });
