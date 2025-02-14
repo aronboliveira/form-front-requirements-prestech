@@ -6,6 +6,7 @@ import { FormRelated } from "@/lib/definitions/client/interfaces/components";
 import { RefObject, useState } from "react";
 import { toast } from "react-hot-toast";
 import Spinner from "../bloc/transicional/Spinner";
+import SpreadsheetMapper from "@/lib/client/mappers/SpreadsheetMapper";
 export default function Export({ form }: FormRelated) {
   const id = "btnExport",
     r = useFormButton({ form, idf: id }),
@@ -31,6 +32,17 @@ export default function Export({ form }: FormRelated) {
             toast.error(res);
             return;
           }
+          const scope =
+            ev.currentTarget.form ??
+            ev.currentTarget.closest("form") ??
+            document.forms[0] ??
+            document;
+          SpreadsheetMapper.construct(
+            SpreadsheetMapper.extractData(scope)
+          ).processExportData(
+            "formulario-de-requisicoes",
+            scope
+          );
         }}
       >
         <span>Exportar</span>
