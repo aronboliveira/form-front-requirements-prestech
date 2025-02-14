@@ -12,7 +12,7 @@ export default function Spinner({
   fs = false,
   style = {},
 }: SpinnerComponentProps & {
-  style?: CSSStyleDeclaration | {};
+  style?: CSSStyleDeclaration | object;
 }) {
   useEffect(() => {
     for (const f of document.forms)

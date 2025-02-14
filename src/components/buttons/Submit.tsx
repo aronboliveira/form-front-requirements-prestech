@@ -154,7 +154,7 @@ export default function Submit({ form }: FormRelated) {
           }
         }
       },
-      [form]
+      [r, form]
     );
   return (
     <>

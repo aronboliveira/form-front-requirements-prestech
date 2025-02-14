@@ -25,7 +25,7 @@ export default function AddMultipleCheckable({
       else if (DOMValidator.isCustomEntry(e))
         e.dataset.name = `${name}_${e.dataset.name}`;
     }
-  }, [r.current]);
+  }, [r.current, name]);
   return (
     <DefaultEntryBoundary>
       {ks?.length ? (

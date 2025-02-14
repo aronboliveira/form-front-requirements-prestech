@@ -124,7 +124,7 @@ export default class ObjectHelper {
     prefix: string = ""
   ): Record<string, Exclude<any, "object">> {
     const initialKeys = Object.entries(obj),
-      entries: { [k: string]: {} } = {};
+      entries: { [k: string]: any } = {};
     for (let i = 0; i < initialKeys.length; i++) {
       const newKey = !prefix
         ? StringHelper.sanitizePropertyName(

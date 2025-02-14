@@ -226,7 +226,7 @@ export default function AddCalendar({
                   })
                 ),
           };
-    }, [limits]),
+    }, [limits, step]),
     getWeekLimits = useCallback((): WeekLimits => {
       return !limits
         ? { minWeek: "01", maxWeek: "52" }

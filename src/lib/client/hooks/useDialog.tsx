@@ -1,5 +1,14 @@
-import { RefObject, useCallback, useEffect, useRef } from "react";
-import { nlDlg, rKbEv, rMouseEvent } from "@/lib/definitions/client/helpers";
+import {
+  RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
+import {
+  nlDlg,
+  rKbEv,
+  rMouseEvent,
+} from "@/lib/definitions/client/helpers";
 import { DlgProps } from "@/lib/definitions/client/interfaces/components";
 import DOMHandler from "../handlers/DOMHandler";
 export default function useDialog({
@@ -18,7 +27,8 @@ export default function useDialog({
   const mainRef = useRef<nlDlg>(null),
     handleKp = useCallback(
       (kp: rKbEv): void => {
-        if (!escapable || kp.key.toLowerCase() !== "escape") return;
+        if (!escapable || kp.key.toLowerCase() !== "escape")
+          return;
         dispatch(!state);
         /* eslint-disable */
         !state && mainRef.current?.close();
@@ -32,13 +42,15 @@ export default function useDialog({
         if (
           ev.currentTarget instanceof Node &&
           dlg instanceof Element &&
-          DOMHandler.isClickOutside(ev, dlg).some(coord => coord === true)
+          DOMHandler.isClickOutside(ev, dlg).some(
+            coord => coord === true
+          )
         ) {
           if (dlg instanceof HTMLDialogElement) dlg.close();
           dispatch(!state);
         }
       },
-      [dispatch]
+      [dispatch, id]
     );
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -62,11 +74,22 @@ export default function useDialog({
       return;
     }
     escapable && addEventListener("keypress", handleKp);
-    clickable && document.body.addEventListener("click", handleClick);
+    clickable &&
+      document.body.addEventListener("click", handleClick);
     return (): void => {
       removeEventListener("keypress", handleKp);
-      document.body.removeEventListener("click", handleClick);
+      document.body.removeEventListener(
+        "click",
+        handleClick
+      );
     };
-  }, [mainRef, handleKp, state]);
+  }, [
+    mainRef,
+    handleKp,
+    state,
+    handleClick,
+    clickable,
+    escapable,
+  ]);
   return { mainRef, handleKp };
 }

@@ -319,11 +319,11 @@ export const Range = memo(
         handleSlide(ev.currentTarget)
       );
       r.current.dataset.slideable = "true";
-    }, [r]);
+    }, [r, handleSlide]);
     useEffect(() => {
       if (!r.current) return;
       handleRelUpdate();
-    }, [r]);
+    }, [r, handleRelUpdate]);
     useEffect(() => {
       if (
         !r.current ||
@@ -351,7 +351,7 @@ export const Range = memo(
         }
       }, 500);
       r.current.dataset.observed === "true";
-    }, [r]);
+    }, [r, handleSlide]);
     useEffect(() => {
       if (
         relatedAdd.current &&
@@ -369,7 +369,7 @@ export const Range = memo(
         }, 250);
       }
       prevLevel.current = level.current;
-    }, [level.current]);
+    }, [level.current, query]);
     return (
       <fieldset
         className={`${classes.inpDivClasses} ${s.divRange}`}

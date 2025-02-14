@@ -31,22 +31,36 @@ export default function useToast({
       [enterBtn]
     ),
     handleClick = useCallback((ev: MouseEvent): void => {
-      const toastBox = document.getElementById("activeToast");
+      const toastBox =
+        document.getElementById("activeToast");
       if (!toastBox) return;
-      if (DOMHandler.isClickOutside(ev, toastBox).some(coord => coord))
+      if (
+        DOMHandler.isClickOutside(ev, toastBox).some(
+          coord => coord
+        )
+      )
         toast.dismiss();
     }, []);
   useEffect(() => {
-    if (!window || document.body.dataset.toasthandling === "true") return;
+    if (
+      !window ||
+      document.body.dataset.toasthandling === "true"
+    )
+      return;
     addEventListener("keyup", handleEsc);
-    enterBtn.current = document.getElementById(enterBtnId) as nlBtn;
+    enterBtn.current = document.getElementById(
+      enterBtnId
+    ) as nlBtn;
     addEventListener("keydown", handleEnter);
     document.body.addEventListener("click", handleClick);
     return () => {
       removeEventListener("keyup", handleEsc);
       removeEventListener("keydown", handleEnter);
-      document.body.removeEventListener("click", handleClick);
+      document.body.removeEventListener(
+        "click",
+        handleClick
+      );
       document.body.dataset.toasthandling === "false";
     };
-  }, [enterBtnId]);
+  }, [enterBtnId, handleClick, handleEnter, handleEsc]);
 }
