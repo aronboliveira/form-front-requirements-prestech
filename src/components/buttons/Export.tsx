@@ -1,29 +1,15 @@
 "use client";
 import DOMHandler from "@/lib/client/handlers/DOMHandler";
-import SubmissionHandler from "@/lib/client/handlers/SubmissionHandler";
 import useFormButton from "@/lib/client/hooks/useFormButton";
-import { classes, flags } from "@/lib/client/vars";
+import { classes } from "@/lib/client/vars";
 import { FormRelated } from "@/lib/definitions/client/interfaces/components";
-import { useRouter } from "next/navigation";
-import {
-  RefObject,
-  useCallback,
-  useRef,
-  useState,
-} from "react";
+import { RefObject, useState } from "react";
 import { toast } from "react-hot-toast";
-import {
-  disableableElement,
-  nlFm,
-} from "@/lib/definitions/client/helpers";
-import promptToast from "../bloc/toasts/PromptToast";
-import DOMValidator from "@/lib/client/validators/DOMValidator";
 import Spinner from "../bloc/transicional/Spinner";
 export default function Export({ form }: FormRelated) {
-  const id = "btnSubmit",
+  const id = "btnExport",
     r = useFormButton({ form, idf: id }),
-    [isTransitioning, setTransition] =
-      useState<boolean>(false);
+    [isTransitioning, _] = useState<boolean>(false);
   return (
     <>
       {isTransitioning && <Spinner fs={true} />}
@@ -34,7 +20,8 @@ export default function Export({ form }: FormRelated) {
         className={classes.btnPrim}
         style={{
           background:
-            "radial-gradient(circle at bottom left, #0278ff, #619df7)",
+            "radial-gradient(circle at bottom left, #779485, #2b8a46)",
+          borderColor: "#2b8a4614",
         }}
         onClick={ev => {
           const [res, suspicious] = new DOMHandler(
@@ -46,7 +33,7 @@ export default function Export({ form }: FormRelated) {
           }
         }}
       >
-        <span>Enviar</span>
+        <span>Exportar</span>
       </button>
     </>
   );
