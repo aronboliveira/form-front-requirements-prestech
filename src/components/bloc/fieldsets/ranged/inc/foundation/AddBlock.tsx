@@ -32,6 +32,22 @@ export default function AddBlock({
     if (!r.current) return;
     if (r.current.classList.contains("radiogroup"))
       r.current.role = "radiogroup";
+    if (
+      !r.current.querySelector(".fsMultipleCheckables") ||
+      r.current.querySelectorAll('input[type="radio"]')
+        .length < 3 ||
+      r.current.querySelectorAll('input[type="checkbox"]')
+        .length < 3
+    ) {
+      const lab = r.current.querySelector("label");
+      if (lab) {
+        ![...(lab.parentElement?.children ?? [])].some(
+          e => e instanceof HTMLInputElement
+        )
+          ? (lab.style.marginBottom = "1rem")
+          : (lab.style.marginBottom = "0.25rem");
+      }
+    }
   }, [r]);
   return (
     <DefaultEntryBoundary>

@@ -1,5 +1,5 @@
 import {
-  entryElement,
+  disableableElement,
   inputLikeElement,
   nlHtEl,
   nlInp,
@@ -297,7 +297,7 @@ export default class IOHandler {
         : v
       : v.toUpperCase();
   }
-  static syncLabel(inp: entryElement | null) {
+  static syncLabel(inp: disableableElement | null) {
     if (!inp?.labels?.length) return;
     const relLabel =
       inp

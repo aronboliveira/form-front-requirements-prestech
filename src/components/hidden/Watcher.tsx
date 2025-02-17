@@ -89,6 +89,21 @@ export default function Watcher({
           );
         }
       }
+      if (document.body?.dataset.labelsyncing !== "true") {
+        setInterval(() => {
+          for (const e of [...document.forms]
+            .flatMap(el => [...el.elements])
+            .filter(el =>
+              DOMValidator.isDefaultDisableable(el)
+            )) {
+            if (!DOMValidator.isDefaultDisableable(e))
+              return;
+            IOHandler.syncLabel(e);
+          }
+        }, 2_000);
+        if (document.body)
+          document.body.dataset.labelsyncing = "true";
+      }
       for (const e of document.querySelectorAll("*")) {
         if (!(e instanceof HTMLElement) || !e.dataset.idacc)
           return;
@@ -141,9 +156,6 @@ export default function Watcher({
               performance.now() - start >
               flags.MAX_ALLOWED_SHORT_PROCESS_TIME
             ) {
-              console.warn(
-                `Process exceded time. Exiting main loop`
-              );
               break;
             }
             setTimeout(() => {
@@ -152,9 +164,6 @@ export default function Watcher({
                   performance.now() - start >
                   flags.MAX_ALLOWED_SHORT_PROCESS_TIME
                 ) {
-                  console.warn(
-                    `Process exceded time. Exiting inner loop`
-                  );
                   loopCounter.current =
                     ++loopCounter.current;
                   break;

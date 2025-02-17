@@ -2111,7 +2111,7 @@ export const defLlmKeys = withFrozenLibreLabel(
       usr: "Você utiliza chatbots de IA (ChatGPT, etc.) para responder perguntas gerais ou curiosidades?",
       prp: "Como você elabora perguntas (prompts) simples para obter respostas úteis na IA?",
       cor: "Em que frequência você verifica a precisão das respostas obtidas, comparando com fontes confiáveis?",
-      lan: "Você conversa na IA em português ou inglês? Qual é seu grau de conforto nisso?",
+      lan: "Quais destas línguas você usa para se comunicar com IAs?",
       alr: "Você está ciente de que as IA podem 'alucinar' respostas incorretas?",
     },
     intermediate: {

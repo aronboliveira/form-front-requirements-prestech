@@ -74,7 +74,7 @@ export default class StringHelper {
       .slice(1)
       .replace(
         StringHelper.capitalizedLatin(true),
-        (_, l, u) => `${l.toLowerCase()}_${u.toLowerCase()}`
+        "$1_$2"
       )}`;
   }
   public static camelToSnake(v: string): string {
@@ -87,7 +87,7 @@ export default class StringHelper {
     v = StringHelper.spaceToUnderscore(v);
     return v.replace(
       StringHelper.capturedLatinized(true),
-      (_, l, u) => `${l.toLowerCase()}_${u.toLowerCase()}`
+      `$1_$2`
     );
   }
   public static camelToKebab(str: string): string {
