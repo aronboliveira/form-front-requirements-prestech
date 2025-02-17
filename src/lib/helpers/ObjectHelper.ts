@@ -75,6 +75,56 @@ export default class ObjectHelper {
     }
     return obj;
   }
+  public static makeAllEnumerable<
+    T extends object | Function
+  >(obj: T): T {
+    let ClonedClass: Function = () => {},
+      clone: object = {};
+    try {
+      if (
+        typeof obj === "function" &&
+        "constructor" in obj
+      ) {
+        ClonedClass = class extends (obj as any) {
+          constructor(...args: any[]) {
+            super(...args);
+          }
+        };
+      } else clone = { ...obj };
+      for (const o of Object.getOwnPropertyNames(obj)) {
+        const descriptor = Object.getOwnPropertyDescriptor(
+          obj,
+          o
+        );
+        if (
+          !descriptor?.configurable ||
+          o === "constructor" ||
+          o === "prototype"
+        )
+          continue;
+        Object.defineProperty(ClonedClass, o, {
+          ...descriptor,
+          enumerable: true,
+        });
+      }
+      if (
+        typeof obj === "function" &&
+        "constructor" in obj
+      ) {
+        if (!ClonedClass.prototype)
+          ClonedClass.prototype = Object.create(
+            obj.prototype
+          );
+        ClonedClass.prototype.constructor = ClonedClass;
+        return ClonedClass as T;
+      }
+      return clone as T;
+    } catch (e) {
+      const cloned: any =
+        typeof obj === "function" ? ClonedClass : clone;
+      return Object.keys(cloned).length ? cloned : obj;
+    }
+  }
   public static JSONSafeStringify(data: any): string {
     try {
       return JSON.stringify(data);
@@ -82,7 +132,7 @@ export default class ObjectHelper {
       console.error(
         `Error stringifying data:\n${(e as Error).message}`
       );
-      return "";
+      return data || "";
     }
   }
   public static JSONSafeParse(data: any): any {

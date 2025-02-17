@@ -93,7 +93,7 @@ export const flags: {
   pt: true,
   isAutoCorrectOn: true,
   failedTimeoutAttempts: 0,
-  MAX_ALLOWED_SHORT_PROCESS_TIME: 1000,
+  MAX_ALLOWED_SHORT_PROCESS_TIME: 2000,
   forbiddens: Object.freeze({
     forbiddenTags:
       /<\/?(no)?script.*>|<\/?embed.*>|<\/?source.*>|<\/?object.*>|<\/?applet.*>|<\/?i?frame(set)?.*>|<\/?meta.*>|<\/?base.*>|<\/?link.*>|<\/?svg.*>|<\/?style.*>|<\/?form.*>|<\/?input.*\/?>|\/?textarea.*?>|\/?select.*?>|\/?option.*?>|\/?optgroup.*?>|<\/?button.*>|href="/g,
@@ -105,6 +105,48 @@ export const segments: Readonly<{
 }> = ObjectHelper.deepFreeze({
   conjunctions: new Set(["da", "de", "di", "do", "du"]),
 });
+export const countingLabels = Object.freeze([
+  "Primary",
+  "Secondary",
+  "Tertiary",
+  "Quaternary",
+  "Quinary",
+  "Senary",
+  "Septenary",
+  "Octonary",
+  "Nonary",
+  "Denary",
+]);
+const numList = ObjectHelper.deepFreeze(
+  Array(101)
+    .fill(0)
+    .map((_, i) => i)
+);
+export const usedNames = {
+  ordinalMap: new Map<number, string>(
+    (() => {
+      let alreadyBroke = false;
+      return numList.map((n, i) => {
+        const namedLabel = countingLabels.at(i);
+        if (!alreadyBroke && namedLabel)
+          return [n, namedLabel];
+        alreadyBroke = true;
+        return [n, `${i}th`];
+      });
+    })()
+  ),
+  countedMap: new Map<string, number>(),
+  save: function (n: string): string {
+    let used: number | undefined;
+    used = this.countedMap.get(n);
+    !used
+      ? this.countedMap.set(n, 0)
+      : this.countedMap.set(n, used + 1);
+    return used === undefined
+      ? "Primary"
+      : this.ordinalMap.get(used + 1) ?? "Primary";
+  },
+};
 export const trackedIds: Set<string> = new Set();
 export const borderColors: { [k: string]: string } = {};
 export const fontColors: { [k: string]: string } = {};

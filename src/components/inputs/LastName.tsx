@@ -5,7 +5,6 @@ import CompabilityValidator from "@/lib/client/validators/CompabilityValidator";
 import IOHandler from "@/lib/client/handlers/IOHandler";
 import { nlInp } from "@/lib/definitions/client/helpers";
 import { autoCapitalizeInputs } from "@/lib/client/handlers/AutoCorrectHandler";
-import StringHelper from "@/lib/helpers/StringHelper";
 import StyleHandler from "@/lib/client/handlers/StyleHandler";
 export default function LastName() {
   const r = useRef<nlInp>(null),
@@ -30,7 +29,7 @@ export default function LastName() {
         ref={r}
         value={v}
         id={id}
-        name={StringHelper.camelToSnake(id)}
+        name={id}
         required
         data-fixed='true'
         autoComplete='family-name'

@@ -36,6 +36,7 @@ import AudioAi from "../bloc/fieldsets/ranged/ai/AudioAi";
 import ImageAi from "../bloc/fieldsets/ranged/ai/ImageAi";
 import Llms from "../bloc/fieldsets/ranged/ai/Llms";
 import VideoAi from "../bloc/fieldsets/ranged/ai/VideoAi";
+import StringHelper from "@/lib/helpers/StringHelper";
 export const Range = memo(
   (props: RangeInputBlock): JSX.Element => {
     const min = 0,
@@ -398,6 +399,9 @@ export const Range = memo(
             data-observeable='true'
             className={`form-range ${s.range}`}
             id={props.id}
+            name={StringHelper.uncapitalize(props.id)
+              .replace(/llm/i, "llm")
+              .replace(/ais$/i, "Ais")}
           />
           <span
             className={`${s.rangeNumRef} ${s.rangeMax}`}

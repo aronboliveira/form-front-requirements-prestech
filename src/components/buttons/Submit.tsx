@@ -19,6 +19,7 @@ import {
 import promptToast from "../bloc/toasts/PromptToast";
 import DOMValidator from "@/lib/client/validators/DOMValidator";
 import Spinner from "../bloc/transicional/Spinner";
+import { submissionState } from "@/lib/responses";
 export default function Submit({ form }: FormRelated) {
   const id = "btnSubmit",
     r = useFormButton({ form, idf: id }),
@@ -66,34 +67,50 @@ export default function Submit({ form }: FormRelated) {
           .submit("sendRequirements")
           /* eslint-enable */
           .then(({ ok, cause }) => {
-            !ok
+            ok
               ? (() => {
-                  const isHttp =
-                    sessionStorage.getItem("isHttp");
-                  if (!isHttp) {
-                    toast.dismiss();
-                    toast.error(
-                      flags.pt
-                        ? `Erro: ${cause}`
-                        : `Error: ${cause}`
-                    );
-                  } else
-                    sessionStorage.removeItem("isHttp");
-                })()
-              : (() => {
                   toast.success(
                     flags.pt
                       ? "O formulário foi validado e submetido. Por favor, aguarde..."
                       : "The form was validated and submitted. Please wait..."
                   );
                   setTimeout(() => {
+                    for (const i of [
+                      "notFirstSession",
+                      "requirementsForm",
+                      "timer",
+                      "toBeDelayed",
+                      "activeUser",
+                    ])
+                      sessionStorage.removeItem(i);
                     router.push("/success", {
                       scroll: true,
                     });
                     setTransition(false);
                   }, 2000);
                   setTransition(true);
-                  setTimeout(router.back, 5000);
+                  setTimeout(router.back, 12_000);
+                })()
+              : (() => {
+                  const isHttp =
+                    sessionStorage.getItem("isHttp");
+                  if (!isHttp) {
+                    toast.dismiss();
+                    toast.error(
+                      flags.pt
+                        ? `Erro: ${
+                            submissionState.message || cause
+                          }`
+                        : `Error: ${
+                            submissionState.message || cause
+                          }`
+                    );
+                    setTimeout(
+                      () => (submissionState.message = ""),
+                      1000
+                    );
+                  } else
+                    sessionStorage.removeItem("isHttp");
                 })();
           });
       },
@@ -167,6 +184,7 @@ export default function Submit({ form }: FormRelated) {
         style={{
           background:
             "radial-gradient(circle at bottom left, #0278ff, #619df7)",
+          border: "none",
         }}
         onMouseEnter={() => router.prefetch("/success")}
         onClick={ev => {

@@ -1,8 +1,14 @@
 import { toast } from "react-hot-toast";
 import axios, { AxiosResponse } from "axios";
-import { PostHeaders, routes } from "@/lib/definitions/foundations";
+import {
+  PostHeaders,
+  routes,
+} from "@/lib/definitions/foundations";
 import ExceptionHandler from "./ErrorHandler";
-import { entryElement, voidish } from "@/lib/definitions/client/helpers";
+import {
+  entryElement,
+  voidish,
+} from "@/lib/definitions/client/helpers";
 import DOMValidator from "../validators/DOMValidator";
 import SubmissionProcessor from "../processors/SubmissionProcessor";
 import DOMHandler from "./DOMHandler";
@@ -17,11 +23,19 @@ export default class SubmissionHandler {
   #form: HTMLFormElement;
   #attempts: number;
   formId: string;
-  constructor(_form: HTMLFormElement, _processor?: SubmissionProcessor) {
-    if (!SubmissionHandler._instance) SubmissionHandler._instance = this;
-    this.#processor = _processor ? _processor : new SubmissionProcessor();
+  constructor(
+    _form: HTMLFormElement,
+    _processor?: SubmissionProcessor
+  ) {
+    if (!SubmissionHandler._instance)
+      SubmissionHandler._instance = this;
+    this.#processor = _processor
+      ? _processor
+      : new SubmissionProcessor();
     Object.defineProperty(this, "#processor", {
-      value: _processor ? _processor : new SubmissionProcessor(),
+      value: _processor
+        ? _processor
+        : new SubmissionProcessor(),
       writable: false,
       configurable: false,
     });
@@ -46,7 +60,11 @@ export default class SubmissionHandler {
         setTimeout(() => {
           if (!id) return;
           const caller = DOMHandler.queryByUniqueName(id);
-          if (!caller || !DOMValidator.isDefaultDisableable(caller)) return;
+          if (
+            !caller ||
+            !DOMValidator.isDefaultDisableable(caller)
+          )
+            return;
           caller.disabled = false;
         }, 3000);
       } else if (DOMValidator.isCustomDisableable(caller)) {
@@ -56,7 +74,11 @@ export default class SubmissionHandler {
         setTimeout(() => {
           if (!id) return;
           const caller = document.getElementById(id);
-          if (!caller || !DOMValidator.isCustomDisableable(caller)) return;
+          if (
+            !caller ||
+            !DOMValidator.isCustomDisableable(caller)
+          )
+            return;
           caller.hasAttribute("dataset-disabled") &&
             caller.removeAttribute("dataset-disabled");
         }, 3000);
@@ -81,8 +103,16 @@ export default class SubmissionHandler {
   ): Promise<{ ok: boolean; cause: string }> {
     this.#setForm();
     if (this.#form.noValidate)
-      return { ok: false, cause: "Form noValidate attribute active" };
-    const { successful, failed, successfulCustom, failedCustom } = this.scan();
+      return {
+        ok: false,
+        cause: "Form noValidate attribute active",
+      };
+    const {
+      successful,
+      failed,
+      successfulCustom,
+      failedCustom,
+    } = this.scan();
     for (const fail of failed) {
       if (!fail.required) continue;
       fail.scrollIntoView({
@@ -112,23 +142,30 @@ export default class SubmissionHandler {
       };
     }
     const ss = [...successful, ...successfulCustom];
-    // if (
-    //   ss.length <
-    //   [...this.#form.elements].filter(e => DOMValidator.isEntry(e)).length
-    // )
-    //   return {
-    //     ok: false,
-    //     cause: flags.pt
-    //       ? "Foram capturadas menos entradas do que o exigido"
-    //       : "The read number of entries was less than the mininum",
-    //   };
+    if (
+      ss.length <
+      [...this.#form.elements].filter(
+        e =>
+          DOMValidator.isEntry(e) &&
+          ((DOMValidator.isDefaultEntry(e) && e.required) ||
+            e.dataset.required === "true")
+      ).length
+    )
+      return {
+        ok: false,
+        cause: flags.pt
+          ? "Foram capturadas menos entradas do que o exigido"
+          : "The read number of entries was less than the mininum",
+      };
     const data: { [k: string]: string } = {};
     for (const s of ss) {
       if (DOMValidator.isDefaultEntry(s))
         data[s.name || s.id] = DOMHandler.extractValue(s);
       else if (!(s.dataset.name || s.dataset.id)) continue;
-      data[(s.dataset.name as string) || (s.dataset.id as string)] =
-        DOMHandler.extractValue(s);
+      data[
+        (s.dataset.name as string) ||
+          (s.dataset.id as string)
+      ] = DOMHandler.extractValue(s);
     }
     const res = axios
       ? await this.#sendToServerWithAxios(endpoint, data)
@@ -156,9 +193,15 @@ export default class SubmissionHandler {
   } {
     this.#setForm();
     const els = [
-        ...[...this.#form.elements].filter(e => DOMValidator.isDefaultEntry(e)),
-        ...[...this.#form.querySelectorAll(".customRole")].filter(
-          e => e instanceof HTMLElement && DOMValidator.isCustomEntry(e)
+        ...[...this.#form.elements].filter(e =>
+          DOMValidator.isDefaultEntry(e)
+        ),
+        ...[
+          ...this.#form.querySelectorAll(".customRole"),
+        ].filter(
+          e =>
+            e instanceof HTMLElement &&
+            DOMValidator.isCustomEntry(e)
         ),
       ],
       successful: entryElement[] = [],
@@ -166,7 +209,12 @@ export default class SubmissionHandler {
       successfulCustom: HTMLElement[] = [],
       failedCustom: HTMLElement[] = [];
     if (!els.length)
-      return { successful, failed, successfulCustom, failedCustom };
+      return {
+        successful,
+        failed,
+        successfulCustom,
+        failedCustom,
+      };
     for (let i = 0; i < els.length; i++) {
       const el = els[i];
       if (!(el instanceof HTMLElement)) continue;
@@ -188,7 +236,12 @@ export default class SubmissionHandler {
           continue;
       }
     }
-    return { successful, failed, successfulCustom, failedCustom };
+    return {
+      successful,
+      failed,
+      successfulCustom,
+      failedCustom,
+    };
   }
   async #sendToServerWithAxios(
     endpoint: string,
@@ -199,7 +252,10 @@ export default class SubmissionHandler {
   ): Promise<AxiosResponse | Response> {
     try {
       const destiny = this.#routes.get(endpoint);
-      if (!destiny) throw new SyntaxError("The endpoint key is not mapped.");
+      if (!destiny)
+        throw new SyntaxError(
+          "The endpoint key is not mapped."
+        );
       const res = await axios.post(atob(destiny), data, {
         headers,
       });
@@ -210,22 +266,29 @@ export default class SubmissionHandler {
           ? e.response?.status || 500
           : ExceptionHandler.classify(e as Error);
       console.error(
-        `Error posting data:\n${status}. ${(e as Error).name} — ${
-          (e as Error).message
-        }`
+        `Error posting data:\n${status}. ${
+          (e as Error).name
+        } — ${(e as Error).message}`
       );
       toast.error(
         flags.pt
           ? `Erro: ${SubmissionProcessor.getHttpResponseFriendlyMessage(
-              typeof status === "number" ? status : status.status
+              typeof status === "number"
+                ? status
+                : status.status
             )}`
           : `Erro: ${SubmissionProcessor.getHttpResponseFriendlyMessage(
-              typeof status === "number" ? status : status.status
+              typeof status === "number"
+                ? status
+                : status.status
             )}`
       );
       sessionStorage.setItem("isHttp", "true");
       return new Response("", {
-        status: typeof status === "number" ? status : status.status,
+        status:
+          typeof status === "number"
+            ? status
+            : status.status,
         statusText:
           typeof status === "number"
             ? status.toString().startsWith("4")
@@ -235,7 +298,9 @@ export default class SubmissionHandler {
               : flags.pt
               ? "Erro interno"
               : "Internal Error"
-            : ExceptionHandler.getFriendlyErrorMessage(status.type),
+            : ExceptionHandler.getFriendlyErrorMessage(
+                status.type
+              ),
       });
     }
   }
@@ -248,7 +313,10 @@ export default class SubmissionHandler {
   ): Promise<Response> {
     try {
       const destiny = this.#routes.get(endpoint);
-      if (!destiny) throw new SyntaxError("The endpoint key is not mapped.");
+      if (!destiny)
+        throw new SyntaxError(
+          "The endpoint key is not mapped."
+        );
       const res = await fetch(atob(destiny), {
         method: "POST",
         headers,
@@ -258,19 +326,30 @@ export default class SubmissionHandler {
     } catch (e) {
       const status = ExceptionHandler.classify(e as Error);
       console.error(
-        `Error fetching data:\n${status}.${(e as Error).name} — ${
-          (e as Error).message
-        }`
+        `Error fetching data:\n${status}.${
+          (e as Error).name
+        } — ${(e as Error).message}`
       );
       return new Response("", {
-        status: typeof status === "number" ? status : status.status,
-        statusText: ExceptionHandler.getFriendlyErrorMessage(status.type),
+        status:
+          typeof status === "number"
+            ? status
+            : status.status,
+        statusText:
+          ExceptionHandler.getFriendlyErrorMessage(
+            status.type
+          ),
       });
     }
   }
-  public handleResponse(res: Response | AxiosResponse, router: any) {
+  public handleResponse(
+    res: Response | AxiosResponse,
+    router: any
+  ) {
     if (res.status.toString().startsWith("2")) {
-      toast.success("O formulário foi submetido com sucesso!");
+      toast.success(
+        "O formulário foi submetido com sucesso!"
+      );
       setTimeout(() => router.push("/"), 2000);
     } else {
       try {
@@ -278,10 +357,16 @@ export default class SubmissionHandler {
           `Houve um erro inesperado no envio do formulário. Status: ${res.status}`
         );
         throw new Error(
-          `HTTP Error: ${res.status} — ${"text" in res ? res.text : res.data}`
+          `HTTP Error: ${res.status} — ${
+            "text" in res ? res.text : res.data
+          }`
         );
       } catch (e) {
-        console.error(`Error handling HTTP Response:\n${(e as Error).message}`);
+        console.error(
+          `Error handling HTTP Response:\n${
+            (e as Error).message
+          }`
+        );
       }
     }
   }
@@ -293,7 +378,9 @@ export default class SubmissionHandler {
   }
   #setForm(): boolean {
     if (this.#form && this.#form.isConnected) return true;
-    const form = DOMHandler.queryByUniqueName(this.formId) as any;
+    const form = DOMHandler.queryByUniqueName(
+      this.formId
+    ) as any;
     if (!(form instanceof HTMLFormElement)) return false;
     this.#form = form;
     return true;

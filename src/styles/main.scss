@@ -211,9 +211,33 @@ button {
 }
 .body {
   background-color: rgb(239 251 236 / 93%);
+  min-height: 100vh !important;
 }
 .bold {
   font-weight: bold;
+}
+.btn-primary {
+  position: relative;
+  &::after {
+    content: "";
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    top: 0;
+    z-index: -99;
+    background-color: hsla(0, 0%, 100%, 0.25);
+    border-radius: 1rem;
+    transition: all 0.5s;
+  }
+  &:hover {
+    &::after {
+      transform: scale(3);
+      opacity: 0;
+    }
+  }
 }
 .container {
   max-width: 800px;

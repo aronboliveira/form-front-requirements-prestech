@@ -4,7 +4,6 @@ import IOHandler from "@/lib/client/handlers/IOHandler";
 import CompabilityValidator from "@/lib/client/validators/CompabilityValidator";
 import { classes, flags } from "@/lib/client/vars";
 import { useEffect, useRef, useState } from "react";
-import StringHelper from "@/lib/helpers/StringHelper";
 import StyleHandler from "@/lib/client/handlers/StyleHandler";
 export default function FirstName() {
   const r = useRef<nlInp>(null),
@@ -29,7 +28,7 @@ export default function FirstName() {
         ref={r}
         value={v}
         id={id}
-        name={StringHelper.camelToSnake(id)}
+        name={id}
         required
         autoComplete='given-name'
         // autoFocus

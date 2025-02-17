@@ -11,6 +11,7 @@ import MathHandler from "@/lib/client/handlers/MathHandler";
 import StyleHandler from "@/lib/client/handlers/StyleHandler";
 import { TelFragmentOptInput } from "@/lib/definitions/client/interfaces/components";
 import { classes } from "@/lib/client/vars";
+import useCountedEntry from "@/lib/client/hooks/useCountedEntry";
 export default function DDD({
   required,
   id,
@@ -18,7 +19,8 @@ export default function DDD({
   id ||= "ddd";
   const [v, setV] = useState<DDDPattern>("21"),
     r = useRef<nlInp>(null),
-    linkedTo = useRef<nlEl>(null);
+    linkedTo = useRef<nlEl>(null),
+    { name } = useCountedEntry(r, id);
   useEffect(() => {
     if (!(r.current instanceof HTMLInputElement)) return;
     linkedTo.current =
@@ -49,7 +51,7 @@ export default function DDD({
       <input
         value={v}
         ref={r}
-        name={id}
+        name={name}
         id={id}
         type='number'
         className={classes.dddClasses}
@@ -60,6 +62,7 @@ export default function DDD({
         max={99}
         minLength={2}
         maxLength={3}
+        style={{ marginBottom: "0" }}
         data-fixed='true'
         onChange={ev => {
           const i = ev.currentTarget;

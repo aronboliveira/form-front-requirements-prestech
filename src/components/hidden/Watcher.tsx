@@ -89,6 +89,27 @@ export default function Watcher({
           );
         }
       }
+      for (const e of document.querySelectorAll("*")) {
+        if (!(e instanceof HTMLElement) || !e.dataset.idacc)
+          return;
+        let acc = Math.ceil(
+          MathHandler.parseNotNaN(e.dataset.idacc, 1, "int")
+        );
+        if (acc < 2) return;
+        const repetitionIndexes = Array(acc - 1)
+            .fill(0)
+            .map((_, i) => i + 1),
+          repetitionElements = document.querySelectorAll(
+            `[id^=${e}]`
+          );
+        if (!repetitionElements.length) return;
+        for (const i of repetitionIndexes) {
+          const r = repetitionElements[i];
+          if (!(r instanceof HTMLElement)) continue;
+          if (!r.dataset.idacc)
+            r.dataset.idacc = i.toString();
+        }
+      }
       if (document.body.dataset.xssprotected !== "true") {
         IOHandler.setXSSInputProtection();
         setInterval(IOHandler.setXSSInputProtection, 1_000);
@@ -149,11 +170,9 @@ export default function Watcher({
                     ))
                 )
                   allEls[j].id =
-                    StringHelper.sanitizePropertyName(
-                      MathHandler.generateRandomId(
-                        allEls[j],
-                        allEls[j].id
-                      )
+                    MathHandler.generateRandomId(
+                      allEls[j],
+                      allEls[j].id
                     );
               }
               trackedIds.add(allEls[i].id);

@@ -86,7 +86,9 @@ export default class MathHandler {
       start = performance.now();
     while (
       newKey === previous ||
-      document.getElementById(newKey)
+      (element &&
+        document.querySelectorAll(`#${element.id}`).length >
+          1)
     ) {
       if (
         performance.now() - start >
@@ -110,9 +112,11 @@ export default class MathHandler {
         );
         element.dataset.idwarned = "true";
       }
-      element.id = `_${StringHelper.slugify(
-        element.id,
-        false
+      element.id = `_${StringHelper.sanitizePropertyName(
+        element.id
+      )}__${newKey}`;
+      return `_${StringHelper.sanitizePropertyName(
+        element.id
       )}__${newKey}`;
     }
     return newKey;

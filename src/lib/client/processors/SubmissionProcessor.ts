@@ -16,10 +16,13 @@ import {
   HTTPReturnsFriendlyPt,
   StartingHTTPDigits,
 } from "@/lib/vars";
-export default class SubmissionProcessor implements Processor<HTMLElement> {
+export default class SubmissionProcessor
+  implements Processor<HTMLElement>
+{
   private static _instance: SubmissionProcessor;
   constructor() {
-    if (!SubmissionProcessor._instance) SubmissionProcessor._instance = this;
+    if (!SubmissionProcessor._instance)
+      SubmissionProcessor._instance = this;
   }
   public construct(): SubmissionProcessor {
     return SubmissionProcessor._instance
@@ -42,15 +45,21 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
       const res = this.#evaluateDefaultInput(el);
       if (typeof res !== "boolean") return;
       else return res;
-    } else if (el instanceof HTMLSelectElement) return this.#evaluateSelect(el);
+    } else if (el instanceof HTMLSelectElement)
+      return this.#evaluateSelect(el);
     else if (el instanceof HTMLTextAreaElement)
       return this.#evaluateTextArea(el);
     else return;
   }
-  #evaluateDefaultInput(el: HTMLInputElement): boolean | void {
+  #evaluateDefaultInput(
+    el: HTMLInputElement
+  ): boolean | void {
     if (el.type === "checkbox" || el.type === "radio")
       return this.#evaluateCheckable(el);
-    else if (DOMValidator.isDefaultWritableInput(el))
+    else if (
+      DOMValidator.isDefaultWritableInput(el) ||
+      (el as HTMLInputElement).type === "range"
+    )
       return DOMHandler.verifyValidity(el);
     else if ((el as HTMLInputElement).type === "color") {
       const max = (el as HTMLInputElement).dataset.max,
@@ -70,21 +79,27 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
         };
       if (max) {
         const decMax = MathHandler.hexToDecimal(max),
-          decV = MathHandler.hexToDecimal((el as HTMLInputElement).value);
+          decV = MathHandler.hexToDecimal(
+            (el as HTMLInputElement).value
+          );
         if (!Number.isFinite(decMax)) return true;
         if (!Number.isFinite(decV) || decV > decMax) {
           /* eslint-disable */
-          (el as HTMLInputElement).required && handleInvalidity(el);
+          (el as HTMLInputElement).required &&
+            handleInvalidity(el);
           /* eslint-enable */
           return false;
         }
       }
       if (min) {
         const decMin = MathHandler.hexToDecimal(min),
-          decV = MathHandler.hexToDecimal((el as HTMLInputElement).value);
+          decV = MathHandler.hexToDecimal(
+            (el as HTMLInputElement).value
+          );
         if (!Number.isFinite(decMin)) return true;
         if (!Number.isFinite(decV) || decV < decMin) {
-          (el as HTMLInputElement).required && handleInvalidity(el);
+          (el as HTMLInputElement).required &&
+            handleInvalidity(el);
           return false;
         }
       }
@@ -109,7 +124,8 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
       ds.minfiles &&
       (!el.files ||
         (el.files &&
-          el.files.length < MathHandler.parseNotNaN(ds.minfiles, 1, "int")))
+          el.files.length <
+            MathHandler.parseNotNaN(ds.minfiles, 1, "int")))
     ) {
       toast.error(
         flags.pt
@@ -119,14 +135,21 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
     }
     if (ds.maxfiles) {
       if (!el.files) return;
-      if (el.files.length > MathHandler.parseNotNaN(ds.maxfiles, 1, "int"))
+      if (
+        el.files.length >
+        MathHandler.parseNotNaN(ds.maxfiles, 1, "int")
+      )
         return false;
     }
     if (el.files) {
       for (let i = 0; i < el.files.length; i++) {
         const f = el.files[i];
         if (ds.maxsize) {
-          const maxSize = MathHandler.parseNotNaN(ds.maxsize, 1048576, "int"); // default 1MB
+          const maxSize = MathHandler.parseNotNaN(
+            ds.maxsize,
+            1048576,
+            "int"
+          ); // default 1MB
           if (f.size > maxSize) {
             toast.error(
               flags.pt
@@ -137,7 +160,11 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
           }
         }
         if (ds.minsize) {
-          const minSize = MathHandler.parseNotNaN(ds.minsize, 1, "int");
+          const minSize = MathHandler.parseNotNaN(
+            ds.minsize,
+            1,
+            "int"
+          );
           if (f.size < minSize) {
             toast.error(
               flags.pt
@@ -148,11 +175,17 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
           }
         }
         if (ds.accept) {
-          const exts = ds.accept.split(",").map(s => s.trim().toLowerCase()),
+          const exts = ds.accept
+              .split(",")
+              .map(s => s.trim().toLowerCase()),
             mime = f.type.toLowerCase();
           if (
             !exts.some(
-              ext => `.${f.name.split(".").pop()?.toLowerCase()}` === ext
+              ext =>
+                `.${f.name
+                  .split(".")
+                  .pop()
+                  ?.toLowerCase()}` === ext
             ) ||
             exts.some(ext => mime === ext)
           )
@@ -166,11 +199,14 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
     if (el.type === "radio" || el.type === "checkbox") {
       const nameds = document.getElementsByName(el.name);
       if (nameds.length === 1) return el.checked;
-      else if (nameds.length > 1) return this.#evaluateRadioGroup(el);
+      else if (nameds.length > 1)
+        return this.#evaluateRadioGroup(el);
       else return;
     } else return;
   }
-  #evaluateRadioGroup(el: HTMLInputElement): boolean | void {
+  #evaluateRadioGroup(
+    el: HTMLInputElement
+  ): boolean | void {
     try {
       const parent =
         el.closest(".radioGroup") ||
@@ -180,8 +216,14 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
       if (!(parent instanceof Element)) return;
       const radios = [
         ...parent.querySelectorAll('input[type="radio"]'),
-        ...parent.querySelectorAll('input[type="checkbox"]'),
-      ].filter(e => e instanceof HTMLInputElement && e.name === el.name);
+        ...parent.querySelectorAll(
+          'input[type="checkbox"]'
+        ),
+      ].filter(
+        e =>
+          e instanceof HTMLInputElement &&
+          e.name === el.name
+      );
       if (radios.length === 0) return;
       if (radios.length === 1) return el.checked;
       if (radios.length > 1) {
@@ -203,13 +245,17 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
         selected = [...el.options].filter(e => e.selected);
       if (
         ds.minoptions &&
-        MathHandler.parseNotNaN(ds.minoptions, 0, "int") > selected.length
+        MathHandler.parseNotNaN(ds.minoptions, 0, "int") >
+          selected.length
       )
         return false;
       if (
         ds.maxoptions &&
-        MathHandler.parseNotNaN(ds.maxoptions, el.options.length - 1, "int") <
-          selected.length
+        MathHandler.parseNotNaN(
+          ds.maxoptions,
+          el.options.length - 1,
+          "int"
+        ) < selected.length
       )
         return false;
     }
@@ -231,12 +277,14 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
       value = DOMHandler.extractValue(el);
     if (
       dataset.minlength &&
-      value.length < MathHandler.parseNotNaN(dataset.minlength, 0, "int")
+      value.length <
+        MathHandler.parseNotNaN(dataset.minlength, 0, "int")
     )
       return false;
     if (
       dataset.maxlength &&
-      value.length > MathHandler.parseNotNaN(dataset.maxlength, 0, "int")
+      value.length >
+        MathHandler.parseNotNaN(dataset.maxlength, 0, "int")
     )
       return false;
     if (
@@ -251,9 +299,13 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
         MathHandler.parseNotNaN(dataset.max, 0, "float")
     )
       return false;
-    if (dataset.pattern && !new RegExp(dataset.pattern).test(value))
+    if (
+      dataset.pattern &&
+      !new RegExp(dataset.pattern).test(value)
+    )
       return false;
-    if (dataset.checked && (!value || value === "false")) return false;
+    if (dataset.checked && (!value || value === "false"))
+      return false;
     if (el.dataset.notaccepted)
       return el.dataset.notaccepted
         .split(",")
@@ -261,37 +313,65 @@ export default class SubmissionProcessor implements Processor<HTMLElement> {
         .some(v => v === value);
     return true;
   }
-  static getHttpResponseFriendlyMessage(code: number): string {
-    const firstDigit = code.toString().slice(0, 1) as PseudoNum,
+  static getHttpResponseFriendlyMessage(
+    code: number
+  ): string {
+    const firstDigit = code
+        .toString()
+        .slice(0, 1) as PseudoNum,
       def = "Internal Server Error";
     if (
-      !["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].some(
-        n => n === firstDigit
-      )
+      ![
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+      ].some(n => n === firstDigit)
     )
       return def;
-    const dict = HTTPRes[StartingHTTPDigits[firstDigit] || 500]?.get(code),
+    const dict =
+        HTTPRes[StartingHTTPDigits[firstDigit] || 500]?.get(
+          code
+        ),
       lang = flags.pt ? "pt" : "en";
     if (!(dict as any)[lang]) return def;
-    const msg = `${SubmissionProcessor.classifyHttpCategory(firstDigit)} — ${
-      (dict as any)[lang]
-    }`;
+    const msg = `${SubmissionProcessor.classifyHttpCategory(
+      firstDigit
+    )} — ${(dict as any)[lang]}`;
     if (!msg) return def;
     return msg;
   }
-  static classifyHttpCategory(code: string): HTTPReturnsFriendly {
+  static classifyHttpCategory(
+    code: string
+  ): HTTPReturnsFriendly {
     if (code.length > 1) code = code.slice(0, 1);
     switch (code) {
       case "1":
-        return flags.pt ? HTTPReturnsFriendlyPt.i : HTTPReturnsFriendlyEn.i;
+        return flags.pt
+          ? HTTPReturnsFriendlyPt.i
+          : HTTPReturnsFriendlyEn.i;
       case "2":
-        return flags.pt ? HTTPReturnsFriendlyPt.s : HTTPReturnsFriendlyEn.s;
+        return flags.pt
+          ? HTTPReturnsFriendlyPt.s
+          : HTTPReturnsFriendlyEn.s;
       case "3":
-        return flags.pt ? HTTPReturnsFriendlyPt.r : HTTPReturnsFriendlyEn.r;
+        return flags.pt
+          ? HTTPReturnsFriendlyPt.r
+          : HTTPReturnsFriendlyEn.r;
       case "4":
-        return flags.pt ? HTTPReturnsFriendlyPt.ce : HTTPReturnsFriendlyEn.ce;
+        return flags.pt
+          ? HTTPReturnsFriendlyPt.ce
+          : HTTPReturnsFriendlyEn.ce;
       default:
-        return flags.pt ? HTTPReturnsFriendlyPt.se : HTTPReturnsFriendlyPt.se;
+        return flags.pt
+          ? HTTPReturnsFriendlyPt.se
+          : HTTPReturnsFriendlyPt.se;
     }
   }
 }

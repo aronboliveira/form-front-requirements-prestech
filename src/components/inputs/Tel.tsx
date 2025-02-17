@@ -6,15 +6,17 @@ import { ITelInput } from "@/lib/definitions/client/interfaces/components";
 import { nlInp } from "@/lib/definitions/client/helpers";
 import { ValidPhonePattern } from "@/lib/definitions/foundations";
 import { useEffect, useState, useRef } from "react";
+import useCountedEntry from "@/lib/client/hooks/useCountedEntry";
 export default function Tel({
   required = false,
   type = "complete",
   label = "Telefone",
   id,
 }: ITelInput) {
-  const [v, setV] = useState<ValidPhonePattern | "">(""),
-    r = useRef<nlInp>(null);
   id ||= "tel";
+  const [v, setV] = useState<ValidPhonePattern | "">(""),
+    r = useRef<nlInp>(null),
+    { name } = useCountedEntry(r, id);
   useEffect(() => {
     const i = r.current;
     if (!(i instanceof HTMLInputElement)) return;
@@ -38,7 +40,7 @@ export default function Tel({
         value={v}
         ref={r}
         type='tel'
-        name={id}
+        name={name}
         id={id}
         data-fixed='true'
         autoComplete={(() => {
@@ -53,6 +55,7 @@ export default function Tel({
         })()}
         required={required ? true : false}
         className={classes.inpClasses}
+        style={{ marginBottom: "1rem" }}
         onChange={ev => {
           const t = ev.currentTarget;
           setV(prev => {

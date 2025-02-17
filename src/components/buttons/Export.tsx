@@ -22,7 +22,7 @@ export default function Export({ form }: FormRelated) {
         style={{
           background:
             "radial-gradient(circle at bottom left, #779485, #2b8a46)",
-          borderColor: "#2b8a4614",
+          borderColor: "transparent",
         }}
         onClick={ev => {
           const [res, suspicious] = new DOMHandler(
